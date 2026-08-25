@@ -1,6 +1,15 @@
 {
-  "name": "jm-immo",
-  "main": "src/index.js",
+  "name": "jm-immo-cl",
+  "main": "index.js",
   "compatibility_date": "2025-01-01",
-  "compatibility_flags": ["nodejs_compat"]
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "jm-immo-db",
+      "database_id": "8ec3ac54-18b6-428f-965a-cae6551e8b31"
+    }
+  ],
+  "triggers": {
+    "crons": ["0 */6 * * *"]
+  }
 }
