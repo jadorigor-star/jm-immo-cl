@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>JM Immo</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0E1116;--panel:#161B22;--panel2:#1D2430;--line:#262E3A;--text:#E7EAEE;--muted:#8992A3;--gold:#D6A24E;--teal:#4FA98C;--clay:#C1573B;--blue:#6C93C7;}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;}
+body{padding-bottom:40px;}
+h1{font-family:'Fraunces',serif;font-size:19px;margin:0;}
+.mono{font-family:'IBM Plex Mono',monospace;}
+header{position:sticky;top:0;z-index:20;background:rgba(14,17,22,0.96);backdrop-filter:blur(8px);padding:14px 16px 10px;border-bottom:1px solid var(--line);}
+.searchbar{display:flex;gap:8px;margin-top:10px;}
+.searchbar input{flex:1;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-size:14px;}
+.searchbar button{padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--gold);color:#1a1408;font-weight:600;font-size:13px;}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin-top:10px;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:none;padding:6px 12px;border-radius:999px;font-size:12.5px;color:var(--muted);border:1px solid var(--line);cursor:pointer;white-space:nowrap;}
+.tab.active{background:var(--panel2);color:var(--text);border-color:#3a4353;}
+.filters{display:flex;gap:8px;overflow-x:auto;margin-top:10px;scrollbar-width:none;}
+.filters::-webkit-scrollbar{display:none;}
+.filters select{flex:none;padding:7px 8px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-size:12px;}
+main{padding:14px 16px;max-width:660px;margin:0 auto;}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;}
+.card-top{display:flex;justify-content:space-between;gap:10px;}
+.title{font-family:'Fraunces',serif;font-size:16px;font-weight:600;line-height:1.25;}
+.locality{color:var(--muted);font-size:12.5px;margin-top:2px;}
+.price{font-family:'IBM Plex Mono',monospace;font-size:17px;font-weight:600;white-space:nowrap;}
+.fit-badge{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--panel2);border:1px solid var(--line);font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;flex:none;}
+.fit-badge.hot{background:#241d10;border-color:#4a3a1e;color:var(--gold);}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;}
+.tag{font-size:10.5px;padding:3px 8px;border-radius:6px;background:var(--panel2);color:var(--muted);border:1px solid var(--line);}
+.tag.opp{color:var(--gold);border-color:#4a3a1e;background:#241d10;}
+.tag.drop{color:var(--teal);border-color:#1c3a32;background:#0f2620;}
+.explain{font-size:12.5px;color:var(--gold);margin-top:8px;}
+.meta-row{display:flex;gap:14px;margin-top:9px;font-size:12.5px;color:var(--muted);}
+.sources-line{font-size:11.5px;color:var(--muted);margin-top:8px;}
+.sources-line a{color:var(--blue);}
+.actions{display:flex;gap:8px;margin-top:12px;}
+.btn{flex:1;padding:9px 8px;border-radius:9px;font-size:12.5px;font-weight:500;border:1px solid var(--line);background:var(--panel2);color:var(--text);cursor:pointer;}
+.btn.discard{color:var(--clay);}
+.btn.fav.on{background:#241d10;border-color:#4a3a1e;color:var(--gold);}
+.empty{padding:50px 20px;text-align:center;color:var(--muted);}
+.sources-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+.sources-table td,.sources-table th{padding:9px 6px;border-bottom:1px solid var(--line);text-align:left;}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px;}
+.dot.productive{background:var(--teal);}.dot.accessible{background:var(--gold);}.dot.enregistrée{background:var(--clay);}
+.status{padding:8px 16px;font-size:12px;color:var(--muted);}
+</style>
+</head>
+<body>
+<header>
+  <h1>JM Immo</h1>
+  <div class="searchbar">
+    <input id="q" placeholder="Rechercher (village, type, mot-clé)…">
+    <button id="btnSearch">Chercher</button>
+  </div>
+  <div class="filters">
+    <select id="fRegion"><option value="">Toutes régions</option></select>
+    <select id="fType"><option value="">Tous types</option></select>
+    <select id="fBudget">
+      <option value="500000">≤ CHF 500'000</option>
+      <option value="400000">≤ CHF 400'000</option>
+      <option value="300000">≤ CHF 300'000</option>
+    </select>
+    <select id="fSort">
+      <option value="jmfit">Tri : JM Fit</option>
+      <option value="price_asc">Tri : prix croissant</option>
+      <option value="recent">Tri : plus récents</option>
+    </select>
+  </div>
+  <div class="tabs" id="tabs"></div>
+</header>
+<main id="main"><div class="status">Chargement…</div></main>
+
+<script>
+const TABS = [
+  {id:'tous', label:'Tous'},
+  {id:'opportunites', label:'Opportunités'},
+  {id:'favoris', label:'Favoris'},
+  {id:'baisses', label:'Baisses'},
+  {id:'ecartes', label:'Écartés'},
+  {id:'sources', label:'Sources'},
+];
+let activeTab = 'tous';
+const REGIONS = ["Tessin","Jura – Franches-Montagnes","Jura – Clos du Doubs","Zweisimmen","Gruyère","Neuchâtel"];
+const TYPES = ["Appartement","Maison","Chalet","Rustico","Villa","Maison historique","PPE"];
+
+document.getElementById('fRegion').innerHTML += REGIONS.map(r=>`<option value="${r}">${r}</option>`).join('');
+document.getElementById('fType').innerHTML += TYPES.map(t=>`<option value="${t}">${t}</option>`).join('');
+document.getElementById('tabs').innerHTML = TABS.map(t=>`<div class="tab ${t.id===activeTab?'active':''}" data-tab="${t.id}">${t.label}</div>`).join('');
+
+function fmtCHF(n){ return "CHF " + Math.round(n).toLocaleString('fr-CH'); }
+
+async function api(path, opts){
+  const res = await fetch(path, opts);
+  return res.json();
+}
+
+function bienCard(b){
+  const tags = [`<span class="tag">${b.type||''}</span>`, `<span class="tag">${b.region||''}</span>`, `<span class="tag">${b.confidence||''}</span>`];
+  if (b.cachet) tags.push(`<span class="tag">cachet</span>`);
+  if (b.is_opportunity) tags.push(`<span class="tag opp">Opportunité</span>`);
+  if (b.price_drop) tags.push(`<span class="tag drop">−${b.price_drop.pct}%</span>`);
+  const sources = (b.sources||[]).map(s=>`<a href="${s.url}" target="_blank" rel="noopener">${s.source_name}</a>`).join(' · ');
+  const explain = b.explain ? `<div class="explain">JM Fit ${b.jm_fit}/100 — ${b.explain}</div>` : '';
+  return `
+  <div class="card">
+    <div class="card-top">
+      <div><div class="title">${b.title}</div><div class="locality">${b.locality} · ${b.region}</div></div>
+      <div class="fit-badge ${b.is_opportunity?'hot':''}">${b.jm_fit ?? ''}</div>
+    </div>
+    <div class="price" style="margin-top:8px">${fmtCHF(b.price)}</div>
+    <div class="meta-row"><span>${b.rooms} pièces</span><span>${b.surface} m²</span></div>
+    <div class="tags">${tags.join('')}</div>
+    ${explain}
+    <div class="sources-line">${(b.sources||[]).length} source(s) : ${sources}</div>
+    <div class="actions">
+      <button class="btn discard" onclick="discard('${b.id}')">Écarter</button>
+      <button class="btn fav ${b.is_favori?'on':''}" onclick="toggleFav('${b.id}', ${!!b.is_favori})">${b.is_favori?'★ Favori':'☆ Favori'}</button>
+    </div>
+  </div>`;
+}
+
+function ecarteCard(d){
+  return `
+  <div class="card">
+    <div class="card-top"><div><div class="title">${d.title_at_exclusion}</div><div class="locality">${d.locality} · ${d.region}</div></div></div>
+    <div class="price" style="margin-top:8px">${fmtCHF(d.price_at_exclusion)} <span style="font-size:11px;color:var(--muted)">(prix à l'exclusion)</span></div>
+    <div class="actions"><button class="btn" onclick="restore('${d.bien_id}')">Restaurer</button></div>
+  </div>`;
+}
+
+async function discard(id){ await api('/api/discard', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({bien_id:id})}); load(); }
+async function restore(id){ await api('/api/restore', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({bien_id:id})}); load(); }
+async function toggleFav(id, isOn){
+  if (isOn) await api('/api/favori/'+id, {method:'DELETE'});
+  else await api('/api/favori', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({bien_id:id})});
+  load();
+}
+
+async function load(){
+  const main = document.getElementById('main');
+  main.innerHTML = '<div class="status">Chargement…</div>';
+
+  if (activeTab === 'sources'){
+    const {results} = await api('/api/sources');
+    main.innerHTML = `<div class="card"><table class="sources-table"><thead><tr><th>Source</th><th>État</th><th>Annonces</th></tr></thead><tbody>
+      ${results.map(s=>`<tr><td><span class="dot ${s.state}"></span>${s.name}</td><td>${s.state}</td><td class="mono">${s.last_productive_count||0}</td></tr>`).join('')}
+    </tbody></table></div>`;
+    return;
+  }
+  if (activeTab === 'ecartes'){
+    const {results} = await api('/api/ecartes');
+    main.innerHTML = results.length ? results.map(ecarteCard).join('') : '<div class="empty">Aucun bien écarté.</div>';
+    return;
+  }
+  if (activeTab === 'baisses'){
+    const {results} = await api('/api/baisses');
+    main.innerHTML = results.length ? results.map(bienCard).join('') : '<div class="empty">Aucune baisse détectée.</div>';
+    return;
+  }
+
+  const params = new URLSearchParams();
+  const q = document.getElementById('q').value.trim();
+  if (q) params.set('q', q);
+  const region = document.getElementById('fRegion').value; if (region) params.set('region', region);
+  const type_ = document.getElementById('fType').value; if (type_) params.set('type', type_);
+  params.set('budget_max', document.getElementById('fBudget').value);
+  params.set('sort', document.getElementById('fSort').value);
+  if (activeTab === 'opportunites') params.set('opportunites', '1');
+  if (activeTab === 'favoris') params.set('favoris', '1');
+
+  const {results} = await api('/api/search?' + params.toString());
+  main.innerHTML = results.length ? results.map(bienCard).join('') : '<div class="empty">Aucun résultat pour ces critères.</div>';
+}
+
+document.getElementById('tabs').addEventListener('click', e=>{
+  const t = e.target.closest('[data-tab]'); if(!t) return;
+  activeTab = t.dataset.tab;
+  document.querySelectorAll('.tab').forEach(el=>el.classList.toggle('active', el.dataset.tab===activeTab));
+  load();
+});
+document.getElementById('btnSearch').onclick = load;
+['fRegion','fType','fBudget','fSort'].forEach(id=>document.getElementById(id).onchange = load);
+document.getElementById('q').addEventListener('keydown', e=>{ if(e.key==='Enter') load(); });
+
+load();
+</script>
+</body>
+</html>
