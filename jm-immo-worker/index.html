@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>JM Immo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0E1116;--panel:#161B22;--panel2:#1D2430;--line:#262E3A;--text:#E7EAEE;--muted:#8992A3;--gold:#D6A24E;--teal:#4FA98C;--clay:#C1573B;--blue:#6C93C7;}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;}
+body{padding-bottom:90px;}
+h1{font-family:'Fraunces',serif;font-size:19px;margin:0;font-weight:600;}
+.mono{font-family:'IBM Plex Mono',monospace;}
+header{position:sticky;top:0;z-index:20;background:rgba(14,17,22,0.97);backdrop-filter:blur(8px);padding:14px 16px 0;border-bottom:1px solid var(--line);}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.brand .mark{width:26px;height:26px;border-radius:50%;background:conic-gradient(from 0deg,var(--gold),transparent 65%);position:relative;flex:none;}
+.brand .mark::after{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--bg);}
+.baseline{font-size:10px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-bottom:10px;}
+.searchbar{display:flex;gap:8px;margin-bottom:10px;}
+.searchbar input{flex:1;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-size:14px;}
+.filters{display:flex;gap:8px;overflow-x:auto;margin-bottom:10px;scrollbar-width:none;}
+.filters::-webkit-scrollbar{display:none;}
+.filters select{flex:none;padding:7px 8px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-size:12px;}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:none;padding:6px 12px;border-radius:999px;font-size:12.5px;color:var(--muted);border:1px solid var(--line);cursor:pointer;white-space:nowrap;}
+.tab.active{background:var(--panel2);color:var(--text);border-color:#3a4353;}
+.tab .count{font-family:'IBM Plex Mono',monospace;font-size:10.5px;margin-left:4px;color:var(--muted);}
+main{padding:14px 16px;max-width:660px;margin:0 auto;}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;}
+.card-top{display:flex;justify-content:space-between;gap:10px;}
+.title{font-family:'Fraunces',serif;font-size:16px;font-weight:600;line-height:1.25;}
+.locality{color:var(--muted);font-size:12.5px;margin-top:2px;}
+.price{font-family:'IBM Plex Mono',monospace;font-size:17px;font-weight:600;white-space:nowrap;}
+.fit-badge{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--panel2);border:1px solid var(--line);font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;flex:none;}
+.fit-badge.hot{background:#241d10;border-color:#4a3a1e;color:var(--gold);}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;}
+.tag{font-size:10.5px;padding:3px 8px;border-radius:6px;background:var(--panel2);color:var(--muted);border:1px solid var(--line);}
+.tag.opp{color:var(--gold);border-color:#4a3a1e;background:#241d10;}
+.tag.drop{color:var(--teal);border-color:#1c3a32;background:#0f2620;}
+.tag.discarded{color:var(--clay);border-color:#3a231c;background:#231512;}
+.explain{font-size:12.5px;color:var(--gold);margin-top:8px;}
+.meta-row{display:flex;gap:14px;margin-top:9px;font-size:12.5px;color:var(--muted);}
+.sources-line{font-size:11.5px;color:var(--muted);margin-top:8px;}
+.sources-line a{color:var(--blue);}
+.actions{display:flex;gap:8px;margin-top:12px;}
+.btn{flex:1;padding:9px 8px;border-radius:9px;font-size:12.5px;font-weight:500;border:1px solid var(--line);background:var(--panel2);color:var(--text);cursor:pointer;}
+.btn.discard{color:var(--clay);}
+.btn.fav.on{background:#241d10;border-color:#4a3a1e;color:var(--gold);}
+.btn.restore{color:var(--teal);border-color:#1c3a32;}
+.btn.ghost{background:transparent;}
+.rescue-banner{margin-top:10px;padding:9px 10px;border-radius:9px;background:#0f2620;border:1px solid #1c3a32;font-size:12px;color:var(--teal);}
+.discard-banner{margin-top:10px;padding:9px 10px;border-radius:9px;background:#1a1512;border:1px solid #2c211c;font-size:12px;color:#c99a86;}
+.empty{padding:50px 20px;text-align:center;color:var(--muted);}
+.empty h3{color:var(--text);font-size:15px;margin-bottom:6px;}
+.sources-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+.sources-table td,.sources-table th{padding:9px 6px;border-bottom:1px solid var(--line);text-align:left;}
+.pref-block{margin-bottom:16px;}
+.pref-block label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:6px;}
+.chip-row{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{padding:6px 11px;border-radius:999px;border:1px solid var(--line);font-size:12px;background:var(--panel2);color:var(--muted);cursor:pointer;}
+.chip.on{background:#1d2938;color:var(--blue);border-color:#2c4260;}
+.slider-row{display:flex;align-items:center;gap:10px;}
+.slider-row input[type=range]{flex:1;accent-color:var(--gold);}
+input[type=number],input[type=text],input[type=url]{width:100%;padding:9px 10px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-size:13.5px;}
+select.full{width:100%;padding:9px 10px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-size:13.5px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.form-grid .full{grid-column:1/-1;}
+.form-grid label{font-size:11.5px;color:var(--muted);display:block;margin-bottom:5px;}
+.fab{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));width:54px;height:54px;border-radius:50%;background:var(--gold);color:#1a1408;border:none;font-size:26px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(214,162,78,0.35);cursor:pointer;z-index:30;}
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:40;display:flex;align-items:flex-end;}
+.modal{background:var(--panel);border-radius:18px 18px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom));width:100%;max-height:88vh;overflow-y:auto;}
+.modal h2{font-size:17px;margin-bottom:14px;}
+.modal-close{float:right;background:var(--panel2);border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer;}
+.pipeline-note{font-size:11px;color:var(--muted);border-top:1px solid var(--line);margin-top:24px;padding-top:14px;line-height:1.6;}
+.data-actions{display:flex;gap:8px;margin-top:14px;}
+a.filelink{color:var(--blue);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand"><div class="mark"></div><h1>JM Immo</h1></div>
+  <div class="baseline">100% local · aucune donnée envoyée à un serveur</div>
+  <div class="searchbar"><input id="q" placeholder="Rechercher (village, type, mot-clé)…"></div>
+  <div class="filters">
+    <select id="fRegion"><option value="">Toutes régions</option></select>
+    <select id="fType"><option value="">Tous types</option></select>
+    <select id="fBudget">
+      <option value="500000">≤ CHF 500'000</option>
+      <option value="400000">≤ CHF 400'000</option>
+      <option value="300000">≤ CHF 300'000</option>
+    </select>
+    <select id="fSort">
+      <option value="jmfit">Tri : JM Fit</option>
+      <option value="price_asc">Tri : prix croissant</option>
+      <option value="recent">Tri : plus récents</option>
+    </select>
+  </div>
+  <div class="tabs" id="tabs"></div>
+</header>
+
+<main id="main"></main>
+
+<button class="fab" id="fabAdd" title="Ajouter une annonce">＋</button>
+<div id="modalRoot"></div>
+
+<script>
+/* =========================================================================
+   JM IMMO — 100% local (art. 24 : aucune donnée ne dépend d'un serveur)
+   Logique métier testée en isolation avant intégration ici.
+   ========================================================================= */
+
+// =========================================================================
+// RÈGLES MÉTIER (art. 3-4, 10, 16-20) — identiques à la version testée,
+// aucune dépendance réseau ni base de données.
+// =========================================================================
+const REGION_MAP = {
+  "lugano":"Tessin","bellinzona":"Tessin","locarno":"Tessin","mendrisio":"Tessin","chiasso":"Tessin",
+  "ascona":"Tessin","biasca":"Tessin","gordola":"Tessin","gordevio":"Tessin","riva san vitale":"Tessin",
+  "massagno":"Tessin","paradiso":"Tessin","lamone":"Tessin","agno":"Tessin","caslano":"Tessin",
+  "minusio":"Tessin","muralto":"Tessin","losone":"Tessin","tenero":"Tessin","giubiasco":"Tessin",
+  "saignelégier":"Jura – Franches-Montagnes","saignelegier":"Jura – Franches-Montagnes",
+  "le noirmont":"Jura – Franches-Montagnes","les bois":"Jura – Franches-Montagnes",
+  "muriaux":"Jura – Franches-Montagnes","montfaucon":"Jura – Franches-Montagnes",
+  "les breuleux":"Jura – Franches-Montagnes","le bémont":"Jura – Franches-Montagnes",
+  "les genevez":"Jura – Franches-Montagnes","lajoux":"Jura – Franches-Montagnes",
+  "saint-ursanne":"Jura – Clos du Doubs","st-ursanne":"Jura – Clos du Doubs",
+  "ocourt":"Jura – Clos du Doubs","épauvillers":"Jura – Clos du Doubs","epauvillers":"Jura – Clos du Doubs",
+  "montenol":"Jura – Clos du Doubs","montmelon":"Jura – Clos du Doubs","seleute":"Jura – Clos du Doubs",
+  "soubey":"Jura – Clos du Doubs",
+  "zweisimmen":"Zweisimmen","st. stephan":"Zweisimmen","saint-etienne":"Zweisimmen",
+  "grubenwald":"Zweisimmen","reidenbach":"Zweisimmen",
+  "gruyères":"Gruyère","gruyeres":"Gruyère","bulle":"Gruyère","charmey":"Gruyère","broc":"Gruyère",
+  "riaz":"Gruyère","vuadens":"Gruyère","jaun":"Gruyère","crésuz":"Gruyère","cresuz":"Gruyère",
+  "la roche":"Gruyère","porsel":"Gruyère","montbovon":"Gruyère","im fang":"Gruyère","enney":"Gruyère",
+  "saint-martin":"Gruyère","botterens":"Gruyère","corbières":"Gruyère","echarlens":"Gruyère",
+  "grandvillard":"Gruyère","pont-la-ville":"Gruyère","sorens":"Gruyère","haut-intyamon":"Gruyère",
+  "bas-intyamon":"Gruyère",
+  "neuchâtel":"Neuchâtel","neuchatel":"Neuchâtel","la chaux-de-fonds":"Neuchâtel","le locle":"Neuchâtel",
+  "peseux":"Neuchâtel","corcelles":"Neuchâtel","cormondrèche":"Neuchâtel","boudry":"Neuchâtel",
+  "colombier":"Neuchâtel","hauterive":"Neuchâtel","saint-blaise":"Neuchâtel","cortaillod":"Neuchâtel",
+  "auvernier":"Neuchâtel","marin":"Neuchâtel","le landeron":"Neuchâtel","val-de-ruz":"Neuchâtel",
+};
+const JURA_HORS_PERIMETRE = new Set([
+  "delémont","delemont","porrentruy","courgenay","bassecourt","develier","soyhières","soyhieres",
+  "vicques","courroux","courtételle","boncourt","ajoie",
+]);
+const ALLOWED_REGIONS = ["Tessin","Jura – Franches-Montagnes","Jura – Clos du Doubs","Zweisimmen","Gruyère","Neuchâtel"];
+const TYPES = ["Appartement","Maison","Chalet","Rustico","Villa","Maison historique","PPE"];
+const CONF_ORDER = { "Vérifiée": 3, "Probable": 2, "À contrôler": 1 };
+const CACHET_KEYWORDS = ["rénové","historique","authentique","cachet","poutres","cheminée","charme","chalet","ferme","voûte","madrier"];
+const TOURISTIC_REGIONS = new Set(["Tessin","Gruyère","Zweisimmen"]);
+
+function computeRegion(locality) {
+  const key = (locality || "").trim().toLowerCase().replace(/\s*\([^)]*\)\s*$/, "");
+  if (JURA_HORS_PERIMETRE.has(key)) return null;
+  return REGION_MAP[key] || null;
+}
+function isPlausiblePrice(p) {
+  if (typeof p !== "number" || isNaN(p) || !isFinite(p)) return false;
+  if (p < 50000 || p > 5000000) return false;
+  if (/^0[1-9]/.test(String(Math.round(p)))) return false;
+  if (String(Math.round(p)).length === 4 && p < 9999) return false;
+  return true;
+}
+function bienKey(locality, type, rooms, surface) {
+  const loc = (locality || "").trim().toLowerCase();
+  const roomsR = Math.round((rooms || 0) * 2) / 2;
+  const surfR = Math.round((surface || 0) / 5) * 5;
+  return loc + "|" + type + "|" + roomsR + "|" + surfR;
+}
+function estimateDealScore(price, regionPrices) {
+  if (!regionPrices || regionPrices.length === 0) return 55;
+  const sorted = [...regionPrices].sort((a, b) => a - b);
+  const median = sorted[Math.floor(sorted.length / 2)];
+  if (median <= 0) return 55;
+  const score = 100 - (price / median - 1) * 120;
+  return Math.max(0, Math.min(100, Math.round(score)));
+}
+function estimateCachetScore(title, cachetFlag) {
+  const base = cachetFlag ? 88 : 15;
+  const hits = CACHET_KEYWORDS.filter(k => (title || "").toLowerCase().includes(k)).length;
+  return Math.max(0, Math.min(100, base + hits * 4));
+}
+function estimateRetraiteScore(rooms, surface, region) {
+  let score = 50;
+  if (rooms && rooms <= 4) score += 10;
+  if (surface && surface <= 140) score += 10;
+  if (["Jura – Clos du Doubs", "Jura – Franches-Montagnes", "Gruyère"].includes(region)) score += 8;
+  return Math.max(0, Math.min(100, score));
+}
+function estimateLocatifScore(region, rooms) {
+  let score = 35;
+  if (TOURISTIC_REGIONS.has(region)) score += 25;
+  if (rooms && rooms <= 3.5) score += 15;
+  return Math.max(0, Math.min(100, score));
+}
+function estimateRiskScore(confidence, historyLen) {
+  let score = { "Vérifiée": 80, "Probable": 62, "À contrôler": 45 }[confidence] || 50;
+  if (historyLen >= 3) score -= 8;
+  return Math.max(0, Math.min(100, score));
+}
+function jmFit(scores, weights) {
+  const wsum = Math.max(1, Object.values(weights).reduce((a, b) => a + b, 0));
+  const fit = (scores.deal*weights.deal + scores.retraite*weights.retraite + scores.locatif*weights.locatif
+             + scores.cachet*weights.cachet + scores.risk*weights.risk) / wsum;
+  return Math.max(0, Math.min(100, Math.round(fit)));
+}
+function explainFit(scores, weights) {
+  const labels = { deal:"prix intéressant", retraite:"potentiel retraite", locatif:"potentiel locatif", cachet:"cachet", risk:"faible risque" };
+  const hits = Object.keys(scores).filter(k => weights[k] > 0 && scores[k] >= 60).sort((a,b) => scores[b]-scores[a]).slice(0,3).map(k => labels[k]);
+  return hits.length ? hits.join(", ") : "profil équilibré";
+}
+
+// =========================================================================
+// PIPELINE LOCAL — mêmes étapes et le même ordre que la version testée
+// contre D1, mais sur des tableaux JS purs (état = objets simples,
+// persistés ensuite par l'appelant dans localStorage).
+// =========================================================================
+
+/**
+ * @param rawListings  liste brute (ajoutée à la main via le formulaire, ou
+ *                     issue du jeu de démo initial)
+ * @param discarded    { [bienId]: {price_at_exclusion, date_exclusion, title_at_exclusion, ...} }
+ * @param preferences  { budgetMax, regionsAllowed, typesAllowed, surfaceMin, roomsMin, cachetRequired, weights }
+ * @returns { biens: [...], discarded: {...} (mis à jour avec repêchages), rescues: [...] }
+ */
+function recompute(rawListings, discarded, preferences) {
+  discarded = { ...discarded }; // ne mute jamais l'objet reçu directement
+  const rescues = [];
+
+  // 2-4. validation + territoire (art. 2-4) — art. 3 : jamais de location, filtré à l'ajout (formulaire)
+  const valid = rawListings.filter(l => l.title && l.locality && isPlausiblePrice(l.price));
+  const withRegion = valid.map(l => ({ ...l, region: computeRegion(l.locality) })).filter(l => l.region);
+
+  // 8-9. identification + regroupement (dédoublonnage multi-sources)
+  const groups = {};
+  for (const l of withRegion) {
+    const key = bienKey(l.locality, l.type, l.rooms, l.surface);
+    (groups[key] = groups[key] || []).push(l);
+  }
+
+  const regionPrices = {};
+  for (const key in groups) {
+    const latest = groups[key][groups[key].length - 1];
+    (regionPrices[latest.region] = regionPrices[latest.region] || []).push(latest.price);
+  }
+
+  const biens = [];
+  for (const key in groups) {
+    const listings = [...groups[key]].sort((a, b) => (a.lastSeen < b.lastSeen ? -1 : 1));
+    const latest = listings[listings.length - 1];
+    const bestConf = listings.reduce((acc, l) => (CONF_ORDER[l.confidence] > CONF_ORDER[acc] ? l.confidence : acc), "À contrôler");
+    const firstSeen = listings.reduce((acc, l) => (l.firstSeen < acc ? l.firstSeen : acc), listings[0].firstSeen);
+    const cachet = listings.some(l => l.cachet);
+
+    // historique fusionné (toutes les sources du même bien)
+    const historyMap = new Map();
+    for (const l of listings) for (const h of (l.history || [])) historyMap.set(h.date + "|" + h.price, h);
+    const history = [...historyMap.values()].sort((a, b) => (a.date < b.date ? -1 : 1));
+
+    // 12-13. Écartés + exception baisse de prix (art. 12 — cœur métier)
+    const disc = discarded[key];
+    let discardedNow = false;
+    if (disc) {
+      if (latest.price < disc.price_at_exclusion) {
+        rescues.push({ bienId: key, oldPrice: disc.price_at_exclusion, newPrice: latest.price, date: new Date().toISOString() });
+        delete discarded[key];
+      } else {
+        discardedNow = true;
+      }
+    }
+
+    // 15. baisse de prix
+    let priceDrop = null;
+    if (history.length >= 2) {
+      const prev = history[history.length - 2].price, cur = history[history.length - 1].price;
+      if (cur < prev) priceDrop = { old: prev, current: cur, pct: Math.round((1 - cur / prev) * 1000) / 10 };
+    }
+
+    // 20. signaux d'enrichissement (heuristiques)
+    const scores = {
+      deal: estimateDealScore(latest.price, regionPrices[latest.region] || []),
+      retraite: estimateRetraiteScore(latest.rooms, latest.surface, latest.region),
+      locatif: estimateLocatifScore(latest.region, latest.rooms),
+      cachet: estimateCachetScore(latest.title, cachet),
+      risk: estimateRiskScore(bestConf, history.length),
+    };
+    const fit = discardedNow ? 0 : jmFit(scores, preferences.weights);
+    const explain = discardedNow ? "" : explainFit(scores, preferences.weights);
+
+    biens.push({
+      id: key, title: latest.title, locality: latest.locality, region: latest.region, type: latest.type,
+      rooms: latest.rooms, surface: latest.surface, price: latest.price, cachet, confidence: bestConf,
+      firstSeen, lastSeen: latest.lastSeen, history, priceDrop,
+      sources: listings.map(l => ({ name: l.source, url: l.url })),
+      jmFit: fit, isOpportunity: !discardedNow && fit >= 70, explain,
+      discarded: discardedNow, discardedInfo: discardedNow ? disc : null,
+    });
+  }
+
+  return { biens, discarded, rescues };
+}
+
+/**
+ * Recherche à facettes (texte libre + filtres) — exclut toujours les Écartés
+ * des résultats actifs (art. 12), quel que soit leur JM Fit.
+ */
+function search(biens, favoris, opts = {}) {
+  const prefs = opts.preferences;
+  const budgetMax = opts.budgetMax ?? prefs.budgetMax;
+  const roomsMin = opts.roomsMin ?? prefs.roomsMin ?? 0;
+  const surfaceMin = opts.surfaceMin ?? prefs.surfaceMin ?? 0;
+  const cachet = opts.cachet ?? prefs.cachetRequired;
+  const regions = opts.region ? [opts.region] : (prefs.regionsAllowed?.length ? prefs.regionsAllowed : null);
+
+  let rows = biens.filter(b => !b.discarded);
+  if (opts.q) {
+    const q = opts.q.toLowerCase();
+    rows = rows.filter(b => (b.title||"").toLowerCase().includes(q) || (b.locality||"").toLowerCase().includes(q) || (b.type||"").toLowerCase().includes(q));
+  }
+  rows = rows.filter(b => b.price <= budgetMax);
+  rows = rows.filter(b => (b.surface||0) >= surfaceMin);
+  rows = rows.filter(b => (b.rooms||0) >= roomsMin);
+  if (cachet) rows = rows.filter(b => b.cachet);
+  if (opts.type) rows = rows.filter(b => b.type === opts.type);
+  if (regions) rows = rows.filter(b => regions.includes(b.region));
+  if (opts.favorisOnly) rows = rows.filter(b => favoris.includes(b.id));
+  if (opts.opportunitiesOnly) rows = rows.filter(b => b.isOpportunity);
+
+  const sortFns = {
+    jmfit: (a,b) => b.jmFit - a.jmFit, price_asc: (a,b) => a.price - b.price,
+    price_desc: (a,b) => b.price - a.price, recent: (a,b) => (b.firstSeen||"").localeCompare(a.firstSeen||""),
+  };
+  rows = [...rows].sort(sortFns[opts.sort || "jmfit"]);
+  return rows.map(b => ({ ...b, isFavori: favoris.includes(b.id) }));
+}
+
+const STORAGE_KEYS = {
+  listings: 'jmimmo:listings', discarded: 'jmimmo:discarded', favoris: 'jmimmo:favoris',
+  preferences: 'jmimmo:preferences',
+};
+
+function loadJSON(key, fallback) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+  catch(e) { return fallback; }
+}
+function saveJSON(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); }
+  catch(e) { console.error('sauvegarde impossible', key, e); alert("Espace de stockage plein ou indisponible. Exporte tes données régulièrement (bouton dans Préférences)."); }
+}
+
+const DEFAULT_PREFS = {
+  budgetMax: 500000, typesAllowed: [], regionsAllowed: [...ALLOWED_REGIONS],
+  surfaceMin: 0, roomsMin: 0, cachetRequired: false,
+  weights: { deal:4, retraite:2, locatif:2, cachet:3, risk:3 },
+};
+
+const DEMO_LISTINGS = [
+  {source:"Comparis", url:"https://comparis.ch/immobilier/482910", title:"Appartement 3.5p rénové, vue lac", locality:"Lugano", type:"Appartement", rooms:3.5, surface:95, price:478000, confidence:"Vérifiée", firstSeen:"2026-06-02", lastSeen:"2026-08-25", history:[{date:"2026-06-02",price:478000}]},
+  {source:"Agence des Franches-Montagnes", url:"https://agence-fm.ch/ferme-12", title:"Ferme jurassienne rénovée avec cachet", locality:"Saignelégier", type:"Maison", rooms:5.5, surface:140, price:395000, confidence:"À contrôler", cachet:true, firstSeen:"2026-05-10", lastSeen:"2026-08-25", history:[{date:"2026-05-10",price:415000},{date:"2026-08-19",price:395000}]},
+  {source:"Bussard Immobilier", url:"https://bussard.ch/fr/biens/x", title:"Chalet neuf en madrier avec vue dégagée", locality:"Crésuz", type:"Chalet", rooms:5.5, surface:132, price:459000, confidence:"Probable", cachet:true, firstSeen:"2026-06-01", lastSeen:"2026-08-25", history:[{date:"2026-06-01",price:479000},{date:"2026-08-22",price:459000}]},
+  {source:"Fidimmobil", url:"https://fidimmobil.ch/bien/x", title:"Appartement 3 pièces, quartier calme", locality:"La Chaux-de-Fonds", type:"Appartement", rooms:3, surface:72, price:289000, confidence:"Vérifiée", firstSeen:"2026-05-02", lastSeen:"2026-08-25", history:[{date:"2026-05-02",price:310000},{date:"2026-07-10",price:299000},{date:"2026-08-21",price:289000}]},
+];
+
+let STATE = { listings: [], discarded: {}, favoris: [], preferences: DEFAULT_PREFS, activeTab: 'tous', computed: null };
+
+function runPipeline() {
+  const { biens, discarded, rescues } = recompute(STATE.listings, STATE.discarded, STATE.preferences);
+  if (Object.keys(discarded).length !== Object.keys(STATE.discarded).length) {
+    STATE.discarded = discarded;
+    saveJSON(STORAGE_KEYS.discarded, STATE.discarded);
+  }
+  const tous = search(biens, STATE.favoris, { preferences: STATE.preferences, sort: document.getElementById('fSort')?.value, budgetMax: parseInt(document.getElementById('fBudget')?.value || STATE.preferences.budgetMax), q: document.getElementById('q')?.value, region: document.getElementById('fRegion')?.value, type: document.getElementById('fType')?.value });
+  const opportunites = tous.filter(b => b.isOpportunity);
+  const favorisList = biens.filter(b => STATE.favoris.includes(b.id) && !b.discarded).map(b => ({...b, isFavori:true}));
+  const baisses = biens.filter(b => b.priceDrop);
+  const ecartesList = biens.filter(b => b.discarded);
+  STATE.computed = { tous, opportunites, favoris: favorisList, baisses, ecartes: ecartesList, rescues };
+}
+
+function fmtCHF(n){ return "CHF " + Math.round(n).toLocaleString('fr-CH'); }
+
+const TABS = [
+  {id:'tous', label:'Tous'}, {id:'opportunites', label:'Opportunités'}, {id:'favoris', label:'Favoris'},
+  {id:'baisses', label:'Baisses'}, {id:'ecartes', label:'Écartés'}, {id:'sources', label:'Sources'},
+  {id:'preferences', label:'Préférences'}, {id:'donnees', label:'Données'},
+];
+
+function bienCard(b, ctx){
+  const confClass = b.confidence==="Vérifiée"?"verified":b.confidence==="Probable"?"probable":"check";
+  let tagsHtml = '<span class="tag">'+b.confidence+'</span><span class="tag">'+b.type+'</span><span class="tag">'+b.region+'</span>';
+  if (b.cachet) tagsHtml += '<span class="tag">cachet</span>';
+  if (b.isOpportunity && !b.discarded) tagsHtml += '<span class="tag opp">Opportunité</span>';
+  if (b.priceDrop) tagsHtml += '<span class="tag drop">−'+b.priceDrop.pct+'%</span>';
+  if (b.discarded) tagsHtml += '<span class="tag discarded">Écarté</span>';
+
+  let scoreHtml = (typeof b.jmFit === 'number' && !b.discarded) ? '<div class="fit-badge '+(b.isOpportunity?'hot':'')+'"><span>'+b.jmFit+'</span></div>' : '';
+  let explainHtml = (b.explain && !b.discarded) ? '<div class="explain">JM Fit '+b.jmFit+'/100 — '+b.explain+'</div>' : '';
+
+  let rescueBanner = '';
+  if (ctx==='baisses') {
+    const rescue = (STATE.computed.rescues||[]).find(r => r.bienId === b.id);
+    if (rescue) rescueBanner = '<div class="rescue-banner">Repêché — ancien '+fmtCHF(rescue.oldPrice)+' → nouveau '+fmtCHF(rescue.newPrice)+'</div>';
+  }
+  let discardBanner = '';
+  if (b.discarded) {
+    discardBanner = '<div class="discard-banner">Écarté le '+new Date(b.discardedInfo.date_exclusion).toLocaleDateString('fr-CH')+' à '+fmtCHF(b.discardedInfo.price_at_exclusion)+'. Prix actuel : '+fmtCHF(b.price)+'. Repêché automatiquement seulement si le prix baisse sous '+fmtCHF(b.discardedInfo.price_at_exclusion)+'.</div>';
+  }
+
+  const osmUrl = "https://www.openstreetmap.org/search?query=" + encodeURIComponent(b.locality + ", Switzerland");
+  const sourcesLine = '<div class="sources-line">'+b.sources.length+' source(s) : '+b.sources.map(s=>'<a href="'+s.url+'" target="_blank" rel="noopener">'+s.name+'</a>').join(' · ')+' · <a href="'+osmUrl+'" target="_blank" rel="noopener">Voir le village ↗</a></div>';
+
+  let actions = '<div class="actions">';
+  if (!b.discarded) {
+    actions += '<button class="btn discard" data-action="discard" data-id="'+b.id+'">Écarter</button>';
+    actions += '<button class="btn fav '+(b.isFavori?'on':'')+'" data-action="fav" data-id="'+b.id+'">'+(b.isFavori?'★ Favori':'☆ Favori')+'</button>';
+  } else {
+    actions += '<button class="btn restore" data-action="restore" data-id="'+b.id+'">Restaurer</button>';
+  }
+  actions += '</div>';
+
+  return '<div class="card"><div class="card-top"><div><div class="title">'+b.title+'</div><div class="locality">'+b.locality+' · '+b.region+'</div></div>'+scoreHtml+'</div>'
+    + '<div class="price" style="margin-top:8px">'+fmtCHF(b.price)+'</div>'
+    + '<div class="meta-row"><span>'+(b.rooms||'?')+' pièces</span><span>'+(b.surface||'?')+' m²</span><span>vu depuis '+b.firstSeen+'</span></div>'
+    + '<div class="tags">'+tagsHtml+'</div>' + explainHtml + rescueBanner + discardBanner + sourcesLine + actions + '</div>';
+}
+
+function emptyState(tab){
+  const msgs = {
+    tous:["Aucun bien ne correspond à tes critères","Vérifie ton budget et tes régions, ou ajoute une annonce (bouton +)."],
+    opportunites:["Aucune opportunité identifiée","Le JM Fit combine prix, cachet, potentiel locatif et retraite."],
+    favoris:["Aucun favori","Ajoute un bien depuis Tous ou Opportunités."],
+    baisses:["Aucune baisse détectée",""],
+    ecartes:["Aucun bien écarté","Les biens écartés restent consultables ici même après disparition des flux actifs."],
+  };
+  const [t,p] = msgs[tab] || ["Rien à afficher",""];
+  return '<div class="empty"><h3>'+t+'</h3><p>'+p+'</p></div>';
+}
+
+const REAL_SOURCES = [
+  { region: "Tessin", name: "Comparis — maisons Tessin", url: "https://fr.comparis.ch/immobilien/marktplatz/kanton/tessin/haus/kaufen" },
+  { region: "Tessin", name: "Comparis — appartements Tessin", url: "https://fr.comparis.ch/immobilien/marktplatz/kanton/tessin/wohnung/kaufen" },
+  { region: "Tessin", name: "Suisse Immobilien Group (agence)", url: "https://suisseimmogroup.ch" },
+  { region: "Gruyère", name: "Comparis — maisons Fribourg", url: "https://fr.comparis.ch/immobilien/marktplatz/kanton/freiburg/haus/kaufen" },
+  { region: "Gruyère", name: "Comparis — appartements Fribourg", url: "https://fr.comparis.ch/immobilien/marktplatz/kanton/freiburg/wohnung/kaufen" },
+  { region: "Gruyère", name: "Bussard Immobilier (agence, Bulle & Charmey)", url: "https://www.bussard.ch/fr/acheter" },
+  { region: "Gruyère", name: "Gruyère Immo (agence)", url: "https://www.gruyere-immo.ch/acheter" },
+  { region: "Jura – Franches-Montagnes", name: "Comparis — maisons Jura", url: "https://fr.comparis.ch/immobilien/marktplatz/kanton/jura/haus/kaufen" },
+  { region: "Jura – Franches-Montagnes", name: "Comparis — appartements Jura", url: "https://fr.comparis.ch/immobilien/marktplatz/kanton/jura/wohnung/kaufen" },
+  { region: "Jura – Clos du Doubs", name: "Comparis — maisons Jura", url: "https://fr.comparis.ch/immobilien/marktplatz/kanton/jura/haus/kaufen" },
+  { region: "Zweisimmen", name: "Comparis — maisons Berne", url: "https://fr.comparis.ch/immobilien/marktplatz/kanton/bern/haus/kaufen" },
+  { region: "Zweisimmen", name: "Comparis — appartements Berne", url: "https://fr.comparis.ch/immobilien/marktplatz/kanton/bern/wohnung/kaufen" },
+  { region: "Neuchâtel", name: "Comparis — maisons Neuchâtel", url: "https://fr.comparis.ch/immobilien/marktplatz/kanton/neuenburg/haus/kaufen" },
+  { region: "Neuchâtel", name: "Comparis — appartements Neuchâtel", url: "https://fr.comparis.ch/immobilien/marktplatz/kanton/neuenburg/wohnung/kaufen" },
+  { region: "Neuchâtel", name: "Fidimmobil (agence)", url: "https://www.fidimmobil.ch" },
+];
+
+function renderSourcesRealLinks(){
+  const byRegion = {};
+  REAL_SOURCES.forEach(s => { (byRegion[s.region] = byRegion[s.region] || []).push(s); });
+  return ALLOWED_REGIONS.map(region => {
+    const items = byRegion[region] || [];
+    if (!items.length) return '';
+    const links = items.map(s => '<div style="margin-bottom:8px"><a class="filelink" href="'+s.url+'" target="_blank" rel="noopener">'+s.name+' ↗</a></div>').join('');
+    return '<div class="pref-block"><label>'+region+'</label>'+links+'</div>';
+  }).join('');
+}
+
+function renderSources(){
+  const bySource = {};
+  STATE.listings.forEach(l => { bySource[l.source] = (bySource[l.source]||0) + 1; });
+  const rows = Object.keys(bySource).sort().map(name =>
+    '<tr><td>'+name+'</td><td class="mono">'+bySource[name]+'</td></tr>'
+  ).join('');
+  return '<div class="card"><label style="font-size:12.5px;color:var(--muted);display:block;margin-bottom:10px">Aller chercher une annonce, par région</label>'
+    + renderSourcesRealLinks() + '</div>'
+    + '<div class="card"><table class="sources-table"><thead><tr><th>Source (renseignée à l\'ajout)</th><th>Annonces</th></tr></thead><tbody>'
+    + (rows || '<tr><td colspan="2">Aucune annonce ajoutée pour l\'instant</td></tr>')
+    + '</tbody></table></div>'
+    + '<p class="pipeline-note">Ouvre un lien ci-dessus dans Safari, trouve une annonce qui t\'intéresse, copie son URL exacte (celle de la fiche précise, pas de la liste), puis reviens ici et ajoute-la via le bouton ＋. Ce sont des liens de recherche vérifiés (Comparis par canton, agences locales) — pas une collecte automatique.</p>';
+}
+
+function renderPrefs(){
+  const p = STATE.preferences;
+  const regionChips = ALLOWED_REGIONS.map(r => '<span class="chip '+(p.regionsAllowed.includes(r)?'on':'')+'" data-region="'+r+'">'+r+'</span>').join('');
+  const typeChips = TYPES.map(t => '<span class="chip '+(p.typesAllowed.includes(t)?'on':'')+'" data-type="'+t+'">'+t+'</span>').join('');
+  const weightRow = (key,label) => '<div class="pref-block"><label>'+label+' — <span class="mono">'+p.weights[key]+'/5</span></label>'
+    + '<div class="slider-row"><input type="range" min="0" max="5" step="1" value="'+p.weights[key]+'" data-weight="'+key+'"></div></div>';
+  return '<div class="card"><div class="pref-block"><label>Budget</label><select class="full" id="budgetSelect">'
+    + '<option value="300000"'+(p.budgetMax===300000?' selected':'')+'>CHF 300\'000</option>'
+    + '<option value="400000"'+(p.budgetMax===400000?' selected':'')+'>CHF 400\'000</option>'
+    + '<option value="500000"'+(p.budgetMax===500000?' selected':'')+'>CHF 500\'000</option></select></div></div>'
+    + '<div class="card"><div class="pref-block"><label>Régions autorisées</label><div class="chip-row" id="regionChips">'+regionChips+'</div></div>'
+    + '<div class="pref-block"><label>Types acceptés (vide = tous)</label><div class="chip-row" id="typeChips">'+typeChips+'</div></div>'
+    + '<div class="pref-block"><label>Surface minimale (m²)</label><input type="number" id="surfaceMin" value="'+p.surfaceMin+'" min="0"></div>'
+    + '<div class="pref-block"><label>Pièces minimum</label><input type="number" id="roomsMin" value="'+p.roomsMin+'" min="0" step="0.5"></div>'
+    + '<div class="pref-block"><label><input type="checkbox" id="cachetRequired" '+(p.cachetRequired?'checked':'')+'> Cachet indispensable</label></div></div>'
+    + '<div class="card">'
+    + weightRow('deal',"Qualité de l'affaire") + weightRow('retraite','Intérêt retraite') + weightRow('locatif','Potentiel locatif')
+    + weightRow('cachet','Cachet') + weightRow('risk','Faible risque') + '</div>'
+    + '<p class="pipeline-note">Toutes tes données (annonces, Écartés, Favoris, préférences) sont stockées uniquement dans ce navigateur, sur cet appareil. Pense à les exporter régulièrement depuis l\'onglet Données.</p>';
+}
+
+function renderDonnees(){
+  return '<div class="card">'
+    + '<div class="pref-block"><label>Sauvegarder tes données</label>'
+    + '<p style="font-size:12.5px;color:var(--muted);margin:0 0 10px">Télécharge un fichier que tu peux garder dans l\'app Fichiers, partager, ou recharger plus tard (même sur un autre appareil).</p>'
+    + '<button class="btn" id="btnExport" style="width:100%">⬇ Exporter vers Fichiers</button></div>'
+    + '<div class="pref-block"><label>Recharger une sauvegarde</label>'
+    + '<input type="file" id="fileImport" accept="application/json" style="width:100%"></div>'
+    + '</div>'
+    + '<div class="card"><div class="pref-block"><label>Tout effacer</label>'
+    + '<button class="btn discard" id="btnReset" style="width:100%">Réinitialiser (efface tout sur cet appareil)</button></div></div>'
+    + '<p class="pipeline-note">'+STATE.listings.length+' annonce(s) enregistrée(s), '+Object.keys(STATE.discarded).length+' écartée(s), '+STATE.favoris.length+' favori(s).</p>';
+}
+
+function render(){
+  const counts = {
+    tous: STATE.computed.tous.length, opportunites: STATE.computed.opportunites.length,
+    favoris: STATE.computed.favoris.length, baisses: STATE.computed.baisses.length,
+    ecartes: STATE.computed.ecartes.length, sources: null, preferences: null, donnees: null,
+  };
+  document.getElementById('tabs').innerHTML = TABS.map(t =>
+    '<div class="tab '+(STATE.activeTab===t.id?'active':'')+'" data-tab="'+t.id+'">'+t.label+(counts[t.id]!=null?'<span class="count">'+counts[t.id]+'</span>':'')+'</div>'
+  ).join('');
+
+  let html = '';
+  switch(STATE.activeTab){
+    case 'tous': html = STATE.computed.tous.length ? STATE.computed.tous.map(b=>bienCard(b,'tous')).join('') : emptyState('tous'); break;
+    case 'opportunites': html = STATE.computed.opportunites.length ? STATE.computed.opportunites.map(b=>bienCard(b,'opportunites')).join('') : emptyState('opportunites'); break;
+    case 'favoris': html = STATE.computed.favoris.length ? STATE.computed.favoris.map(b=>bienCard(b,'favoris')).join('') : emptyState('favoris'); break;
+    case 'baisses': html = STATE.computed.baisses.length ? STATE.computed.baisses.map(b=>bienCard(b,'baisses')).join('') : emptyState('baisses'); break;
+    case 'ecartes': html = STATE.computed.ecartes.length ? STATE.computed.ecartes.map(b=>bienCard(b,'ecartes')).join('') : emptyState('ecartes'); break;
+    case 'sources': html = renderSources(); break;
+    case 'preferences': html = renderPrefs(); break;
+    case 'donnees': html = renderDonnees(); break;
+  }
+  document.getElementById('main').innerHTML = html;
+  bindDynamicEvents();
+}
+
+function bindDynamicEvents(){
+  document.querySelectorAll('[data-action="discard"]').forEach(el => el.onclick = () => doDiscard(el.dataset.id));
+  document.querySelectorAll('[data-action="restore"]').forEach(el => el.onclick = () => doRestore(el.dataset.id));
+  document.querySelectorAll('[data-action="fav"]').forEach(el => el.onclick = () => toggleFavori(el.dataset.id));
+
+  const budgetSelect = document.getElementById('budgetSelect');
+  if (budgetSelect) budgetSelect.onchange = e => { STATE.preferences.budgetMax = parseInt(e.target.value); savePrefs(); };
+  document.querySelectorAll('#regionChips .chip').forEach(el => el.onclick = () => {
+    const r = el.dataset.region, p = STATE.preferences;
+    p.regionsAllowed = p.regionsAllowed.includes(r) ? p.regionsAllowed.filter(x=>x!==r) : [...p.regionsAllowed, r];
+    savePrefs();
+  });
+  document.querySelectorAll('#typeChips .chip').forEach(el => el.onclick = () => {
+    const t = el.dataset.type, p = STATE.preferences;
+    p.typesAllowed = p.typesAllowed.includes(t) ? p.typesAllowed.filter(x=>x!==t) : [...p.typesAllowed, t];
+    savePrefs();
+  });
+  const surfaceMin = document.getElementById('surfaceMin');
+  if (surfaceMin) surfaceMin.onchange = e => { STATE.preferences.surfaceMin = parseFloat(e.target.value)||0; savePrefs(); };
+  const roomsMin = document.getElementById('roomsMin');
+  if (roomsMin) roomsMin.onchange = e => { STATE.preferences.roomsMin = parseFloat(e.target.value)||0; savePrefs(); };
+  const cachetRequired = document.getElementById('cachetRequired');
+  if (cachetRequired) cachetRequired.onchange = e => { STATE.preferences.cachetRequired = e.target.checked; savePrefs(); };
+  document.querySelectorAll('[data-weight]').forEach(el => el.oninput = e => {
+    STATE.preferences.weights[el.dataset.weight] = parseInt(e.target.value); savePrefs();
+  });
+
+  const btnExport = document.getElementById('btnExport');
+  if (btnExport) btnExport.onclick = exportData;
+  const fileImport = document.getElementById('fileImport');
+  if (fileImport) fileImport.onchange = importData;
+  const btnReset = document.getElementById('btnReset');
+  if (btnReset) btnReset.onclick = resetData;
+}
+
+function doDiscard(id){
+  const bien = STATE.computed.tous.find(b=>b.id===id) || [...STATE.computed.favoris,...STATE.computed.opportunites,...STATE.computed.baisses].find(b=>b.id===id);
+  if (!bien) return;
+  STATE.discarded[id] = { price_at_exclusion: bien.price, date_exclusion: new Date().toISOString(), title_at_exclusion: bien.title, locality: bien.locality, region: bien.region, type: bien.type, rooms: bien.rooms, surface: bien.surface };
+  STATE.favoris = STATE.favoris.filter(fid => fid !== id);
+  saveJSON(STORAGE_KEYS.discarded, STATE.discarded);
+  saveJSON(STORAGE_KEYS.favoris, STATE.favoris);
+  runPipeline(); render();
+}
+function doRestore(id){
+  delete STATE.discarded[id];
+  saveJSON(STORAGE_KEYS.discarded, STATE.discarded);
+  runPipeline(); render();
+}
+function toggleFavori(id){
+  if (STATE.discarded[id]) return;
+  STATE.favoris = STATE.favoris.includes(id) ? STATE.favoris.filter(x=>x!==id) : [...STATE.favoris, id];
+  saveJSON(STORAGE_KEYS.favoris, STATE.favoris);
+  runPipeline(); render();
+}
+function savePrefs(){ saveJSON(STORAGE_KEYS.preferences, STATE.preferences); runPipeline(); render(); }
+
+function exportData(){
+  const payload = { listings: STATE.listings, discarded: STATE.discarded, favoris: STATE.favoris, preferences: STATE.preferences, exportedAt: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'jm-immo-sauvegarde-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function importData(e){
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      if (!confirm("Remplacer toutes tes données actuelles par celles de ce fichier ?")) return;
+      STATE.listings = data.listings || [];
+      STATE.discarded = data.discarded || {};
+      STATE.favoris = data.favoris || [];
+      STATE.preferences = data.preferences || DEFAULT_PREFS;
+      saveJSON(STORAGE_KEYS.listings, STATE.listings);
+      saveJSON(STORAGE_KEYS.discarded, STATE.discarded);
+      saveJSON(STORAGE_KEYS.favoris, STATE.favoris);
+      saveJSON(STORAGE_KEYS.preferences, STATE.preferences);
+      runPipeline(); render();
+      alert("Import réussi.");
+    } catch(err) { alert("Fichier invalide : " + err.message); }
+  };
+  reader.readAsText(file);
+}
+function resetData(){
+  if (!confirm("Tout effacer sur cet appareil ? Cette action est irréversible (exporte avant si besoin).")) return;
+  STATE.listings = []; STATE.discarded = {}; STATE.favoris = []; STATE.preferences = { ...DEFAULT_PREFS };
+  Object.values(STORAGE_KEYS).forEach(k => localStorage.removeItem(k));
+  runPipeline(); render();
+}
+
+/* ---------- Modal "Ajouter une annonce" ---------- */
+function openAddModal(){
+  document.getElementById('modalRoot').innerHTML = '<div class="modal-backdrop" id="modalBackdrop"><div class="modal">'
+    + '<button class="modal-close" id="modalClose">Fermer</button><h2>Ajouter une annonce</h2>'
+    + '<div class="form-grid">'
+    + '<div class="full"><label>Titre</label><input type="text" id="f_title" placeholder="Maison 5 pièces avec jardin"></div>'
+    + '<div><label>Localité</label><input type="text" id="f_locality" placeholder="Bulle"></div>'
+    + '<div><label>Type</label><select class="full" id="f_type">'+TYPES.map(t=>'<option>'+t+'</option>').join('')+'</select></div>'
+    + '<div><label>Prix CHF</label><input type="number" id="f_price" placeholder="425000"></div>'
+    + '<div><label>Pièces</label><input type="number" id="f_rooms" step="0.5" placeholder="4.5"></div>'
+    + '<div><label>Surface m²</label><input type="number" id="f_surface" placeholder="110"></div>'
+    + '<div><label>Source</label><input type="text" id="f_source" placeholder="Comparis, Homegate, agence…"></div>'
+    + '<div class="full"><label>URL de l\'annonce</label><input type="url" id="f_url" placeholder="https://…"></div>'
+    + '<div class="full"><label><input type="checkbox" id="f_cachet"> Cachet</label></div>'
+    + '</div>'
+    + '<div class="actions" style="margin-top:16px"><button class="btn" id="f_cancel">Annuler</button><button class="btn fav on" id="f_submit">Ajouter</button></div>'
+    + '<p class="pipeline-note">L\'annonce passe par le même moteur que les autres (validation, territoire, dédoublonnage, JM Fit).</p>'
+    + '</div></div>';
+  document.getElementById('modalClose').onclick = closeModal;
+  document.getElementById('f_cancel').onclick = closeModal;
+  document.getElementById('modalBackdrop').onclick = e => { if (e.target.id==='modalBackdrop') closeModal(); };
+  document.getElementById('f_submit').onclick = submitNewListing;
+}
+function closeModal(){ document.getElementById('modalRoot').innerHTML = ''; }
+
+function submitNewListing(){
+  const title = document.getElementById('f_title').value.trim();
+  const locality = document.getElementById('f_locality').value.trim();
+  const type = document.getElementById('f_type').value;
+  const price = parseFloat(document.getElementById('f_price').value);
+  const rooms = parseFloat(document.getElementById('f_rooms').value) || 0;
+  const surface = parseFloat(document.getElementById('f_surface').value) || 0;
+  const source = document.getElementById('f_source').value.trim() || "Import manuel";
+  const url = document.getElementById('f_url').value.trim() || "#";
+  const cachet = document.getElementById('f_cachet').checked;
+  if (!title || !locality || !isPlausiblePrice(price)) {
+    alert("Merci de renseigner au minimum un titre, une localité et un prix plausible (CHF 50'000 – 5'000'000).");
+    return;
+  }
+  const region = computeRegion(locality);
+  if (!region) {
+    if (!confirm("Cette localité ne fait pas partie du périmètre couvert (art. 3) et sera donc ignorée par le moteur. Ajouter quand même à la liste brute ?")) return;
+  }
+  const today = new Date().toISOString().slice(0,10);
+  STATE.listings.push({ source, url, title, locality, type, rooms, surface, price, cachet, confidence:"À contrôler", firstSeen: today, lastSeen: today, history:[{date:today, price}] });
+  saveJSON(STORAGE_KEYS.listings, STATE.listings);
+  closeModal();
+  runPipeline(); render();
+}
+
+/* ---------- Boot ---------- */
+function boot(){
+  STATE.listings = loadJSON(STORAGE_KEYS.listings, null);
+  if (STATE.listings === null) { STATE.listings = DEMO_LISTINGS.map(l=>({...l})); saveJSON(STORAGE_KEYS.listings, STATE.listings); }
+  STATE.discarded = loadJSON(STORAGE_KEYS.discarded, {});
+  STATE.favoris = loadJSON(STORAGE_KEYS.favoris, []);
+  STATE.preferences = loadJSON(STORAGE_KEYS.preferences, JSON.parse(JSON.stringify(DEFAULT_PREFS)));
+
+  document.getElementById('fRegion').innerHTML += ALLOWED_REGIONS.map(r=>'<option value="'+r+'">'+r+'</option>').join('');
+  document.getElementById('fType').innerHTML += TYPES.map(t=>'<option value="'+t+'">'+t+'</option>').join('');
+  document.getElementById('fBudget').value = String(STATE.preferences.budgetMax);
+
+  runPipeline();
+  render();
+
+  document.getElementById('tabs').addEventListener('click', e => {
+    const t = e.target.closest('[data-tab]'); if (!t) return;
+    STATE.activeTab = t.dataset.tab; runPipeline(); render();
+  });
+  document.getElementById('fabAdd').onclick = openAddModal;
+  document.getElementById('q').addEventListener('input', () => { runPipeline(); render(); });
+  ['fRegion','fType','fBudget','fSort'].forEach(id => document.getElementById(id).addEventListener('change', () => { runPipeline(); render(); }));
+}
+boot();
+</script>
+</body>
+</html>
