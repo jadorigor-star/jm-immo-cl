@@ -130,190 +130,145 @@ function demoAdapter() {
     async fetchListings() { return DEMO_LISTINGS.map(l => Object.assign({}, l)); },
   };
 }
+function demoAdapter() {
+  return {
+    name: "Demo",
+    async check() { return "accessible"; },
+    async fetchListings() { return DEMO_LISTINGS.map(l => Object.assign({}, l)); },
+  };
+}
 
-function bussardAdapter() {
-  const searchUrl = "https://www.bussard.ch/fr/acheter";
-  const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15";
-  const HEADERS = { "User-Agent": UA, "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", "Accept-Language": "fr-CH,fr;q=0.9" };
-  async function getHtml(fetchFn) {
-    const res = await fetchFn(searchUrl, { headers: HEADERS });
+// =========================================================================
+// MOTEUR D'ADAPTATEUR GÉNÉRIQUE (art. 6-9) — piloté entièrement par la
+// configuration stockée dans sources.config_json. Ajouter ou corriger une
+// source ne nécessite plus de modifier ce fichier : une simple requête SQL
+// sur la table `sources` suffit (voir README / art. 2 — la baseline n'est
+// jamais dégradée par une évolution).
+// =========================================================================
+function decodeEntitiesGeneric(s) {
+  return (s || "")
+    .replace(/&#39;/g, "'").replace(/&#x27;/gi, "'")
+    .replace(/&rsquo;/g, "\u2019").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
+}
+function parsePriceGeneric(raw) {
+  if (!raw) return null;
+  const cleaned = raw.replace(/[.,]00$/, "").replace(/['’,.]/g, "");
+  const price = parseFloat(cleaned);
+  return isFinite(price) ? price : null;
+}
+function findKnownLocalityGeneric(text) {
+  const lower = (text || "").toLowerCase();
+  let best = null, bestIdx = Infinity;
+  for (const key in REGION_MAP) {
+    const idx = lower.indexOf(key);
+    if (idx !== -1 && idx < bestIdx) { bestIdx = idx; best = key; }
+  }
+  return best;
+}
+function extractFieldsGeneric(m, fields, config) {
+  const priceMin = config.price_min || 50000;
+  const out = { price: null, rooms: null, surface: null, locality: null, type: null, url: null };
+  if (fields.price != null && m[fields.price]) out.price = parsePriceGeneric(m[fields.price]);
+  if (fields.rooms != null && m[fields.rooms]) out.rooms = parseFloat(String(m[fields.rooms]).replace(",", "."));
+  if (fields.surface != null && m[fields.surface]) out.surface = parseFloat(m[fields.surface]);
+  if (fields.type != null && m[fields.type]) out.type = m[fields.type].trim();
+  if (fields.url != null && m[fields.url]) out.url = m[fields.url].trim();
+  if (fields.locality != null && m[fields.locality]) {
+    const raw = m[fields.locality];
+    out.locality = config.locality_lookup ? findKnownLocalityGeneric(raw) : raw.trim();
+  }
+  if (!out.price || out.price < priceMin) return null;
+  if (!out.locality) return null;
+  return out;
+}
+
+function genericAdapter(sourceRow) {
+  let config = {};
+  try { config = JSON.parse(sourceRow.config_json || "{}"); } catch (e) { config = {}; }
+  const headers = config.headers || {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15",
+    "Accept": "text/html,application/xhtml+xml", "Accept-Language": "fr-CH,fr;q=0.9",
+  };
+
+  async function fetchText(fetchFn, url) {
+    const res = await fetchFn(url, { headers });
     if (!res.ok) throw new Error("HTTP " + res.status);
-    return await res.text();
+    return decodeEntitiesGeneric(await res.text());
   }
-  function decodeEntities(s) {
-    return s.replace(/&#39;/g, "'").replace(/&#x27;/gi, "'").replace(/&rsquo;/g, "\u2019").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
-  }
-  function extract(rawHtml) {
-    const html = decodeEntities(rawHtml);
-    const out = [];
-    const ldRe = /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
-    let m;
-    while ((m = ldRe.exec(html)) !== null) {
-      try {
-        const data = JSON.parse(m[1].trim());
-        const items = Array.isArray(data) ? data : [data];
-        for (const obj of items) {
-          if (obj.price && obj.name) {
-            out.push({ external_id: obj.sku || obj.url || String(out.length), url: obj.url || searchUrl,
-              title: obj.name, locality: (obj.address && obj.address.addressLocality) || "",
-              type: obj.category || "Appartement", rooms: obj.numberOfRooms || null, surface: null,
-              price: parseFloat(obj.price), confidence: "Vérifiée" });
-          }
-        }
-      } catch (e) { /* JSON-LD invalide, ignoré */ }
-    }
-    if (out.length > 0) return out;
-    const blockRe = /(Appartement|Maison|Chalet|Villa|Terrain|Immeuble|Rustico|Business)[^\d]{0,40}?(?:([\d.]+)\s*pi[eè]ces?)?[^\d]{0,40}?(?:([\d.]+)\s*m[²2])?[^\d]{0,60}?CHF\s*([\d'’.]+)\.?-?/gi;
-    const localityRe = /<h[1-5][^>]*>([^<(\d]{2,40}?)(?:\s*\([^)]*\))?<\/h[1-5]>/gi;
-    const localities = [];
-    while ((m = localityRe.exec(html)) !== null) localities.push(m[1].trim());
-    let idx = 0;
-    while ((m = blockRe.exec(html)) !== null) {
-      const price = parseFloat(m[4].replace(/['’.]/g, ""));
-      if (!price || price < 50000) continue;
-      out.push({ external_id: "bussard-" + idx, url: searchUrl, title: m[1] + " — Bussard",
-        locality: localities[idx] || localities[localities.length-1] || "Bulle", type: m[1],
-        rooms: m[2] ? parseFloat(m[2]) : null, surface: m[3] ? parseFloat(m[3]) : null,
-        price, confidence: "Probable" });
-      idx++;
+  function extractSingle(html) {
+    const re = new RegExp(config.block_pattern, "gi");
+    const out = []; let m;
+    while ((m = re.exec(html)) !== null) {
+      const rec = extractFieldsGeneric(m, config.fields, config);
+      if (rec) out.push(rec);
     }
     return out;
   }
-  return {
-    name: "Bussard Immobilier",
-    async check(fetchFn) { await getHtml(fetchFn); return "accessible"; },
-    async fetchListings(fetchFn) { const html = await getHtml(fetchFn); return extract(html).map(l => Object.assign({}, l, { source: "Bussard Immobilier" })); },
-  };
-}
-
-function comparisAdapter() {
-  // L'endpoint JSON interne (immobilien/result/list) répond 403 en production
-  // (probablement filtré comme trafic non-navigateur). On scrape à la place
-  // les pages de recherche PUBLIQUES par canton, vérifiées accessibles et
-  // contenant de vraies annonces avec prix (testé le 26.08.2026).
-  const CANTONS = { "Tessin":"tessin", "Gruyère":"freiburg", "Zweisimmen":"bern",
-    "Neuchâtel":"neuenburg", "Jura – Franches-Montagnes":"jura", "Jura – Clos du Doubs":"jura" };
-  const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15";
-  const HEADERS = { "User-Agent": UA, "Accept": "text/html,application/xhtml+xml", "Accept-Language": "fr-CH,fr;q=0.9" };
-
-  function buildUrl(cantonSlug, kind) {
-    return "https://fr.comparis.ch/immobilien/marktplatz/kanton/" + cantonSlug + "/" + kind + "/kaufen";
-  }
-
-  function extract(html, fallbackRegion) {
-    const html2 = html.replace(/&#39;/g, "'").replace(/&rsquo;/g, "\u2019").replace(/&nbsp;/g, " ");
-    const out = [];
-    // Motif observé : lien vers une fiche /marktplatz/details/show/{id}, avec
-    // prix, type, pièces, localité à proximité dans le même bloc.
-    const blockRe = /CHF\s*([\d'’.,]+)[^\d<]{0,60}?(Maison individuelle|Villa|Appartement|Ferme|Chalet|Immeuble|Terrain)?[^\d<]{0,60}?(?:([\d.,]+)[\s-]*pi[eè]ces?)?[^\d<]{0,80}?(\d{4})\s+([A-Za-zÀ-ÿ\-\s()]{2,30})[\s\S]{0,200}?href="(https:\/\/fr\.comparis\.ch\/immobilien\/marktplatz\/details\/show\/\d+)"/gi;
-    let m;
-    while ((m = blockRe.exec(html2)) !== null) {
-      const priceClean = parseFloat(m[1].replace(/[.,]00$/, "").replace(/['’.,]/g, ""));
-      if (!priceClean || priceClean < 50000) continue;
-      out.push({
-        external_id: m[6].split("/").pop(), url: m[6],
-        title: (m[2] || "Bien") + " — " + m[5].trim(),
-        locality: m[5].trim(), type: m[2] || "Appartement",
-        rooms: m[3] ? parseFloat(m[3].replace(",", ".")) : null, surface: null,
-        price: priceClean, confidence: "Probable",
-      });
-    }
-    return out;
-  }
-
-  return {
-    name: "Comparis",
-    async check(fetchFn) {
-      const res = await fetchFn(buildUrl("tessin", "haus"), { headers: HEADERS });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      return "accessible";
-    },
-    async fetchListings(fetchFn) {
-      const out = [];
-      const doneCantons = new Set();
-      for (const region of Object.keys(CANTONS)) {
-        const slug = CANTONS[region];
-        if (doneCantons.has(slug)) continue; // évite de refaire 2x le même canton (Jura partagé)
-        doneCantons.add(slug);
-        for (const kind of ["haus", "wohnung"]) {
-          try {
-            const res = await fetchFn(buildUrl(slug, kind), { headers: HEADERS });
-            if (!res.ok) continue;
-            const html = await res.text();
-            out.push(...extract(html, region));
-          } catch (e) { /* dégrade ce canton/type uniquement, continue les autres */ }
-        }
-      }
-      return out;
-    },
-  };
-}
-
-function fidimmobilAdapter() {
-  // Fidimmobil (Neuchâtel / La Chaux-de-Fonds) — site WordPress rendu côté
-  // serveur, vérifié le 26.08.2026 : liste des biens sans prix, détail de
-  // chaque bien avec adresse/surface/prix structurés en clair.
-  const listUrl = "https://vente.fidimmobil.ch/";
-  const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15";
-  const HEADERS = { "User-Agent": UA, "Accept": "text/html", "Accept-Language": "fr-CH,fr;q=0.9" };
-
-  function extractListingLinks(html) {
-    // Ne récupère que les liens vers des fiches — le titre/type/prix seront
-    // lus directement sur chaque fiche (plus fiable que de parser la liste).
-    const hrefRe = /href="(https:\/\/vente\.fidimmobil\.ch\/vente\/[a-z0-9\-]+\/?)"/gi;
-    const seen = new Set(); const out = [];
-    let m;
-    while ((m = hrefRe.exec(html)) !== null) {
-      const url = m[1];
-      if (seen.has(url)) continue;
+  function extractLinks(html) {
+    const re = new RegExp(config.link_pattern, "gi");
+    const seen = new Set(); const out = []; let m;
+    while ((m = re.exec(html)) !== null) {
+      const url = m[config.link_group || 1];
+      if (!url || seen.has(url)) continue;
       seen.add(url);
-      out.push({ url });
+      out.push(url);
     }
     return out;
   }
   function extractDetail(html) {
-    const text = html.replace(/&#39;/g, "'").replace(/&rsquo;/g, "\u2019").replace(/&nbsp;/g, " ");
-    const localityM = text.match(/ADRESSE[^:]*:[\s\S]{0,80}?(\d{4})\s+([A-Za-zÀ-ÿ\-\s]+?)(?:<|\n)/i);
-    const typeM = text.match(/<h2[^>]*>\s*(Appartement|Maison|Villa|Chalet|Immeuble|Terrain)/i);
-    const roomsM = text.match(/de\s+([\d.,]+)\s*p(?:ièces|ces)/i);
-    const surfaceM = text.match(/SURFACE[^:]*:[\s\S]{0,40}?(\d+)\s*m2/i);
-    const priceM = text.match(/PRIX DE VENTE[^:]*:[\s\S]{0,60}?CHF\s*([\d'’]+)\.-/i);
-    // pas de prix trouvé = bien vendu ou fiche non standard -> exclu naturellement
-    if (!localityM || !priceM) return null;
-    const titleH1 = text.match(/<h1[^>]*>\s*\*?\*?([^<*\n]+)/i);
-    return {
-      locality: localityM[2].trim(), type: typeM ? typeM[1] : "Appartement",
-      rooms: roomsM ? parseFloat(roomsM[1].replace(",", ".")) : null,
-      surface: surfaceM ? parseFloat(surfaceM[1]) : null,
-      price: parseFloat(priceM[1].replace(/['’]/g, "")),
-      titleGuess: titleH1 ? titleH1[1].trim() : null,
-    };
+    if (config.reject_if && new RegExp(config.reject_if, "i").test(html) &&
+        !(config.reject_unless && new RegExp(config.reject_unless, "i").test(html))) {
+      return null;
+    }
+    const re = new RegExp(config.detail_pattern, "gi");
+    const m = re.exec(html);
+    if (!m) return null;
+    return extractFieldsGeneric(m, config.detail_fields || config.fields, config);
   }
 
   return {
-    name: "Fidimmobil",
+    name: sourceRow.name,
     async check(fetchFn) {
-      const res = await fetchFn(listUrl, { headers: HEADERS });
-      if (!res.ok) throw new Error("HTTP " + res.status);
+      const urls = config.mode === "two_step" ? [config.list_url] : (config.urls || [config.list_url]);
+      await fetchText(fetchFn, urls[0]);
       return "accessible";
     },
     async fetchListings(fetchFn) {
-      const listRes = await fetchFn(listUrl, { headers: HEADERS });
-      if (!listRes.ok) throw new Error("HTTP " + listRes.status);
-      const listHtml = await listRes.text();
-      const links = extractListingLinks(listHtml);
       const out = [];
-      for (const link of links.slice(0, 20)) { // limite raisonnable de sous-requêtes
-        try {
-          const detRes = await fetchFn(link.url, { headers: HEADERS });
-          if (!detRes.ok) continue;
-          const detHtml = await detRes.text();
-          const detail = extractDetail(detHtml);
-          if (!detail) continue;
-          out.push({ external_id: link.url.split("/").filter(Boolean).pop(), url: link.url,
-            title: (detail.titleGuess || (detail.type + " — " + detail.locality)), locality: detail.locality, type: detail.type,
-            rooms: detail.rooms, surface: detail.surface, price: detail.price, confidence: "Vérifiée" });
-        } catch (e) { /* dégrade cette fiche uniquement */ }
+      if (config.mode === "two_step") {
+        const listHtml = await fetchText(fetchFn, config.list_url);
+        const links = extractLinks(listHtml);
+        for (const url of links.slice(0, config.max_details || 20)) {
+          try {
+            const detHtml = await fetchText(fetchFn, url);
+            const detail = extractDetail(detHtml);
+            if (!detail) continue;
+            out.push({
+              external_id: url.split("/").filter(Boolean).pop(), url,
+              title: (detail.type || "Bien") + " — " + detail.locality,
+              locality: detail.locality, type: detail.type || "Appartement",
+              rooms: detail.rooms, surface: detail.surface, price: detail.price,
+              confidence: config.confidence || "Vérifiée",
+            });
+          } catch (e) { /* dégrade cette fiche uniquement */ }
+        }
+      } else {
+        const urls = config.urls || [];
+        for (const url of urls) {
+          try {
+            const html = await fetchText(fetchFn, url);
+            for (const rec of extractSingle(html)) {
+              out.push({
+                external_id: (rec.url || (rec.locality + rec.price)).split("/").filter(Boolean).pop(),
+                url: rec.url || config.list_url || urls[0],
+                title: (rec.type || "Bien") + " — " + rec.locality,
+                locality: rec.locality, type: rec.type || "Appartement",
+                rooms: rec.rooms, surface: rec.surface, price: rec.price,
+                confidence: config.confidence || "Probable",
+              });
+            }
+          } catch (e) { /* dégrade cette URL uniquement */ }
+        }
       }
       return out;
     },
@@ -323,15 +278,12 @@ function fidimmobilAdapter() {
 // =========================================================================
 // PIPELINE (art. 23)
 // =========================================================================
-async function ingest(db, adapters, fetchFn) {
+async function ingest(db, fetchFn) {
   const report = [];
   const sourcesRes = await db.prepare("SELECT * FROM sources WHERE enabled=1").all();
-  const byName = {};
-  for (const s of sourcesRes.results) byName[s.name] = s;
 
-  for (const adapter of adapters) {
-    const srcRow = byName[adapter.name];
-    if (!srcRow) continue;
+  for (const srcRow of sourcesRes.results) {
+    const adapter = srcRow.adapter === "demo" ? demoAdapter() : genericAdapter(srcRow);
     let state = "enregistrée", error = null, stored = 0;
     try {
       state = await adapter.check(fetchFn);
@@ -341,7 +293,7 @@ async function ingest(db, adapters, fetchFn) {
     } catch (e) { error = String(e && e.message ? e.message : e); }
     await db.prepare("UPDATE sources SET state=?, last_checked=?, last_error=?, last_productive_count=? WHERE id=?")
       .bind(state, new Date().toISOString(), error, stored, srcRow.id).run();
-    report.push({ source: adapter.name, state, stored, error });
+    report.push({ source: srcRow.name, state, stored, error });
   }
   return report;
 }
@@ -447,78 +399,8 @@ async function recompute(db) {
   return { biens: biensCount, rescues: rescuesThisRun.length };
 }
 
-function homegateAdapter() {
-  // Homegate — grand portail national, rendu côté serveur (vérifié le
-  // 26.08.2026 : vraies annonces avec prix/pièces/surface directement dans
-  // le HTML brut, sans JavaScript requis). Recherche par canton.
-  const CANTONS = { "Tessin":"canton-ticino", "Gruyère":"canton-fribourg", "Zweisimmen":"canton-bern",
-    "Neuchâtel":"canton-neuchatel", "Jura – Franches-Montagnes":"canton-jura", "Jura – Clos du Doubs":"canton-jura" };
-  const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15";
-  const HEADERS = { "User-Agent": UA, "Accept": "text/html,application/xhtml+xml", "Accept-Language": "fr-CH,fr;q=0.9" };
-
-  function buildUrl(cantonSlug, kind) {
-    return "https://www.homegate.ch/buy/" + kind + "/" + cantonSlug + "/matching-list";
-  }
-  function findKnownLocality(text) {
-    const lower = text.toLowerCase();
-    let best = null, bestIdx = Infinity;
-    for (const key in REGION_MAP) {
-      const idx = lower.indexOf(key);
-      if (idx !== -1 && idx < bestIdx) { bestIdx = idx; best = key; }
-    }
-    return best;
-  }
-  function extract(html) {
-    // La localité connue est recherchée directement par substring dans le
-    // texte du bloc plutôt que parsée génériquement : plus robuste contre
-    // les balises HTML imprévisibles, et sans risque (art. 4) — une
-    // localité non reconnue est simplement ignorée, jamais mal classée.
-    const out = [];
-    const blockRe = /href="(https:\/\/www\.homegate\.ch\/buy\/\d+)"[^<]*?CHF\s*([\d,'’.]+)\.[–-][^\d<]{0,80}?([\d.,]+)\**\s*rooms[^\d<]{0,80}?([\d.,]+)m[²2]([\s\S]{0,150}?)<\/a>/gi;
-    let m;
-    while ((m = blockRe.exec(html)) !== null) {
-      const price = parseFloat(m[2].replace(/[,'’.]/g, ""));
-      if (!price || price < 50000) continue;
-      const locality = findKnownLocality(m[5]);
-      if (!locality) continue;
-      out.push({ external_id: m[1].split("/").pop(), url: m[1], title: "Bien à " + locality,
-        locality, type: "Appartement", rooms: parseFloat(m[3].replace(",", ".")),
-        surface: parseFloat(m[4]), price, confidence: "Probable" });
-    }
-    return out;
-  }
-
-  return {
-    name: "Homegate",
-    async check(fetchFn) {
-      const res = await fetchFn(buildUrl("canton-neuchatel", "apartment"), { headers: HEADERS });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      return "accessible";
-    },
-    async fetchListings(fetchFn) {
-      const out = [];
-      const doneCantons = new Set();
-      for (const region in CANTONS) {
-        const slug = CANTONS[region];
-        if (doneCantons.has(slug)) continue;
-        doneCantons.add(slug);
-        for (const kind of ["apartment", "house"]) {
-          try {
-            const res = await fetchFn(buildUrl(slug, kind), { headers: HEADERS });
-            if (!res.ok) continue;
-            const html = await res.text();
-            out.push(...extract(html));
-          } catch (e) { /* dégrade ce canton/type uniquement */ }
-        }
-      }
-      return out;
-    },
-  };
-}
-
 async function fullRefresh(db, fetchFn) {
-  const adapters = [demoAdapter(), bussardAdapter(), comparisAdapter(), fidimmobilAdapter(), homegateAdapter()];
-  const report = await ingest(db, adapters, fetchFn);
+  const report = await ingest(db, fetchFn);
   const stats = await recompute(db);
   return Object.assign({ ingestion: report }, stats);
 }
