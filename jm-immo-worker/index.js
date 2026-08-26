@@ -130,13 +130,6 @@ function demoAdapter() {
     async fetchListings() { return DEMO_LISTINGS.map(l => Object.assign({}, l)); },
   };
 }
-function demoAdapter() {
-  return {
-    name: "Demo",
-    async check() { return "accessible"; },
-    async fetchListings() { return DEMO_LISTINGS.map(l => Object.assign({}, l)); },
-  };
-}
 
 // =========================================================================
 // MOTEUR D'ADAPTATEUR GÉNÉRIQUE (art. 6-9) — piloté entièrement par la
