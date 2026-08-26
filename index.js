@@ -133,9 +133,10 @@ function demoAdapter() {
 
 function bussardAdapter() {
   const searchUrl = "https://www.bussard.ch/fr/acheter";
-  const UA = "Mozilla/5.0 (compatible; JMImmoBot/1.0; +https://jm-immo.example)";
+  const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15";
+  const HEADERS = { "User-Agent": UA, "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", "Accept-Language": "fr-CH,fr;q=0.9" };
   async function getHtml(fetchFn) {
-    const res = await fetchFn(searchUrl, { headers: { "User-Agent": UA } });
+    const res = await fetchFn(searchUrl, { headers: HEADERS });
     if (!res.ok) throw new Error("HTTP " + res.status);
     return await res.text();
   }
@@ -186,41 +187,133 @@ function bussardAdapter() {
 }
 
 function comparisAdapter() {
-  function buildUrl(loc) {
-    const req = { DealType:10, SiteId:0, RootPropertyTypes:[], PropertyTypes:[], RoomsFrom:null, RoomsTo:null,
-      FloorSearchType:0, LivingSpaceFrom:null, LivingSpaceTo:null, PriceFrom:null, PriceTo:500000,
-      ComparisPointsMin:0, AdAgeMax:0, Keyword:"", MinAvailableDate:"1753-01-01T00:00:00",
-      MinChangeDate:"1753-01-01T00:00:00", LocationSearchString:loc, Sort:3, HasBalcony:false,
-      HasTerrace:false, HasFireplace:false, HasDishwasher:false, HasWashingMachine:false, HasLift:false,
-      HasParking:false, PetsAllowed:false, MinergieCertified:false, WheelchairAccessible:false, SwapProperty:null };
-    return "https://www.comparis.ch/immobilien/result/list?requestobject=" + encodeURIComponent(JSON.stringify(req));
+  // L'endpoint JSON interne (immobilien/result/list) répond 403 en production
+  // (probablement filtré comme trafic non-navigateur). On scrape à la place
+  // les pages de recherche PUBLIQUES par canton, vérifiées accessibles et
+  // contenant de vraies annonces avec prix (testé le 26.08.2026).
+  const CANTONS = { "Tessin":"tessin", "Gruyère":"freiburg", "Zweisimmen":"bern",
+    "Neuchâtel":"neuenburg", "Jura – Franches-Montagnes":"jura", "Jura – Clos du Doubs":"jura" };
+  const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15";
+  const HEADERS = { "User-Agent": UA, "Accept": "text/html,application/xhtml+xml", "Accept-Language": "fr-CH,fr;q=0.9" };
+
+  function buildUrl(cantonSlug, kind) {
+    return "https://fr.comparis.ch/immobilien/marktplatz/kanton/" + cantonSlug + "/" + kind + "/kaufen";
   }
-  const LOCATIONS = ["Lugano", "Bulle", "Neuchâtel", "Zweisimmen"];
-  const UA = "Mozilla/5.0 (compatible; JMImmoBot/1.0)";
+
+  function extract(html, fallbackRegion) {
+    const html2 = html.replace(/&#39;/g, "'").replace(/&rsquo;/g, "\u2019").replace(/&nbsp;/g, " ");
+    const out = [];
+    // Motif observé : lien vers une fiche /marktplatz/details/show/{id}, avec
+    // prix, type, pièces, localité à proximité dans le même bloc.
+    const blockRe = /CHF\s*([\d'’.,]+)[^\d<]{0,60}?(Maison individuelle|Villa|Appartement|Ferme|Chalet|Immeuble|Terrain)?[^\d<]{0,60}?(?:([\d.,]+)[\s-]*pi[eè]ces?)?[^\d<]{0,80}?(\d{4})\s+([A-Za-zÀ-ÿ\-\s()]{2,30})[\s\S]{0,200}?href="(https:\/\/fr\.comparis\.ch\/immobilien\/marktplatz\/details\/show\/\d+)"/gi;
+    let m;
+    while ((m = blockRe.exec(html2)) !== null) {
+      const priceClean = parseFloat(m[1].replace(/[.,]00$/, "").replace(/['’.,]/g, ""));
+      if (!priceClean || priceClean < 50000) continue;
+      out.push({
+        external_id: m[6].split("/").pop(), url: m[6],
+        title: (m[2] || "Bien") + " — " + m[5].trim(),
+        locality: m[5].trim(), type: m[2] || "Appartement",
+        rooms: m[3] ? parseFloat(m[3].replace(",", ".")) : null, surface: null,
+        price: priceClean, confidence: "Probable",
+      });
+    }
+    return out;
+  }
+
   return {
     name: "Comparis",
     async check(fetchFn) {
-      const res = await fetchFn(buildUrl("Lugano"), { headers: { "User-Agent": UA } });
+      const res = await fetchFn(buildUrl("tessin", "haus"), { headers: HEADERS });
       if (!res.ok) throw new Error("HTTP " + res.status);
       return "accessible";
     },
     async fetchListings(fetchFn) {
       const out = [];
-      for (const loc of LOCATIONS) {
+      const doneCantons = new Set();
+      for (const region of Object.keys(CANTONS)) {
+        const slug = CANTONS[region];
+        if (doneCantons.has(slug)) continue; // évite de refaire 2x le même canton (Jura partagé)
+        doneCantons.add(slug);
+        for (const kind of ["haus", "wohnung"]) {
+          try {
+            const res = await fetchFn(buildUrl(slug, kind), { headers: HEADERS });
+            if (!res.ok) continue;
+            const html = await res.text();
+            out.push(...extract(html, region));
+          } catch (e) { /* dégrade ce canton/type uniquement, continue les autres */ }
+        }
+      }
+      return out;
+    },
+  };
+}
+
+function fidimmobilAdapter() {
+  // Fidimmobil (Neuchâtel / La Chaux-de-Fonds) — site WordPress rendu côté
+  // serveur, vérifié le 26.08.2026 : liste des biens sans prix, détail de
+  // chaque bien avec adresse/surface/prix structurés en clair.
+  const listUrl = "https://vente.fidimmobil.ch/";
+  const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15";
+  const HEADERS = { "User-Agent": UA, "Accept": "text/html", "Accept-Language": "fr-CH,fr;q=0.9" };
+
+  function extractListingLinks(html) {
+    // Ne récupère que les liens vers des fiches — le titre/type/prix seront
+    // lus directement sur chaque fiche (plus fiable que de parser la liste).
+    const hrefRe = /href="(https:\/\/vente\.fidimmobil\.ch\/vente\/[a-z0-9\-]+\/?)"/gi;
+    const seen = new Set(); const out = [];
+    let m;
+    while ((m = hrefRe.exec(html)) !== null) {
+      const url = m[1];
+      if (seen.has(url)) continue;
+      seen.add(url);
+      out.push({ url });
+    }
+    return out;
+  }
+  function extractDetail(html) {
+    const text = html.replace(/&#39;/g, "'").replace(/&rsquo;/g, "\u2019").replace(/&nbsp;/g, " ");
+    const localityM = text.match(/ADRESSE[^:]*:[\s\S]{0,80}?(\d{4})\s+([A-Za-zÀ-ÿ\-\s]+?)(?:<|\n)/i);
+    const typeM = text.match(/<h2[^>]*>\s*(Appartement|Maison|Villa|Chalet|Immeuble|Terrain)/i);
+    const roomsM = text.match(/de\s+([\d.,]+)\s*p(?:ièces|ces)/i);
+    const surfaceM = text.match(/SURFACE[^:]*:[\s\S]{0,40}?(\d+)\s*m2/i);
+    const priceM = text.match(/PRIX DE VENTE[^:]*:[\s\S]{0,60}?CHF\s*([\d'’]+)\.-/i);
+    // pas de prix trouvé = bien vendu ou fiche non standard -> exclu naturellement
+    if (!localityM || !priceM) return null;
+    const titleH1 = text.match(/<h1[^>]*>\s*\*?\*?([^<*\n]+)/i);
+    return {
+      locality: localityM[2].trim(), type: typeM ? typeM[1] : "Appartement",
+      rooms: roomsM ? parseFloat(roomsM[1].replace(",", ".")) : null,
+      surface: surfaceM ? parseFloat(surfaceM[1]) : null,
+      price: parseFloat(priceM[1].replace(/['’]/g, "")),
+      titleGuess: titleH1 ? titleH1[1].trim() : null,
+    };
+  }
+
+  return {
+    name: "Fidimmobil",
+    async check(fetchFn) {
+      const res = await fetchFn(listUrl, { headers: HEADERS });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return "accessible";
+    },
+    async fetchListings(fetchFn) {
+      const listRes = await fetchFn(listUrl, { headers: HEADERS });
+      if (!listRes.ok) throw new Error("HTTP " + listRes.status);
+      const listHtml = await listRes.text();
+      const links = extractListingLinks(listHtml);
+      const out = [];
+      for (const link of links.slice(0, 20)) { // limite raisonnable de sous-requêtes
         try {
-          const res = await fetchFn(buildUrl(loc), { headers: { "User-Agent": UA } });
-          if (!res.ok) continue;
-          const data = await res.json();
-          const items = data.Properties || data.properties || data.Results || [];
-          for (const it of items) {
-            out.push({ source:"Comparis", external_id: String(it.Id || it.id || out.length),
-              url: it.DetailUrl ? ("https://www.comparis.ch"+it.DetailUrl) : "https://www.comparis.ch",
-              title: it.Title || it.title || "Annonce Comparis", locality: it.City || it.city || loc,
-              type: it.PropertyType || "Appartement", rooms: it.Rooms || it.rooms || null,
-              surface: it.LivingSpace || it.surface || null, price: parseFloat(it.Price || it.price || 0),
-              confidence: "Vérifiée" });
-          }
-        } catch (e) { /* dégrade cette localité seulement */ }
+          const detRes = await fetchFn(link.url, { headers: HEADERS });
+          if (!detRes.ok) continue;
+          const detHtml = await detRes.text();
+          const detail = extractDetail(detHtml);
+          if (!detail) continue;
+          out.push({ external_id: link.url.split("/").filter(Boolean).pop(), url: link.url,
+            title: (detail.titleGuess || (detail.type + " — " + detail.locality)), locality: detail.locality, type: detail.type,
+            rooms: detail.rooms, surface: detail.surface, price: detail.price, confidence: "Vérifiée" });
+        } catch (e) { /* dégrade cette fiche uniquement */ }
       }
       return out;
     },
@@ -354,8 +447,77 @@ async function recompute(db) {
   return { biens: biensCount, rescues: rescuesThisRun.length };
 }
 
+function homegateAdapter() {
+  // Homegate — grand portail national, rendu côté serveur (vérifié le
+  // 26.08.2026 : vraies annonces avec prix/pièces/surface directement dans
+  // le HTML brut, sans JavaScript requis). Recherche par canton.
+  const CANTONS = { "Tessin":"canton-ticino", "Gruyère":"canton-fribourg", "Zweisimmen":"canton-bern",
+    "Neuchâtel":"canton-neuchatel", "Jura – Franches-Montagnes":"canton-jura", "Jura – Clos du Doubs":"canton-jura" };
+  const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15";
+  const HEADERS = { "User-Agent": UA, "Accept": "text/html,application/xhtml+xml", "Accept-Language": "fr-CH,fr;q=0.9" };
+
+  function buildUrl(cantonSlug, kind) {
+    return "https://www.homegate.ch/buy/" + kind + "/" + cantonSlug + "/matching-list";
+  }
+  function findKnownLocality(text) {
+    const lower = text.toLowerCase();
+    let best = null, bestIdx = Infinity;
+    for (const key in REGION_MAP) {
+      const idx = lower.indexOf(key);
+      if (idx !== -1 && idx < bestIdx) { bestIdx = idx; best = key; }
+    }
+    return best;
+  }
+  function extract(html) {
+    // La localité connue est recherchée directement par substring dans le
+    // texte du bloc plutôt que parsée génériquement : plus robuste contre
+    // les balises HTML imprévisibles, et sans risque (art. 4) — une
+    // localité non reconnue est simplement ignorée, jamais mal classée.
+    const out = [];
+    const blockRe = /href="(https:\/\/www\.homegate\.ch\/buy\/\d+)"[^<]*?CHF\s*([\d,'’.]+)\.[–-][^\d<]{0,80}?([\d.,]+)\**\s*rooms[^\d<]{0,80}?([\d.,]+)m[²2]([\s\S]{0,150}?)<\/a>/gi;
+    let m;
+    while ((m = blockRe.exec(html)) !== null) {
+      const price = parseFloat(m[2].replace(/[,'’.]/g, ""));
+      if (!price || price < 50000) continue;
+      const locality = findKnownLocality(m[5]);
+      if (!locality) continue;
+      out.push({ external_id: m[1].split("/").pop(), url: m[1], title: "Bien à " + locality,
+        locality, type: "Appartement", rooms: parseFloat(m[3].replace(",", ".")),
+        surface: parseFloat(m[4]), price, confidence: "Probable" });
+    }
+    return out;
+  }
+
+  return {
+    name: "Homegate",
+    async check(fetchFn) {
+      const res = await fetchFn(buildUrl("canton-neuchatel", "apartment"), { headers: HEADERS });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return "accessible";
+    },
+    async fetchListings(fetchFn) {
+      const out = [];
+      const doneCantons = new Set();
+      for (const region in CANTONS) {
+        const slug = CANTONS[region];
+        if (doneCantons.has(slug)) continue;
+        doneCantons.add(slug);
+        for (const kind of ["apartment", "house"]) {
+          try {
+            const res = await fetchFn(buildUrl(slug, kind), { headers: HEADERS });
+            if (!res.ok) continue;
+            const html = await res.text();
+            out.push(...extract(html));
+          } catch (e) { /* dégrade ce canton/type uniquement */ }
+        }
+      }
+      return out;
+    },
+  };
+}
+
 async function fullRefresh(db, fetchFn) {
-  const adapters = [demoAdapter(), bussardAdapter(), comparisAdapter()];
+  const adapters = [demoAdapter(), bussardAdapter(), comparisAdapter(), fidimmobilAdapter(), homegateAdapter()];
   const report = await ingest(db, adapters, fetchFn);
   const stats = await recompute(db);
   return Object.assign({ ingestion: report }, stats);
