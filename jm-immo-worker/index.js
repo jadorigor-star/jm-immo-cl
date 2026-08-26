@@ -170,6 +170,22 @@ function extractFieldsGeneric(m, fields, config) {
     const raw = m[fields.locality];
     out.locality = config.locality_lookup ? findKnownLocalityGeneric(raw) : raw.trim();
   }
+  // recherche secondaire optionnelle : certains champs ne sont pas capturables
+  // de façon fiable dans un seul motif linéaire (ordre variable dans la page).
+  // On les cherche alors indépendamment à l'intérieur du bloc déjà isolé (m[0]).
+  if (config.sub_fields) {
+    for (const key in config.sub_fields) {
+      if (out[key] != null) continue; // ne pas écraser une valeur déjà trouvée
+      const re = new RegExp(config.sub_fields[key], "i");
+      const sm = re.exec(m[0]);
+      if (!sm || !sm[1]) continue;
+      if (key === "rooms") out.rooms = parseFloat(sm[1].replace(",", "."));
+      else if (key === "surface") out.surface = parseFloat(sm[1]);
+      else if (key === "price") out.price = parsePriceGeneric(sm[1]);
+      else if (key === "locality") out.locality = config.locality_lookup ? findKnownLocalityGeneric(sm[1]) : sm[1].trim();
+      else if (key === "type") out.type = sm[1].trim();
+    }
+  }
   if (!out.price || out.price < priceMin) return null;
   if (!out.locality) return null;
   return out;
@@ -188,14 +204,60 @@ function genericAdapter(sourceRow) {
     if (!res.ok) throw new Error("HTTP " + res.status);
     return decodeEntitiesGeneric(await res.text());
   }
-  function extractSingle(html) {
-    const re = new RegExp(config.block_pattern, "gi");
-    const out = []; let m;
-    while ((m = re.exec(html)) !== null) {
-      const rec = extractFieldsGeneric(m, config.fields, config);
-      if (rec) out.push(rec);
+  function extractJsonLd(html) {
+    // Motif le plus robuste quand disponible : schema.org structuré, présent
+    // sur beaucoup de sites indépendamment de la mise en page HTML.
+    const out = [];
+    const ldRe = /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+    let m;
+    while ((m = ldRe.exec(html)) !== null) {
+      try {
+        const data = JSON.parse(m[1].trim());
+        const items = Array.isArray(data) ? data : [data];
+        for (const obj of items) {
+          const price = obj.price || (obj.offers && obj.offers.price);
+          if (!price) continue;
+          const addr = obj.address || (obj.offers && obj.offers.address) || {};
+          out.push({
+            url: obj.url || null, title: obj.name || null,
+            locality: addr.addressLocality || null,
+            type: obj.category || null,
+            rooms: obj.numberOfRooms || null,
+            surface: (obj.floorSize && obj.floorSize.value) || null,
+            price: parseFloat(price),
+          });
+        }
+      } catch (e) { /* bloc JSON-LD invalide, ignoré */ }
     }
     return out;
+  }
+
+  function extractSingle(html) {
+    // 1. JSON-LD si disponible et activé (le plus fiable)
+    if (config.try_json_ld) {
+      const ldResults = extractJsonLd(html).filter(r => {
+        if (!r.price || r.price < (config.price_min || 50000)) return false;
+        if (config.locality_lookup && r.locality) r.locality = findKnownLocalityGeneric(r.locality);
+        return !!r.locality;
+      });
+      if (ldResults.length > 0) return ldResults;
+    }
+    // 2. motif principal, puis motif de repli si 0 résultat (résilience art. 25)
+    const patterns = [config.block_pattern, config.fallback_pattern].filter(Boolean);
+    for (const pattern of patterns) {
+      const re = new RegExp(pattern, "gi");
+      const out = []; let m;
+      while ((m = re.exec(html)) !== null) {
+        if (config.reject_if && new RegExp(config.reject_if, "i").test(m[0]) &&
+            !(config.reject_unless && new RegExp(config.reject_unless, "i").test(m[0]))) {
+          continue; // ex. bloc marqué "vendu" -> rejeté, même règle que le mode two_step
+        }
+        const rec = extractFieldsGeneric(m, config.fields, config);
+        if (rec) out.push(rec);
+      }
+      if (out.length > 0) return out;
+    }
+    return [];
   }
   function extractLinks(html) {
     const re = new RegExp(config.link_pattern, "gi");
@@ -213,10 +275,24 @@ function genericAdapter(sourceRow) {
         !(config.reject_unless && new RegExp(config.reject_unless, "i").test(html))) {
       return null;
     }
-    const re = new RegExp(config.detail_pattern, "gi");
-    const m = re.exec(html);
-    if (!m) return null;
-    return extractFieldsGeneric(m, config.detail_fields || config.fields, config);
+    if (config.try_json_ld) {
+      const ldResults = extractJsonLd(html);
+      if (ldResults.length > 0) {
+        const r = ldResults[0];
+        if (config.locality_lookup && r.locality) r.locality = findKnownLocalityGeneric(r.locality);
+        if (r.price >= (config.price_min || 50000) && r.locality) return r;
+      }
+    }
+    const patterns = [config.detail_pattern, config.detail_fallback_pattern].filter(Boolean);
+    for (const pattern of patterns) {
+      const re = new RegExp(pattern, "gi");
+      const m = re.exec(html);
+      if (m) {
+        const rec = extractFieldsGeneric(m, config.detail_fields || config.fields, config);
+        if (rec) return rec;
+      }
+    }
+    return null;
   }
 
   return {
@@ -523,6 +599,7 @@ main{padding:14px 16px;max-width:660px;margin:0 auto;}
 <body>
 <header>
   <h1>JM Immo</h1>
+  <button id="btnRefresh" style="margin:8px 0;padding:8px 12px;border-radius:8px;border:1px solid #262E3A;background:#1D2430;color:#E7EAEE;font-size:12.5px;cursor:pointer">&#8635; Rafraichir les sources</button>
   <div class="searchbar">
     <input id="q" placeholder="Rechercher (village, type, mot-cle)...">
     <button id="btnSearch">Chercher</button>
@@ -679,6 +756,18 @@ document.getElementById("tabs").addEventListener("click", function(e){
   load();
 });
 document.getElementById("btnSearch").onclick = load;
+document.getElementById("btnRefresh").onclick = async function(){
+  const btn = document.getElementById("btnRefresh");
+  const original = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = "Actualisation en cours...";
+  try {
+    await fetch("/api/refresh");
+  } catch(e) { /* le rechargement des donnees ci-dessous montrera l etat reel meme en cas d erreur reseau */ }
+  btn.disabled = false;
+  btn.innerHTML = original;
+  load();
+};
 ["fRegion","fType","fBudget","fSort"].forEach(function(id){document.getElementById(id).onchange = load;});
 document.getElementById("q").addEventListener("keydown", function(e){ if(e.key==="Enter") load(); });
 load();
@@ -789,7 +878,15 @@ export default {
       }
 
       if (url.pathname === "/") {
-        return new Response(FRONTEND_HTML, { headers: { "Content-Type": "text/html; charset=utf-8" } });
+        // Le frontend vit en base (art. 6 : modifications d'interface sans
+        // redéploiement). FRONTEND_HTML codé en dur sert uniquement de
+        // filet de sécurité si la base est indisponible (art. 25).
+        let html = FRONTEND_HTML;
+        try {
+          const row = await db.prepare("SELECT value FROM app_config WHERE key='frontend_html'").all();
+          if (row.results.length && row.results[0].value) html = row.results[0].value;
+        } catch (e) { /* filet de sécurité : sert la version codée en dur */ }
+        return new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" } });
       }
 
       return json({ error: "route inconnue" }, 404);
