@@ -447,8 +447,77 @@ async function recompute(db) {
   return { biens: biensCount, rescues: rescuesThisRun.length };
 }
 
+function homegateAdapter() {
+  // Homegate — grand portail national, rendu côté serveur (vérifié le
+  // 26.08.2026 : vraies annonces avec prix/pièces/surface directement dans
+  // le HTML brut, sans JavaScript requis). Recherche par canton.
+  const CANTONS = { "Tessin":"canton-ticino", "Gruyère":"canton-fribourg", "Zweisimmen":"canton-bern",
+    "Neuchâtel":"canton-neuchatel", "Jura – Franches-Montagnes":"canton-jura", "Jura – Clos du Doubs":"canton-jura" };
+  const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15";
+  const HEADERS = { "User-Agent": UA, "Accept": "text/html,application/xhtml+xml", "Accept-Language": "fr-CH,fr;q=0.9" };
+
+  function buildUrl(cantonSlug, kind) {
+    return "https://www.homegate.ch/buy/" + kind + "/" + cantonSlug + "/matching-list";
+  }
+  function findKnownLocality(text) {
+    const lower = text.toLowerCase();
+    let best = null, bestIdx = Infinity;
+    for (const key in REGION_MAP) {
+      const idx = lower.indexOf(key);
+      if (idx !== -1 && idx < bestIdx) { bestIdx = idx; best = key; }
+    }
+    return best;
+  }
+  function extract(html) {
+    // La localité connue est recherchée directement par substring dans le
+    // texte du bloc plutôt que parsée génériquement : plus robuste contre
+    // les balises HTML imprévisibles, et sans risque (art. 4) — une
+    // localité non reconnue est simplement ignorée, jamais mal classée.
+    const out = [];
+    const blockRe = /href="(https:\/\/www\.homegate\.ch\/buy\/\d+)"[^<]*?CHF\s*([\d,'’.]+)\.[–-][^\d<]{0,80}?([\d.,]+)\**\s*rooms[^\d<]{0,80}?([\d.,]+)m[²2]([\s\S]{0,150}?)<\/a>/gi;
+    let m;
+    while ((m = blockRe.exec(html)) !== null) {
+      const price = parseFloat(m[2].replace(/[,'’.]/g, ""));
+      if (!price || price < 50000) continue;
+      const locality = findKnownLocality(m[5]);
+      if (!locality) continue;
+      out.push({ external_id: m[1].split("/").pop(), url: m[1], title: "Bien à " + locality,
+        locality, type: "Appartement", rooms: parseFloat(m[3].replace(",", ".")),
+        surface: parseFloat(m[4]), price, confidence: "Probable" });
+    }
+    return out;
+  }
+
+  return {
+    name: "Homegate",
+    async check(fetchFn) {
+      const res = await fetchFn(buildUrl("canton-neuchatel", "apartment"), { headers: HEADERS });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return "accessible";
+    },
+    async fetchListings(fetchFn) {
+      const out = [];
+      const doneCantons = new Set();
+      for (const region in CANTONS) {
+        const slug = CANTONS[region];
+        if (doneCantons.has(slug)) continue;
+        doneCantons.add(slug);
+        for (const kind of ["apartment", "house"]) {
+          try {
+            const res = await fetchFn(buildUrl(slug, kind), { headers: HEADERS });
+            if (!res.ok) continue;
+            const html = await res.text();
+            out.push(...extract(html));
+          } catch (e) { /* dégrade ce canton/type uniquement */ }
+        }
+      }
+      return out;
+    },
+  };
+}
+
 async function fullRefresh(db, fetchFn) {
-  const adapters = [demoAdapter(), bussardAdapter(), comparisAdapter(), fidimmobilAdapter()];
+  const adapters = [demoAdapter(), bussardAdapter(), comparisAdapter(), fidimmobilAdapter(), homegateAdapter()];
   const report = await ingest(db, adapters, fetchFn);
   const stats = await recompute(db);
   return Object.assign({ ingestion: report }, stats);
