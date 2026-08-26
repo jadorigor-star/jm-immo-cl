@@ -139,7 +139,11 @@ function bussardAdapter() {
     if (!res.ok) throw new Error("HTTP " + res.status);
     return await res.text();
   }
-  function extract(html) {
+  function decodeEntities(s) {
+    return s.replace(/&#39;/g, "'").replace(/&#x27;/gi, "'").replace(/&rsquo;/g, "\u2019").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
+  }
+  function extract(rawHtml) {
+    const html = decodeEntities(rawHtml);
     const out = [];
     const ldRe = /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
     let m;
