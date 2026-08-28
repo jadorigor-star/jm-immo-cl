@@ -8,6 +8,7 @@
 // =========================================================================
 // RÈGLES MÉTIER (art. 3-4, 10, 16-20)
 // =========================================================================
+const SOURCE_TIMEOUT_MS = 8000; // limite par requête individuelle, art. 25
 const REGION_MAP = {
   "lugano":"Tessin","bellinzona":"Tessin","locarno":"Tessin","mendrisio":"Tessin","chiasso":"Tessin",
   "ascona":"Tessin","biasca":"Tessin","gordola":"Tessin","gordevio":"Tessin","riva san vitale":"Tessin",
@@ -45,10 +46,11 @@ const CONF_ORDER = { "Vérifiée": 3, "Probable": 2, "À contrôler": 1 };
 const CACHET_KEYWORDS = ["rénové","historique","authentique","cachet","poutres","cheminée","charme","chalet","ferme","voûte","madrier"];
 const TOURISTIC_REGIONS = new Set(["Tessin","Gruyère","Zweisimmen"]);
 
-function computeRegion(locality) {
+function computeRegion(locality, extra) {
+  extra = extra || { map: {}, excluded: new Set() };
   const key = (locality || "").trim().toLowerCase().replace(/\s*\([^)]*\)\s*$/, "");
-  if (JURA_HORS_PERIMETRE.has(key)) return null;
-  return REGION_MAP[key] || null;
+  if (JURA_HORS_PERIMETRE.has(key) || extra.excluded.has(key)) return null;
+  return REGION_MAP[key] || extra.map[key] || null;
 }
 function isPlausiblePrice(p) {
   if (typeof p !== "number" || isNaN(p) || !isFinite(p)) return false;
@@ -149,16 +151,21 @@ function parsePriceGeneric(raw) {
   const price = parseFloat(cleaned);
   return isFinite(price) ? price : null;
 }
-function findKnownLocalityGeneric(text) {
+function findKnownLocalityGeneric(text, extra) {
+  extra = extra || { map: {} };
   const lower = (text || "").toLowerCase();
   let best = null, bestIdx = Infinity;
   for (const key in REGION_MAP) {
     const idx = lower.indexOf(key);
     if (idx !== -1 && idx < bestIdx) { bestIdx = idx; best = key; }
   }
+  for (const key in extra.map) {
+    const idx = lower.indexOf(key);
+    if (idx !== -1 && idx < bestIdx) { bestIdx = idx; best = key; }
+  }
   return best;
 }
-function extractFieldsGeneric(m, fields, config) {
+function extractFieldsGeneric(m, fields, config, extra) {
   const priceMin = config.price_min || 50000;
   const out = { price: null, rooms: null, surface: null, locality: null, type: null, url: null };
   if (fields.price != null && m[fields.price]) out.price = parsePriceGeneric(m[fields.price]);
@@ -168,7 +175,7 @@ function extractFieldsGeneric(m, fields, config) {
   if (fields.url != null && m[fields.url]) out.url = m[fields.url].trim();
   if (fields.locality != null && m[fields.locality]) {
     const raw = m[fields.locality];
-    out.locality = config.locality_lookup ? findKnownLocalityGeneric(raw) : raw.trim();
+    out.locality = config.locality_lookup ? findKnownLocalityGeneric(raw, extra) : raw.trim();
   }
   // recherche secondaire optionnelle : certains champs ne sont pas capturables
   // de façon fiable dans un seul motif linéaire (ordre variable dans la page).
@@ -182,7 +189,7 @@ function extractFieldsGeneric(m, fields, config) {
       if (key === "rooms") out.rooms = parseFloat(sm[1].replace(",", "."));
       else if (key === "surface") out.surface = parseFloat(sm[1]);
       else if (key === "price") out.price = parsePriceGeneric(sm[1]);
-      else if (key === "locality") out.locality = config.locality_lookup ? findKnownLocalityGeneric(sm[1]) : sm[1].trim();
+      else if (key === "locality") out.locality = config.locality_lookup ? findKnownLocalityGeneric(sm[1], extra) : sm[1].trim();
       else if (key === "type") out.type = sm[1].trim();
     }
   }
@@ -191,7 +198,7 @@ function extractFieldsGeneric(m, fields, config) {
   return out;
 }
 
-function genericAdapter(sourceRow) {
+function genericAdapter(sourceRow, extra) {
   let config = {};
   try { config = JSON.parse(sourceRow.config_json || "{}"); } catch (e) { config = {}; }
   const headers = config.headers || {
@@ -200,9 +207,20 @@ function genericAdapter(sourceRow) {
   };
 
   async function fetchText(fetchFn, url) {
-    const res = await fetchFn(url, { headers });
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    return decodeEntitiesGeneric(await res.text());
+    // Limite de temps par requête individuelle (art. 25) : un site lent ou qui
+    // ne répond jamais ne doit jamais bloquer le traitement des autres sources.
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), SOURCE_TIMEOUT_MS);
+    try {
+      const res = await fetchFn(url, { headers, signal: controller.signal });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return decodeEntitiesGeneric(await res.text());
+    } catch (e) {
+      if (e && e.name === "AbortError") throw new Error("Delai depasse (" + SOURCE_TIMEOUT_MS + "ms)");
+      throw e;
+    } finally {
+      clearTimeout(timeoutId);
+    }
   }
   function extractJsonLd(html) {
     // Motif le plus robuste quand disponible : schema.org structuré, présent
@@ -237,7 +255,7 @@ function genericAdapter(sourceRow) {
     if (config.try_json_ld) {
       const ldResults = extractJsonLd(html).filter(r => {
         if (!r.price || r.price < (config.price_min || 50000)) return false;
-        if (config.locality_lookup && r.locality) r.locality = findKnownLocalityGeneric(r.locality);
+        if (config.locality_lookup && r.locality) r.locality = findKnownLocalityGeneric(r.locality, extra);
         return !!r.locality;
       });
       if (ldResults.length > 0) return ldResults;
@@ -252,7 +270,7 @@ function genericAdapter(sourceRow) {
             !(config.reject_unless && new RegExp(config.reject_unless, "i").test(m[0]))) {
           continue; // ex. bloc marqué "vendu" -> rejeté, même règle que le mode two_step
         }
-        const rec = extractFieldsGeneric(m, config.fields, config);
+        const rec = extractFieldsGeneric(m, config.fields, config, extra);
         if (rec) out.push(rec);
       }
       if (out.length > 0) return out;
@@ -279,7 +297,7 @@ function genericAdapter(sourceRow) {
       const ldResults = extractJsonLd(html);
       if (ldResults.length > 0) {
         const r = ldResults[0];
-        if (config.locality_lookup && r.locality) r.locality = findKnownLocalityGeneric(r.locality);
+        if (config.locality_lookup && r.locality) r.locality = findKnownLocalityGeneric(r.locality, extra);
         if (r.price >= (config.price_min || 50000) && r.locality) return r;
       }
     }
@@ -288,7 +306,7 @@ function genericAdapter(sourceRow) {
       const re = new RegExp(pattern, "gi");
       const m = re.exec(html);
       if (m) {
-        const rec = extractFieldsGeneric(m, config.detail_fields || config.fields, config);
+        const rec = extractFieldsGeneric(m, config.detail_fields || config.fields, config, extra);
         if (rec) return rec;
       }
     }
@@ -347,17 +365,31 @@ function genericAdapter(sourceRow) {
 // =========================================================================
 // PIPELINE (art. 23)
 // =========================================================================
+async function loadExtraLocalities(db) {
+  // Complément au référentiel codé en dur (art. 3) — vit en base pour que
+  // l'ajout d'une localité ne nécessite plus de redéploiement.
+  const map = {}; const excluded = new Set();
+  try {
+    const res = await db.prepare("SELECT name, region FROM localities").all();
+    for (const row of res.results) map[row.name.toLowerCase()] = row.region;
+    const exRes = await db.prepare("SELECT name FROM localities_excluded").all();
+    for (const row of exRes.results) excluded.add(row.name.toLowerCase());
+  } catch (e) { /* tables absentes ou base indisponible -> comportement inchangé */ }
+  return { map, excluded };
+}
+
 async function ingest(db, fetchFn) {
   const report = [];
+  const extra = await loadExtraLocalities(db);
   const sourcesRes = await db.prepare("SELECT * FROM sources WHERE enabled=1").all();
 
   for (const srcRow of sourcesRes.results) {
-    const adapter = srcRow.adapter === "demo" ? demoAdapter() : genericAdapter(srcRow);
+    const adapter = srcRow.adapter === "demo" ? demoAdapter() : genericAdapter(srcRow, extra);
     let state = "enregistrée", error = null, stored = 0;
     try {
       state = await adapter.check(fetchFn);
       const rawListings = await adapter.fetchListings(fetchFn);
-      for (const rl of rawListings) stored += await storeListing(db, srcRow, rl);
+      for (const rl of rawListings) stored += await storeListing(db, srcRow, rl, extra);
       if (stored > 0) state = "productive";
     } catch (e) { error = String(e && e.message ? e.message : e); }
     await db.prepare("UPDATE sources SET state=?, last_checked=?, last_error=?, last_productive_count=? WHERE id=?")
@@ -367,10 +399,10 @@ async function ingest(db, fetchFn) {
   return report;
 }
 
-async function storeListing(db, srcRow, rl) {
+async function storeListing(db, srcRow, rl, extra) {
   if (!rl.title || !rl.locality || !isPlausiblePrice(rl.price)) return 0;
   if (rl.is_rental) return 0;
-  const region = computeRegion(rl.locality);
+  const region = computeRegion(rl.locality, extra);
   if (!region) return 0;
 
   const listingId = srcRow.id + ":" + rl.external_id;
