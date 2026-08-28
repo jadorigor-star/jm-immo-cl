@@ -198,6 +198,95 @@ function extractFieldsGeneric(m, fields, config, extra) {
   return out;
 }
 
+function extractJsonLdGeneric(html) {
+  // Motif le plus robuste quand disponible : schema.org structuré, présent
+  // sur beaucoup de sites indépendamment de la mise en page HTML.
+  const out = [];
+  const ldRe = /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+  let m;
+  while ((m = ldRe.exec(html)) !== null) {
+    try {
+      const data = JSON.parse(m[1].trim());
+      const items = Array.isArray(data) ? data : [data];
+      for (const obj of items) {
+        const price = obj.price || (obj.offers && obj.offers.price);
+        if (!price) continue;
+        const addr = obj.address || (obj.offers && obj.offers.address) || {};
+        out.push({
+          url: obj.url || null, title: obj.name || null,
+          locality: addr.addressLocality || null,
+          type: obj.category || null,
+          rooms: obj.numberOfRooms || null,
+          surface: (obj.floorSize && obj.floorSize.value) || null,
+          price: parseFloat(price),
+        });
+      }
+    } catch (e) { /* bloc JSON-LD invalide, ignoré */ }
+  }
+  return out;
+}
+
+function extractSingleGeneric(html, config, extra) {
+  if (config.try_json_ld) {
+    const ldResults = extractJsonLdGeneric(html).filter(r => {
+      if (!r.price || r.price < (config.price_min || 50000)) return false;
+      if (config.locality_lookup && r.locality) r.locality = findKnownLocalityGeneric(r.locality, extra);
+      return !!r.locality;
+    });
+    if (ldResults.length > 0) return ldResults;
+  }
+  const patterns = [config.block_pattern, config.fallback_pattern].filter(Boolean);
+  for (const pattern of patterns) {
+    const re = new RegExp(pattern, "gi");
+    const out = []; let m;
+    while ((m = re.exec(html)) !== null) {
+      if (config.reject_if && new RegExp(config.reject_if, "i").test(m[0]) &&
+          !(config.reject_unless && new RegExp(config.reject_unless, "i").test(m[0]))) {
+        continue;
+      }
+      const rec = extractFieldsGeneric(m, config.fields, config, extra);
+      if (rec) out.push(rec);
+    }
+    if (out.length > 0) return out;
+  }
+  return [];
+}
+function extractLinksGeneric(html, config) {
+  const re = new RegExp(config.link_pattern, "gi");
+  const seen = new Set(); const out = []; let m;
+  while ((m = re.exec(html)) !== null) {
+    const url = m[config.link_group || 1];
+    if (!url || seen.has(url)) continue;
+    seen.add(url);
+    out.push(url);
+  }
+  return out;
+}
+function extractDetailGeneric(html, config, extra) {
+  if (config.reject_if && new RegExp(config.reject_if, "i").test(html) &&
+      !(config.reject_unless && new RegExp(config.reject_unless, "i").test(html))) {
+    return null;
+  }
+  if (config.try_json_ld) {
+    const ldResults = extractJsonLdGeneric(html);
+    if (ldResults.length > 0) {
+      const r = ldResults[0];
+      if (config.locality_lookup && r.locality) r.locality = findKnownLocalityGeneric(r.locality, extra);
+      if (r.price >= (config.price_min || 50000) && r.locality) return r;
+    }
+  }
+  const patterns = [config.detail_pattern, config.detail_fallback_pattern].filter(Boolean);
+  for (const pattern of patterns) {
+    const re = new RegExp(pattern, "gi");
+    const m = re.exec(html);
+    if (m) {
+      const rec = extractFieldsGeneric(m, config.detail_fields || config.fields, config, extra);
+      if (rec) return rec;
+    }
+  }
+  return null;
+}
+
 function genericAdapter(sourceRow, extra) {
   let config = {};
   try { config = JSON.parse(sourceRow.config_json || "{}"); } catch (e) { config = {}; }
@@ -222,96 +311,9 @@ function genericAdapter(sourceRow, extra) {
       clearTimeout(timeoutId);
     }
   }
-  function extractJsonLd(html) {
-    // Motif le plus robuste quand disponible : schema.org structuré, présent
-    // sur beaucoup de sites indépendamment de la mise en page HTML.
-    const out = [];
-    const ldRe = /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
-    let m;
-    while ((m = ldRe.exec(html)) !== null) {
-      try {
-        const data = JSON.parse(m[1].trim());
-        const items = Array.isArray(data) ? data : [data];
-        for (const obj of items) {
-          const price = obj.price || (obj.offers && obj.offers.price);
-          if (!price) continue;
-          const addr = obj.address || (obj.offers && obj.offers.address) || {};
-          out.push({
-            url: obj.url || null, title: obj.name || null,
-            locality: addr.addressLocality || null,
-            type: obj.category || null,
-            rooms: obj.numberOfRooms || null,
-            surface: (obj.floorSize && obj.floorSize.value) || null,
-            price: parseFloat(price),
-          });
-        }
-      } catch (e) { /* bloc JSON-LD invalide, ignoré */ }
-    }
-    return out;
-  }
-
-  function extractSingle(html) {
-    // 1. JSON-LD si disponible et activé (le plus fiable)
-    if (config.try_json_ld) {
-      const ldResults = extractJsonLd(html).filter(r => {
-        if (!r.price || r.price < (config.price_min || 50000)) return false;
-        if (config.locality_lookup && r.locality) r.locality = findKnownLocalityGeneric(r.locality, extra);
-        return !!r.locality;
-      });
-      if (ldResults.length > 0) return ldResults;
-    }
-    // 2. motif principal, puis motif de repli si 0 résultat (résilience art. 25)
-    const patterns = [config.block_pattern, config.fallback_pattern].filter(Boolean);
-    for (const pattern of patterns) {
-      const re = new RegExp(pattern, "gi");
-      const out = []; let m;
-      while ((m = re.exec(html)) !== null) {
-        if (config.reject_if && new RegExp(config.reject_if, "i").test(m[0]) &&
-            !(config.reject_unless && new RegExp(config.reject_unless, "i").test(m[0]))) {
-          continue; // ex. bloc marqué "vendu" -> rejeté, même règle que le mode two_step
-        }
-        const rec = extractFieldsGeneric(m, config.fields, config, extra);
-        if (rec) out.push(rec);
-      }
-      if (out.length > 0) return out;
-    }
-    return [];
-  }
-  function extractLinks(html) {
-    const re = new RegExp(config.link_pattern, "gi");
-    const seen = new Set(); const out = []; let m;
-    while ((m = re.exec(html)) !== null) {
-      const url = m[config.link_group || 1];
-      if (!url || seen.has(url)) continue;
-      seen.add(url);
-      out.push(url);
-    }
-    return out;
-  }
-  function extractDetail(html) {
-    if (config.reject_if && new RegExp(config.reject_if, "i").test(html) &&
-        !(config.reject_unless && new RegExp(config.reject_unless, "i").test(html))) {
-      return null;
-    }
-    if (config.try_json_ld) {
-      const ldResults = extractJsonLd(html);
-      if (ldResults.length > 0) {
-        const r = ldResults[0];
-        if (config.locality_lookup && r.locality) r.locality = findKnownLocalityGeneric(r.locality, extra);
-        if (r.price >= (config.price_min || 50000) && r.locality) return r;
-      }
-    }
-    const patterns = [config.detail_pattern, config.detail_fallback_pattern].filter(Boolean);
-    for (const pattern of patterns) {
-      const re = new RegExp(pattern, "gi");
-      const m = re.exec(html);
-      if (m) {
-        const rec = extractFieldsGeneric(m, config.detail_fields || config.fields, config, extra);
-        if (rec) return rec;
-      }
-    }
-    return null;
-  }
+  function extractSingle(html) { return extractSingleGeneric(html, config, extra); }
+  function extractLinks(html) { return extractLinksGeneric(html, config); }
+  function extractDetail(html) { return extractDetailGeneric(html, config, extra); }
 
   return {
     name: sourceRow.name,
@@ -821,6 +823,44 @@ export default {
       if (url.pathname === "/api/refresh" && (request.method === "POST" || request.method === "GET")) {
         const report = await fullRefresh(db, fetch.bind(globalThis));
         return json(report);
+      }
+
+      if (url.pathname === "/api/ingest-raw" && request.method === "POST") {
+        // Relais externe (ex. GitHub Actions) : le HTML est déjà récupéré
+        // ailleurs (réseau différent de Cloudflare) et fourni tel quel ici.
+        // Réutilise exactement le même moteur d'extraction que le mode
+        // automatique — aucune logique dupliquée (art. flexibilité).
+        const body = await request.json();
+        const srcRes = await db.prepare("SELECT * FROM sources WHERE name=?").bind(body.source_name).all();
+        const srcRow = srcRes.results[0];
+        if (!srcRow) return json({ error: "source inconnue : " + body.source_name }, 404);
+        let config = {};
+        try { config = JSON.parse(srcRow.config_json || "{}"); } catch (e) {}
+        const extra = await loadExtraLocalities(db);
+        const html = decodeEntitiesGeneric(body.html || "");
+        let records = [];
+        if (config.mode === "two_step" && body.is_detail) {
+          const rec = extractDetailGeneric(html, config, extra);
+          if (rec) records = [Object.assign({ url: body.url }, rec)];
+        } else {
+          records = extractSingleGeneric(html, config, extra);
+        }
+        let stored = 0;
+        for (const rec of records) {
+          const rl = {
+            external_id: (rec.url || body.url || (rec.locality + rec.price)).split("/").filter(Boolean).pop(),
+            url: rec.url || body.url, title: (rec.type || "Bien") + " — " + rec.locality,
+            locality: rec.locality, type: rec.type || "Appartement",
+            rooms: rec.rooms, surface: rec.surface, price: rec.price,
+            confidence: config.confidence || "Probable",
+          };
+          stored += await storeListing(db, srcRow, rl, extra);
+        }
+        const newState = stored > 0 ? "productive" : "accessible";
+        await db.prepare("UPDATE sources SET state=?, last_checked=?, last_error=NULL, last_productive_count=last_productive_count+? WHERE id=?")
+          .bind(newState, new Date().toISOString(), stored, srcRow.id).run();
+        if (stored > 0) await recompute(db);
+        return json({ ok: true, stored, source: srcRow.name });
       }
 
       if (url.pathname === "/api/search") {
