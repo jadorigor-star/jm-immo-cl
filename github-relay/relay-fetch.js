@@ -46,6 +46,9 @@ async function main() {
           continue;
         }
         const html = await pageRes.text();
+        const hasCHF = html.includes("CHF");
+        const hasPrice = /\d{3}[',.]?\d{3}/.test(html);
+        console.log(src.name + " (" + url + ") : page recue, " + html.length + " caracteres, contient 'CHF' : " + hasCHF + ", ressemble a un prix : " + hasPrice);
 
         const ingestRes = await fetch(WORKER_URL + "/api/ingest-raw", {
           method: "POST",
@@ -55,7 +58,7 @@ async function main() {
         const result = await ingestRes.json();
         const stored = result.stored || 0;
         totalStored += stored;
-        console.log(src.name + " (" + url + ") : " + stored + " annonce(s)");
+        console.log(src.name + " (" + url + ") : " + stored + " annonce(s) stockee(s)");
       } catch (e) {
         console.log(src.name + " (" + url + ") : erreur - " + e.message);
       }
