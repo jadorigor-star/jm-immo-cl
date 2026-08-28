@@ -838,6 +838,13 @@ export default {
         try { config = JSON.parse(srcRow.config_json || "{}"); } catch (e) {}
         const extra = await loadExtraLocalities(db);
         const html = decodeEntitiesGeneric(body.html || "");
+        // Capture systématique du HTML brut reçu (art. flexibilité) : permet
+        // une consultation directe en base pour concevoir/corriger un motif
+        // d'extraction sans jamais avoir besoin d'un nouvel envoi côté relais.
+        try {
+          await db.prepare("INSERT INTO debug_captures (source_name, url, html, captured_at) VALUES (?,?,?,?) ON CONFLICT(source_name) DO UPDATE SET url=excluded.url, html=excluded.html, captured_at=excluded.captured_at")
+            .bind(body.source_name, body.url || "", html.slice(0, 300000), new Date().toISOString()).run();
+        } catch (e) { /* la capture de diagnostic ne doit jamais bloquer l'ingestion réelle */ }
         let records = [];
         if (config.mode === "two_step" && body.is_detail) {
           const rec = extractDetailGeneric(html, config, extra);
