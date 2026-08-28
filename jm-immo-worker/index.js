@@ -929,10 +929,11 @@ export default {
       }
       if (url.pathname === "/api/preferences" && request.method === "PUT") {
         const body = await request.json();
-        await db.prepare("UPDATE preferences SET budget_max=?, types_allowed=?, regions_allowed=?, surface_min=?, rooms_min=?, cachet_required=?, weights_json=? WHERE id=1")
+        await db.prepare("UPDATE preferences SET budget_max=?, types_allowed=?, regions_allowed=?, surface_min=?, rooms_min=?, cachet_required=?, weights_json=?, origine_trajet=? WHERE id=1")
           .bind(body.budget_max || 500000, JSON.stringify(body.types_allowed||[]), JSON.stringify(body.regions_allowed||[]),
             body.surface_min || 0, body.rooms_min || 0, body.cachet_required?1:0,
-            JSON.stringify(body.weights || {deal:4,retraite:2,locatif:2,cachet:3,risk:3})).run();
+            JSON.stringify(body.weights || {deal:4,retraite:2,locatif:2,cachet:3,risk:3}),
+            body.origine_trajet || "Fribourg").run();
         await recompute(db);
         return json({ ok: true });
       }
