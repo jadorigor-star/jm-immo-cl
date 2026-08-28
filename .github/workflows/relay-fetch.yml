@@ -1,6 +1,6 @@
 name: JM Immo - Relais de collecte
 
-on:
+"on":
   schedule:
     - cron: '0 */6 * * *'
   workflow_dispatch: {}
