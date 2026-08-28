@@ -142,7 +142,7 @@ function demoAdapter() {
 // =========================================================================
 function decodeEntitiesGeneric(s) {
   return (s || "")
-    .replace(/&#39;/g, "'").replace(/&#x27;/gi, "'")
+    .replace(/&#0*39;/g, "'").replace(/&#x0*27;/gi, "'")
     .replace(/&rsquo;/g, "\u2019").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
 }
 function parsePriceGeneric(raw) {
@@ -207,17 +207,35 @@ function extractJsonLdGeneric(html) {
   while ((m = ldRe.exec(html)) !== null) {
     try {
       const data = JSON.parse(m[1].trim());
-      const items = Array.isArray(data) ? data : [data];
+      const roots = Array.isArray(data) ? data : [data];
+      // Déballage des pages de résultats structurées en ItemList (ex. pages
+      // de recherche avec plusieurs annonces via schema.org SearchResultsPage)
+      // — motif générique, pas spécifique à un site en particulier.
+      const items = [];
+      for (const entry of roots) {
+        const list = entry.mainEntity && entry.mainEntity.itemListElement;
+        if (Array.isArray(list)) {
+          for (const li of list) { if (li.item) items.push(li.item); }
+        } else {
+          items.push(entry);
+        }
+      }
       for (const obj of items) {
         const price = obj.price || (obj.offers && obj.offers.price);
         if (!price) continue;
-        const addr = obj.address || (obj.offers && obj.offers.address) || {};
+        const addr = obj.address || (obj.offers && obj.offers.address) ||
+          (obj.contentLocation && obj.contentLocation.address) || {};
+        let surface = (obj.floorSize && obj.floorSize.value) || null;
+        if (!surface && typeof obj.size === "string") {
+          const sm = /([\d.]+)/.exec(obj.size);
+          if (sm) surface = parseFloat(sm[1]);
+        }
         out.push({
           url: obj.url || null, title: obj.name || null,
           locality: addr.addressLocality || null,
           type: obj.category || null,
           rooms: obj.numberOfRooms || null,
-          surface: (obj.floorSize && obj.floorSize.value) || null,
+          surface: surface,
           price: parseFloat(price),
         });
       }
