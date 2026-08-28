@@ -172,7 +172,14 @@ function extractFieldsGeneric(m, fields, config, extra) {
   if (fields.rooms != null && m[fields.rooms]) out.rooms = parseFloat(String(m[fields.rooms]).replace(",", "."));
   if (fields.surface != null && m[fields.surface]) out.surface = parseFloat(m[fields.surface]);
   if (fields.type != null && m[fields.type]) out.type = m[fields.type].trim();
-  if (fields.url != null && m[fields.url]) out.url = m[fields.url].trim();
+  if (fields.url != null && m[fields.url]) {
+    out.url = m[fields.url].trim();
+    // reconstruction de l'URL absolue quand le site ne fournit que des liens
+    // relatifs (fréquent) ; sans ça le lien affiché à l'utilisateur casserait.
+    if (config.url_prefix && out.url && !/^https?:\/\//i.test(out.url)) {
+      out.url = config.url_prefix.replace(/\/$/, "") + "/" + out.url.replace(/^\//, "");
+    }
+  }
   if (fields.locality != null && m[fields.locality]) {
     const raw = m[fields.locality];
     out.locality = config.locality_lookup ? findKnownLocalityGeneric(raw, extra) : raw.trim();
@@ -864,6 +871,13 @@ export default {
             .bind(body.source_name, body.url || "", html.slice(0, 300000), new Date().toISOString()).run();
         } catch (e) { /* la capture de diagnostic ne doit jamais bloquer l'ingestion réelle */ }
         let records = [];
+        if (config.mode === "two_step" && body.is_list) {
+          // Étape 1 du mode deux temps via relais externe : la page de liste
+          // est fournie, on en extrait les liens et on les renvoie — c'est le
+          // relais qui ira ensuite chercher chaque fiche individuellement.
+          const links = extractLinksGeneric(html, config).slice(0, config.max_details || 20);
+          return json({ ok: true, links });
+        }
         if (config.mode === "two_step" && body.is_detail) {
           const rec = extractDetailGeneric(html, config, extra);
           if (rec) records = [Object.assign({ url: body.url }, rec)];
