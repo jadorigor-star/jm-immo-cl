@@ -8,6 +8,7 @@
 // =========================================================================
 // RÈGLES MÉTIER (art. 3-4, 10, 16-20)
 // =========================================================================
+const SOURCE_TIMEOUT_MS = 8000; // limite par requête individuelle, art. 25
 const REGION_MAP = {
   "lugano":"Tessin","bellinzona":"Tessin","locarno":"Tessin","mendrisio":"Tessin","chiasso":"Tessin",
   "ascona":"Tessin","biasca":"Tessin","gordola":"Tessin","gordevio":"Tessin","riva san vitale":"Tessin",
@@ -45,10 +46,11 @@ const CONF_ORDER = { "Vérifiée": 3, "Probable": 2, "À contrôler": 1 };
 const CACHET_KEYWORDS = ["rénové","historique","authentique","cachet","poutres","cheminée","charme","chalet","ferme","voûte","madrier"];
 const TOURISTIC_REGIONS = new Set(["Tessin","Gruyère","Zweisimmen"]);
 
-function computeRegion(locality) {
+function computeRegion(locality, extra) {
+  extra = extra || { map: {}, excluded: new Set() };
   const key = (locality || "").trim().toLowerCase().replace(/\s*\([^)]*\)\s*$/, "");
-  if (JURA_HORS_PERIMETRE.has(key)) return null;
-  return REGION_MAP[key] || null;
+  if (JURA_HORS_PERIMETRE.has(key) || extra.excluded.has(key)) return null;
+  return REGION_MAP[key] || extra.map[key] || null;
 }
 function isPlausiblePrice(p) {
   if (typeof p !== "number" || isNaN(p) || !isFinite(p)) return false;
@@ -140,7 +142,7 @@ function demoAdapter() {
 // =========================================================================
 function decodeEntitiesGeneric(s) {
   return (s || "")
-    .replace(/&#39;/g, "'").replace(/&#x27;/gi, "'")
+    .replace(/&#0*39;/g, "'").replace(/&#x0*27;/gi, "'")
     .replace(/&rsquo;/g, "\u2019").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
 }
 function parsePriceGeneric(raw) {
@@ -149,33 +151,231 @@ function parsePriceGeneric(raw) {
   const price = parseFloat(cleaned);
   return isFinite(price) ? price : null;
 }
-function findKnownLocalityGeneric(text) {
+function findKnownLocalityGeneric(text, extra) {
+  extra = extra || { map: {} };
   const lower = (text || "").toLowerCase();
   let best = null, bestIdx = Infinity;
   for (const key in REGION_MAP) {
     const idx = lower.indexOf(key);
     if (idx !== -1 && idx < bestIdx) { bestIdx = idx; best = key; }
   }
+  for (const key in extra.map) {
+    const idx = lower.indexOf(key);
+    if (idx !== -1 && idx < bestIdx) { bestIdx = idx; best = key; }
+  }
   return best;
 }
-function extractFieldsGeneric(m, fields, config) {
+function extractFieldsGeneric(m, fields, config, extra) {
   const priceMin = config.price_min || 50000;
   const out = { price: null, rooms: null, surface: null, locality: null, type: null, url: null };
   if (fields.price != null && m[fields.price]) out.price = parsePriceGeneric(m[fields.price]);
   if (fields.rooms != null && m[fields.rooms]) out.rooms = parseFloat(String(m[fields.rooms]).replace(",", "."));
   if (fields.surface != null && m[fields.surface]) out.surface = parseFloat(m[fields.surface]);
   if (fields.type != null && m[fields.type]) out.type = m[fields.type].trim();
-  if (fields.url != null && m[fields.url]) out.url = m[fields.url].trim();
+  if (fields.url != null && m[fields.url]) {
+    out.url = m[fields.url].trim();
+    // reconstruction de l'URL absolue quand le site ne fournit que des liens
+    // relatifs (fréquent) ; sans ça le lien affiché à l'utilisateur casserait.
+    if (config.url_prefix && out.url && !/^https?:\/\//i.test(out.url)) {
+      out.url = config.url_prefix.replace(/\/$/, "") + "/" + out.url.replace(/^\//, "");
+    }
+  }
   if (fields.locality != null && m[fields.locality]) {
     const raw = m[fields.locality];
-    out.locality = config.locality_lookup ? findKnownLocalityGeneric(raw) : raw.trim();
+    out.locality = config.locality_lookup ? findKnownLocalityGeneric(raw, extra) : raw.trim();
+  }
+  // recherche secondaire optionnelle : certains champs ne sont pas capturables
+  // de façon fiable dans un seul motif linéaire (ordre variable dans la page).
+  // On les cherche alors indépendamment à l'intérieur du bloc déjà isolé (m[0]).
+  if (config.sub_fields) {
+    for (const key in config.sub_fields) {
+      if (out[key] != null) continue; // ne pas écraser une valeur déjà trouvée
+      const re = new RegExp(config.sub_fields[key], "i");
+      const sm = re.exec(m[0]);
+      if (!sm || !sm[1]) continue;
+      if (key === "rooms") out.rooms = parseFloat(sm[1].replace(",", "."));
+      else if (key === "surface") out.surface = parseFloat(sm[1]);
+      else if (key === "price") out.price = parsePriceGeneric(sm[1]);
+      else if (key === "locality") out.locality = config.locality_lookup ? findKnownLocalityGeneric(sm[1], extra) : sm[1].trim();
+      else if (key === "type") out.type = sm[1].trim();
+    }
   }
   if (!out.price || out.price < priceMin) return null;
   if (!out.locality) return null;
   return out;
 }
 
-function genericAdapter(sourceRow) {
+function getByPath(obj, path) {
+  if (!path) return void 0;
+  return path.split(".").reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : void 0), obj);
+}
+function extractJsonAfterMarker(html, marker) {
+  // Beaucoup de sites modernes (Vue/Nuxt/Next) intègrent leurs données dans un
+  // objet JSON directement dans la page (ex. window.__PINIA_STATE__ = {...}).
+  // Ce motif est bien plus stable qu'un motif texte, car il ne dépend pas des
+  // noms de classes CSS générés (qui changent à chaque déploiement du site).
+  const idx = html.indexOf(marker);
+  if (idx === -1) return null;
+  const i = html.indexOf("{", idx + marker.length);
+  if (i === -1) return null;
+  let depth = 0, inStr = false, esc = false;
+  for (let j = i; j < html.length; j++) {
+    const ch = html[j];
+    if (inStr) {
+      if (esc) esc = false;
+      else if (ch === "\\") esc = true;
+      else if (ch === '"') inStr = false;
+      continue;
+    }
+    if (ch === '"') { inStr = true; continue; }
+    if (ch === "{") depth++;
+    else if (ch === "}") { depth--; if (depth === 0) return html.slice(i, j + 1); }
+  }
+  return null;
+}
+function extractStateJsonGeneric(html, config) {
+  const jsonText = extractJsonAfterMarker(html, config.state_json_marker);
+  if (!jsonText) return [];
+  let root;
+  try { root = JSON.parse(jsonText); } catch (e) { return []; }
+  const items = getByPath(root, config.state_json_list_path);
+  if (!Array.isArray(items)) return [];
+  const out = [];
+  for (const item of items) {
+    if (config.state_json_filter) {
+      const val = getByPath(item, config.state_json_filter.path);
+      if (val !== config.state_json_filter.equals) continue;
+    }
+    const f = config.state_json_fields || {};
+    const price = f.price ? getByPath(item, f.price) : null;
+    if (!price) continue;
+    const locality = f.locality ? getByPath(item, f.locality) : null;
+    const rooms = f.rooms ? getByPath(item, f.rooms) : null;
+    const surface = f.surface ? getByPath(item, f.surface) : null;
+    const id = f.id ? getByPath(item, f.id) : null;
+    const url = config.url_prefix && id != null
+      ? config.url_prefix.replace(/\/$/, "") + "/" + (config.url_path_prefix || "") + id
+      : null;
+    out.push({ price: parseFloat(price), locality, rooms, surface, url, type: null });
+  }
+  return out;
+}
+function extractJsonLdGeneric(html) {
+  // Motif le plus robuste quand disponible : schema.org structuré, présent
+  // sur beaucoup de sites indépendamment de la mise en page HTML.
+  const out = [];
+  const ldRe = /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+  let m;
+  while ((m = ldRe.exec(html)) !== null) {
+    try {
+      const data = JSON.parse(m[1].trim());
+      const roots = Array.isArray(data) ? data : [data];
+      // Déballage des pages de résultats structurées en ItemList (ex. pages
+      // de recherche avec plusieurs annonces via schema.org SearchResultsPage)
+      // — motif générique, pas spécifique à un site en particulier.
+      const items = [];
+      for (const entry of roots) {
+        const list = entry.mainEntity && entry.mainEntity.itemListElement;
+        if (Array.isArray(list)) {
+          for (const li of list) { if (li.item) items.push(li.item); }
+        } else {
+          items.push(entry);
+        }
+      }
+      for (const obj of items) {
+        const price = obj.price || (obj.offers && obj.offers.price);
+        if (!price) continue;
+        const addr = obj.address || (obj.offers && obj.offers.address) ||
+          (obj.contentLocation && obj.contentLocation.address) || {};
+        let surface = (obj.floorSize && obj.floorSize.value) || null;
+        if (!surface && typeof obj.size === "string") {
+          const sm = /([\d.]+)/.exec(obj.size);
+          if (sm) surface = parseFloat(sm[1]);
+        }
+        out.push({
+          url: obj.url || null, title: obj.name || null,
+          locality: addr.addressLocality || null,
+          type: obj.category || null,
+          rooms: obj.numberOfRooms || null,
+          surface: surface,
+          price: parseFloat(price),
+        });
+      }
+    } catch (e) { /* bloc JSON-LD invalide, ignoré */ }
+  }
+  return out;
+}
+
+function extractSingleGeneric(html, config, extra) {
+  if (config.try_json_ld) {
+    const ldResults = extractJsonLdGeneric(html).filter(r => {
+      if (!r.price || r.price < (config.price_min || 50000)) return false;
+      if (config.locality_lookup && r.locality) r.locality = findKnownLocalityGeneric(r.locality, extra);
+      return !!r.locality;
+    });
+    if (ldResults.length > 0) return ldResults;
+  }
+  if (config.state_json_marker) {
+    const stateResults = extractStateJsonGeneric(html, config).filter(r => {
+      if (!r.price || r.price < (config.price_min || 50000)) return false;
+      if (config.locality_lookup && r.locality) r.locality = findKnownLocalityGeneric(r.locality, extra);
+      return !!r.locality;
+    });
+    if (stateResults.length > 0) return stateResults;
+  }
+  const patterns = [config.block_pattern, config.fallback_pattern].filter(Boolean);
+  for (const pattern of patterns) {
+    const re = new RegExp(pattern, "gi");
+    const out = []; let m;
+    while ((m = re.exec(html)) !== null) {
+      if (config.reject_if && new RegExp(config.reject_if, "i").test(m[0]) &&
+          !(config.reject_unless && new RegExp(config.reject_unless, "i").test(m[0]))) {
+        continue;
+      }
+      const rec = extractFieldsGeneric(m, config.fields, config, extra);
+      if (rec) out.push(rec);
+    }
+    if (out.length > 0) return out;
+  }
+  return [];
+}
+function extractLinksGeneric(html, config) {
+  const re = new RegExp(config.link_pattern, "gi");
+  const seen = new Set(); const out = []; let m;
+  while ((m = re.exec(html)) !== null) {
+    const url = m[config.link_group || 1];
+    if (!url || seen.has(url)) continue;
+    seen.add(url);
+    out.push(url);
+  }
+  return out;
+}
+function extractDetailGeneric(html, config, extra) {
+  if (config.reject_if && new RegExp(config.reject_if, "i").test(html) &&
+      !(config.reject_unless && new RegExp(config.reject_unless, "i").test(html))) {
+    return null;
+  }
+  if (config.try_json_ld) {
+    const ldResults = extractJsonLdGeneric(html);
+    if (ldResults.length > 0) {
+      const r = ldResults[0];
+      if (config.locality_lookup && r.locality) r.locality = findKnownLocalityGeneric(r.locality, extra);
+      if (r.price >= (config.price_min || 50000) && r.locality) return r;
+    }
+  }
+  const patterns = [config.detail_pattern, config.detail_fallback_pattern].filter(Boolean);
+  for (const pattern of patterns) {
+    const re = new RegExp(pattern, "gi");
+    const m = re.exec(html);
+    if (m) {
+      const rec = extractFieldsGeneric(m, config.detail_fields || config.fields, config, extra);
+      if (rec) return rec;
+    }
+  }
+  return null;
+}
+
+function genericAdapter(sourceRow, extra) {
   let config = {};
   try { config = JSON.parse(sourceRow.config_json || "{}"); } catch (e) { config = {}; }
   const headers = config.headers || {
@@ -184,40 +384,24 @@ function genericAdapter(sourceRow) {
   };
 
   async function fetchText(fetchFn, url) {
-    const res = await fetchFn(url, { headers });
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    return decodeEntitiesGeneric(await res.text());
-  }
-  function extractSingle(html) {
-    const re = new RegExp(config.block_pattern, "gi");
-    const out = []; let m;
-    while ((m = re.exec(html)) !== null) {
-      const rec = extractFieldsGeneric(m, config.fields, config);
-      if (rec) out.push(rec);
+    // Limite de temps par requête individuelle (art. 25) : un site lent ou qui
+    // ne répond jamais ne doit jamais bloquer le traitement des autres sources.
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), SOURCE_TIMEOUT_MS);
+    try {
+      const res = await fetchFn(url, { headers, signal: controller.signal });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return decodeEntitiesGeneric(await res.text());
+    } catch (e) {
+      if (e && e.name === "AbortError") throw new Error("Delai depasse (" + SOURCE_TIMEOUT_MS + "ms)");
+      throw e;
+    } finally {
+      clearTimeout(timeoutId);
     }
-    return out;
   }
-  function extractLinks(html) {
-    const re = new RegExp(config.link_pattern, "gi");
-    const seen = new Set(); const out = []; let m;
-    while ((m = re.exec(html)) !== null) {
-      const url = m[config.link_group || 1];
-      if (!url || seen.has(url)) continue;
-      seen.add(url);
-      out.push(url);
-    }
-    return out;
-  }
-  function extractDetail(html) {
-    if (config.reject_if && new RegExp(config.reject_if, "i").test(html) &&
-        !(config.reject_unless && new RegExp(config.reject_unless, "i").test(html))) {
-      return null;
-    }
-    const re = new RegExp(config.detail_pattern, "gi");
-    const m = re.exec(html);
-    if (!m) return null;
-    return extractFieldsGeneric(m, config.detail_fields || config.fields, config);
-  }
+  function extractSingle(html) { return extractSingleGeneric(html, config, extra); }
+  function extractLinks(html) { return extractLinksGeneric(html, config); }
+  function extractDetail(html) { return extractDetailGeneric(html, config, extra); }
 
   return {
     name: sourceRow.name,
@@ -271,17 +455,31 @@ function genericAdapter(sourceRow) {
 // =========================================================================
 // PIPELINE (art. 23)
 // =========================================================================
+async function loadExtraLocalities(db) {
+  // Complément au référentiel codé en dur (art. 3) — vit en base pour que
+  // l'ajout d'une localité ne nécessite plus de redéploiement.
+  const map = {}; const excluded = new Set();
+  try {
+    const res = await db.prepare("SELECT name, region FROM localities").all();
+    for (const row of res.results) map[row.name.toLowerCase()] = row.region;
+    const exRes = await db.prepare("SELECT name FROM localities_excluded").all();
+    for (const row of exRes.results) excluded.add(row.name.toLowerCase());
+  } catch (e) { /* tables absentes ou base indisponible -> comportement inchangé */ }
+  return { map, excluded };
+}
+
 async function ingest(db, fetchFn) {
   const report = [];
+  const extra = await loadExtraLocalities(db);
   const sourcesRes = await db.prepare("SELECT * FROM sources WHERE enabled=1").all();
 
   for (const srcRow of sourcesRes.results) {
-    const adapter = srcRow.adapter === "demo" ? demoAdapter() : genericAdapter(srcRow);
+    const adapter = srcRow.adapter === "demo" ? demoAdapter() : genericAdapter(srcRow, extra);
     let state = "enregistrée", error = null, stored = 0;
     try {
       state = await adapter.check(fetchFn);
       const rawListings = await adapter.fetchListings(fetchFn);
-      for (const rl of rawListings) stored += await storeListing(db, srcRow, rl);
+      for (const rl of rawListings) stored += await storeListing(db, srcRow, rl, extra);
       if (stored > 0) state = "productive";
     } catch (e) { error = String(e && e.message ? e.message : e); }
     await db.prepare("UPDATE sources SET state=?, last_checked=?, last_error=?, last_productive_count=? WHERE id=?")
@@ -291,10 +489,10 @@ async function ingest(db, fetchFn) {
   return report;
 }
 
-async function storeListing(db, srcRow, rl) {
+async function storeListing(db, srcRow, rl, extra) {
   if (!rl.title || !rl.locality || !isPlausiblePrice(rl.price)) return 0;
   if (rl.is_rental) return 0;
-  const region = computeRegion(rl.locality);
+  const region = computeRegion(rl.locality, extra);
   if (!region) return 0;
 
   const listingId = srcRow.id + ":" + rl.external_id;
@@ -523,6 +721,7 @@ main{padding:14px 16px;max-width:660px;margin:0 auto;}
 <body>
 <header>
   <h1>JM Immo</h1>
+  <button id="btnRefresh" style="margin:8px 0;padding:8px 12px;border-radius:8px;border:1px solid #262E3A;background:#1D2430;color:#E7EAEE;font-size:12.5px;cursor:pointer">&#8635; Rafraichir les sources</button>
   <div class="searchbar">
     <input id="q" placeholder="Rechercher (village, type, mot-cle)...">
     <button id="btnSearch">Chercher</button>
@@ -679,6 +878,18 @@ document.getElementById("tabs").addEventListener("click", function(e){
   load();
 });
 document.getElementById("btnSearch").onclick = load;
+document.getElementById("btnRefresh").onclick = async function(){
+  const btn = document.getElementById("btnRefresh");
+  const original = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = "Actualisation en cours...";
+  try {
+    await fetch("/api/refresh");
+  } catch(e) { /* le rechargement des donnees ci-dessous montrera l etat reel meme en cas d erreur reseau */ }
+  btn.disabled = false;
+  btn.innerHTML = original;
+  load();
+};
 ["fRegion","fType","fBudget","fSort"].forEach(function(id){document.getElementById(id).onchange = load;});
 document.getElementById("q").addEventListener("keydown", function(e){ if(e.key==="Enter") load(); });
 load();
@@ -700,6 +911,63 @@ export default {
       if (url.pathname === "/api/refresh" && (request.method === "POST" || request.method === "GET")) {
         const report = await fullRefresh(db, fetch.bind(globalThis));
         return json(report);
+      }
+
+      if (url.pathname === "/api/ingest-raw" && request.method === "POST") {
+        // Relais externe (ex. GitHub Actions) : le HTML est déjà récupéré
+        // ailleurs (réseau différent de Cloudflare) et fourni tel quel ici.
+        // Réutilise exactement le même moteur d'extraction que le mode
+        // automatique — aucune logique dupliquée (art. flexibilité).
+        const body = await request.json();
+        const srcRes = await db.prepare("SELECT * FROM sources WHERE name=?").bind(body.source_name).all();
+        const srcRow = srcRes.results[0];
+        if (!srcRow) return json({ error: "source inconnue : " + body.source_name }, 404);
+        let config = {};
+        try { config = JSON.parse(srcRow.config_json || "{}"); } catch (e) {}
+        const extra = await loadExtraLocalities(db);
+        const html = decodeEntitiesGeneric(body.html || "");
+        // Capture systématique du HTML brut reçu (art. flexibilité) : permet
+        // une consultation directe en base pour concevoir/corriger un motif
+        // d'extraction sans jamais avoir besoin d'un nouvel envoi côté relais.
+        try {
+          await db.prepare("INSERT INTO debug_captures (source_name, url, html, captured_at) VALUES (?,?,?,?) ON CONFLICT(source_name) DO UPDATE SET url=excluded.url, html=excluded.html, captured_at=excluded.captured_at")
+            .bind(body.source_name, body.url || "", html.slice(0, 300000), new Date().toISOString()).run();
+        } catch (e) { /* la capture de diagnostic ne doit jamais bloquer l'ingestion réelle */ }
+        let records = [];
+        if (config.mode === "two_step" && body.is_list) {
+          // Étape 1 du mode deux temps via relais externe : la page de liste
+          // est fournie, on en extrait les liens et on les renvoie — c'est le
+          // relais qui ira ensuite chercher chaque fiche individuellement.
+          const links = extractLinksGeneric(html, config).slice(0, config.max_details || 20);
+          return json({ ok: true, links });
+        }
+        if (config.mode === "two_step" && body.is_detail) {
+          const rec = extractDetailGeneric(html, config, extra);
+          if (rec) records = [Object.assign({ url: body.url }, rec)];
+        } else {
+          records = extractSingleGeneric(html, config, extra);
+        }
+        let stored = 0;
+        // Limite le nombre d'annonces traitées par appel : chaque annonce
+        // stockée consomme plusieurs sous-requêtes D1, et Cloudflare limite
+        // le nombre total par invocation. Une source avec beaucoup d'annonces
+        // (ex. 100+) sera donc traitée sur plusieurs passages successifs
+        // plutôt que de tout faire échouer d'un coup.
+        for (const rec of records.slice(0, 25)) {
+          const rl = {
+            external_id: (rec.url || body.url || (rec.locality + rec.price)).split("/").filter(Boolean).pop(),
+            url: rec.url || body.url, title: (rec.type || "Bien") + " — " + rec.locality,
+            locality: rec.locality, type: rec.type || "Appartement",
+            rooms: rec.rooms, surface: rec.surface, price: rec.price,
+            confidence: config.confidence || "Probable",
+          };
+          stored += await storeListing(db, srcRow, rl, extra);
+        }
+        const newState = stored > 0 ? "productive" : "accessible";
+        await db.prepare("UPDATE sources SET state=?, last_checked=?, last_error=NULL, last_productive_count=last_productive_count+? WHERE id=?")
+          .bind(newState, new Date().toISOString(), stored, srcRow.id).run();
+        if (stored > 0) await recompute(db);
+        return json({ ok: true, stored, source: srcRow.name });
       }
 
       if (url.pathname === "/api/search") {
@@ -743,10 +1011,11 @@ export default {
       }
       if (url.pathname === "/api/preferences" && request.method === "PUT") {
         const body = await request.json();
-        await db.prepare("UPDATE preferences SET budget_max=?, types_allowed=?, regions_allowed=?, surface_min=?, rooms_min=?, cachet_required=?, weights_json=? WHERE id=1")
+        await db.prepare("UPDATE preferences SET budget_max=?, types_allowed=?, regions_allowed=?, surface_min=?, rooms_min=?, cachet_required=?, weights_json=?, origine_trajet=? WHERE id=1")
           .bind(body.budget_max || 500000, JSON.stringify(body.types_allowed||[]), JSON.stringify(body.regions_allowed||[]),
             body.surface_min || 0, body.rooms_min || 0, body.cachet_required?1:0,
-            JSON.stringify(body.weights || {deal:4,retraite:2,locatif:2,cachet:3,risk:3})).run();
+            JSON.stringify(body.weights || {deal:4,retraite:2,locatif:2,cachet:3,risk:3}),
+            body.origine_trajet || "Fribourg").run();
         await recompute(db);
         return json({ ok: true });
       }
@@ -789,7 +1058,15 @@ export default {
       }
 
       if (url.pathname === "/") {
-        return new Response(FRONTEND_HTML, { headers: { "Content-Type": "text/html; charset=utf-8" } });
+        // Le frontend vit en base (art. 6 : modifications d'interface sans
+        // redéploiement). FRONTEND_HTML codé en dur sert uniquement de
+        // filet de sécurité si la base est indisponible (art. 25).
+        let html = FRONTEND_HTML;
+        try {
+          const row = await db.prepare("SELECT value FROM app_config WHERE key='frontend_html'").all();
+          if (row.results.length && row.results[0].value) html = row.results[0].value;
+        } catch (e) { /* filet de sécurité : sert la version codée en dur */ }
+        return new Response(html, { headers: { "Content-Type": "text/html; charset=utf-8" } });
       }
 
       return json({ error: "route inconnue" }, 404);
