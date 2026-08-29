@@ -3,7 +3,12 @@ name: JM Immo - Relais de collecte
 "on":
   schedule:
     - cron: '0 */6 * * *'
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      force_all:
+        description: "Ignorer les intervalles et forcer toutes les sources"
+        type: boolean
+        default: false
 
 jobs:
   relay:
@@ -14,4 +19,6 @@ jobs:
         with:
           node-version: '20'
       - name: Lancer le relais de collecte
+        env:
+          FORCE_ALL: ${{ inputs.force_all }}
         run: node github-relay/relay-fetch.js
