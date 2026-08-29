@@ -69,6 +69,22 @@ async function handleTwoStep(src, config) {
   return stored;
 }
 
+function isDue(src) {
+  // Une source sans dernier passage connu est toujours due. Sinon, on
+  // compare le temps écoulé à son intervalle propre (réglable en base,
+  // sans jamais toucher à ce script).
+  if (!src.last_checked) return true;
+  const intervalMs = (src.check_interval_hours || 6) * 60 * 60 * 1000;
+  const elapsed = Date.now() - new Date(src.last_checked).getTime();
+  return elapsed >= intervalMs;
+}
+
+async function processSource(src) {
+  const config = JSON.parse(src.config_json);
+  if (config.mode === "two_step") return handleTwoStep(src, config);
+  return handleSingle(src, config);
+}
+
 async function main() {
   console.log("Récupération de la liste des sources depuis " + WORKER_URL + "...");
   const srcRes = await fetch(WORKER_URL + "/api/sources");
@@ -78,7 +94,7 @@ async function main() {
   }
   const { results } = await srcRes.json();
 
-  const candidates = results.filter(function (src) {
+  const eligible = results.filter(function (src) {
     if (!src.enabled) return false;
     if (src.adapter === "demo" || src.adapter === "manuel_uniquement") return false;
     let config;
@@ -88,13 +104,24 @@ async function main() {
     return false;
   });
 
-  console.log(candidates.length + " source(s) éligible(s) au relais ce passage.");
+  const candidates = eligible.filter(isDue);
+  const skipped = eligible.length - candidates.length;
+  console.log(eligible.length + " source(s) éligible(s), " + candidates.length + " due(s) ce passage (" + skipped + " ignorée(s), pas encore dues).");
 
+  // Traitement par lots parallèles : plusieurs sources contactées en même
+  // temps plutôt qu'une par une. Nécessaire pour que 60+ sources tiennent
+  // dans un temps d'exécution raisonnable.
+  const BATCH_SIZE = 6;
   let totalStored = 0;
-  for (const src of candidates) {
-    const config = JSON.parse(src.config_json);
-    if (config.mode === "two_step") totalStored += await handleTwoStep(src, config);
-    else totalStored += await handleSingle(src, config);
+  for (let i = 0; i < candidates.length; i += BATCH_SIZE) {
+    const batch = candidates.slice(i, i + BATCH_SIZE);
+    const results = await Promise.all(batch.map(function (src) {
+      return processSource(src).catch(function (e) {
+        console.log(src.name + " : erreur de lot - " + e.message);
+        return 0;
+      });
+    }));
+    totalStored += results.reduce(function (a, b) { return a + b; }, 0);
   }
 
   console.log("");
