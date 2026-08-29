@@ -15,8 +15,33 @@ const WORKER_URL = process.env.WORKER_URL || "https://jm-immo-cl.jadorigor.worke
 const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15";
 const HEADERS = { "User-Agent": UA, "Accept": "text/html,application/xhtml+xml", "Accept-Language": "fr-CH,fr;q=0.9" };
 
+// Respecte un delai minimal entre deux requetes vers le MEME site — sans ca,
+// plusieurs pages du meme portail (ex. ImmoScout24) contactees en rafale
+// depuis la meme adresse GitHub declenchent une protection anti-robot par
+// volume (confirme le 29.08 : 13 pages ImmoScout24 en 10s -> blocage HTTP 403
+// generalise, alors que les memes pages fonctionnent individuellement).
+const domainLastRequest = {};
+const MIN_DELAY_PER_DOMAIN_MS = 2500;
+function getDomain(url) {
+  try { return new URL(url).hostname; } catch (e) { return url; }
+}
+async function throttledFetch(url, opts) {
+  const domain = getDomain(url);
+  const now = Date.now();
+  // Reservation immediate et synchrone du creneau (avant tout await) : c'est
+  // ce qui garantit un espacement correct meme quand plusieurs requetes vers
+  // le meme domaine partent en parallele — sans ca, elles liraient toutes la
+  // meme valeur "derniere requete" avant qu'aucune ne l'ait mise a jour.
+  const prevReserved = domainLastRequest[domain] || 0;
+  const myTurn = Math.max(now, prevReserved + MIN_DELAY_PER_DOMAIN_MS);
+  domainLastRequest[domain] = myTurn;
+  const wait = myTurn - now;
+  if (wait > 0) await new Promise(function (r) { setTimeout(r, wait); });
+  return fetch(url, opts);
+}
+
 async function fetchPage(url) {
-  const res = await fetch(url, { headers: HEADERS });
+  const res = await throttledFetch(url, { headers: HEADERS });
   if (!res.ok) throw new Error("HTTP " + res.status);
   return res.text();
 }
