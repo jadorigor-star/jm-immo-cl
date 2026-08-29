@@ -596,6 +596,16 @@ async function upsertBien(db, computed) {
 // Recalcul complet : reconstruit tous les biens depuis zéro. Nécessaire
 // quand un changement affecte potentiellement TOUS les biens à la fois
 // (ex. modification des pondérations de préférences).
+// Marque comme inactives les annonces qu'aucune source n'a revues depuis
+// longtemps — signe probable qu'elles ne sont plus en ligne (vendu, retire).
+// Ne supprime rien physiquement : conserve l'historique, juste exclu des
+// résultats actifs (comme le fait deja le statut 'active' partout ailleurs).
+async function cleanupStaleListings(db, maxAgeDays) {
+  const seuil = new Date(Date.now() - (maxAgeDays || 21) * 24 * 3600 * 1000).toISOString();
+  const res = await db.prepare("UPDATE listings SET status='inactive' WHERE status='active' AND last_seen < ?").bind(seuil).run();
+  return res.meta ? res.meta.changes : 0;
+}
+
 async function recomputeFull(db) {
   const prefsRes = await db.prepare("SELECT * FROM preferences WHERE id=1").all();
   const weights = JSON.parse(prefsRes.results[0].weights_json);
@@ -723,7 +733,7 @@ async function search(db, opts) {
   rows.sort(sortFns[opts.sort || "jmfit"]);
 
   const out = [];
-  for (const r of rows.slice(0, opts.limit || 100)) {
+  for (const r of rows.slice(0, opts.limit || 1000)) {
     const srcRes = await db.prepare("SELECT source_name, url FROM bien_sources WHERE bien_id=?").bind(r.id).all();
     out.push(Object.assign({}, r, { is_favori: favoriteIds.has(r.id), sources: srcRes.results,
       price_drop: r.price_drop_json ? JSON.parse(r.price_drop_json) : null }));
@@ -1173,9 +1183,11 @@ export default {
     // La collecte réelle se fait désormais uniquement via le relais externe
     // (GitHub Actions) — jamais depuis Cloudflare directement, pour éviter
     // la limite technique de sous-requêtes sur les sources à fort volume.
-    // Cette tâche planifiée, si elle est active, ne fait donc que recalculer
-    // les scores à partir des données déjà présentes, sans jamais recontacter
-    // les sites eux-mêmes.
-    ctx.waitUntil(recomputeFull(env.DB));
+    // Cette tâche planifiée nettoie d'abord les annonces plus revues depuis
+    // longtemps (probablement plus en ligne), puis recalcule les scores.
+    ctx.waitUntil((async () => {
+      await cleanupStaleListings(env.DB, 21);
+      await recomputeFull(env.DB);
+    })());
   },
 };
