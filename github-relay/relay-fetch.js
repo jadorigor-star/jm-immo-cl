@@ -69,10 +69,13 @@ async function handleTwoStep(src, config) {
   return stored;
 }
 
+const FORCE_ALL = process.env.FORCE_ALL === "true";
+
 function isDue(src) {
-  // Une source sans dernier passage connu est toujours due. Sinon, on
-  // compare le temps écoulé à son intervalle propre (réglable en base,
-  // sans jamais toucher à ce script).
+  // Le forcage manuel (case a cocher au declenchement) ignore les
+  // intervalles pour un passage complet ponctuel, sans jamais modifier ce
+  // qui se passe automatiquement le reste du temps.
+  if (FORCE_ALL) return true;
   if (!src.last_checked) return true;
   const intervalMs = (src.check_interval_hours || 6) * 60 * 60 * 1000;
   const elapsed = Date.now() - new Date(src.last_checked).getTime();
@@ -106,6 +109,7 @@ async function main() {
 
   const candidates = eligible.filter(isDue);
   const skipped = eligible.length - candidates.length;
+  if (FORCE_ALL) console.log("Forçage manuel actif : intervalles ignorés pour ce passage.");
   console.log(eligible.length + " source(s) éligible(s), " + candidates.length + " due(s) ce passage (" + skipped + " ignorée(s), pas encore dues).");
 
   // Traitement par lots parallèles : plusieurs sources contactées en même
