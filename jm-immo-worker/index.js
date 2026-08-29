@@ -948,7 +948,12 @@ export default {
           records = extractSingleGeneric(html, config, extra);
         }
         let stored = 0;
-        for (const rec of records) {
+        // Limite le nombre d'annonces traitées par appel : chaque annonce
+        // stockée consomme plusieurs sous-requêtes D1, et Cloudflare limite
+        // le nombre total par invocation. Une source avec beaucoup d'annonces
+        // (ex. 100+) sera donc traitée sur plusieurs passages successifs
+        // plutôt que de tout faire échouer d'un coup.
+        for (const rec of records.slice(0, 25)) {
           const rl = {
             external_id: (rec.url || body.url || (rec.locality + rec.price)).split("/").filter(Boolean).pop(),
             url: rec.url || body.url, title: (rec.type || "Bien") + " — " + rec.locality,
