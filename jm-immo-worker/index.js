@@ -521,6 +521,11 @@ async function storeListing(db, srcRow, rl, extra) {
 async function computeBienRecord(db, bId, listings, weights, regionPrices) {
   const sorted = [...listings].sort((a,b) => (a.last_seen < b.last_seen ? -1 : 1));
   const latest = sorted[sorted.length-1];
+  // Si plusieurs sources rapportent le même bien (même localité/type/pièces/
+  // surface) à des prix différents, on retient le prix le plus bas plutôt
+  // que celui de la source la plus récemment vue — c'est ce qui compte pour
+  // l'utilisateur, pas la fraîcheur de la donnée en elle-même.
+  const cheapestPrice = Math.min(...sorted.map(l => l.price));
   const bestConf = sorted.reduce((acc,l) => (CONF_ORDER[l.confidence] > CONF_ORDER[acc] ? l.confidence : acc), "À contrôler");
   const firstSeen = sorted.reduce((acc,l) => (l.first_seen < acc ? l.first_seen : acc), sorted[0].first_seen);
   const cachet = sorted.some(l => l.cachet);
@@ -532,8 +537,8 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices) {
   const disc = discRes.results[0];
   let discardedNow = false, rescue = null;
   if (disc) {
-    if (latest.price < disc.price_at_exclusion) {
-      rescue = { bienId: bId, oldPrice: disc.price_at_exclusion, newPrice: latest.price };
+    if (cheapestPrice < disc.price_at_exclusion) {
+      rescue = { bienId: bId, oldPrice: disc.price_at_exclusion, newPrice: cheapestPrice };
       await db.prepare("DELETE FROM discarded WHERE bien_id=?").bind(bId).run();
     } else { discardedNow = true; }
   }
@@ -545,7 +550,7 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices) {
   }
 
   const scores = {
-    deal: estimateDealScore(latest.price, regionPrices[latest.region] || []),
+    deal: estimateDealScore(cheapestPrice, regionPrices[latest.region] || []),
     retraite: estimateRetraiteScore(latest.rooms, latest.surface, latest.region),
     locatif: estimateLocatifScore(latest.region, latest.rooms),
     cachet: estimateCachetScore(latest.title, cachet),
@@ -557,7 +562,7 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices) {
   return {
     record: {
       id: bId, title: latest.title, locality: latest.locality, region: latest.region, type: latest.type,
-      rooms: latest.rooms, surface: latest.surface, price: latest.price, cachet: cachet?1:0, confidence: bestConf,
+      rooms: latest.rooms, surface: latest.surface, price: cheapestPrice, cachet: cachet?1:0, confidence: bestConf,
       first_seen: firstSeen, last_seen: latest.last_seen, deal_score: scores.deal, retraite_score: scores.retraite,
       locatif_score: scores.locatif, cachet_score: scores.cachet, risk_score: scores.risk, jm_fit: fit,
       is_opportunity: discardedNow?0:(fit>=70?1:0), explain, price_drop_json: priceDrop ? JSON.stringify(priceDrop) : null,
