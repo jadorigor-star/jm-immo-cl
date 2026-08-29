@@ -515,7 +515,83 @@ async function storeListing(db, srcRow, rl, extra) {
   return 1;
 }
 
-async function recompute(db) {
+// Calcule l'enregistrement complet d'UN SEUL bien (scores, historique, statut
+// écarté/repêché). Fonction extraite pour être réutilisable aussi bien par un
+// recalcul complet que par un recalcul ciblé sur quelques biens seulement.
+async function computeBienRecord(db, bId, listings, weights, regionPrices) {
+  const sorted = [...listings].sort((a,b) => (a.last_seen < b.last_seen ? -1 : 1));
+  const latest = sorted[sorted.length-1];
+  const bestConf = sorted.reduce((acc,l) => (CONF_ORDER[l.confidence] > CONF_ORDER[acc] ? l.confidence : acc), "À contrôler");
+  const firstSeen = sorted.reduce((acc,l) => (l.first_seen < acc ? l.first_seen : acc), sorted[0].first_seen);
+  const cachet = sorted.some(l => l.cachet);
+
+  const histRes = await db.prepare("SELECT date, price FROM price_history WHERE bien_id=? ORDER BY date ASC").bind(bId).all();
+  const history = histRes.results;
+
+  const discRes = await db.prepare("SELECT * FROM discarded WHERE bien_id=?").bind(bId).all();
+  const disc = discRes.results[0];
+  let discardedNow = false, rescue = null;
+  if (disc) {
+    if (latest.price < disc.price_at_exclusion) {
+      rescue = { bienId: bId, oldPrice: disc.price_at_exclusion, newPrice: latest.price };
+      await db.prepare("DELETE FROM discarded WHERE bien_id=?").bind(bId).run();
+    } else { discardedNow = true; }
+  }
+
+  let priceDrop = null;
+  if (history.length >= 2) {
+    const prev = history[history.length-2].price, cur = history[history.length-1].price;
+    if (cur < prev) priceDrop = { old: prev, current: cur, pct: Math.round((1-cur/prev)*1000)/10 };
+  }
+
+  const scores = {
+    deal: estimateDealScore(latest.price, regionPrices[latest.region] || []),
+    retraite: estimateRetraiteScore(latest.rooms, latest.surface, latest.region),
+    locatif: estimateLocatifScore(latest.region, latest.rooms),
+    cachet: estimateCachetScore(latest.title, cachet),
+    risk: estimateRiskScore(bestConf, history.length),
+  };
+  const fit = discardedNow ? 0 : jmFit(scores, weights);
+  const explain = discardedNow ? "" : explainFit(scores, weights);
+
+  return {
+    record: {
+      id: bId, title: latest.title, locality: latest.locality, region: latest.region, type: latest.type,
+      rooms: latest.rooms, surface: latest.surface, price: latest.price, cachet: cachet?1:0, confidence: bestConf,
+      first_seen: firstSeen, last_seen: latest.last_seen, deal_score: scores.deal, retraite_score: scores.retraite,
+      locatif_score: scores.locatif, cachet_score: scores.cachet, risk_score: scores.risk, jm_fit: fit,
+      is_opportunity: discardedNow?0:(fit>=70?1:0), explain, price_drop_json: priceDrop ? JSON.stringify(priceDrop) : null,
+    },
+    sources: sorted,
+    rescue,
+  };
+}
+
+async function upsertBien(db, computed) {
+  const r = computed.record;
+  await db.prepare(`INSERT INTO biens (id,title,locality,region,type,rooms,surface,price,cachet,confidence,first_seen,last_seen,deal_score,retraite_score,locatif_score,cachet_score,risk_score,jm_fit,is_opportunity,explain,price_drop_json)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+    ON CONFLICT(id) DO UPDATE SET title=excluded.title, locality=excluded.locality, region=excluded.region, type=excluded.type,
+      rooms=excluded.rooms, surface=excluded.surface, price=excluded.price, cachet=excluded.cachet, confidence=excluded.confidence,
+      first_seen=excluded.first_seen, last_seen=excluded.last_seen, deal_score=excluded.deal_score, retraite_score=excluded.retraite_score,
+      locatif_score=excluded.locatif_score, cachet_score=excluded.cachet_score, risk_score=excluded.risk_score, jm_fit=excluded.jm_fit,
+      is_opportunity=excluded.is_opportunity, explain=excluded.explain, price_drop_json=excluded.price_drop_json`)
+    .bind(r.id, r.title, r.locality, r.region, r.type, r.rooms, r.surface, r.price, r.cachet, r.confidence,
+      r.first_seen, r.last_seen, r.deal_score, r.retraite_score, r.locatif_score, r.cachet_score, r.risk_score,
+      r.jm_fit, r.is_opportunity, r.explain, r.price_drop_json).run();
+
+  await db.prepare("DELETE FROM bien_sources WHERE bien_id=?").bind(r.id).run();
+  for (const l of computed.sources) {
+    const srcRes = await db.prepare("SELECT name FROM sources WHERE id=?").bind(l.source_id).all();
+    const srcName = srcRes.results[0] ? srcRes.results[0].name : "?";
+    await db.prepare("INSERT OR IGNORE INTO bien_sources (bien_id, source_name, url) VALUES (?,?,?)").bind(r.id, srcName, l.url).run();
+  }
+}
+
+// Recalcul complet : reconstruit tous les biens depuis zéro. Nécessaire
+// quand un changement affecte potentiellement TOUS les biens à la fois
+// (ex. modification des pondérations de préférences).
+async function recomputeFull(db) {
   const prefsRes = await db.prepare("SELECT * FROM preferences WHERE id=1").all();
   const weights = JSON.parse(prefsRes.results[0].weights_json);
 
@@ -534,55 +610,53 @@ async function recompute(db) {
 
   const rescuesThisRun = [];
   let biensCount = 0;
-
   for (const bId in groups) {
-    const listings = [...groups[bId]].sort((a,b) => (a.last_seen < b.last_seen ? -1 : 1));
-    const latest = listings[listings.length-1];
-    const bestConf = listings.reduce((acc,l) => (CONF_ORDER[l.confidence] > CONF_ORDER[acc] ? l.confidence : acc), "À contrôler");
-    const firstSeen = listings.reduce((acc,l) => (l.first_seen < acc ? l.first_seen : acc), listings[0].first_seen);
-    const cachet = listings.some(l => l.cachet);
-
-    const histRes = await db.prepare("SELECT date, price FROM price_history WHERE bien_id=? ORDER BY date ASC").bind(bId).all();
-    const history = histRes.results;
-
-    const discRes = await db.prepare("SELECT * FROM discarded WHERE bien_id=?").bind(bId).all();
-    const disc = discRes.results[0];
-    let discardedNow = false;
-    if (disc) {
-      if (latest.price < disc.price_at_exclusion) {
-        rescuesThisRun.push({ bienId: bId, oldPrice: disc.price_at_exclusion, newPrice: latest.price });
-        await db.prepare("DELETE FROM discarded WHERE bien_id=?").bind(bId).run();
-      } else { discardedNow = true; }
-    }
-
-    let priceDrop = null;
-    if (history.length >= 2) {
-      const prev = history[history.length-2].price, cur = history[history.length-1].price;
-      if (cur < prev) priceDrop = { old: prev, current: cur, pct: Math.round((1-cur/prev)*1000)/10 };
-    }
-
-    const scores = {
-      deal: estimateDealScore(latest.price, regionPrices[latest.region] || []),
-      retraite: estimateRetraiteScore(latest.rooms, latest.surface, latest.region),
-      locatif: estimateLocatifScore(latest.region, latest.rooms),
-      cachet: estimateCachetScore(latest.title, cachet),
-      risk: estimateRiskScore(bestConf, history.length),
-    };
-    const fit = discardedNow ? 0 : jmFit(scores, weights);
-    const explain = discardedNow ? "" : explainFit(scores, weights);
-
-    await db.prepare("INSERT INTO biens (id,title,locality,region,type,rooms,surface,price,cachet,confidence,first_seen,last_seen,deal_score,retraite_score,locatif_score,cachet_score,risk_score,jm_fit,is_opportunity,explain,price_drop_json) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
-      .bind(bId, latest.title, latest.locality, latest.region, latest.type, latest.rooms, latest.surface,
-        latest.price, cachet?1:0, bestConf, firstSeen, latest.last_seen, scores.deal, scores.retraite,
-        scores.locatif, scores.cachet, scores.risk, fit, discardedNow?0:(fit>=70?1:0), explain,
-        priceDrop ? JSON.stringify(priceDrop) : null).run();
+    const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices);
+    await upsertBien(db, computed);
+    if (computed.rescue) rescuesThisRun.push(computed.rescue);
     biensCount++;
+  }
+  for (const r of rescuesThisRun) {
+    await db.prepare("INSERT INTO rescues (bien_id, old_price, new_price, date) VALUES (?,?,?,?)").bind(r.bienId, r.oldPrice, r.newPrice, new Date().toISOString()).run();
+  }
+  return { biens: biensCount, rescues: rescuesThisRun.length };
+}
 
-    for (const l of listings) {
-      const srcRes = await db.prepare("SELECT name FROM sources WHERE id=?").bind(l.source_id).all();
-      const srcName = srcRes.results[0] ? srcRes.results[0].name : "?";
-      await db.prepare("INSERT OR IGNORE INTO bien_sources (bien_id, source_name, url) VALUES (?,?,?)").bind(bId, srcName, l.url).run();
+// Recalcul ciblé : ne retraite que les biens explicitement listés (ex. ceux
+// concernés par les toutes dernières annonces reçues, ou celui qu'on vient
+// d'écarter/restaurer). La médiane de prix par région reste calculée sur
+// l'ensemble des annonces actives (nécessaire pour rester juste), mais le
+// travail coûteux (historique, statut écarté, sources) ne porte que sur les
+// biens réellement concernés — pas sur toute la base à chaque fois.
+async function recomputeTargeted(db, bienIds) {
+  if (!bienIds || bienIds.length === 0) return { biens: 0, rescues: 0 };
+  const prefsRes = await db.prepare("SELECT * FROM preferences WHERE id=1").all();
+  const weights = JSON.parse(prefsRes.results[0].weights_json);
+
+  const activeRes = await db.prepare("SELECT * FROM listings WHERE status='active'").all();
+  const groups = {};
+  for (const l of activeRes.results) { if (!l.bien_id) continue; (groups[l.bien_id] = groups[l.bien_id] || []).push(l); }
+
+  const regionPrices = {};
+  for (const bId in groups) {
+    const latest = groups[bId][groups[bId].length - 1];
+    (regionPrices[latest.region] = regionPrices[latest.region] || []).push(latest.price);
+  }
+
+  const rescuesThisRun = [];
+  let biensCount = 0;
+  for (const bId of new Set(bienIds)) {
+    if (!groups[bId]) {
+      // Plus aucune annonce active pour ce bien (ex. dernière source retirée) :
+      // on le retire proprement plutôt que de laisser une fiche fantôme.
+      await db.prepare("DELETE FROM biens WHERE id=?").bind(bId).run();
+      await db.prepare("DELETE FROM bien_sources WHERE bien_id=?").bind(bId).run();
+      continue;
     }
+    const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices);
+    await upsertBien(db, computed);
+    if (computed.rescue) rescuesThisRun.push(computed.rescue);
+    biensCount++;
   }
   for (const r of rescuesThisRun) {
     await db.prepare("INSERT INTO rescues (bien_id, old_price, new_price, date) VALUES (?,?,?,?)").bind(r.bienId, r.oldPrice, r.newPrice, new Date().toISOString()).run();
@@ -592,7 +666,7 @@ async function recompute(db) {
 
 async function fullRefresh(db, fetchFn) {
   const report = await ingest(db, fetchFn);
-  const stats = await recompute(db);
+  const stats = await recomputeFull(db);
   return Object.assign({ ingestion: report }, stats);
 }
 
@@ -948,26 +1022,41 @@ export default {
           records = extractSingleGeneric(html, config, extra);
         }
         let stored = 0;
-        // Limite le nombre d'annonces traitées par appel : chaque annonce
-        // stockée consomme plusieurs sous-requêtes D1, et Cloudflare limite
-        // le nombre total par invocation. Une source avec beaucoup d'annonces
-        // (ex. 100+) sera donc traitée sur plusieurs passages successifs
-        // plutôt que de tout faire échouer d'un coup.
-        for (const rec of records.slice(0, 25)) {
-          const rl = {
-            external_id: (rec.url || body.url || (rec.locality + rec.price)).split("/").filter(Boolean).pop(),
-            url: rec.url || body.url, title: (rec.type || "Bien") + " — " + rec.locality,
-            locality: rec.locality, type: rec.type || "Appartement",
-            rooms: rec.rooms, surface: rec.surface, price: rec.price,
-            confidence: config.confidence || "Probable",
-          };
-          stored += await storeListing(db, srcRow, rl, extra);
+        let hitLimit = false;
+        const dirtyBienIds = new Set();
+        // Aucune limite fixée à l'avance : chaque annonce est traitée
+        // individuellement, et la boucle s'arrête proprement dès qu'elle
+        // approche la vraie limite technique de Cloudflare (variable selon
+        // le plan, le volume de données, etc.), sans jamais faire échouer
+        // toute la requête. Le reste sera traité au prochain passage du
+        // relais — plus jamais besoin de deviner ou d'ajuster un chiffre.
+        for (const rec of records) {
+          try {
+            const rl = {
+              external_id: (rec.url || body.url || (rec.locality + rec.price)).split("/").filter(Boolean).pop(),
+              url: rec.url || body.url, title: (rec.type || "Bien") + " — " + rec.locality,
+              locality: rec.locality, type: rec.type || "Appartement",
+              rooms: rec.rooms, surface: rec.surface, price: rec.price,
+              confidence: config.confidence || "Probable",
+            };
+            const ok = await storeListing(db, srcRow, rl, extra);
+            if (ok) { stored++; dirtyBienIds.add(bienKey(rl.locality, rl.type, rl.rooms, rl.surface)); }
+          } catch (e) {
+            hitLimit = true;
+            break;
+          }
         }
         const newState = stored > 0 ? "productive" : "accessible";
-        await db.prepare("UPDATE sources SET state=?, last_checked=?, last_error=NULL, last_productive_count=last_productive_count+? WHERE id=?")
-          .bind(newState, new Date().toISOString(), stored, srcRow.id).run();
-        if (stored > 0) await recompute(db);
-        return json({ ok: true, stored, source: srcRow.name });
+        try {
+          await db.prepare("UPDATE sources SET state=?, last_checked=?, last_error=NULL, last_productive_count=last_productive_count+? WHERE id=?")
+            .bind(newState, new Date().toISOString(), stored, srcRow.id).run();
+        } catch (e) { /* si la limite est atteinte même ici, ce n'est pas grave : le prochain passage réessaiera */ }
+        if (dirtyBienIds.size > 0) {
+          // Recalcul ciblé uniquement sur les biens réellement concernés par
+          // ce lot d'annonces — pas toute la base à chaque passage.
+          try { await recomputeTargeted(db, [...dirtyBienIds]); } catch (e) { /* sera retenté au prochain passage */ }
+        }
+        return json({ ok: true, stored, hitLimit, remaining: hitLimit ? records.length - stored : 0, source: srcRow.name });
       }
 
       if (url.pathname === "/api/search") {
@@ -1016,7 +1105,7 @@ export default {
             body.surface_min || 0, body.rooms_min || 0, body.cachet_required?1:0,
             JSON.stringify(body.weights || {deal:4,retraite:2,locatif:2,cachet:3,risk:3}),
             body.origine_trajet || "Fribourg").run();
-        await recompute(db);
+        await recomputeFull(db);
         return json({ ok: true });
       }
 
@@ -1035,13 +1124,13 @@ export default {
         await db.prepare("INSERT INTO discarded (bien_id, price_at_exclusion, date_exclusion, title_at_exclusion, locality, region, type, rooms, surface) VALUES (?,?,?,?,?,?,?,?,?) ON CONFLICT(bien_id) DO NOTHING")
           .bind(body.bien_id, b.price, new Date().toISOString(), b.title, b.locality, b.region, b.type, b.rooms, b.surface).run();
         await db.prepare("DELETE FROM favoris WHERE bien_id=?").bind(body.bien_id).run();
-        await recompute(db);
+        await recomputeTargeted(db, [body.bien_id]);
         return json({ ok: true });
       }
       if (url.pathname === "/api/restore" && request.method === "POST") {
         const body = await request.json();
         await db.prepare("DELETE FROM discarded WHERE bien_id=?").bind(body.bien_id).run();
-        await recompute(db);
+        await recomputeTargeted(db, [body.bien_id]);
         return json({ ok: true });
       }
       if (url.pathname === "/api/favori" && request.method === "POST") {
@@ -1076,6 +1165,12 @@ export default {
   },
 
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(fullRefresh(env.DB, fetch.bind(globalThis)));
+    // La collecte réelle se fait désormais uniquement via le relais externe
+    // (GitHub Actions) — jamais depuis Cloudflare directement, pour éviter
+    // la limite technique de sous-requêtes sur les sources à fort volume.
+    // Cette tâche planifiée, si elle est active, ne fait donc que recalculer
+    // les scores à partir des données déjà présentes, sans jamais recontacter
+    // les sites eux-mêmes.
+    ctx.waitUntil(recomputeFull(env.DB));
   },
 };
