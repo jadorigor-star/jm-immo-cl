@@ -518,7 +518,7 @@ async function storeListing(db, srcRow, rl, extra) {
 // Calcule l'enregistrement complet d'UN SEUL bien (scores, historique, statut
 // écarté/repêché). Fonction extraite pour être réutilisable aussi bien par un
 // recalcul complet que par un recalcul ciblé sur quelques biens seulement.
-async function computeBienRecord(db, bId, listings, weights, regionPrices) {
+async function computeBienRecord(db, bId, listings, weights, regionPrices, opportunityThreshold) {
   const sorted = [...listings].sort((a,b) => (a.last_seen < b.last_seen ? -1 : 1));
   const latest = sorted[sorted.length-1];
   // Si plusieurs sources rapportent le même bien (même localité/type/pièces/
@@ -565,7 +565,7 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices) {
       rooms: latest.rooms, surface: latest.surface, price: cheapestPrice, cachet: cachet?1:0, confidence: bestConf,
       first_seen: firstSeen, last_seen: latest.last_seen, deal_score: scores.deal, retraite_score: scores.retraite,
       locatif_score: scores.locatif, cachet_score: scores.cachet, risk_score: scores.risk, jm_fit: fit,
-      is_opportunity: discardedNow?0:(fit>=70?1:0), explain, price_drop_json: priceDrop ? JSON.stringify(priceDrop) : null,
+      is_opportunity: discardedNow?0:(fit>=(opportunityThreshold||70)?1:0), explain, price_drop_json: priceDrop ? JSON.stringify(priceDrop) : null,
     },
     sources: sorted,
     rescue,
@@ -609,6 +609,7 @@ async function cleanupStaleListings(db, maxAgeDays) {
 async function recomputeFull(db) {
   const prefsRes = await db.prepare("SELECT * FROM preferences WHERE id=1").all();
   const weights = JSON.parse(prefsRes.results[0].weights_json);
+  const opportunityThreshold = prefsRes.results[0].opportunity_threshold || 70;
 
   const activeRes = await db.prepare("SELECT * FROM listings WHERE status='active'").all();
   const groups = {};
@@ -626,7 +627,7 @@ async function recomputeFull(db) {
   const rescuesThisRun = [];
   let biensCount = 0;
   for (const bId in groups) {
-    const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices);
+    const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices, opportunityThreshold);
     await upsertBien(db, computed);
     if (computed.rescue) rescuesThisRun.push(computed.rescue);
     biensCount++;
@@ -647,6 +648,7 @@ async function recomputeTargeted(db, bienIds) {
   if (!bienIds || bienIds.length === 0) return { biens: 0, rescues: 0 };
   const prefsRes = await db.prepare("SELECT * FROM preferences WHERE id=1").all();
   const weights = JSON.parse(prefsRes.results[0].weights_json);
+  const opportunityThreshold = prefsRes.results[0].opportunity_threshold || 70;
 
   const activeRes = await db.prepare("SELECT * FROM listings WHERE status='active'").all();
   const groups = {};
@@ -668,7 +670,7 @@ async function recomputeTargeted(db, bienIds) {
       await db.prepare("DELETE FROM bien_sources WHERE bien_id=?").bind(bId).run();
       continue;
     }
-    const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices);
+    const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices, opportunityThreshold);
     await upsertBien(db, computed);
     if (computed.rescue) rescuesThisRun.push(computed.rescue);
     biensCount++;
@@ -1115,11 +1117,11 @@ export default {
       }
       if (url.pathname === "/api/preferences" && request.method === "PUT") {
         const body = await request.json();
-        await db.prepare("UPDATE preferences SET budget_max=?, types_allowed=?, regions_allowed=?, surface_min=?, rooms_min=?, cachet_required=?, weights_json=?, origine_trajet=? WHERE id=1")
+        await db.prepare("UPDATE preferences SET budget_max=?, types_allowed=?, regions_allowed=?, surface_min=?, rooms_min=?, cachet_required=?, weights_json=?, origine_trajet=?, opportunity_threshold=? WHERE id=1")
           .bind(body.budget_max || 500000, JSON.stringify(body.types_allowed||[]), JSON.stringify(body.regions_allowed||[]),
             body.surface_min || 0, body.rooms_min || 0, body.cachet_required?1:0,
             JSON.stringify(body.weights || {deal:4,retraite:2,locatif:2,cachet:3,risk:3}),
-            body.origine_trajet || "Fribourg").run();
+            body.origine_trajet || "Fribourg", body.opportunity_threshold || 70).run();
         await recomputeFull(db);
         return json({ ok: true });
       }
