@@ -205,6 +205,61 @@ function extractFieldsGeneric(m, fields, config, extra) {
   return out;
 }
 
+function getByPath(obj, path) {
+  if (!path) return void 0;
+  return path.split(".").reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : void 0), obj);
+}
+function extractJsonAfterMarker(html, marker) {
+  // Beaucoup de sites modernes (Vue/Nuxt/Next) intègrent leurs données dans un
+  // objet JSON directement dans la page (ex. window.__PINIA_STATE__ = {...}).
+  // Ce motif est bien plus stable qu'un motif texte, car il ne dépend pas des
+  // noms de classes CSS générés (qui changent à chaque déploiement du site).
+  const idx = html.indexOf(marker);
+  if (idx === -1) return null;
+  const i = html.indexOf("{", idx + marker.length);
+  if (i === -1) return null;
+  let depth = 0, inStr = false, esc = false;
+  for (let j = i; j < html.length; j++) {
+    const ch = html[j];
+    if (inStr) {
+      if (esc) esc = false;
+      else if (ch === "\\") esc = true;
+      else if (ch === '"') inStr = false;
+      continue;
+    }
+    if (ch === '"') { inStr = true; continue; }
+    if (ch === "{") depth++;
+    else if (ch === "}") { depth--; if (depth === 0) return html.slice(i, j + 1); }
+  }
+  return null;
+}
+function extractStateJsonGeneric(html, config) {
+  const jsonText = extractJsonAfterMarker(html, config.state_json_marker);
+  if (!jsonText) return [];
+  let root;
+  try { root = JSON.parse(jsonText); } catch (e) { return []; }
+  const items = getByPath(root, config.state_json_list_path);
+  if (!Array.isArray(items)) return [];
+  const out = [];
+  for (const item of items) {
+    if (config.state_json_filter) {
+      const val = getByPath(item, config.state_json_filter.path);
+      if (val !== config.state_json_filter.equals) continue;
+    }
+    const f = config.state_json_fields || {};
+    const price = f.price ? getByPath(item, f.price) : null;
+    if (!price) continue;
+    const locality = f.locality ? getByPath(item, f.locality) : null;
+    const rooms = f.rooms ? getByPath(item, f.rooms) : null;
+    const surface = f.surface ? getByPath(item, f.surface) : null;
+    const id = f.id ? getByPath(item, f.id) : null;
+    const url = config.url_prefix && id != null
+      ? config.url_prefix.replace(/\/$/, "") + "/" + (config.url_path_prefix || "") + id
+      : null;
+    out.push({ price: parseFloat(price), locality, rooms, surface, url, type: null });
+  }
+  return out;
+}
 function extractJsonLdGeneric(html) {
   // Motif le plus robuste quand disponible : schema.org structuré, présent
   // sur beaucoup de sites indépendamment de la mise en page HTML.
@@ -259,6 +314,14 @@ function extractSingleGeneric(html, config, extra) {
       return !!r.locality;
     });
     if (ldResults.length > 0) return ldResults;
+  }
+  if (config.state_json_marker) {
+    const stateResults = extractStateJsonGeneric(html, config).filter(r => {
+      if (!r.price || r.price < (config.price_min || 50000)) return false;
+      if (config.locality_lookup && r.locality) r.locality = findKnownLocalityGeneric(r.locality, extra);
+      return !!r.locality;
+    });
+    if (stateResults.length > 0) return stateResults;
   }
   const patterns = [config.block_pattern, config.fallback_pattern].filter(Boolean);
   for (const pattern of patterns) {
