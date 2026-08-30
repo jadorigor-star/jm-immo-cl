@@ -1179,6 +1179,22 @@ export default {
         return json({ ok: true });
       }
 
+      if (url.pathname === "/api/report-check" && request.method === "POST") {
+        // Permet au relais de signaler un echec (ex. HTTP 403) meme sans
+        // contenu HTML a traiter — sans cette route, une source bloquee de
+        // maniere persistante ne voit jamais sa date de derniere verification
+        // mise a jour, donnant l'illusion trompeuse qu'elle n'est jamais
+        // tentee alors qu'elle est en realite tentee puis rejetee a chaque
+        // passage.
+        const body = await request.json();
+        const srcRes = await db.prepare("SELECT * FROM sources WHERE name=?").bind(body.source_name).all();
+        const srcRow = srcRes.results[0];
+        if (!srcRow) return json({ error: "source inconnue : " + body.source_name }, 404);
+        await db.prepare("UPDATE sources SET last_checked=?, last_error=? WHERE id=?")
+          .bind(new Date().toISOString(), body.error || null, srcRow.id).run();
+        return json({ ok: true });
+      }
+
       if (url.pathname === "/") {
         // Le frontend vit en base (art. 6 : modifications d'interface sans
         // redéploiement). FRONTEND_HTML codé en dur sert uniquement de
