@@ -54,6 +54,15 @@ async function ingest(sourceName, html, url, extra) {
   return res.json();
 }
 
+async function reportError(sourceName, errorMsg) {
+  try {
+    await fetch(WORKER_URL + "/api/report-check", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ source_name: sourceName, error: errorMsg })
+    });
+  } catch (e) { /* si meme ce signalement echoue, tant pis : le prochain passage reessaiera */ }
+}
+
 async function handleSingle(src, config) {
   let stored = 0;
   for (const url of config.urls) {
@@ -65,6 +74,7 @@ async function handleSingle(src, config) {
       console.log(src.name + " (" + url + ") : " + (result.stored || 0) + " annonce(s) stockee(s)");
     } catch (e) {
       console.log(src.name + " (" + url + ") : erreur - " + e.message);
+      await reportError(src.name, e.message);
     }
   }
   return stored;
