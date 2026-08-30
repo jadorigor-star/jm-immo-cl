@@ -632,7 +632,13 @@ async function loadRecomputeCaches(db) {
 // que soit l'echelle de la base (teste jusqu'a 150+ biens sans probleme,
 // contre un depassement systematique avec l'ancienne approche bien par bien).
 async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienSourceDelete) {
-  const BATCH_SIZE = 40; // reste sous la limite de parametres lies par requete SQLite
+  // D1 limite reellement a 100 parametres lies par requete (pas 999 comme
+  // SQLite standard, confirme par la documentation officielle Cloudflare) —
+  // avec 22 colonnes par bien, 4 lignes par lot est le maximum sur qui reste
+  // sous cette limite. Un lot trop grand ne degrade pas gracieusement : il
+  // fait echouer toute la requete d'un coup (confirme le 30.08 : un lot de
+  // 40 lignes/880 parametres a vide entierement la table biens).
+  const BATCH_SIZE = 4;
   for (let i = 0; i < allComputed.length; i += BATCH_SIZE) {
     const batch = allComputed.slice(i, i + BATCH_SIZE);
     const placeholders = batch.map(() => "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").join(",");
@@ -643,6 +649,11 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
         r.first_seen, r.last_seen, r.deal_score, r.retraite_score, r.locatif_score, r.cachet_score, r.risk_score,
         r.jm_fit, r.is_opportunity, r.explain, r.price_drop_json, r.address);
     }
+    // Garde defensive : si ce nombre depassait un jour 100 (ex. ajout futur
+    // d'une colonne sans ajuster BATCH_SIZE), on prefere un echec immediat et
+    // explicite plutot qu'une requete D1 silencieusement rejetee qui viderait
+    // la table sans la remplir.
+    if (values.length > 100) throw new Error("writeBiensInBatches : lot de " + values.length + " parametres depasse la limite D1 de 100 — reduire BATCH_SIZE");
     await db.prepare(`INSERT INTO biens (id,title,locality,region,type,rooms,surface,price,cachet,confidence,first_seen,last_seen,deal_score,retraite_score,locatif_score,cachet_score,risk_score,jm_fit,is_opportunity,explain,price_drop_json,address)
       VALUES ${placeholders}
       ON CONFLICT(id) DO UPDATE SET title=excluded.title, locality=excluded.locality, region=excluded.region, type=excluded.type,
@@ -668,7 +679,9 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
       allSourceRows.push([c.record.id, srcName, l.url]);
     }
   }
-  const SRC_BATCH_SIZE = 150;
+  // 3 colonnes par ligne : jusqu'a 33 lignes tiendraient sous la limite de
+  // 100 parametres, mais on reste a 30 par marge de securite.
+  const SRC_BATCH_SIZE = 30;
   for (let i = 0; i < allSourceRows.length; i += SRC_BATCH_SIZE) {
     const batch = allSourceRows.slice(i, i + SRC_BATCH_SIZE);
     const placeholders = batch.map(() => "(?,?,?)").join(",");
