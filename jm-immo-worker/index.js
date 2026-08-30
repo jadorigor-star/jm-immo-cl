@@ -238,7 +238,18 @@ function extractStateJsonGeneric(html, config) {
   if (!jsonText) return [];
   let root;
   try { root = JSON.parse(jsonText); } catch (e) { return []; }
-  const items = getByPath(root, config.state_json_list_path);
+  // Selon la variante de page (constatée sur ImmoScout24 : certaines pages
+  // ont la liste directement à la racine, d'autres sous "agencyProfile"),
+  // le chemin exact peut varier. On accepte donc soit un chemin unique, soit
+  // une liste de chemins candidats essayés dans l'ordre jusqu'au premier qui
+  // renvoie un vrai tableau — pas besoin de deviner au cas par cas.
+  const candidatePaths = Array.isArray(config.state_json_list_path)
+    ? config.state_json_list_path : [config.state_json_list_path];
+  let items = null;
+  for (const path of candidatePaths) {
+    const found = getByPath(root, path);
+    if (Array.isArray(found)) { items = found; break; }
+  }
   if (!Array.isArray(items)) return [];
   const out = [];
   for (const item of items) {
