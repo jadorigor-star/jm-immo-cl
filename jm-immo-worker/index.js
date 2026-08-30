@@ -306,6 +306,7 @@ function extractJsonLdGeneric(html) {
         out.push({
           url: obj.url || null, title: obj.name || null,
           locality: addr.addressLocality || null,
+          address: addr.streetAddress || null,
           type: obj.category || null,
           rooms: obj.numberOfRooms || null,
           surface: surface,
@@ -451,7 +452,7 @@ function genericAdapter(sourceRow, extra) {
                 url: rec.url || config.list_url || urls[0],
                 title: (rec.type || "Bien") + " — " + rec.locality,
                 locality: rec.locality, type: rec.type || "Appartement",
-                rooms: rec.rooms, surface: rec.surface, price: rec.price,
+                rooms: rec.rooms, surface: rec.surface, price: rec.price, address: rec.address || null,
                 confidence: config.confidence || "Probable",
               });
             }
@@ -512,10 +513,10 @@ async function storeListing(db, srcRow, rl, extra) {
   const existing = await db.prepare("SELECT first_seen FROM listings WHERE id=?").bind(listingId).all();
   const firstSeen = existing.results.length ? existing.results[0].first_seen : today;
 
-  await db.prepare("INSERT INTO listings (id, source_id, external_id, url, title, locality, region, type, rooms, surface, price, currency, is_rental, cachet, status, confidence, first_seen, last_seen, bien_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET title=excluded.title, price=excluded.price, status=excluded.status, confidence=excluded.confidence, last_seen=excluded.last_seen, region=excluded.region")
+  await db.prepare("INSERT INTO listings (id, source_id, external_id, url, title, locality, region, type, rooms, surface, price, currency, is_rental, cachet, status, confidence, first_seen, last_seen, bien_id, address) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET title=excluded.title, price=excluded.price, status=excluded.status, confidence=excluded.confidence, last_seen=excluded.last_seen, region=excluded.region, address=excluded.address")
     .bind(listingId, srcRow.id, rl.external_id, rl.url || "", rl.title, rl.locality, region, rl.type || "",
       rl.rooms ?? null, rl.surface ?? null, rl.price, "CHF", rl.is_rental?1:0, rl.cachet?1:0, "active",
-      rl.confidence || "À contrôler", firstSeen, today, bId).run();
+      rl.confidence || "À contrôler", firstSeen, today, bId, rl.address || null).run();
 
   const history = rl.history && rl.history.length ? rl.history : [[today, rl.price]];
   for (const pair of history) {
@@ -540,6 +541,9 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
   const bestConf = sorted.reduce((acc,l) => (CONF_ORDER[l.confidence] > CONF_ORDER[acc] ? l.confidence : acc), "À contrôler");
   const firstSeen = sorted.reduce((acc,l) => (l.first_seen < acc ? l.first_seen : acc), sorted[0].first_seen);
   const cachet = sorted.some(l => l.cachet);
+  // Retient la premiere adresse exacte disponible parmi les sources (certaines
+  // la communiquent, d'autres la masquent tant qu'on ne s'est pas inscrit).
+  const address = sorted.map(l => l.address).find(a => a) || null;
 
   const histRes = await db.prepare("SELECT date, price FROM price_history WHERE bien_id=? ORDER BY date ASC").bind(bId).all();
   const history = histRes.results;
@@ -574,6 +578,7 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
     record: {
       id: bId, title: latest.title, locality: latest.locality, region: latest.region, type: latest.type,
       rooms: latest.rooms, surface: latest.surface, price: cheapestPrice, cachet: cachet?1:0, confidence: bestConf,
+      address: address,
       first_seen: firstSeen, last_seen: latest.last_seen, deal_score: scores.deal, retraite_score: scores.retraite,
       locatif_score: scores.locatif, cachet_score: scores.cachet, risk_score: scores.risk, jm_fit: fit,
       is_opportunity: discardedNow?0:(fit>=(opportunityThreshold||70)?1:0), explain, price_drop_json: priceDrop ? JSON.stringify(priceDrop) : null,
@@ -585,16 +590,16 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
 
 async function upsertBien(db, computed) {
   const r = computed.record;
-  await db.prepare(`INSERT INTO biens (id,title,locality,region,type,rooms,surface,price,cachet,confidence,first_seen,last_seen,deal_score,retraite_score,locatif_score,cachet_score,risk_score,jm_fit,is_opportunity,explain,price_drop_json)
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+  await db.prepare(`INSERT INTO biens (id,title,locality,region,type,rooms,surface,price,cachet,confidence,first_seen,last_seen,deal_score,retraite_score,locatif_score,cachet_score,risk_score,jm_fit,is_opportunity,explain,price_drop_json,address)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     ON CONFLICT(id) DO UPDATE SET title=excluded.title, locality=excluded.locality, region=excluded.region, type=excluded.type,
       rooms=excluded.rooms, surface=excluded.surface, price=excluded.price, cachet=excluded.cachet, confidence=excluded.confidence,
       first_seen=excluded.first_seen, last_seen=excluded.last_seen, deal_score=excluded.deal_score, retraite_score=excluded.retraite_score,
       locatif_score=excluded.locatif_score, cachet_score=excluded.cachet_score, risk_score=excluded.risk_score, jm_fit=excluded.jm_fit,
-      is_opportunity=excluded.is_opportunity, explain=excluded.explain, price_drop_json=excluded.price_drop_json`)
+      is_opportunity=excluded.is_opportunity, explain=excluded.explain, price_drop_json=excluded.price_drop_json, address=excluded.address`)
     .bind(r.id, r.title, r.locality, r.region, r.type, r.rooms, r.surface, r.price, r.cachet, r.confidence,
       r.first_seen, r.last_seen, r.deal_score, r.retraite_score, r.locatif_score, r.cachet_score, r.risk_score,
-      r.jm_fit, r.is_opportunity, r.explain, r.price_drop_json).run();
+      r.jm_fit, r.is_opportunity, r.explain, r.price_drop_json, r.address).run();
 
   await db.prepare("DELETE FROM bien_sources WHERE bien_id=?").bind(r.id).run();
   for (const l of computed.sources) {
@@ -1064,7 +1069,7 @@ export default {
               external_id: (rec.url || body.url || (rec.locality + rec.price)).split("/").filter(Boolean).pop(),
               url: rec.url || body.url, title: (rec.type || "Bien") + " — " + rec.locality,
               locality: rec.locality, type: rec.type || "Appartement",
-              rooms: rec.rooms, surface: rec.surface, price: rec.price,
+              rooms: rec.rooms, surface: rec.surface, price: rec.price, address: rec.address || null,
               confidence: config.confidence || "Probable",
             };
             const ok = await storeListing(db, srcRow, rl, extra);
