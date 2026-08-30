@@ -1133,13 +1133,26 @@ export default {
       }
       if (url.pathname === "/api/preferences" && request.method === "PUT") {
         const body = await request.json();
+        // Ne relance un recalcul complet (couteux : plusieurs centaines de
+        // requetes D1 a l'echelle actuelle) que si les ponderations ou le
+        // seuil "Opportunite" changent reellement — ce sont les seuls
+        // reglages qui affectent les scores deja stockes. Region, cachet et
+        // origine du trajet sont de simples filtres appliques a la recherche,
+        // sans impact sur les scores : les changer ne necessite aucun
+        // recalcul, et forcer un recalcul a chaque fois risquait de faire
+        // echouer silencieusement la sauvegarde a mesure que la base grossit.
+        const beforeRes = await db.prepare("SELECT weights_json, opportunity_threshold FROM preferences WHERE id=1").all();
+        const before = beforeRes.results[0];
+        const newWeightsJson = JSON.stringify(body.weights || {deal:4,retraite:2,locatif:2,cachet:3,risk:3});
+        const newThreshold = body.opportunity_threshold || 70;
+        const needsRecompute = before.weights_json !== newWeightsJson || before.opportunity_threshold !== newThreshold;
+
         await db.prepare("UPDATE preferences SET budget_max=?, types_allowed=?, regions_allowed=?, surface_min=?, rooms_min=?, cachet_required=?, weights_json=?, origine_trajet=?, opportunity_threshold=? WHERE id=1")
           .bind(body.budget_max || 500000, JSON.stringify(body.types_allowed||[]), JSON.stringify(body.regions_allowed||[]),
             body.surface_min || 0, body.rooms_min || 0, body.cachet_required?1:0,
-            JSON.stringify(body.weights || {deal:4,retraite:2,locatif:2,cachet:3,risk:3}),
-            body.origine_trajet || "Fribourg", body.opportunity_threshold || 70).run();
-        await recomputeFull(db);
-        return json({ ok: true });
+            newWeightsJson, body.origine_trajet || "Fribourg", newThreshold).run();
+        if (needsRecompute) await recomputeFull(db);
+        return json({ ok: true, recomputed: needsRecompute });
       }
 
       if (url.pathname.indexOf("/api/biens/") === 0) {
