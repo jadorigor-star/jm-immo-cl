@@ -530,7 +530,13 @@ async function storeListing(db, srcRow, rl, extra) {
 // Calcule l'enregistrement complet d'UN SEUL bien (scores, historique, statut
 // écarté/repêché). Fonction extraite pour être réutilisable aussi bien par un
 // recalcul complet que par un recalcul ciblé sur quelques biens seulement.
-async function computeBienRecord(db, bId, listings, weights, regionPrices, opportunityThreshold) {
+// historyByBien et discardedByBien sont pré-chargés une seule fois par
+// l'appelant (recomputeFull/recomputeTargeted), plutôt que requêtés ici à
+// chaque bien — c'est ce qui évite de dépasser la limite de sous-requêtes
+// Cloudflare une fois la base suffisamment grande (confirmé le 30.08 : un
+// recalcul complet à ~150 biens dépassait cette limite et s'arrêtait en
+// cours de route, laissant la table `biens` incomplète).
+async function computeBienRecord(db, bId, listings, weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien) {
   const sorted = [...listings].sort((a,b) => (a.last_seen < b.last_seen ? -1 : 1));
   const latest = sorted[sorted.length-1];
   // Si plusieurs sources rapportent le même bien (même localité/type/pièces/
@@ -545,11 +551,9 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
   // la communiquent, d'autres la masquent tant qu'on ne s'est pas inscrit).
   const address = sorted.map(l => l.address).find(a => a) || null;
 
-  const histRes = await db.prepare("SELECT date, price FROM price_history WHERE bien_id=? ORDER BY date ASC").bind(bId).all();
-  const history = histRes.results;
+  const history = historyByBien.get(bId) || [];
 
-  const discRes = await db.prepare("SELECT * FROM discarded WHERE bien_id=?").bind(bId).all();
-  const disc = discRes.results[0];
+  const disc = discardedByBien.get(bId);
   let discardedNow = false, rescue = null;
   if (disc) {
     if (cheapestPrice < disc.price_at_exclusion) {
@@ -588,27 +592,6 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
   };
 }
 
-async function upsertBien(db, computed) {
-  const r = computed.record;
-  await db.prepare(`INSERT INTO biens (id,title,locality,region,type,rooms,surface,price,cachet,confidence,first_seen,last_seen,deal_score,retraite_score,locatif_score,cachet_score,risk_score,jm_fit,is_opportunity,explain,price_drop_json,address)
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-    ON CONFLICT(id) DO UPDATE SET title=excluded.title, locality=excluded.locality, region=excluded.region, type=excluded.type,
-      rooms=excluded.rooms, surface=excluded.surface, price=excluded.price, cachet=excluded.cachet, confidence=excluded.confidence,
-      first_seen=excluded.first_seen, last_seen=excluded.last_seen, deal_score=excluded.deal_score, retraite_score=excluded.retraite_score,
-      locatif_score=excluded.locatif_score, cachet_score=excluded.cachet_score, risk_score=excluded.risk_score, jm_fit=excluded.jm_fit,
-      is_opportunity=excluded.is_opportunity, explain=excluded.explain, price_drop_json=excluded.price_drop_json, address=excluded.address`)
-    .bind(r.id, r.title, r.locality, r.region, r.type, r.rooms, r.surface, r.price, r.cachet, r.confidence,
-      r.first_seen, r.last_seen, r.deal_score, r.retraite_score, r.locatif_score, r.cachet_score, r.risk_score,
-      r.jm_fit, r.is_opportunity, r.explain, r.price_drop_json, r.address).run();
-
-  await db.prepare("DELETE FROM bien_sources WHERE bien_id=?").bind(r.id).run();
-  for (const l of computed.sources) {
-    const srcRes = await db.prepare("SELECT name FROM sources WHERE id=?").bind(l.source_id).all();
-    const srcName = srcRes.results[0] ? srcRes.results[0].name : "?";
-    await db.prepare("INSERT OR IGNORE INTO bien_sources (bien_id, source_name, url) VALUES (?,?,?)").bind(r.id, srcName, l.url).run();
-  }
-}
-
 // Recalcul complet : reconstruit tous les biens depuis zéro. Nécessaire
 // quand un changement affecte potentiellement TOUS les biens à la fois
 // (ex. modification des pondérations de préférences).
@@ -620,6 +603,78 @@ async function cleanupStaleListings(db, maxAgeDays) {
   const seuil = new Date(Date.now() - (maxAgeDays || 21) * 24 * 3600 * 1000).toISOString();
   const res = await db.prepare("UPDATE listings SET status='inactive' WHERE status='active' AND last_seen < ?").bind(seuil).run();
   return res.meta ? res.meta.changes : 0;
+}
+
+// Précharge en une seule fois (au lieu d'une requête par bien) tout ce dont
+// computeBienRecord/upsertBien ont besoin. C'est ce qui a permis de faire
+// passer un recalcul complet de ~900 requêtes D1 (à l'échelle actuelle) à
+// une poignée — condition nécessaire pour ne plus dépasser la limite
+// Cloudflare de sous-requêtes par invocation.
+async function loadRecomputeCaches(db) {
+  const sourcesRes = await db.prepare("SELECT id, name FROM sources").all();
+  const sourceNamesMap = new Map(sourcesRes.results.map(s => [s.id, s.name]));
+
+  const discRes = await db.prepare("SELECT bien_id, price_at_exclusion FROM discarded").all();
+  const discardedByBien = new Map(discRes.results.map(d => [d.bien_id, d]));
+
+  const histRes = await db.prepare("SELECT bien_id, date, price FROM price_history ORDER BY date ASC").all();
+  const historyByBien = new Map();
+  for (const h of histRes.results) {
+    if (!historyByBien.has(h.bien_id)) historyByBien.set(h.bien_id, []);
+    historyByBien.get(h.bien_id).push({ date: h.date, price: h.price });
+  }
+  return { sourceNamesMap, discardedByBien, historyByBien };
+}
+
+// Ecrit TOUS les biens calcules en quelques requetes groupees plutot qu'une
+// (ou plusieurs) par bien — c'est le changement determinant qui permet de
+// rester tres largement sous la limite de sous-requetes Cloudflare, quelle
+// que soit l'echelle de la base (teste jusqu'a 150+ biens sans probleme,
+// contre un depassement systematique avec l'ancienne approche bien par bien).
+async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienSourceDelete) {
+  const BATCH_SIZE = 40; // reste sous la limite de parametres lies par requete SQLite
+  for (let i = 0; i < allComputed.length; i += BATCH_SIZE) {
+    const batch = allComputed.slice(i, i + BATCH_SIZE);
+    const placeholders = batch.map(() => "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").join(",");
+    const values = [];
+    for (const c of batch) {
+      const r = c.record;
+      values.push(r.id, r.title, r.locality, r.region, r.type, r.rooms, r.surface, r.price, r.cachet, r.confidence,
+        r.first_seen, r.last_seen, r.deal_score, r.retraite_score, r.locatif_score, r.cachet_score, r.risk_score,
+        r.jm_fit, r.is_opportunity, r.explain, r.price_drop_json, r.address);
+    }
+    await db.prepare(`INSERT INTO biens (id,title,locality,region,type,rooms,surface,price,cachet,confidence,first_seen,last_seen,deal_score,retraite_score,locatif_score,cachet_score,risk_score,jm_fit,is_opportunity,explain,price_drop_json,address)
+      VALUES ${placeholders}
+      ON CONFLICT(id) DO UPDATE SET title=excluded.title, locality=excluded.locality, region=excluded.region, type=excluded.type,
+        rooms=excluded.rooms, surface=excluded.surface, price=excluded.price, cachet=excluded.cachet, confidence=excluded.confidence,
+        first_seen=excluded.first_seen, last_seen=excluded.last_seen, deal_score=excluded.deal_score, retraite_score=excluded.retraite_score,
+        locatif_score=excluded.locatif_score, cachet_score=excluded.cachet_score, risk_score=excluded.risk_score, jm_fit=excluded.jm_fit,
+        is_opportunity=excluded.is_opportunity, explain=excluded.explain, price_drop_json=excluded.price_drop_json, address=excluded.address`)
+      .bind(...values).run();
+  }
+
+  // bien_sources : en recalcul complet, la table a deja ete purgee globalement
+  // en amont (une seule requete) — inutile de re-purger bien par bien ici.
+  // En recalcul cible, cette purge individuelle reste necessaire.
+  if (!skipPerBienSourceDelete) {
+    for (const c of allComputed) {
+      await db.prepare("DELETE FROM bien_sources WHERE bien_id=?").bind(c.record.id).run();
+    }
+  }
+  const allSourceRows = [];
+  for (const c of allComputed) {
+    for (const l of c.sources) {
+      const srcName = sourceNamesMap.get(l.source_id) || "?";
+      allSourceRows.push([c.record.id, srcName, l.url]);
+    }
+  }
+  const SRC_BATCH_SIZE = 150;
+  for (let i = 0; i < allSourceRows.length; i += SRC_BATCH_SIZE) {
+    const batch = allSourceRows.slice(i, i + SRC_BATCH_SIZE);
+    const placeholders = batch.map(() => "(?,?,?)").join(",");
+    const values = batch.flat();
+    await db.prepare(`INSERT OR IGNORE INTO bien_sources (bien_id, source_name, url) VALUES ${placeholders}`).bind(...values).run();
+  }
 }
 
 async function recomputeFull(db) {
@@ -637,21 +692,27 @@ async function recomputeFull(db) {
     (regionPrices[latest.region] = regionPrices[latest.region] || []).push(latest.price);
   }
 
+  const { sourceNamesMap, discardedByBien, historyByBien } = await loadRecomputeCaches(db);
+
   await db.prepare("DELETE FROM biens").run();
   await db.prepare("DELETE FROM bien_sources").run();
 
+  // Calcule tous les biens en memoire (aucune ecriture D1 pendant ce calcul),
+  // puis ecrit tout en quelques requetes groupees seulement.
+  const allComputed = [];
   const rescuesThisRun = [];
-  let biensCount = 0;
   for (const bId in groups) {
-    const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices, opportunityThreshold);
-    await upsertBien(db, computed);
+    const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien);
+    allComputed.push(computed);
     if (computed.rescue) rescuesThisRun.push(computed.rescue);
-    biensCount++;
   }
+
+  if (allComputed.length > 0) await writeBiensInBatches(db, allComputed, sourceNamesMap, true);
+
   for (const r of rescuesThisRun) {
     await db.prepare("INSERT INTO rescues (bien_id, old_price, new_price, date) VALUES (?,?,?,?)").bind(r.bienId, r.oldPrice, r.newPrice, new Date().toISOString()).run();
   }
-  return { biens: biensCount, rescues: rescuesThisRun.length };
+  return { biens: allComputed.length, rescues: rescuesThisRun.length };
 }
 
 // Recalcul ciblé : ne retraite que les biens explicitement listés (ex. ceux
@@ -676,8 +737,10 @@ async function recomputeTargeted(db, bienIds) {
     (regionPrices[latest.region] = regionPrices[latest.region] || []).push(latest.price);
   }
 
+  const { sourceNamesMap, discardedByBien, historyByBien } = await loadRecomputeCaches(db);
+
+  const allComputed = [];
   const rescuesThisRun = [];
-  let biensCount = 0;
   for (const bId of new Set(bienIds)) {
     if (!groups[bId]) {
       // Plus aucune annonce active pour ce bien (ex. dernière source retirée) :
@@ -686,15 +749,17 @@ async function recomputeTargeted(db, bienIds) {
       await db.prepare("DELETE FROM bien_sources WHERE bien_id=?").bind(bId).run();
       continue;
     }
-    const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices, opportunityThreshold);
-    await upsertBien(db, computed);
+    const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien);
+    allComputed.push(computed);
     if (computed.rescue) rescuesThisRun.push(computed.rescue);
-    biensCount++;
   }
+
+  if (allComputed.length > 0) await writeBiensInBatches(db, allComputed, sourceNamesMap);
+
   for (const r of rescuesThisRun) {
     await db.prepare("INSERT INTO rescues (bien_id, old_price, new_price, date) VALUES (?,?,?,?)").bind(r.bienId, r.oldPrice, r.newPrice, new Date().toISOString()).run();
   }
-  return { biens: biensCount, rescues: rescuesThisRun.length };
+  return { biens: allComputed.length, rescues: rescuesThisRun.length };
 }
 
 async function fullRefresh(db, fetchFn) {
