@@ -75,9 +75,22 @@ async function fetchPageWithBrowser(url, waitSelector) {
       // Si le selecteur n'apparait pas (structure du site modifiee, ou page
       // vide), on continue quand meme avec ce qui a pu etre charge plutot
       // que de tout faire echouer sur ce seul point.
-      await page.waitForSelector(waitSelector, { timeout: 8000 }).catch(function () {});
+      await page.waitForSelector(waitSelector, { timeout: 15000 }).catch(function () {});
     }
-    return await page.content();
+    // Delai supplementaire deliberement genereux : certains sites terminent
+    // leur activite reseau ("networkidle2") avant que le rendu final (calcul
+    // cote client, affichage des cartes d'annonces) soit reellement termine
+    // a l'ecran — attendre un peu plus longtemps ici coute peu et evite de
+    // capturer une page encore vide malgre un chargement reseau termine.
+    await new Promise(function (r) { setTimeout(r, 3000); });
+    const html = await page.content();
+    // Diagnostic : si le motif de lien attendu n'apparait nulle part dans le
+    // HTML final, meme sans passer par une regex precise, c'est le signe que
+    // le probleme est le CHARGEMENT (page toujours vide) plutot que le motif
+    // de reconnaissance lui-meme — utile pour ajuster la bonne cause la
+    // prochaine fois plutot que de deviner.
+    console.log("  [diagnostic " + url + "] contient '/it/immobile/' quelque part dans le HTML rendu : " + (html.indexOf("/it/immobile/") !== -1));
+    return html;
   } finally {
     await page.close();
   }
