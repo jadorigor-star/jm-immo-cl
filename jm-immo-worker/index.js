@@ -315,10 +315,19 @@ function extractJsonLdGeneric(html) {
           const sm = /([\d.]+)/.exec(obj.size);
           if (sm) surface = parseFloat(sm[1]);
         }
+        // L'adresse structuree (streetAddress) ne contient parfois QUE la rue,
+        // sans ville ni code postal — insuffisant pour un geocodage fiable et
+        // non ambigu (confirme le 31.08 : "Vicolo Torre 10" seul, sans "Agno",
+        // pourrait correspondre a une autre rue homonyme ailleurs en Suisse).
+        // On reconstruit une adresse complete des que la localite est connue.
+        const streetAddress = addr.streetAddress || null;
+        const fullAddress = streetAddress
+          ? streetAddress + (addr.addressLocality ? (", " + (addr.postalCode ? addr.postalCode + " " : "") + addr.addressLocality) : "")
+          : null;
         out.push({
           url: obj.url || null, title: obj.name || null,
           locality: addr.addressLocality || null,
-          address: addr.streetAddress || null,
+          address: fullAddress,
           type: obj.category || null,
           rooms: obj.numberOfRooms || null,
           surface: surface,
