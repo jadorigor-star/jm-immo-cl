@@ -323,6 +323,11 @@ function extractSingleGeneric(html, config, extra) {
     const ldResults = extractJsonLdGeneric(html).filter(r => {
       if (!r.price || r.price < (config.price_min || 50000)) return false;
       if (config.locality_lookup && r.locality) r.locality = findKnownLocalityGeneric(r.locality, extra);
+      // Certains sites (ex. Immolife Ticino) n'incluent pas la localité dans
+      // l'adresse structurée du JSON-LD du bien, mais elle apparaît quand
+      // même clairement dans le titre de l'annonce (ex. "RIVA SAN VITALE :
+      // suggestiva casa..."). On tente ce repli avant d'abandonner.
+      if (config.locality_lookup && !r.locality && r.title) r.locality = findKnownLocalityGeneric(r.title, extra);
       return !!r.locality;
     });
     if (ldResults.length > 0) return ldResults;
@@ -380,6 +385,7 @@ function extractDetailGeneric(html, config, extra) {
     if (ldResults.length > 0) {
       const r = ldResults[0];
       if (config.locality_lookup && r.locality) r.locality = findKnownLocalityGeneric(r.locality, extra);
+      if (config.locality_lookup && !r.locality && r.title) r.locality = findKnownLocalityGeneric(r.title, extra);
       if (r.price >= (config.price_min || 50000) && r.locality) return r;
     }
   }
