@@ -40,10 +40,50 @@ async function throttledFetch(url, opts) {
   return fetch(url, opts);
 }
 
-async function fetchPage(url) {
+async function fetchPage(url, config) {
+  if (config && config.js_rendered) return fetchPageWithBrowser(url, config.wait_selector);
   const res = await throttledFetch(url, { headers: HEADERS });
   if (!res.ok) throw new Error("HTTP " + res.status);
   return res.text();
+}
+
+// Rendu JavaScript via navigateur headless (Puppeteer), pour les sites dont
+// la liste d'annonces se charge apres coup en JavaScript (ex. Immolife
+// Ticino, Domusdea sur leur propre site) — une simple requete HTTP ne voit
+// que la coquille vide de la page, pas les vraies annonces. Le module n'est
+// charge que si une source l'exige reellement (config.js_rendered), pour ne
+// jamais ralentir ni casser le fonctionnement des sources classiques.
+let puppeteerModule = null;
+let browserInstance = null;
+async function getBrowser() {
+  if (!browserInstance) {
+    if (!puppeteerModule) puppeteerModule = require("puppeteer");
+    browserInstance = await puppeteerModule.launch({
+      headless: "new",
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+  }
+  return browserInstance;
+}
+async function fetchPageWithBrowser(url, waitSelector) {
+  const browser = await getBrowser();
+  const page = await browser.newPage();
+  try {
+    await page.setUserAgent(UA);
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
+    if (waitSelector) {
+      // Si le selecteur n'apparait pas (structure du site modifiee, ou page
+      // vide), on continue quand meme avec ce qui a pu etre charge plutot
+      // que de tout faire echouer sur ce seul point.
+      await page.waitForSelector(waitSelector, { timeout: 8000 }).catch(function () {});
+    }
+    return await page.content();
+  } finally {
+    await page.close();
+  }
+}
+async function closeBrowserIfOpen() {
+  if (browserInstance) { await browserInstance.close(); browserInstance = null; }
 }
 
 async function ingest(sourceName, html, url, extra) {
@@ -67,7 +107,7 @@ async function handleSingle(src, config) {
   let stored = 0;
   for (const url of config.urls) {
     try {
-      const html = await fetchPage(url);
+      const html = await fetchPage(url, config);
       console.log(src.name + " (" + url + ") : page recue, " + html.length + " caracteres");
       const result = await ingest(src.name, html, url);
       stored += result.stored || 0;
@@ -83,11 +123,15 @@ async function handleSingle(src, config) {
 async function handleTwoStep(src, config) {
   let stored = 0;
   try {
-    const listHtml = await fetchPage(config.list_url);
+    const listHtml = await fetchPage(config.list_url, config);
     console.log(src.name + " (liste) : page recue, " + listHtml.length + " caracteres");
     const listResult = await ingest(src.name, listHtml, config.list_url, { is_list: true });
     const links = listResult.links || [];
     console.log(src.name + " : " + links.length + " fiche(s) individuelle(s) trouvee(s)");
+    // Les fiches individuelles sont generalement rendues cote serveur meme
+    // quand la page de LISTE elle-meme est chargee en JavaScript (confirme
+    // pour Immolife Ticino) — inutile d'alourdir chaque fiche avec un
+    // navigateur complet si une simple requete HTTP suffit deja.
     for (const link of links) {
       try {
         const detailHtml = await fetchPage(link);
@@ -147,13 +191,39 @@ async function main() {
   if (FORCE_ALL) console.log("Forçage manuel actif : intervalles ignorés pour ce passage.");
   console.log(eligible.length + " source(s) éligible(s), " + candidates.length + " due(s) ce passage (" + skipped + " ignorée(s), pas encore dues).");
 
+  // Plafond volontaire sur ImmoScout24 par passage : confirme le 30.08, un
+  // volume cumule trop eleve de requetes vers ce domaine en une seule
+  // execution declenche un blocage global (HTTP 403) qui touche meme des
+  // sources habituellement productives. Plutot que de tout tenter d'un coup,
+  // on repartit sur plusieurs cycles — l'exces reste "due" et sera repris au
+  // prochain passage automatiquement (rien n'est perdu, juste reporte).
+  const IMMOSCOUT_CAP_PER_RUN = 15;
+  function isImmoScoutSource(src) {
+    try {
+      const config = JSON.parse(src.config_json || "{}");
+      const urls = config.mode === "single" ? (config.urls || []) : [config.list_url];
+      return urls.some(function(u) { return u && u.indexOf("immoscout24.ch") !== -1; });
+    } catch (e) { return false; }
+  }
+  let immoscoutCount = 0;
+  const cappedCandidates = [];
+  for (const src of candidates) {
+    if (isImmoScoutSource(src)) {
+      if (immoscoutCount >= IMMOSCOUT_CAP_PER_RUN) continue;
+      immoscoutCount++;
+    }
+    cappedCandidates.push(src);
+  }
+  const deferred = candidates.length - cappedCandidates.length;
+  if (deferred > 0) console.log(deferred + " source(s) ImmoScout24 reportee(s) au prochain passage (plafond de " + IMMOSCOUT_CAP_PER_RUN + " par execution, pour eviter le blocage global constate).");
+
   // Traitement par lots parallèles : plusieurs sources contactées en même
   // temps plutôt qu'une par une. Nécessaire pour que 60+ sources tiennent
   // dans un temps d'exécution raisonnable.
   const BATCH_SIZE = 6;
   let totalStored = 0;
-  for (let i = 0; i < candidates.length; i += BATCH_SIZE) {
-    const batch = candidates.slice(i, i + BATCH_SIZE);
+  for (let i = 0; i < cappedCandidates.length; i += BATCH_SIZE) {
+    const batch = cappedCandidates.slice(i, i + BATCH_SIZE);
     const results = await Promise.all(batch.map(function (src) {
       return processSource(src).catch(function (e) {
         console.log(src.name + " : erreur de lot - " + e.message);
@@ -165,9 +235,11 @@ async function main() {
 
   console.log("");
   console.log("Total : " + totalStored + " annonce(s) transmise(s) au Worker.");
+  await closeBrowserIfOpen();
 }
 
-main().catch(function (e) {
+main().catch(async function (e) {
   console.error("Erreur fatale :", e);
+  await closeBrowserIfOpen();
   process.exit(1);
 });
