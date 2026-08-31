@@ -155,14 +155,21 @@ function findKnownLocalityGeneric(text, extra) {
   extra = extra || { map: {} };
   const lower = (text || "").toLowerCase();
   let best = null, bestIdx = Infinity;
-  for (const key in REGION_MAP) {
-    const idx = lower.indexOf(key);
-    if (idx !== -1 && idx < bestIdx) { bestIdx = idx; best = key; }
+  // Recherche par MOT ENTIER, pas par simple sous-chaine — sans ca, "lumino"
+  // (vraie localite tessinoise) correspondait a l'interieur de "luminoso"
+  // (mot italien tres courant dans les descriptions immobilieres, "lumineux"),
+  // melangeant des biens sans rapport sous une meme fiche (confirme le 31.08
+  // avec 3 biens differents fusionnes a tort sous "Lumino").
+  function checkMap(map) {
+    for (const key in map) {
+      const escaped = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const re = new RegExp("(^|[^a-z0-9\u00e0-\u00ff])" + escaped + "($|[^a-z0-9\u00e0-\u00ff])", "i");
+      const m = re.exec(lower);
+      if (m && m.index < bestIdx) { bestIdx = m.index; best = key; }
+    }
   }
-  for (const key in extra.map) {
-    const idx = lower.indexOf(key);
-    if (idx !== -1 && idx < bestIdx) { bestIdx = idx; best = key; }
-  }
+  checkMap(REGION_MAP);
+  checkMap(extra.map);
   return best;
 }
 function extractFieldsGeneric(m, fields, config, extra) {
