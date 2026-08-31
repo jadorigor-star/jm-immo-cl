@@ -18,6 +18,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: Installer Puppeteer (navigateur headless, pour les sites en JavaScript)
+        run: npm install puppeteer
       - name: Lancer le relais de collecte
         env:
           FORCE_ALL: ${{ inputs.force_all }}
