@@ -44,6 +44,11 @@ const ALLOWED_REGIONS = ["Tessin","Jura – Franches-Montagnes","Jura – Clos d
 const TYPES = ["Appartement","Maison","Chalet","Rustico","Villa","Maison historique","PPE"];
 const CONF_ORDER = { "Vérifiée": 3, "Probable": 2, "À contrôler": 1 };
 const CACHET_KEYWORDS = ["rénové","historique","authentique","cachet","poutres","cheminée","charme","chalet","ferme","voûte","madrier"];
+// Mentions explicites de residence secondaire, observees dans les
+// descriptions reelles (ex. "E possibile acquistare l'immobile quale
+// residenza secondaria" chez Domusdea/Immolife Ticino) — champ jamais
+// exploite jusqu'ici alors que l'information existe deja dans les donnees.
+const RESIDENCE_SECONDAIRE_KEYWORDS = ["residenza secondaria","résidence secondaire","ressidenza secondaria","zweitwohnung","seconda casa"];
 const TOURISTIC_REGIONS = new Set(["Tessin","Gruyère","Zweisimmen"]);
 
 function computeRegion(locality, extra) {
@@ -318,6 +323,7 @@ function extractJsonLdGeneric(html) {
           rooms: obj.numberOfRooms || null,
           surface: surface,
           price: parseFloat(price),
+          description: obj.description || null,
         });
       }
     } catch (e) { /* bloc JSON-LD invalide, ignoré */ }
@@ -393,6 +399,14 @@ function extractDetailGeneric(html, config, extra) {
       const r = ldResults[0];
       if (config.locality_lookup && r.locality) r.locality = findKnownLocalityGeneric(r.locality, extra);
       if (config.locality_lookup && !r.locality && r.title) r.locality = findKnownLocalityGeneric(r.title, extra);
+      // Certains sites (ex. Immolife Ticino) affichent l'adresse exacte en
+      // texte visible ("Localite - Rue, numero") sans l'inclure dans le
+      // JSON-LD structure — on la recupere via un motif texte de repli si
+      // fourni, plutot que de laisser le champ vide alors qu'elle existe.
+      if (!r.address && config.address_pattern) {
+        const am = new RegExp(config.address_pattern, "i").exec(html);
+        if (am) r.address = am[1].trim();
+      }
       if (r.price >= (config.price_min || 50000) && r.locality) return r;
     }
   }
@@ -534,10 +548,10 @@ async function storeListing(db, srcRow, rl, extra) {
   const existing = await db.prepare("SELECT first_seen FROM listings WHERE id=?").bind(listingId).all();
   const firstSeen = existing.results.length ? existing.results[0].first_seen : today;
 
-  await db.prepare("INSERT INTO listings (id, source_id, external_id, url, title, locality, region, type, rooms, surface, price, currency, is_rental, cachet, status, confidence, first_seen, last_seen, bien_id, address) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET title=excluded.title, price=excluded.price, status=excluded.status, confidence=excluded.confidence, last_seen=excluded.last_seen, region=excluded.region, address=excluded.address")
+  await db.prepare("INSERT INTO listings (id, source_id, external_id, url, title, locality, region, type, rooms, surface, price, currency, is_rental, cachet, status, confidence, first_seen, last_seen, bien_id, address, description) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET title=excluded.title, price=excluded.price, status=excluded.status, confidence=excluded.confidence, last_seen=excluded.last_seen, region=excluded.region, address=excluded.address, description=excluded.description")
     .bind(listingId, srcRow.id, rl.external_id, rl.url || "", rl.title, rl.locality, region, rl.type || "",
       rl.rooms ?? null, rl.surface ?? null, rl.price, "CHF", rl.is_rental?1:0, rl.cachet?1:0, "active",
-      rl.confidence || "À contrôler", firstSeen, today, bId, rl.address || null).run();
+      rl.confidence || "À contrôler", firstSeen, today, bId, rl.address || null, rl.description || null).run();
 
   const history = rl.history && rl.history.length ? rl.history : [[today, rl.price]];
   for (const pair of history) {
@@ -567,10 +581,25 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
   const cheapestPrice = Math.min(...sorted.map(l => l.price));
   const bestConf = sorted.reduce((acc,l) => (CONF_ORDER[l.confidence] > CONF_ORDER[acc] ? l.confidence : acc), "À contrôler");
   const firstSeen = sorted.reduce((acc,l) => (l.first_seen < acc ? l.first_seen : acc), sorted[0].first_seen);
-  const cachet = sorted.some(l => l.cachet);
+  // Le drapeau "cachet" ne doit pas dependre uniquement d'un signal explicite
+  // rarement present dans les extractions automatisees (confirme le 31.08 :
+  // seulement 3 biens sur 154 en beneficiaient, rendant le filtre "cachet
+  // indispensable" pratiquement inutile en pratique) — on le deduit aussi
+  // d'une detection par mots-cles dans le titre, la meme liste que celle
+  // deja utilisee pour le score, avec un seuil de 2 mots-cles pour eviter
+  // les faux positifs sur un seul mot isole.
+  const titreLower = (sorted[sorted.length-1].title || "").toLowerCase();
+  const cachetParMotsCles = CACHET_KEYWORDS.filter(k => titreLower.includes(k)).length >= 2;
+  const cachet = sorted.some(l => l.cachet) || cachetParMotsCles;
   // Retient la premiere adresse exacte disponible parmi les sources (certaines
   // la communiquent, d'autres la masquent tant qu'on ne s'est pas inscrit).
   const address = sorted.map(l => l.address).find(a => a) || null;
+  // Residence secondaire : detection par mention explicite dans le titre OU
+  // la description, quand disponible — l'information existe deja dans les
+  // donnees de plusieurs sources (confirme chez Domusdea, Ascona, Stabio)
+  // mais n'etait jusqu'ici jamais extraite ni exploitee.
+  const texteComplet = sorted.map(l => (l.title||"") + " " + (l.description||"")).join(" ").toLowerCase();
+  const residenceSecondaire = RESIDENCE_SECONDAIRE_KEYWORDS.some(k => texteComplet.includes(k));
 
   const history = historyByBien.get(bId) || [];
 
@@ -603,7 +632,7 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
     record: {
       id: bId, title: latest.title, locality: latest.locality, region: latest.region, type: latest.type,
       rooms: latest.rooms, surface: latest.surface, price: cheapestPrice, cachet: cachet?1:0, confidence: bestConf,
-      address: address,
+      address: address, residence_secondaire: residenceSecondaire?1:0,
       first_seen: firstSeen, last_seen: latest.last_seen, deal_score: scores.deal, retraite_score: scores.retraite,
       locatif_score: scores.locatif, cachet_score: scores.cachet, risk_score: scores.risk, jm_fit: fit,
       is_opportunity: discardedNow?0:(fit>=(opportunityThreshold||70)?1:0), explain, price_drop_json: priceDrop ? JSON.stringify(priceDrop) : null,
@@ -662,26 +691,27 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
   const BATCH_SIZE = 4;
   for (let i = 0; i < allComputed.length; i += BATCH_SIZE) {
     const batch = allComputed.slice(i, i + BATCH_SIZE);
-    const placeholders = batch.map(() => "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").join(",");
+    const placeholders = batch.map(() => "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").join(",");
     const values = [];
     for (const c of batch) {
       const r = c.record;
       values.push(r.id, r.title, r.locality, r.region, r.type, r.rooms, r.surface, r.price, r.cachet, r.confidence,
         r.first_seen, r.last_seen, r.deal_score, r.retraite_score, r.locatif_score, r.cachet_score, r.risk_score,
-        r.jm_fit, r.is_opportunity, r.explain, r.price_drop_json, r.address);
+        r.jm_fit, r.is_opportunity, r.explain, r.price_drop_json, r.address, r.residence_secondaire);
     }
     // Garde defensive : si ce nombre depassait un jour 100 (ex. ajout futur
     // d'une colonne sans ajuster BATCH_SIZE), on prefere un echec immediat et
     // explicite plutot qu'une requete D1 silencieusement rejetee qui viderait
     // la table sans la remplir.
     if (values.length > 100) throw new Error("writeBiensInBatches : lot de " + values.length + " parametres depasse la limite D1 de 100 — reduire BATCH_SIZE");
-    await db.prepare(`INSERT INTO biens (id,title,locality,region,type,rooms,surface,price,cachet,confidence,first_seen,last_seen,deal_score,retraite_score,locatif_score,cachet_score,risk_score,jm_fit,is_opportunity,explain,price_drop_json,address)
+    await db.prepare(`INSERT INTO biens (id,title,locality,region,type,rooms,surface,price,cachet,confidence,first_seen,last_seen,deal_score,retraite_score,locatif_score,cachet_score,risk_score,jm_fit,is_opportunity,explain,price_drop_json,address,residence_secondaire)
       VALUES ${placeholders}
       ON CONFLICT(id) DO UPDATE SET title=excluded.title, locality=excluded.locality, region=excluded.region, type=excluded.type,
         rooms=excluded.rooms, surface=excluded.surface, price=excluded.price, cachet=excluded.cachet, confidence=excluded.confidence,
         first_seen=excluded.first_seen, last_seen=excluded.last_seen, deal_score=excluded.deal_score, retraite_score=excluded.retraite_score,
         locatif_score=excluded.locatif_score, cachet_score=excluded.cachet_score, risk_score=excluded.risk_score, jm_fit=excluded.jm_fit,
-        is_opportunity=excluded.is_opportunity, explain=excluded.explain, price_drop_json=excluded.price_drop_json, address=excluded.address`)
+        is_opportunity=excluded.is_opportunity, explain=excluded.explain, price_drop_json=excluded.price_drop_json, address=excluded.address,
+        residence_secondaire=excluded.residence_secondaire`)
       .bind(...values).run();
   }
 
