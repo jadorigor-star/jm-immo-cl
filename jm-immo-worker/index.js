@@ -355,8 +355,16 @@ function extractLinksGeneric(html, config) {
   const re = new RegExp(config.link_pattern, "gi");
   const seen = new Set(); const out = []; let m;
   while ((m = re.exec(html)) !== null) {
-    const url = m[config.link_group || 1];
-    if (!url || seen.has(url)) continue;
+    let url = m[config.link_group || 1];
+    if (!url) continue;
+    // Certains sites utilisent des liens relatifs (ex. "/it/immobile/xyz")
+    // plutot que des URLs completes — on les complete avec link_base si
+    // fourni, pour obtenir une URL directement utilisable pour la requete
+    // suivante (recuperation de la fiche individuelle).
+    if (config.link_base && !/^https?:\/\//i.test(url)) {
+      url = config.link_base.replace(/\/$/, "") + (url.startsWith("/") ? "" : "/") + url;
+    }
+    if (seen.has(url)) continue;
     seen.add(url);
     out.push(url);
   }
