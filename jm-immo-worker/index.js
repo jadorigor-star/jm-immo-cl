@@ -1,3 +1,4 @@
+// VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
@@ -769,7 +770,7 @@ async function computeAccessibility(address, originStopName, env) {
 }
 __name(computeAccessibility, "computeAccessibility");
 
-async function getOrComputeAccess(db, bId, address, originStopName, env) {
+async function getOrComputeAccess(db, bId, address, originStopName, env, budget) {
   if (!address) return null;
   let cached = null;
   try {
@@ -779,6 +780,8 @@ async function getOrComputeAccess(db, bId, address, originStopName, env) {
     return null;
   }
   if (cached && cached.address === address) return cached;
+  if (budget && budget.remaining <= 0) return cached;
+  if (budget) budget.remaining--;
   const fresh = await computeAccessibility(address, originStopName, env);
   if (!fresh) return cached;
   try {
@@ -796,7 +799,7 @@ async function getOrComputeAccess(db, bId, address, originStopName, env) {
 }
 __name(getOrComputeAccess, "getOrComputeAccess");
 
-async function computeBienRecord(db, bId, listings, weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien, originStopName, env) {
+async function computeBienRecord(db, bId, listings, weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien, originStopName, env, budget) {
   const sorted = [...listings].sort((a, b) => a.last_seen < b.last_seen ? -1 : 1);
   const latest = sorted[sorted.length - 1];
   const cheapestPrice = Math.min(...sorted.map((l) => l.price));
@@ -824,7 +827,7 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
     const prev = history[history.length - 2].price, cur = history[history.length - 1].price;
     if (cur < prev) priceDrop = { old: prev, current: cur, pct: Math.round((1 - cur / prev) * 1e3) / 10 };
   }
-  const access = await getOrComputeAccess(db, bId, address, originStopName, env);
+  const access = await getOrComputeAccess(db, bId, address, originStopName, env, budget);
   const scores = {
     deal: estimateDealScore(cheapestPrice, regionPrices[latest.region] || []),
     retraite: estimateRetraiteScore(latest.rooms, latest.surface, latest.region),
@@ -987,8 +990,9 @@ async function recomputeFull(db, env) {
   await db.prepare("DELETE FROM bien_sources").run();
   const allComputed = [];
   const rescuesThisRun = [];
+  const accessBudget = { remaining: 6 };
   for (const bId in groups) {
-    const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien, originStopName, env);
+    const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien, originStopName, env, accessBudget);
     allComputed.push(computed);
     if (computed.rescue) rescuesThisRun.push(computed.rescue);
   }
@@ -1020,13 +1024,14 @@ async function recomputeTargeted(db, bienIds, env) {
   const { sourceNamesMap, discardedByBien, historyByBien } = await loadRecomputeCaches(db);
   const allComputed = [];
   const rescuesThisRun = [];
+  const accessBudget = { remaining: 6 };
   for (const bId of new Set(bienIds)) {
     if (!groups[bId]) {
       await db.prepare("DELETE FROM biens WHERE id=?").bind(bId).run();
       await db.prepare("DELETE FROM bien_sources WHERE bien_id=?").bind(bId).run();
       continue;
     }
-    const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien, originStopName, env);
+    const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien, originStopName, env, accessBudget);
     allComputed.push(computed);
     if (computed.rescue) rescuesThisRun.push(computed.rescue);
   }
