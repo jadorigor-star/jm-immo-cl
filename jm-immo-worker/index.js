@@ -1289,8 +1289,12 @@ function bienCard(b){
   if (b.is_opportunity) tags.push("<span class='tag opp'>Opportunite</span>");
   if (b.price_drop) tags.push("<span class='tag drop'>-" + b.price_drop.pct + "%</span>");
   const sources = (b.sources||[]).map(function(s){return "<a href='" + s.url + "' target='_blank' rel='noopener'>" + s.source_name + "</a>";}).join(" - ");
+  const primaryUrl = (b.sources && b.sources[0]) ? b.sources[0].url : null;
+  const titleHtml = primaryUrl
+    ? "<a href='" + primaryUrl + "' target='_blank' rel='noopener' style='color:inherit;text-decoration:none'>" + b.title + "</a>"
+    : b.title;
   const explain = b.explain ? ("<div class='explain'>JM Fit " + b.jm_fit + "/100 - " + b.explain + "</div>") : "";
-  return "<div class='card'><div class='card-top'><div><div class='title'>" + b.title + "</div><div class='locality'>" + b.locality + " - " + b.region + "</div></div>" +
+  return "<div class='card'><div class='card-top'><div><div class='title'>" + titleHtml + "</div><div class='locality'>" + b.locality + " - " + b.region + "</div></div>" +
     "<div class='fit-badge " + (b.is_opportunity?"hot":"") + "'>" + (b.jm_fit != null ? b.jm_fit : "") + "</div></div>" +
     "<div class='price' style='margin-top:8px'>" + fmtCHF(b.price) + "</div>" +
     "<div class='meta-row'><span>" + (b.rooms||"?") + " pieces</span><span>" + (b.surface||"?") + " m2</span></div>" +
