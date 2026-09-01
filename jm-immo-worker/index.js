@@ -1046,6 +1046,12 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
 }
 __name(writeBiensInBatches, "writeBiensInBatches");
 
+function isComparisOnly(listings, sourceNamesMap) {
+  const names = new Set(listings.map((l) => sourceNamesMap.get(l.source_id) || "?"));
+  return names.size === 1 && names.has("Comparis");
+}
+__name(isComparisOnly, "isComparisOnly");
+__name2(isComparisOnly, "isComparisOnly");
 async function recomputeFull(db, env, budgetSize) {
   const prefsRes = await db.prepare("SELECT * FROM preferences WHERE id=1").all();
   const weights = JSON.parse(prefsRes.results[0].weights_json);
@@ -1063,12 +1069,15 @@ async function recomputeFull(db, env, budgetSize) {
     (regionPrices[latest.region] = regionPrices[latest.region] || []).push(latest.price);
   }
   const { sourceNamesMap, discardedByBien, historyByBien } = await loadRecomputeCaches(db);
+  const oldBiensRes = await db.prepare("SELECT id, title, locality, region, type, rooms, surface, price FROM biens").all();
+  const oldBiens = oldBiensRes.results;
   await db.prepare("DELETE FROM biens").run();
   await db.prepare("DELETE FROM bien_sources").run();
   const allComputed = [];
   const rescuesThisRun = [];
   const accessBudget = { remaining: budgetSize || 6 };
   for (const bId in groups) {
+    if (isComparisOnly(groups[bId], sourceNamesMap)) continue;
     const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien, originStopName, env, accessBudget);
     allComputed.push(computed);
     if (computed.rescue) rescuesThisRun.push(computed.rescue);
@@ -1077,9 +1086,24 @@ async function recomputeFull(db, env, budgetSize) {
   for (const r of rescuesThisRun) {
     await db.prepare("INSERT INTO rescues (bien_id, old_price, new_price, date) VALUES (?,?,?,?)").bind(r.bienId, r.oldPrice, r.newPrice, (/* @__PURE__ */ new Date()).toISOString()).run();
   }
+  for (const old of oldBiens) {
+    if (!groups[old.id]) {
+      try {
+        await db.prepare("INSERT INTO vendus (bien_id, title, locality, region, type, rooms, surface, last_price, date_vendu) VALUES (?,?,?,?,?,?,?,?,?) ON CONFLICT(bien_id) DO NOTHING").bind(old.id, old.title, old.locality, old.region, old.type, old.rooms, old.surface, old.price, (/* @__PURE__ */ new Date()).toISOString()).run();
+      } catch (e) {
+      }
+    }
+  }
+  for (const bId in groups) {
+    try {
+      await db.prepare("DELETE FROM vendus WHERE bien_id=?").bind(bId).run();
+    } catch (e) {
+    }
+  }
   return { biens: allComputed.length, rescues: rescuesThisRun.length };
 }
 __name(recomputeFull, "recomputeFull");
+__name2(recomputeFull, "recomputeFull");
 
 async function recomputeTargeted(db, bienIds, env) {
   if (!bienIds || bienIds.length === 0) return { biens: 0, rescues: 0 };
@@ -1103,7 +1127,7 @@ async function recomputeTargeted(db, bienIds, env) {
   const rescuesThisRun = [];
   const accessBudget = { remaining: 6 };
   for (const bId of new Set(bienIds)) {
-    if (!groups[bId]) {
+    if (!groups[bId] || isComparisOnly(groups[bId], sourceNamesMap)) {
       await db.prepare("DELETE FROM biens WHERE id=?").bind(bId).run();
       await db.prepare("DELETE FROM bien_sources WHERE bien_id=?").bind(bId).run();
       continue;
@@ -1283,7 +1307,7 @@ main{padding:14px 16px;max-width:660px;margin:0 auto;}
 <script>
 const TABS = [
   {id:"tous", label:"Tous"}, {id:"opportunites", label:"Opportunites"}, {id:"favoris", label:"Favoris"},
-  {id:"baisses", label:"Baisses"}, {id:"ecartes", label:"Ecartes"}, {id:"sources", label:"Sources"},
+  {id:"baisses", label:"Baisses"}, {id:"ecartes", label:"Ecartes"}, {id:"vendus", label:"Vendus"}, {id:"sources", label:"Sources"},
   {id:"preferences", label:"Preferences"},
 ];
 let activeTab = "tous";
@@ -1338,6 +1362,12 @@ function ecarteCard(d){
   return "<div class='card'><div class='card-top'><div><div class='title'>" + d.title_at_exclusion + "</div><div class='locality'>" + (d.locality||"") + " - " + (d.region||"") + "</div></div></div>" +
     "<div class='price' style='margin-top:8px'>" + fmtCHF(d.price_at_exclusion) + " <span style='font-size:11px;color:var(--muted)'>(prix a l'exclusion)</span></div>" +
     "<div class='actions'><button class='btn restore' data-action='restore' data-id='" + d.bien_id + "'>Restaurer</button></div></div>";
+}
+function venduCard(d){
+  return "<div class='card'><div class='card-top'><div><div class='title'>" + (d.title||"") + "</div><div class='locality'>" + (d.locality||"") + " - " + (d.region||"") + "</div></div></div>" +
+    "<div class='price' style='margin-top:8px'>" + fmtCHF(d.last_price) + " <span style='font-size:11px;color:var(--muted)'>(dernier prix connu)</span></div>" +
+    "<div class='meta-row'><span>" + (d.rooms||"?") + " pieces</span><span>" + (d.surface||"?") + " m2</span></div>" +
+    "<div class='sources-line'>Disparu de toutes les sources le " + (d.date_vendu||"").slice(0,10) + "</div></div>";
 }
 
 async function discard(id){ await api("/api/discard", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bien_id:id})}); load(); }
@@ -1420,6 +1450,11 @@ async function load(){
   if (activeTab === "ecartes"){
     const r = await api("/api/ecartes");
     main.innerHTML = r.results.length ? r.results.map(ecarteCard).join("") : "<div class='empty'>Aucun bien ecarte.</div>";
+    return;
+  }
+  if (activeTab === "vendus"){
+    const r = await api("/api/vendus");
+    main.innerHTML = r.results.length ? r.results.map(venduCard).join("") : "<div class='empty'>Aucun bien marque vendu pour l'instant.</div>";
     return;
   }
   if (activeTab === "baisses"){
@@ -1595,6 +1630,10 @@ var index_default = {
       }
       if (url.pathname === "/api/ecartes") {
         const res = await db.prepare("SELECT * FROM discarded ORDER BY date_exclusion DESC").all();
+        return json({ results: res.results });
+      }
+      if (url.pathname === "/api/vendus") {
+        const res = await db.prepare("SELECT * FROM vendus ORDER BY date_vendu DESC").all();
         return json({ results: res.results });
       }
       if (url.pathname === "/api/baisses") {
