@@ -1017,7 +1017,7 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
 }
 __name(writeBiensInBatches, "writeBiensInBatches");
 
-async function recomputeFull(db, env) {
+async function recomputeFull(db, env, budgetSize) {
   const prefsRes = await db.prepare("SELECT * FROM preferences WHERE id=1").all();
   const weights = JSON.parse(prefsRes.results[0].weights_json);
   const opportunityThreshold = prefsRes.results[0].opportunity_threshold || 70;
@@ -1038,7 +1038,7 @@ async function recomputeFull(db, env) {
   await db.prepare("DELETE FROM bien_sources").run();
   const allComputed = [];
   const rescuesThisRun = [];
-  const accessBudget = { remaining: 6 };
+  const accessBudget = { remaining: budgetSize || 6 };
   for (const bId in groups) {
     const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien, originStopName, env, accessBudget);
     allComputed.push(computed);
@@ -1228,6 +1228,7 @@ main{padding:14px 16px;max-width:660px;margin:0 auto;}
 <header>
   <h1>JM Immo</h1>
   <button id="btnRefresh" style="margin:8px 0;padding:8px 12px;border-radius:8px;border:1px solid #262E3A;background:#1D2430;color:#E7EAEE;font-size:12.5px;cursor:pointer">&#8635; Rafraichir les sources</button>
+  <button id="btnComputeAccess" style="margin:0 0 8px 0;padding:8px 12px;border-radius:8px;border:1px solid #262E3A;background:#1D2430;color:#E7EAEE;font-size:12.5px;cursor:pointer">Calculer accessibilite (dernier km)</button>
   <div class="searchbar">
     <input id="q" placeholder="Rechercher (village, type, mot-cle)...">
     <button id="btnSearch">Chercher</button>
@@ -1436,6 +1437,18 @@ document.getElementById("btnRefresh").onclick = async function(){
   btn.innerHTML = original;
   load();
 };
+document.getElementById("btnComputeAccess").onclick = async function(){
+  const btn = document.getElementById("btnComputeAccess");
+  const original = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = "Calcul en cours...";
+  try {
+    await fetch("/api/compute-access");
+  } catch(e) { }
+  btn.disabled = false;
+  btn.innerHTML = original;
+  load();
+};
 ["fRegion","fType","fBudget","fSort"].forEach(function(id){document.getElementById(id).onchange = load;});
 document.getElementById("q").addEventListener("keydown", function(e){ if(e.key==="Enter") load(); });
 load();
@@ -1453,6 +1466,10 @@ var index_default = {
       if (url.pathname === "/api/refresh" && (request.method === "POST" || request.method === "GET")) {
         const report = await fullRefresh(db, fetch.bind(globalThis), env);
         return json(report);
+      }
+      if (url.pathname === "/api/compute-access" && (request.method === "POST" || request.method === "GET")) {
+        const stats = await recomputeFull(db, env, 10);
+        return json(stats);
       }
       if (url.pathname === "/api/ingest-raw" && request.method === "POST") {
         const body = await request.json();
