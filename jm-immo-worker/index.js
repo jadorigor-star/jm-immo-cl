@@ -1322,8 +1322,10 @@ function bienCard(b){
   const titleHtml = primaryUrl
     ? "<a href='" + primaryUrl + "' target='_blank' rel='noopener' style='color:inherit;text-decoration:none'>" + b.title + "</a>"
     : b.title;
+  const mapQuery = encodeURIComponent(b.address || ((b.locality||"") + " " + (b.region||"")));
+  const mapUrl = "https://www.google.com/maps/search/?api=1&query=" + mapQuery;
   const explain = b.explain ? ("<div class='explain'>JM Fit " + b.jm_fit + "/100 - " + b.explain + "</div>") : "";
-  return "<div class='card'><div class='card-top'><div><div class='title'>" + titleHtml + "</div><div class='locality'>" + b.locality + " - " + b.region + "</div></div>" +
+  return "<div class='card'><div class='card-top'><div><div class='title'>" + titleHtml + "</div><div class='locality'>" + b.locality + " - " + b.region + " - <a href='" + mapUrl + "' target='_blank' rel='noopener'>Carte</a></div></div>" +
     "<div class='fit-badge " + (b.is_opportunity?"hot":"") + "'>" + (b.jm_fit != null ? b.jm_fit : "") + "</div></div>" +
     "<div class='price' style='margin-top:8px'>" + fmtCHF(b.price) + "</div>" +
     "<div class='meta-row'><span>" + (b.rooms||"?") + " pieces</span><span>" + (b.surface||"?") + " m2</span></div>" +
