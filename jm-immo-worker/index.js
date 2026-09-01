@@ -1207,48 +1207,48 @@ let activeTab = "tous";
 const REGIONS = ["Tessin","Jura - Franches-Montagnes","Jura - Clos du Doubs","Zweisimmen","Gruyere","Neuchatel"];
 const TYPES = ["Appartement","Maison","Chalet","Rustico","Villa","Maison historique","PPE"];
 
-document.getElementById("fRegion").innerHTML += REGIONS.map(function(r){return "<option value=\"" + r + "\">" + r + "</option>";}).join("");
-document.getElementById("fType").innerHTML += TYPES.map(function(t){return "<option value=\"" + t + "\">" + t + "</option>";}).join("");
-document.getElementById("tabs").innerHTML = TABS.map(function(t){return "<div class=\"tab " + (t.id===activeTab?"active":"") + "\" data-tab=\"" + t.id + "\">" + t.label + "</div>";}).join("");
+document.getElementById("fRegion").innerHTML += REGIONS.map(function(r){return "<option value='" + r + "'>" + r + "</option>";}).join("");
+document.getElementById("fType").innerHTML += TYPES.map(function(t){return "<option value='" + t + "'>" + t + "</option>";}).join("");
+document.getElementById("tabs").innerHTML = TABS.map(function(t){return "<div class='tab " + (t.id===activeTab?"active":"") + "' data-tab='" + t.id + "'>" + t.label + "</div>";}).join("");
 
 function fmtCHF(n){ return "CHF " + Math.round(n).toLocaleString("fr-CH"); }
 async function api(path, opts){ const res = await fetch(path, opts); return res.json(); }
 
 function accessLine(b){
   if (!b.nearest_stop_name || b.last_mile_duration_min == null) {
-    return "<div class=\"access-row\">Dernier km non calcule (adresse manquante ou cle ORS absente)</div>";
+    return "<div class='access-row'>Dernier km non calcule (adresse manquante ou cle ORS absente)</div>";
   }
   const pente = (b.last_mile_elevation_m && b.last_mile_distance_m) ? Math.round((b.last_mile_elevation_m / b.last_mile_distance_m) * 100) : null;
   const warn = (pente != null && pente >= 15) || b.last_mile_duration_min > 12;
   let txt = "A pied : " + b.last_mile_duration_min + " min depuis " + b.nearest_stop_name +
     " (" + b.last_mile_distance_m + "m, deniv. " + (b.last_mile_elevation_m||0) + "m" + (pente!=null?(", pente ~"+pente+"%"):"") + ")";
   if (b.transit_duration_min != null) {
-    const h = Math.floor(b.transit_duration_min/60), m = b.transit_duration_min%60;
-    txt += " - trajet " + h + "h" + (m<10?"0":"") + m + (b.transit_transfers!=null?(" (" + b.transit_transfers + " chgt)"):"");
+    const hh = Math.floor(b.transit_duration_min/60), mm = b.transit_duration_min%60;
+    txt += " - trajet " + hh + "h" + (mm<10?"0":"") + mm + (b.transit_transfers!=null?(" (" + b.transit_transfers + " chgt)"):"");
   }
-  return "<div class=\"access-row" + (warn?" warn":"") + "\">" + txt + "</div>";
+  return "<div class='access-row" + (warn?" warn":"") + "'>" + txt + "</div>";
 }
 
 function bienCard(b){
-  const tags = ["<span class=\"tag\">" + (b.type||"") + "</span>", "<span class=\"tag\">" + (b.region||"") + "</span>", "<span class=\"tag\">" + (b.confidence||"") + "</span>"];
-  if (b.cachet) tags.push("<span class=\"tag\">cachet</span>");
-  if (b.is_opportunity) tags.push("<span class=\"tag opp\">Opportunite</span>");
-  if (b.price_drop) tags.push("<span class=\"tag drop\">-" + b.price_drop.pct + "%</span>");
-  const sources = (b.sources||[]).map(function(s){return "<a href=\"" + s.url + "\" target=\"_blank\" rel=\"noopener\">" + s.source_name + "</a>";}).join(" - ");
-  const explain = b.explain ? ("<div class=\"explain\">JM Fit " + b.jm_fit + "/100 - " + b.explain + "</div>") : "";
-  return "<div class=\"card\"><div class=\"card-top\"><div><div class=\"title\">" + b.title + "</div><div class=\"locality\">" + b.locality + " - " + b.region + "</div></div>" +
-    "<div class=\"fit-badge " + (b.is_opportunity?"hot":"") + "\">" + (b.jm_fit != null ? b.jm_fit : "") + "</div></div>" +
-    "<div class=\"price\" style=\"margin-top:8px\">" + fmtCHF(b.price) + "</div>" +
-    "<div class=\"meta-row\"><span>" + (b.rooms||"?") + " pieces</span><span>" + (b.surface||"?") + " m2</span></div>" +
-    "<div class=\"tags\">" + tags.join("") + "</div>" + explain + accessLine(b) +
-    "<div class=\"sources-line\">" + (b.sources||[]).length + " source(s) : " + sources + "</div>" +
-    "<div class=\"actions\"><button class=\"btn discard\" onclick=\"discard('" + b.id + "')\">Ecarter</button>" +
-    "<button class=\"btn fav " + (b.is_favori?"on":"") + "\" onclick=\"toggleFav('" + b.id + "', " + (!!b.is_favori) + ")\">" + (b.is_favori?"Favori (retirer)":"Favori (ajouter)") + "</button></div></div>";
+  const tags = ["<span class='tag'>" + (b.type||"") + "</span>", "<span class='tag'>" + (b.region||"") + "</span>", "<span class='tag'>" + (b.confidence||"") + "</span>"];
+  if (b.cachet) tags.push("<span class='tag'>cachet</span>");
+  if (b.is_opportunity) tags.push("<span class='tag opp'>Opportunite</span>");
+  if (b.price_drop) tags.push("<span class='tag drop'>-" + b.price_drop.pct + "%</span>");
+  const sources = (b.sources||[]).map(function(s){return "<a href='" + s.url + "' target='_blank' rel='noopener'>" + s.source_name + "</a>";}).join(" - ");
+  const explain = b.explain ? ("<div class='explain'>JM Fit " + b.jm_fit + "/100 - " + b.explain + "</div>") : "";
+  return "<div class='card'><div class='card-top'><div><div class='title'>" + b.title + "</div><div class='locality'>" + b.locality + " - " + b.region + "</div></div>" +
+    "<div class='fit-badge " + (b.is_opportunity?"hot":"") + "'>" + (b.jm_fit != null ? b.jm_fit : "") + "</div></div>" +
+    "<div class='price' style='margin-top:8px'>" + fmtCHF(b.price) + "</div>" +
+    "<div class='meta-row'><span>" + (b.rooms||"?") + " pieces</span><span>" + (b.surface||"?") + " m2</span></div>" +
+    "<div class='tags'>" + tags.join("") + "</div>" + explain + accessLine(b) +
+    "<div class='sources-line'>" + (b.sources||[]).length + " source(s) : " + sources + "</div>" +
+    "<div class='actions'><button class='btn discard' data-action='discard' data-id='" + b.id + "'>Ecarter</button>" +
+    "<button class='btn fav " + (b.is_favori?"on":"") + "' data-action='togglefav' data-id='" + b.id + "' data-fav='" + (!!b.is_favori) + "'>" + (b.is_favori?"Favori (retirer)":"Favori (ajouter)") + "</button></div></div>";
 }
 function ecarteCard(d){
-  return "<div class=\"card\"><div class=\"card-top\"><div><div class=\"title\">" + d.title_at_exclusion + "</div><div class=\"locality\">" + (d.locality||"") + " - " + (d.region||"") + "</div></div></div>" +
-    "<div class=\"price\" style=\"margin-top:8px\">" + fmtCHF(d.price_at_exclusion) + " <span style=\"font-size:11px;color:var(--muted)\">(prix a l'exclusion)</span></div>" +
-    "<div class=\"actions\"><button class=\"btn restore\" onclick=\"restore('" + d.bien_id + "')\">Restaurer</button></div></div>";
+  return "<div class='card'><div class='card-top'><div><div class='title'>" + d.title_at_exclusion + "</div><div class='locality'>" + (d.locality||"") + " - " + (d.region||"") + "</div></div></div>" +
+    "<div class='price' style='margin-top:8px'>" + fmtCHF(d.price_at_exclusion) + " <span style='font-size:11px;color:var(--muted)'>(prix a l'exclusion)</span></div>" +
+    "<div class='actions'><button class='btn restore' data-action='restore' data-id='" + d.bien_id + "'>Restaurer</button></div></div>";
 }
 
 async function discard(id){ await api("/api/discard", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bien_id:id})}); load(); }
@@ -1267,17 +1267,22 @@ async function loadPrefs(){
   let slidersHtml = "";
   ["deal","retraite","locatif","cachet","risk","accessibilite"].forEach(function(k){
     const v = weights[k] != null ? weights[k] : 0;
-    slidersHtml += "<div class=\"pref-block\"><label>" + labels[k] + " - <span class=\"mono\">" + v + "/5</span></label>" +
-      "<div class=\"slider-row\"><input type=\"range\" min=\"0\" max=\"5\" value=\"" + v + "\" oninput=\"updateWeight('" + k + "', this.value)\"></div></div>";
+    slidersHtml += "<div class='pref-block'><label>" + labels[k] + " - <span class='mono'>" + v + "/5</span></label>" +
+      "<div class='slider-row'><input type='range' min='0' max='5' value='" + v + "' data-weight-key='" + k + "'></div></div>";
   });
-  const regionChips = REGIONS.map(function(r){return "<span class=\"chip " + (regionsAllowed.includes(r)?"on":"") + "\" onclick=\"togglePrefRegion('" + r + "')\">" + r + "</span>";}).join("");
-  const html = "<div class=\"card\">" +
-    "<div class=\"pref-block\"><label>Cachet indispensable</label><div class=\"chip-row\"><span class=\"chip " + (p.cachet_required?"on":"") + "\" onclick=\"togglePrefCachet()\">" + (p.cachet_required?"Active":"Desactive") + "</span></div></div>" +
-    "<div class=\"pref-block\"><label>Gare / ville de depart pour le calcul du trajet</label><div class=\"chip-row\"><input id=\"originStopInput\" value=\"" + (p.origine_trajet||"Fribourg") + "\" style=\"padding:6px 10px;border-radius:8px;border:1px solid #262E3A;background:#1D2430;color:#E7EAEE;font-size:12.5px;width:100%\" onchange=\"updateOriginStop(this.value)\"></div></div>" +
-    "<div class=\"pref-block\"><label>Regions autorisees</label><div class=\"chip-row\">" + regionChips + "</div></div>" +
+  const regionChips = REGIONS.map(function(r){return "<span class='chip " + (regionsAllowed.includes(r)?"on":"") + "' data-action='toggleregion' data-region='" + r + "'>" + r + "</span>";}).join("");
+  const html = "<div class='card'>" +
+    "<div class='pref-block'><label>Cachet indispensable</label><div class='chip-row'><span class='chip " + (p.cachet_required?"on":"") + "' data-action='togglecachet'>" + (p.cachet_required?"Active":"Desactive") + "</span></div></div>" +
+    "<div class='pref-block'><label>Gare / ville de depart pour le calcul du trajet</label><div class='chip-row'><input id='originStopInput' value='" + (p.origine_trajet||"Fribourg") + "' style='padding:6px 10px;border-radius:8px;border:1px solid #262E3A;background:#1D2430;color:#E7EAEE;font-size:12.5px;width:100%'></div></div>" +
+    "<div class='pref-block'><label>Regions autorisees</label><div class='chip-row'>" + regionChips + "</div></div>" +
     slidersHtml + "</div>";
   document.getElementById("main").innerHTML = html;
   window._prefsCache = p;
+  const originInput = document.getElementById("originStopInput");
+  if (originInput) originInput.addEventListener("change", function(){ updateOriginStop(originInput.value); });
+  document.querySelectorAll("input[data-weight-key]").forEach(function(el){
+    el.addEventListener("input", function(){ updateWeight(el.dataset.weightKey, el.value); });
+  });
 }
 async function togglePrefCachet(){
   const p = window._prefsCache;
@@ -1313,24 +1318,24 @@ async function updateOriginStop(v){
 
 async function load(){
   const main = document.getElementById("main");
-  main.innerHTML = "<div class=\"status\">Chargement...</div>";
+  main.innerHTML = "<div class='status'>Chargement...</div>";
 
   if (activeTab === "preferences"){ return loadPrefs(); }
   if (activeTab === "sources"){
     const r = await api("/api/sources");
-    main.innerHTML = "<div class=\"card\"><table class=\"sources-table\"><thead><tr><th>Source</th><th>Etat</th><th>Annonces</th></tr></thead><tbody>" +
-      r.results.map(function(s){return "<tr><td><span class=\"dot " + s.state + "\"></span>" + s.name + "</td><td>" + s.state + "</td><td class=\"mono\">" + (s.last_productive_count||0) + "</td></tr>";}).join("") +
+    main.innerHTML = "<div class='card'><table class='sources-table'><thead><tr><th>Source</th><th>Etat</th><th>Annonces</th></tr></thead><tbody>" +
+      r.results.map(function(s){return "<tr><td><span class='dot " + s.state + "'></span>" + s.name + "</td><td>" + s.state + "</td><td class='mono'>" + (s.last_productive_count||0) + "</td></tr>";}).join("") +
       "</tbody></table></div>";
     return;
   }
   if (activeTab === "ecartes"){
     const r = await api("/api/ecartes");
-    main.innerHTML = r.results.length ? r.results.map(ecarteCard).join("") : "<div class=\"empty\">Aucun bien ecarte.</div>";
+    main.innerHTML = r.results.length ? r.results.map(ecarteCard).join("") : "<div class='empty'>Aucun bien ecarte.</div>";
     return;
   }
   if (activeTab === "baisses"){
     const r = await api("/api/baisses");
-    main.innerHTML = r.results.length ? r.results.map(bienCard).join("") : "<div class=\"empty\">Aucune baisse detectee.</div>";
+    main.innerHTML = r.results.length ? r.results.map(bienCard).join("") : "<div class='empty'>Aucune baisse detectee.</div>";
     return;
   }
 
@@ -1345,9 +1350,20 @@ async function load(){
   if (activeTab === "favoris") params.set("favoris", "1");
 
   const r = await api("/api/search?" + params.toString());
-  main.innerHTML = r.results.length ? r.results.map(bienCard).join("") : "<div class=\"empty\">Aucun resultat pour ces criteres.</div>";
+  main.innerHTML = r.results.length ? r.results.map(bienCard).join("") : "<div class='empty'>Aucun resultat pour ces criteres.</div>";
 }
 
+document.getElementById("main").addEventListener("click", function(e){
+  const el = e.target.closest("[data-action]");
+  if (!el) return;
+  const action = el.dataset.action;
+  const id = el.dataset.id;
+  if (action === "discard") discard(id);
+  else if (action === "togglefav") toggleFav(id, el.dataset.fav === "true");
+  else if (action === "restore") restore(id);
+  else if (action === "togglecachet") togglePrefCachet();
+  else if (action === "toggleregion") togglePrefRegion(el.dataset.region);
+});
 document.getElementById("tabs").addEventListener("click", function(e){
   const t = e.target.closest("[data-tab]"); if(!t) return;
   activeTab = t.dataset.tab;
