@@ -487,7 +487,9 @@ function genericAdapter(sourceRow, extra) {
     "Accept": "text/html,application/xhtml+xml",
     "Accept-Language": "fr-CH,fr;q=0.9"
   };
-  async function fetchText(fetchFn, url) {
+  async function fetchText(fetchFn, url, budget) {
+    if (budget && budget.remaining <= 0) throw new Error("Budget de requetes epuise pour ce rafraichissement");
+    if (budget) budget.remaining--;
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), SOURCE_TIMEOUT_MS);
     try {
@@ -516,19 +518,19 @@ function genericAdapter(sourceRow, extra) {
   __name(extractDetail, "extractDetail");
   return {
     name: sourceRow.name,
-    async check(fetchFn) {
+    async check(fetchFn, budget) {
       const urls = config.mode === "two_step" ? [config.list_url] : config.urls || [config.list_url];
-      await fetchText(fetchFn, urls[0]);
+      await fetchText(fetchFn, urls[0], budget);
       return "accessible";
     },
-    async fetchListings(fetchFn) {
+    async fetchListings(fetchFn, budget) {
       const out = [];
       if (config.mode === "two_step") {
-        const listHtml = await fetchText(fetchFn, config.list_url);
+        const listHtml = await fetchText(fetchFn, config.list_url, budget);
         const links = extractLinks(listHtml);
         for (const url of links.slice(0, config.max_details || 20)) {
           try {
-            const detHtml = await fetchText(fetchFn, url);
+            const detHtml = await fetchText(fetchFn, url, budget);
             const detail = extractDetail(detHtml);
             if (!detail) continue;
             out.push({
@@ -543,13 +545,14 @@ function genericAdapter(sourceRow, extra) {
               confidence: config.confidence || "V\xE9rifi\xE9e"
             });
           } catch (e) {
+            if (budget && budget.remaining <= 0) throw e;
           }
         }
       } else {
         const urls = config.urls || [];
         for (const url of urls) {
           try {
-            const html = await fetchText(fetchFn, url);
+            const html = await fetchText(fetchFn, url, budget);
             for (const rec of extractSingle(html)) {
               out.push({
                 external_id: (rec.url || rec.locality + rec.price).split("/").filter(Boolean).pop(),
@@ -565,6 +568,7 @@ function genericAdapter(sourceRow, extra) {
               });
             }
           } catch (e) {
+            if (budget && budget.remaining <= 0) throw e;
           }
         }
       }
@@ -586,16 +590,40 @@ async function loadExtraLocalities(db) {
   return { map, excluded };
 }
 __name(loadExtraLocalities, "loadExtraLocalities");
+async function getSourceOffset(db) {
+  try {
+    const res = await db.prepare("SELECT value FROM app_config WHERE key='source_offset'").all();
+    if (res.results.length) return parseInt(res.results[0].value) || 0;
+  } catch (e) {
+  }
+  return 0;
+}
+__name(getSourceOffset, "getSourceOffset");
+async function setSourceOffset(db, offset) {
+  try {
+    await db.prepare("INSERT INTO app_config (key, value) VALUES ('source_offset', ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").bind(String(offset)).run();
+  } catch (e) {
+  }
+}
+__name(setSourceOffset, "setSourceOffset");
 async function ingest(db, fetchFn) {
   const report = [];
   const extra = await loadExtraLocalities(db);
-  const sourcesRes = await db.prepare("SELECT * FROM sources WHERE enabled=1").all();
-  for (const srcRow of sourcesRes.results) {
+  const sourcesRes = await db.prepare("SELECT * FROM sources WHERE enabled=1 ORDER BY id ASC").all();
+  const allSources = sourcesRes.results;
+  if (allSources.length === 0) return report;
+  const offset = (await getSourceOffset(db)) % allSources.length;
+  const rotated = allSources.slice(offset).concat(allSources.slice(0, offset));
+  const fetchBudget = { remaining: 35 };
+  let attempted = 0;
+  for (const srcRow of rotated) {
+    if (fetchBudget.remaining <= 0) break;
+    attempted++;
     const adapter = srcRow.adapter === "demo" ? demoAdapter() : genericAdapter(srcRow, extra);
     let state = "enregistr\xE9e", error = null, stored = 0;
     try {
-      state = await adapter.check(fetchFn);
-      const rawListings = await adapter.fetchListings(fetchFn);
+      state = await adapter.check(fetchFn, fetchBudget);
+      const rawListings = await adapter.fetchListings(fetchFn, fetchBudget);
       for (const rl of rawListings) stored += await storeListing(db, srcRow, rl, extra);
       if (stored > 0) state = "productive";
     } catch (e) {
@@ -604,6 +632,7 @@ async function ingest(db, fetchFn) {
     await db.prepare("UPDATE sources SET state=?, last_checked=?, last_error=?, last_productive_count=? WHERE id=?").bind(state, (/* @__PURE__ */ new Date()).toISOString(), error, stored, srcRow.id).run();
     report.push({ source: srcRow.name, state, stored, error });
   }
+  await setSourceOffset(db, (offset + attempted) % allSources.length);
   return report;
 }
 __name(ingest, "ingest");
