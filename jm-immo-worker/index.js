@@ -735,15 +735,48 @@ async function computeTrainJourneySwiss(originStopName, destStopName) {
 }
 __name(computeTrainJourneySwiss, "computeTrainJourneySwiss");
 
-async function computeAccessibility(address, originStopName, env) {
-  if (!address || !env.ORS_API_KEY) return null;
+async function computeAccessibility(address, originStopName, env, db, bId) {
+  if (!address) return null;
+  if (!env.ORS_API_KEY) {
+    if (db) {
+      try {
+        await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "config", "ORS_API_KEY manquant", (/* @__PURE__ */ new Date()).toISOString()).run();
+      } catch (e2) {
+      }
+    }
+    return null;
+  }
   try {
     const addrPoint = await geocodeAddressORS(address, env.ORS_API_KEY);
-    if (!addrPoint) return null;
+    if (!addrPoint) {
+      if (db) {
+        try {
+          await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "geocode", "aucun resultat", (/* @__PURE__ */ new Date()).toISOString()).run();
+        } catch (e2) {
+        }
+      }
+      return null;
+    }
     const stop = await findNearestStopSwiss(addrPoint.lat, addrPoint.lon);
-    if (!stop) return null;
+    if (!stop) {
+      if (db) {
+        try {
+          await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "nearest_stop", "aucune gare trouvee", (/* @__PURE__ */ new Date()).toISOString()).run();
+        } catch (e2) {
+        }
+      }
+      return null;
+    }
     const walk = await computeWalkingSegmentORS(stop.lat, stop.lon, addrPoint.lat, addrPoint.lon, env.ORS_API_KEY);
-    if (!walk) return null;
+    if (!walk) {
+      if (db) {
+        try {
+          await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "walking", "pas de sommaire dans la reponse", (/* @__PURE__ */ new Date()).toISOString()).run();
+        } catch (e2) {
+        }
+      }
+      return null;
+    }
     let transit = null;
     try {
       transit = await computeTrainJourneySwiss(originStopName || "Fribourg", stop.name);
@@ -765,6 +798,12 @@ async function computeAccessibility(address, originStopName, env) {
       accessibilite_score: accessibiliteScore
     };
   } catch (e) {
+    if (db) {
+      try {
+        await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "exception", String(e && e.message ? e.message : e), (/* @__PURE__ */ new Date()).toISOString()).run();
+      } catch (e2) {
+      }
+    }
     return null;
   }
 }
@@ -782,7 +821,7 @@ async function getOrComputeAccess(db, bId, address, originStopName, env, budget)
   if (cached && cached.address === address) return cached;
   if (budget && budget.remaining <= 0) return cached;
   if (budget) budget.remaining--;
-  const fresh = await computeAccessibility(address, originStopName, env);
+  const fresh = await computeAccessibility(address, originStopName, env, db, bId);
   if (!fresh) return cached;
   try {
     await db.prepare(`INSERT INTO access_cache (bien_id, address, nearest_stop_name, last_mile_distance_m, last_mile_duration_min, last_mile_elevation_m, transit_duration_min, transit_transfers, accessibilite_score, computed_at)
