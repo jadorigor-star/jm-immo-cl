@@ -340,7 +340,17 @@ function extractStateJsonGeneric(html, config) {
     const surface = f.surface ? getByPath(item, f.surface) : null;
     const id = f.id ? getByPath(item, f.id) : null;
     const url = config.url_prefix && id != null ? config.url_prefix.replace(/\/$/, "") + "/" + (config.url_path_prefix || "") + id : null;
-    out.push({ price: parseFloat(price), locality, rooms, surface, url, type: null });
+    let address = f.address ? getByPath(item, f.address) : null;
+    if (!address && f.locality) {
+      const addrBase = f.locality.replace(/\.[^.]+$/, "");
+      const street = getByPath(item, addrBase + ".street");
+      const houseNumber = getByPath(item, addrBase + ".houseNumber");
+      const postalCode = getByPath(item, addrBase + ".postalCode");
+      if (street) {
+        address = String(street) + (houseNumber ? " " + houseNumber : "") + (postalCode ? ", " + postalCode + " " + (locality || "") : locality ? ", " + locality : "");
+      }
+    }
+    out.push({ price: parseFloat(price), locality, rooms, surface, url, address: address || null, type: null });
   }
   return out;
 }
@@ -487,7 +497,9 @@ function genericAdapter(sourceRow, extra) {
     "Accept": "text/html,application/xhtml+xml",
     "Accept-Language": "fr-CH,fr;q=0.9"
   };
-  async function fetchText(fetchFn, url) {
+  async function fetchText(fetchFn, url, budget) {
+    if (budget && budget.remaining <= 0) throw new Error("Budget de requetes epuise pour ce rafraichissement");
+    if (budget) budget.remaining--;
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), SOURCE_TIMEOUT_MS);
     try {
@@ -516,19 +528,19 @@ function genericAdapter(sourceRow, extra) {
   __name(extractDetail, "extractDetail");
   return {
     name: sourceRow.name,
-    async check(fetchFn) {
+    async check(fetchFn, budget) {
       const urls = config.mode === "two_step" ? [config.list_url] : config.urls || [config.list_url];
-      await fetchText(fetchFn, urls[0]);
+      await fetchText(fetchFn, urls[0], budget);
       return "accessible";
     },
-    async fetchListings(fetchFn) {
+    async fetchListings(fetchFn, budget) {
       const out = [];
       if (config.mode === "two_step") {
-        const listHtml = await fetchText(fetchFn, config.list_url);
+        const listHtml = await fetchText(fetchFn, config.list_url, budget);
         const links = extractLinks(listHtml);
         for (const url of links.slice(0, config.max_details || 20)) {
           try {
-            const detHtml = await fetchText(fetchFn, url);
+            const detHtml = await fetchText(fetchFn, url, budget);
             const detail = extractDetail(detHtml);
             if (!detail) continue;
             out.push({
@@ -543,13 +555,14 @@ function genericAdapter(sourceRow, extra) {
               confidence: config.confidence || "V\xE9rifi\xE9e"
             });
           } catch (e) {
+            if (budget && budget.remaining <= 0) throw e;
           }
         }
       } else {
         const urls = config.urls || [];
         for (const url of urls) {
           try {
-            const html = await fetchText(fetchFn, url);
+            const html = await fetchText(fetchFn, url, budget);
             for (const rec of extractSingle(html)) {
               out.push({
                 external_id: (rec.url || rec.locality + rec.price).split("/").filter(Boolean).pop(),
@@ -565,6 +578,7 @@ function genericAdapter(sourceRow, extra) {
               });
             }
           } catch (e) {
+            if (budget && budget.remaining <= 0) throw e;
           }
         }
       }
@@ -586,16 +600,40 @@ async function loadExtraLocalities(db) {
   return { map, excluded };
 }
 __name(loadExtraLocalities, "loadExtraLocalities");
+async function getSourceOffset(db) {
+  try {
+    const res = await db.prepare("SELECT value FROM app_config WHERE key='source_offset'").all();
+    if (res.results.length) return parseInt(res.results[0].value) || 0;
+  } catch (e) {
+  }
+  return 0;
+}
+__name(getSourceOffset, "getSourceOffset");
+async function setSourceOffset(db, offset) {
+  try {
+    await db.prepare("INSERT INTO app_config (key, value) VALUES ('source_offset', ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").bind(String(offset)).run();
+  } catch (e) {
+  }
+}
+__name(setSourceOffset, "setSourceOffset");
 async function ingest(db, fetchFn) {
   const report = [];
   const extra = await loadExtraLocalities(db);
-  const sourcesRes = await db.prepare("SELECT * FROM sources WHERE enabled=1").all();
-  for (const srcRow of sourcesRes.results) {
+  const sourcesRes = await db.prepare("SELECT * FROM sources WHERE enabled=1 ORDER BY id ASC").all();
+  const allSources = sourcesRes.results;
+  if (allSources.length === 0) return report;
+  const offset = (await getSourceOffset(db)) % allSources.length;
+  const rotated = allSources.slice(offset).concat(allSources.slice(0, offset));
+  const fetchBudget = { remaining: 35 };
+  let attempted = 0;
+  for (const srcRow of rotated) {
+    if (fetchBudget.remaining <= 0) break;
+    attempted++;
     const adapter = srcRow.adapter === "demo" ? demoAdapter() : genericAdapter(srcRow, extra);
     let state = "enregistr\xE9e", error = null, stored = 0;
     try {
-      state = await adapter.check(fetchFn);
-      const rawListings = await adapter.fetchListings(fetchFn);
+      state = await adapter.check(fetchFn, fetchBudget);
+      const rawListings = await adapter.fetchListings(fetchFn, fetchBudget);
       for (const rl of rawListings) stored += await storeListing(db, srcRow, rl, extra);
       if (stored > 0) state = "productive";
     } catch (e) {
@@ -604,6 +642,7 @@ async function ingest(db, fetchFn) {
     await db.prepare("UPDATE sources SET state=?, last_checked=?, last_error=?, last_productive_count=? WHERE id=?").bind(state, (/* @__PURE__ */ new Date()).toISOString(), error, stored, srcRow.id).run();
     report.push({ source: srcRow.name, state, stored, error });
   }
+  await setSourceOffset(db, (offset + attempted) % allSources.length);
   return report;
 }
 __name(ingest, "ingest");
@@ -678,7 +717,10 @@ __name(estimateAccessibiliteScore, "estimateAccessibiliteScore");
 async function geocodeAddressORS(address, orsApiKey) {
   const url = "https://api.openrouteservice.org/geocode/search?api_key=" + encodeURIComponent(orsApiKey) + "&text=" + encodeURIComponent(address) + "&size=1&boundary.country=CH";
   const res = await fetch(url);
-  if (!res.ok) throw new Error("ORS geocode HTTP " + res.status);
+  if (!res.ok) {
+    const bodyText = await res.text().catch(() => "");
+    throw new Error("ORS geocode HTTP " + res.status + " : " + bodyText.slice(0, 300));
+  }
   const data = await res.json();
   const feature = data.features && data.features[0];
   if (!feature) return null;
@@ -690,7 +732,10 @@ __name(geocodeAddressORS, "geocodeAddressORS");
 async function findNearestStopSwiss(lat, lon) {
   const url = "https://transport.opendata.ch/v1/locations?x=" + lat + "&y=" + lon + "&type=station";
   const res = await fetch(url);
-  if (!res.ok) throw new Error("transport.opendata.ch locations HTTP " + res.status);
+  if (!res.ok) {
+    const bodyText = await res.text().catch(() => "");
+    throw new Error("transport.opendata.ch locations HTTP " + res.status + " : " + bodyText.slice(0, 300));
+  }
   const data = await res.json();
   const stop = data.stations && data.stations[0];
   if (!stop || !stop.coordinate) return null;
@@ -704,7 +749,10 @@ async function computeWalkingSegmentORS(fromLat, fromLon, toLat, toLon, orsApiKe
     headers: { "Authorization": orsApiKey, "Content-Type": "application/json" },
     body: JSON.stringify({ coordinates: [[fromLon, fromLat], [toLon, toLat]], elevation: true })
   });
-  if (!res.ok) throw new Error("ORS directions HTTP " + res.status);
+  if (!res.ok) {
+    const bodyText = await res.text().catch(() => "");
+    throw new Error("ORS directions HTTP " + res.status + " : " + bodyText.slice(0, 300));
+  }
   const data = await res.json();
   const feature = data.features && data.features[0];
   const summary = feature && feature.properties && feature.properties.summary;
@@ -735,15 +783,48 @@ async function computeTrainJourneySwiss(originStopName, destStopName) {
 }
 __name(computeTrainJourneySwiss, "computeTrainJourneySwiss");
 
-async function computeAccessibility(address, originStopName, env) {
-  if (!address || !env.ORS_API_KEY) return null;
+async function computeAccessibility(address, originStopName, env, db, bId) {
+  if (!address) return null;
+  if (!env.ORS_API_KEY) {
+    if (db) {
+      try {
+        await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "config", "ORS_API_KEY manquant", (/* @__PURE__ */ new Date()).toISOString()).run();
+      } catch (e2) {
+      }
+    }
+    return null;
+  }
   try {
     const addrPoint = await geocodeAddressORS(address, env.ORS_API_KEY);
-    if (!addrPoint) return null;
+    if (!addrPoint) {
+      if (db) {
+        try {
+          await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "geocode", "aucun resultat", (/* @__PURE__ */ new Date()).toISOString()).run();
+        } catch (e2) {
+        }
+      }
+      return null;
+    }
     const stop = await findNearestStopSwiss(addrPoint.lat, addrPoint.lon);
-    if (!stop) return null;
+    if (!stop) {
+      if (db) {
+        try {
+          await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "nearest_stop", "aucune gare trouvee", (/* @__PURE__ */ new Date()).toISOString()).run();
+        } catch (e2) {
+        }
+      }
+      return null;
+    }
     const walk = await computeWalkingSegmentORS(stop.lat, stop.lon, addrPoint.lat, addrPoint.lon, env.ORS_API_KEY);
-    if (!walk) return null;
+    if (!walk) {
+      if (db) {
+        try {
+          await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "walking", "pas de sommaire dans la reponse", (/* @__PURE__ */ new Date()).toISOString()).run();
+        } catch (e2) {
+        }
+      }
+      return null;
+    }
     let transit = null;
     try {
       transit = await computeTrainJourneySwiss(originStopName || "Fribourg", stop.name);
@@ -765,6 +846,12 @@ async function computeAccessibility(address, originStopName, env) {
       accessibilite_score: accessibiliteScore
     };
   } catch (e) {
+    if (db) {
+      try {
+        await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "exception", String(e && e.message ? e.message : e), (/* @__PURE__ */ new Date()).toISOString()).run();
+      } catch (e2) {
+      }
+    }
     return null;
   }
 }
@@ -782,7 +869,7 @@ async function getOrComputeAccess(db, bId, address, originStopName, env, budget)
   if (cached && cached.address === address) return cached;
   if (budget && budget.remaining <= 0) return cached;
   if (budget) budget.remaining--;
-  const fresh = await computeAccessibility(address, originStopName, env);
+  const fresh = await computeAccessibility(address, originStopName, env, db, bId);
   if (!fresh) return cached;
   try {
     await db.prepare(`INSERT INTO access_cache (bien_id, address, nearest_stop_name, last_mile_distance_m, last_mile_duration_min, last_mile_elevation_m, transit_duration_min, transit_transfers, accessibilite_score, computed_at)
@@ -969,7 +1056,13 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
 }
 __name(writeBiensInBatches, "writeBiensInBatches");
 
-async function recomputeFull(db, env) {
+function isComparisOnly(listings, sourceNamesMap) {
+  const names = new Set(listings.map((l) => sourceNamesMap.get(l.source_id) || "?"));
+  return names.size === 1 && names.has("Comparis");
+}
+__name(isComparisOnly, "isComparisOnly");
+__name2(isComparisOnly, "isComparisOnly");
+async function recomputeFull(db, env, budgetSize) {
   const prefsRes = await db.prepare("SELECT * FROM preferences WHERE id=1").all();
   const weights = JSON.parse(prefsRes.results[0].weights_json);
   const opportunityThreshold = prefsRes.results[0].opportunity_threshold || 70;
@@ -986,12 +1079,15 @@ async function recomputeFull(db, env) {
     (regionPrices[latest.region] = regionPrices[latest.region] || []).push(latest.price);
   }
   const { sourceNamesMap, discardedByBien, historyByBien } = await loadRecomputeCaches(db);
+  const oldBiensRes = await db.prepare("SELECT id, title, locality, region, type, rooms, surface, price FROM biens").all();
+  const oldBiens = oldBiensRes.results;
   await db.prepare("DELETE FROM biens").run();
   await db.prepare("DELETE FROM bien_sources").run();
   const allComputed = [];
   const rescuesThisRun = [];
-  const accessBudget = { remaining: 6 };
+  const accessBudget = { remaining: budgetSize || 6 };
   for (const bId in groups) {
+    if (isComparisOnly(groups[bId], sourceNamesMap)) continue;
     const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien, originStopName, env, accessBudget);
     allComputed.push(computed);
     if (computed.rescue) rescuesThisRun.push(computed.rescue);
@@ -1000,9 +1096,24 @@ async function recomputeFull(db, env) {
   for (const r of rescuesThisRun) {
     await db.prepare("INSERT INTO rescues (bien_id, old_price, new_price, date) VALUES (?,?,?,?)").bind(r.bienId, r.oldPrice, r.newPrice, (/* @__PURE__ */ new Date()).toISOString()).run();
   }
+  for (const old of oldBiens) {
+    if (!groups[old.id]) {
+      try {
+        await db.prepare("INSERT INTO vendus (bien_id, title, locality, region, type, rooms, surface, last_price, date_vendu) VALUES (?,?,?,?,?,?,?,?,?) ON CONFLICT(bien_id) DO NOTHING").bind(old.id, old.title, old.locality, old.region, old.type, old.rooms, old.surface, old.price, (/* @__PURE__ */ new Date()).toISOString()).run();
+      } catch (e) {
+      }
+    }
+  }
+  for (const bId in groups) {
+    try {
+      await db.prepare("DELETE FROM vendus WHERE bien_id=?").bind(bId).run();
+    } catch (e) {
+    }
+  }
   return { biens: allComputed.length, rescues: rescuesThisRun.length };
 }
 __name(recomputeFull, "recomputeFull");
+__name2(recomputeFull, "recomputeFull");
 
 async function recomputeTargeted(db, bienIds, env) {
   if (!bienIds || bienIds.length === 0) return { biens: 0, rescues: 0 };
@@ -1026,7 +1137,7 @@ async function recomputeTargeted(db, bienIds, env) {
   const rescuesThisRun = [];
   const accessBudget = { remaining: 6 };
   for (const bId of new Set(bienIds)) {
-    if (!groups[bId]) {
+    if (!groups[bId] || isComparisOnly(groups[bId], sourceNamesMap)) {
       await db.prepare("DELETE FROM biens WHERE id=?").bind(bId).run();
       await db.prepare("DELETE FROM bien_sources WHERE bien_id=?").bind(bId).run();
       continue;
@@ -1180,6 +1291,7 @@ main{padding:14px 16px;max-width:660px;margin:0 auto;}
 <header>
   <h1>JM Immo</h1>
   <button id="btnRefresh" style="margin:8px 0;padding:8px 12px;border-radius:8px;border:1px solid #262E3A;background:#1D2430;color:#E7EAEE;font-size:12.5px;cursor:pointer">&#8635; Rafraichir les sources</button>
+  <button id="btnComputeAccess" style="margin:0 0 8px 0;padding:8px 12px;border-radius:8px;border:1px solid #262E3A;background:#1D2430;color:#E7EAEE;font-size:12.5px;cursor:pointer">Calculer accessibilite (dernier km)</button>
   <div class="searchbar">
     <input id="q" placeholder="Rechercher (village, type, mot-cle)...">
     <button id="btnSearch">Chercher</button>
@@ -1205,7 +1317,7 @@ main{padding:14px 16px;max-width:660px;margin:0 auto;}
 <script>
 const TABS = [
   {id:"tous", label:"Tous"}, {id:"opportunites", label:"Opportunites"}, {id:"favoris", label:"Favoris"},
-  {id:"baisses", label:"Baisses"}, {id:"ecartes", label:"Ecartes"}, {id:"sources", label:"Sources"},
+  {id:"baisses", label:"Baisses"}, {id:"ecartes", label:"Ecartes"}, {id:"vendus", label:"Vendus"}, {id:"sources", label:"Sources"},
   {id:"preferences", label:"Preferences"},
 ];
 let activeTab = "tous";
@@ -1240,8 +1352,14 @@ function bienCard(b){
   if (b.is_opportunity) tags.push("<span class='tag opp'>Opportunite</span>");
   if (b.price_drop) tags.push("<span class='tag drop'>-" + b.price_drop.pct + "%</span>");
   const sources = (b.sources||[]).map(function(s){return "<a href='" + s.url + "' target='_blank' rel='noopener'>" + s.source_name + "</a>";}).join(" - ");
+  const primaryUrl = (b.sources && b.sources[0]) ? b.sources[0].url : null;
+  const titleHtml = primaryUrl
+    ? "<a href='" + primaryUrl + "' target='_blank' rel='noopener' style='color:inherit;text-decoration:none'>" + b.title + "</a>"
+    : b.title;
+  const mapQuery = encodeURIComponent(b.address || ((b.locality||"") + " " + (b.region||"")));
+  const mapUrl = "https://www.google.com/maps/search/?api=1&query=" + mapQuery;
   const explain = b.explain ? ("<div class='explain'>JM Fit " + b.jm_fit + "/100 - " + b.explain + "</div>") : "";
-  return "<div class='card'><div class='card-top'><div><div class='title'>" + b.title + "</div><div class='locality'>" + b.locality + " - " + b.region + "</div></div>" +
+  return "<div class='card'><div class='card-top'><div><div class='title'>" + titleHtml + "</div><div class='locality'>" + b.locality + " - " + b.region + " - <a href='" + mapUrl + "' target='_blank' rel='noopener'>Carte</a></div></div>" +
     "<div class='fit-badge " + (b.is_opportunity?"hot":"") + "'>" + (b.jm_fit != null ? b.jm_fit : "") + "</div></div>" +
     "<div class='price' style='margin-top:8px'>" + fmtCHF(b.price) + "</div>" +
     "<div class='meta-row'><span>" + (b.rooms||"?") + " pieces</span><span>" + (b.surface||"?") + " m2</span></div>" +
@@ -1254,6 +1372,12 @@ function ecarteCard(d){
   return "<div class='card'><div class='card-top'><div><div class='title'>" + d.title_at_exclusion + "</div><div class='locality'>" + (d.locality||"") + " - " + (d.region||"") + "</div></div></div>" +
     "<div class='price' style='margin-top:8px'>" + fmtCHF(d.price_at_exclusion) + " <span style='font-size:11px;color:var(--muted)'>(prix a l'exclusion)</span></div>" +
     "<div class='actions'><button class='btn restore' data-action='restore' data-id='" + d.bien_id + "'>Restaurer</button></div></div>";
+}
+function venduCard(d){
+  return "<div class='card'><div class='card-top'><div><div class='title'>" + (d.title||"") + "</div><div class='locality'>" + (d.locality||"") + " - " + (d.region||"") + "</div></div></div>" +
+    "<div class='price' style='margin-top:8px'>" + fmtCHF(d.last_price) + " <span style='font-size:11px;color:var(--muted)'>(dernier prix connu)</span></div>" +
+    "<div class='meta-row'><span>" + (d.rooms||"?") + " pieces</span><span>" + (d.surface||"?") + " m2</span></div>" +
+    "<div class='sources-line'>Disparu de toutes les sources le " + (d.date_vendu||"").slice(0,10) + "</div></div>";
 }
 
 async function discard(id){ await api("/api/discard", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bien_id:id})}); load(); }
@@ -1338,6 +1462,11 @@ async function load(){
     main.innerHTML = r.results.length ? r.results.map(ecarteCard).join("") : "<div class='empty'>Aucun bien ecarte.</div>";
     return;
   }
+  if (activeTab === "vendus"){
+    const r = await api("/api/vendus");
+    main.innerHTML = r.results.length ? r.results.map(venduCard).join("") : "<div class='empty'>Aucun bien marque vendu pour l'instant.</div>";
+    return;
+  }
   if (activeTab === "baisses"){
     const r = await api("/api/baisses");
     main.innerHTML = r.results.length ? r.results.map(bienCard).join("") : "<div class='empty'>Aucune baisse detectee.</div>";
@@ -1388,6 +1517,18 @@ document.getElementById("btnRefresh").onclick = async function(){
   btn.innerHTML = original;
   load();
 };
+document.getElementById("btnComputeAccess").onclick = async function(){
+  const btn = document.getElementById("btnComputeAccess");
+  const original = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = "Calcul en cours...";
+  try {
+    await fetch("/api/compute-access");
+  } catch(e) { }
+  btn.disabled = false;
+  btn.innerHTML = original;
+  load();
+};
 ["fRegion","fType","fBudget","fSort"].forEach(function(id){document.getElementById(id).onchange = load;});
 document.getElementById("q").addEventListener("keydown", function(e){ if(e.key==="Enter") load(); });
 load();
@@ -1405,6 +1546,10 @@ var index_default = {
       if (url.pathname === "/api/refresh" && (request.method === "POST" || request.method === "GET")) {
         const report = await fullRefresh(db, fetch.bind(globalThis), env);
         return json(report);
+      }
+      if (url.pathname === "/api/compute-access" && (request.method === "POST" || request.method === "GET")) {
+        const stats = await recomputeFull(db, env, 10);
+        return json(stats);
       }
       if (url.pathname === "/api/ingest-raw" && request.method === "POST") {
         const body = await request.json();
@@ -1495,6 +1640,10 @@ var index_default = {
       }
       if (url.pathname === "/api/ecartes") {
         const res = await db.prepare("SELECT * FROM discarded ORDER BY date_exclusion DESC").all();
+        return json({ results: res.results });
+      }
+      if (url.pathname === "/api/vendus") {
+        const res = await db.prepare("SELECT * FROM vendus ORDER BY date_vendu DESC").all();
         return json({ results: res.results });
       }
       if (url.pathname === "/api/baisses") {
