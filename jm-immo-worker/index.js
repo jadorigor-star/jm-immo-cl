@@ -340,7 +340,17 @@ function extractStateJsonGeneric(html, config) {
     const surface = f.surface ? getByPath(item, f.surface) : null;
     const id = f.id ? getByPath(item, f.id) : null;
     const url = config.url_prefix && id != null ? config.url_prefix.replace(/\/$/, "") + "/" + (config.url_path_prefix || "") + id : null;
-    out.push({ price: parseFloat(price), locality, rooms, surface, url, type: null });
+    let address = f.address ? getByPath(item, f.address) : null;
+    if (!address && f.locality) {
+      const addrBase = f.locality.replace(/\.[^.]+$/, "");
+      const street = getByPath(item, addrBase + ".street");
+      const houseNumber = getByPath(item, addrBase + ".houseNumber");
+      const postalCode = getByPath(item, addrBase + ".postalCode");
+      if (street) {
+        address = String(street) + (houseNumber ? " " + houseNumber : "") + (postalCode ? ", " + postalCode + " " + (locality || "") : locality ? ", " + locality : "");
+      }
+    }
+    out.push({ price: parseFloat(price), locality, rooms, surface, url, address: address || null, type: null });
   }
   return out;
 }
