@@ -678,7 +678,10 @@ __name(estimateAccessibiliteScore, "estimateAccessibiliteScore");
 async function geocodeAddressORS(address, orsApiKey) {
   const url = "https://api.openrouteservice.org/geocode/search?api_key=" + encodeURIComponent(orsApiKey) + "&text=" + encodeURIComponent(address) + "&size=1&boundary.country=CH";
   const res = await fetch(url);
-  if (!res.ok) throw new Error("ORS geocode HTTP " + res.status);
+  if (!res.ok) {
+    const bodyText = await res.text().catch(() => "");
+    throw new Error("ORS geocode HTTP " + res.status + " : " + bodyText.slice(0, 300));
+  }
   const data = await res.json();
   const feature = data.features && data.features[0];
   if (!feature) return null;
@@ -690,7 +693,10 @@ __name(geocodeAddressORS, "geocodeAddressORS");
 async function findNearestStopSwiss(lat, lon) {
   const url = "https://transport.opendata.ch/v1/locations?x=" + lat + "&y=" + lon + "&type=station";
   const res = await fetch(url);
-  if (!res.ok) throw new Error("transport.opendata.ch locations HTTP " + res.status);
+  if (!res.ok) {
+    const bodyText = await res.text().catch(() => "");
+    throw new Error("transport.opendata.ch locations HTTP " + res.status + " : " + bodyText.slice(0, 300));
+  }
   const data = await res.json();
   const stop = data.stations && data.stations[0];
   if (!stop || !stop.coordinate) return null;
@@ -704,7 +710,10 @@ async function computeWalkingSegmentORS(fromLat, fromLon, toLat, toLon, orsApiKe
     headers: { "Authorization": orsApiKey, "Content-Type": "application/json" },
     body: JSON.stringify({ coordinates: [[fromLon, fromLat], [toLon, toLat]], elevation: true })
   });
-  if (!res.ok) throw new Error("ORS directions HTTP " + res.status);
+  if (!res.ok) {
+    const bodyText = await res.text().catch(() => "");
+    throw new Error("ORS directions HTTP " + res.status + " : " + bodyText.slice(0, 300));
+  }
   const data = await res.json();
   const feature = data.features && data.features[0];
   const summary = feature && feature.properties && feature.properties.summary;
