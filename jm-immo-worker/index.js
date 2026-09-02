@@ -1,4 +1,4 @@
-// BUILD-MARKER 1788371247 padding-106: wUMmvLrILGKsqgneyvFFVqh7UIRoicmyI9Ymo6pRoPberMYUu7t6KCFVt4h7Ff7et2QGC9FOvfJk0wvH8CEchWrzD81JvpexPCiwo1VdTW
+// BUILD-MARKER 1788373582 padding-392: FlQtwpBq0Tzzv5DmiztFBMuAg78QlmUjFVIEvx3pS27hlT8255hfB7pqgKxuAstzvvLrQ1praNkhsj964MzEywQ1Z9ZgIbD0sOnfSRJYsKeQE1XO955YERkFeVF6M1EXtFs6CxojHkUQVxRVu70fLFWp1Xr5CN2UMM2UG0gixVAwXZvFKOMJTnnFWhEDn6oOcP02n62Zu5kMFJ8eNMgpspKWrtkos0TDotr1falJ4gwby63CL191EJc0X4QvbXatTnfRRft1OPBZXFh28xwfKTk9BXG6yYFv6cXULbuxTxwOah2IMZnNwrrc9uCSJSjM6es1Eul3pLWBhLPlYxFkH4Io9SoD3kInU3IOSjGxufata6YprbRCLyYLAubgI787mSqRR4ON
 // VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
@@ -725,7 +725,7 @@ async function computeWalkingSegmentORS(fromLat, fromLon, toLat, toLon, orsApiKe
   const res = await fetch("https://api.heigit.org/openrouteservice/v2/directions/foot-walking/geojson", {
     method: "POST",
     headers: { "Authorization": orsApiKey, "Content-Type": "application/json" },
-    body: JSON.stringify({ coordinates: [[fromLon, fromLat], [toLon, toLat]], elevation: true })
+    body: JSON.stringify({ coordinates: [[fromLon, fromLat], [toLon, toLat]] })
   });
   if (!res.ok) {
     const bodyText = await res.text().catch(() => "");
@@ -745,7 +745,11 @@ async function computeWalkingSegmentORS(fromLat, fromLon, toLat, toLon, orsApiKe
 }
 
 async function computeTrainJourneySwiss(originStopName, destStopName) {
-  const url = "https://transport.opendata.ch/v1/connections?from=" + encodeURIComponent(originStopName) + "&to=" + encodeURIComponent(destStopName) + "&limit=1";
+  const now = /* @__PURE__ */ new Date();
+  const refDate = new Date(now);
+  refDate.setDate(refDate.getDate() + ((1 + 7 - refDate.getDay()) % 7 || 7));
+  const dateStr = refDate.getFullYear() + "-" + String(refDate.getMonth() + 1).padStart(2, "0") + "-" + String(refDate.getDate()).padStart(2, "0");
+  const url = "https://transport.opendata.ch/v1/connections?from=" + encodeURIComponent(originStopName) + "&to=" + encodeURIComponent(destStopName) + "&date=" + dateStr + "&time=09:00&limit=1";
   const res = await fetch(url);
   if (!res.ok) throw new Error("transport.opendata.ch connections HTTP " + res.status);
   const data = await res.json();
