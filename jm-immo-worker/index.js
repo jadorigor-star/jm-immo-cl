@@ -1,4 +1,4 @@
-// BUILD-MARKER 1788362507 padding-92: aSXasUhzRwnSqXcbGKxs5s6qGHeDR64IO4lyaVyCS8bbUonwt4bSiPNVFqdmtFwM3YsY3oTYhpin85hHe1aIR8tCV0qc
+// BUILD-MARKER 1788371247 padding-106: wUMmvLrILGKsqgneyvFFVqh7UIRoicmyI9Ymo6pRoPberMYUu7t6KCFVt4h7Ff7et2QGC9FOvfJk0wvH8CEchWrzD81JvpexPCiwo1VdTW
 // VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
@@ -711,7 +711,6 @@ function haversineDistanceM(lat1, lon1, lat2, lon2) {
   const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
-__name(haversineDistanceM, "haversineDistanceM");
 function estimateWalkingFallback(fromLat, fromLon, toLat, toLon) {
   const straightM = haversineDistanceM(fromLat, fromLon, toLat, toLon);
   const distanceM = straightM * 1.3;
@@ -722,7 +721,6 @@ function estimateWalkingFallback(fromLat, fromLon, toLat, toLon) {
     elevationM: null
   };
 }
-__name(estimateWalkingFallback, "estimateWalkingFallback");
 async function computeWalkingSegmentORS(fromLat, fromLon, toLat, toLon, orsApiKey) {
   const res = await fetch("https://api.heigit.org/openrouteservice/v2/directions/foot-walking/geojson", {
     method: "POST",
