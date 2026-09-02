@@ -676,8 +676,8 @@ function estimateAccessibiliteScore(lastMileDurationMin, lastMileElevationM, tra
 }
 
 async function geocodeAddressORS(address, orsApiKey) {
-  const url = "https://api.openrouteservice.org/geocode/search?api_key=" + encodeURIComponent(orsApiKey) + "&text=" + encodeURIComponent(address) + "&size=1&boundary.country=CH";
-  const res = await fetch(url);
+  const url = "https://api.heigit.org/geocode/search?api_key=" + encodeURIComponent(orsApiKey) + "&text=" + encodeURIComponent(address) + "&size=1&boundary.country=CH";
+  const res = await fetch(url, { headers: { "Authorization": orsApiKey } });
   if (!res.ok) {
     const bodyText = await res.text().catch(() => "");
     throw new Error("ORS geocode HTTP " + res.status + " : " + bodyText.slice(0, 300));
@@ -703,7 +703,7 @@ async function findNearestStopSwiss(lat, lon) {
 }
 
 async function computeWalkingSegmentORS(fromLat, fromLon, toLat, toLon, orsApiKey) {
-  const res = await fetch("https://api.openrouteservice.org/v2/directions/foot-walking/geojson", {
+  const res = await fetch("https://api.heigit.org/v2/directions/foot-walking/geojson", {
     method: "POST",
     headers: { "Authorization": orsApiKey, "Content-Type": "application/json" },
     body: JSON.stringify({ coordinates: [[fromLon, fromLat], [toLon, toLat]], elevation: true })
