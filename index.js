@@ -1,3 +1,4 @@
+// BUILD-MARKER 1788358523 padding-251: fK6Zd5A7UTtJhwxaNq7il8dFy3oKCZNmXj10uadyRTyZgT9nauVnyfuvvCo79gHUqeKKYZ1uAdKxQrLcgI9AroVxhwBscXBd4yQhIu4JSsXdWmFdQOCCZ9qfTVTjO1mgl1s4hJb8A8PGxiaFQmFDhJNKIM0Zj6nSFzigJqmsH3DYQ66YbvDuxyPeAhCmEIgAVJcuP9UHisNksqHElCkVx6R1LiGIZw7EVgys9n40oNcEBeUskpSxU87gqHZ
 // VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
@@ -676,7 +677,7 @@ function estimateAccessibiliteScore(lastMileDurationMin, lastMileElevationM, tra
 }
 
 async function geocodeAddressORS(address, orsApiKey) {
-  const url = "https://api.heigit.org/geocode/search?api_key=" + encodeURIComponent(orsApiKey) + "&text=" + encodeURIComponent(address) + "&size=1&boundary.country=CH";
+  const url = "https://api.heigit.org/pelias/v1/search?api_key=" + encodeURIComponent(orsApiKey) + "&text=" + encodeURIComponent(address) + "&size=1&boundary.country=CH";
   const res = await fetch(url, { headers: { "Authorization": orsApiKey } });
   if (!res.ok) {
     const bodyText = await res.text().catch(() => "");
@@ -703,7 +704,7 @@ async function findNearestStopSwiss(lat, lon) {
 }
 
 async function computeWalkingSegmentORS(fromLat, fromLon, toLat, toLon, orsApiKey) {
-  const res = await fetch("https://api.heigit.org/v2/directions/foot-walking/geojson", {
+  const res = await fetch("https://api.heigit.org/openrouteservice/v2/directions/foot-walking/geojson", {
     method: "POST",
     headers: { "Authorization": orsApiKey, "Content-Type": "application/json" },
     body: JSON.stringify({ coordinates: [[fromLon, fromLat], [toLon, toLat]], elevation: true })
