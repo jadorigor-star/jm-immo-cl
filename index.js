@@ -1,7 +1,4 @@
 // VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
-var __defProp = Object.defineProperty;
-var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
-
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -115,7 +112,6 @@ function computeRegion(locality, extra) {
   if (JURA_HORS_PERIMETRE.has(key) || extra.excluded.has(key)) return null;
   return REGION_MAP[key] || extra.map[key] || null;
 }
-__name(computeRegion, "computeRegion");
 function isPlausiblePrice(p) {
   if (typeof p !== "number" || isNaN(p) || !isFinite(p)) return false;
   if (p < 5e4 || p > 5e6) return false;
@@ -123,14 +119,12 @@ function isPlausiblePrice(p) {
   if (String(Math.round(p)).length === 4 && p < 9999) return false;
   return true;
 }
-__name(isPlausiblePrice, "isPlausiblePrice");
 function bienKey(locality, type, rooms, surface) {
   const loc = (locality || "").trim().toLowerCase();
   const roomsR = Math.round((rooms || 0) * 2) / 2;
   const surfR = Math.round((surface || 0) / 5) * 5;
   return loc + "|" + type + "|" + roomsR + "|" + surfR;
 }
-__name(bienKey, "bienKey");
 function estimateDealScore(price, regionPrices) {
   if (!regionPrices || regionPrices.length === 0) return 55;
   const sorted = [...regionPrices].sort((a, b) => a - b);
@@ -139,13 +133,11 @@ function estimateDealScore(price, regionPrices) {
   const score = 100 - (price / median - 1) * 120;
   return Math.max(0, Math.min(100, Math.round(score)));
 }
-__name(estimateDealScore, "estimateDealScore");
 function estimateCachetScore(title, cachetFlag) {
   const base = cachetFlag ? 88 : 15;
   const hits = CACHET_KEYWORDS.filter((k) => (title || "").toLowerCase().includes(k)).length;
   return Math.max(0, Math.min(100, base + hits * 4));
 }
-__name(estimateCachetScore, "estimateCachetScore");
 function estimateRetraiteScore(rooms, surface, region) {
   let score = 50;
   if (rooms && rooms <= 4) score += 10;
@@ -153,37 +145,31 @@ function estimateRetraiteScore(rooms, surface, region) {
   if (["Jura \u2013 Clos du Doubs", "Jura \u2013 Franches-Montagnes", "Gruy\xE8re"].includes(region)) score += 8;
   return Math.max(0, Math.min(100, score));
 }
-__name(estimateRetraiteScore, "estimateRetraiteScore");
 function estimateLocatifScore(region, rooms) {
   let score = 35;
   if (TOURISTIC_REGIONS.has(region)) score += 25;
   if (rooms && rooms <= 3.5) score += 15;
   return Math.max(0, Math.min(100, score));
 }
-__name(estimateLocatifScore, "estimateLocatifScore");
 function estimateRiskScore(confidence, historyLen) {
   let score = { "V\xE9rifi\xE9e": 80, "Probable": 62, "\xC0 contr\xF4ler": 45 }[confidence] || 50;
   if (historyLen >= 3) score -= 8;
   return Math.max(0, Math.min(100, score));
 }
-__name(estimateRiskScore, "estimateRiskScore");
 function jmFit(scores, weights) {
   const wAccessibilite = weights.accessibilite || 0;
   const wsum = Math.max(1, (weights.deal || 0) + (weights.retraite || 0) + (weights.locatif || 0) + (weights.cachet || 0) + (weights.risk || 0) + wAccessibilite);
   const fit = (scores.deal * weights.deal + scores.retraite * weights.retraite + scores.locatif * weights.locatif + scores.cachet * weights.cachet + scores.risk * weights.risk + scores.accessibilite * wAccessibilite) / wsum;
   return Math.max(0, Math.min(100, Math.round(fit)));
 }
-__name(jmFit, "jmFit");
 function explainFit(scores, weights) {
   const labels = { deal: "prix int\xE9ressant", retraite: "potentiel retraite", locatif: "potentiel locatif", cachet: "cachet", risk: "faible risque", accessibilite: "dernier km facile" };
   const hits = Object.keys(scores).filter((k) => weights[k] > 0 && scores[k] >= 60).sort((a, b) => scores[b] - scores[a]).slice(0, 3).map((k) => labels[k]);
   return hits.length ? hits.join(", ") : "profil \xE9quilibr\xE9";
 }
-__name(explainFit, "explainFit");
 function todayISO() {
   return (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
 }
-__name(todayISO, "todayISO");
 var DEMO_LISTINGS = [
   { source: "Demo", external_id: "d1", url: "https://exemple.ch/1", title: "Appartement 3.5p r\xE9nov\xE9, vue lac", locality: "Lugano", type: "Appartement", rooms: 3.5, surface: 95, price: 478e3, confidence: "V\xE9rifi\xE9e", history: [["2026-06-02", 478e3]] },
   { source: "Demo", external_id: "d1b", url: "https://exemple2.ch/1", title: "Bel appartement 3.5 pi\xE8ces \u2013 Lugano centre", locality: "Lugano", type: "Appartement", rooms: 3.5, surface: 96, price: 478e3, confidence: "Probable", history: [["2026-06-05", 478e3]] },
@@ -207,18 +193,15 @@ function demoAdapter() {
     }
   };
 }
-__name(demoAdapter, "demoAdapter");
 function decodeEntitiesGeneric(s) {
   return (s || "").replace(/&#0*39;/g, "'").replace(/&#x0*27;/gi, "'").replace(/&rsquo;/g, "\u2019").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
 }
-__name(decodeEntitiesGeneric, "decodeEntitiesGeneric");
 function parsePriceGeneric(raw) {
   if (!raw) return null;
   const cleaned = raw.replace(/[.,]00$/, "").replace(/['\u2019,.]/g, "");
   const price = parseFloat(cleaned);
   return isFinite(price) ? price : null;
 }
-__name(parsePriceGeneric, "parsePriceGeneric");
 function findKnownLocalityGeneric(text, extra) {
   extra = extra || { map: {} };
   const lower = (text || "").toLowerCase();
@@ -234,12 +217,10 @@ function findKnownLocalityGeneric(text, extra) {
       }
     }
   }
-  __name(checkMap, "checkMap");
   checkMap(REGION_MAP);
   checkMap(extra.map);
   return best;
 }
-__name(findKnownLocalityGeneric, "findKnownLocalityGeneric");
 function extractFieldsGeneric(m, fields, config, extra) {
   const priceMin = config.price_min || 5e4;
   const out = { price: null, rooms: null, surface: null, locality: null, type: null, url: null };
@@ -274,12 +255,10 @@ function extractFieldsGeneric(m, fields, config, extra) {
   if (!out.locality) return null;
   return out;
 }
-__name(extractFieldsGeneric, "extractFieldsGeneric");
 function getByPath(obj, path) {
   if (!path) return void 0;
   return path.split(".").reduce((acc, key) => acc && acc[key] !== void 0 ? acc[key] : void 0, obj);
 }
-__name(getByPath, "getByPath");
 function extractJsonAfterMarker(html, marker) {
   const idx = html.indexOf(marker);
   if (idx === -1) return null;
@@ -306,7 +285,6 @@ function extractJsonAfterMarker(html, marker) {
   }
   return null;
 }
-__name(extractJsonAfterMarker, "extractJsonAfterMarker");
 function extractStateJsonGeneric(html, config) {
   const jsonText = extractJsonAfterMarker(html, config.state_json_marker);
   if (!jsonText) return [];
@@ -354,7 +332,6 @@ function extractStateJsonGeneric(html, config) {
   }
   return out;
 }
-__name(extractStateJsonGeneric, "extractStateJsonGeneric");
 function extractJsonLdGeneric(html) {
   const out = [];
   const ldRe = /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
@@ -402,7 +379,6 @@ function extractJsonLdGeneric(html) {
   }
   return out;
 }
-__name(extractJsonLdGeneric, "extractJsonLdGeneric");
 function extractSingleGeneric(html, config, extra) {
   if (config.try_json_ld) {
     const ldResults = extractJsonLdGeneric(html).filter((r) => {
@@ -437,7 +413,6 @@ function extractSingleGeneric(html, config, extra) {
   }
   return [];
 }
-__name(extractSingleGeneric, "extractSingleGeneric");
 function extractLinksGeneric(html, config) {
   const re = new RegExp(config.link_pattern, "gi");
   const seen = /* @__PURE__ */ new Set();
@@ -455,7 +430,6 @@ function extractLinksGeneric(html, config) {
   }
   return out;
 }
-__name(extractLinksGeneric, "extractLinksGeneric");
 function extractDetailGeneric(html, config, extra) {
   if (config.reject_if && new RegExp(config.reject_if, "i").test(html) && !(config.reject_unless && new RegExp(config.reject_unless, "i").test(html))) {
     return null;
@@ -484,7 +458,6 @@ function extractDetailGeneric(html, config, extra) {
   }
   return null;
 }
-__name(extractDetailGeneric, "extractDetailGeneric");
 function genericAdapter(sourceRow, extra) {
   let config = {};
   try {
@@ -513,19 +486,15 @@ function genericAdapter(sourceRow, extra) {
       clearTimeout(timeoutId);
     }
   }
-  __name(fetchText, "fetchText");
   function extractSingle(html) {
     return extractSingleGeneric(html, config, extra);
   }
-  __name(extractSingle, "extractSingle");
   function extractLinks(html) {
     return extractLinksGeneric(html, config);
   }
-  __name(extractLinks, "extractLinks");
   function extractDetail(html) {
     return extractDetailGeneric(html, config, extra);
   }
-  __name(extractDetail, "extractDetail");
   return {
     name: sourceRow.name,
     async check(fetchFn, budget) {
@@ -586,7 +555,6 @@ function genericAdapter(sourceRow, extra) {
     }
   };
 }
-__name(genericAdapter, "genericAdapter");
 async function loadExtraLocalities(db) {
   const map = {};
   const excluded = /* @__PURE__ */ new Set();
@@ -599,7 +567,6 @@ async function loadExtraLocalities(db) {
   }
   return { map, excluded };
 }
-__name(loadExtraLocalities, "loadExtraLocalities");
 async function getSourceOffset(db) {
   try {
     const res = await db.prepare("SELECT value FROM app_config WHERE key='source_offset'").all();
@@ -608,14 +575,12 @@ async function getSourceOffset(db) {
   }
   return 0;
 }
-__name(getSourceOffset, "getSourceOffset");
 async function setSourceOffset(db, offset) {
   try {
     await db.prepare("INSERT INTO app_config (key, value) VALUES ('source_offset', ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").bind(String(offset)).run();
   } catch (e) {
   }
 }
-__name(setSourceOffset, "setSourceOffset");
 async function ingest(db, fetchFn) {
   const report = [];
   const extra = await loadExtraLocalities(db);
@@ -645,7 +610,6 @@ async function ingest(db, fetchFn) {
   await setSourceOffset(db, (offset + attempted) % allSources.length);
   return report;
 }
-__name(ingest, "ingest");
 async function storeListing(db, srcRow, rl, extra) {
   if (!rl.title || !rl.locality || !isPlausiblePrice(rl.price)) return 0;
   if (rl.is_rental) return 0;
@@ -687,13 +651,11 @@ async function storeListing(db, srcRow, rl, extra) {
   }
   return 1;
 }
-__name(storeListing, "storeListing");
 async function cleanupStaleListings(db, maxAgeDays) {
   const seuil = new Date(Date.now() - (maxAgeDays || 21) * 24 * 3600 * 1e3).toISOString();
   const res = await db.prepare("UPDATE listings SET status='inactive' WHERE status='active' AND last_seen < ?").bind(seuil).run();
   return res.meta ? res.meta.changes : 0;
 }
-__name(cleanupStaleListings, "cleanupStaleListings");
 
 // --- Accessibilite dernier km (gare -> adresse) via OpenRouteService + transport.opendata.ch ---
 function estimateAccessibiliteScore(lastMileDurationMin, lastMileElevationM, transitDurationMin, transitTransfers) {
@@ -712,7 +674,6 @@ function estimateAccessibiliteScore(lastMileDurationMin, lastMileElevationM, tra
   }
   return Math.max(0, Math.min(100, Math.round(score)));
 }
-__name(estimateAccessibiliteScore, "estimateAccessibiliteScore");
 
 async function geocodeAddressORS(address, orsApiKey) {
   const url = "https://api.openrouteservice.org/geocode/search?api_key=" + encodeURIComponent(orsApiKey) + "&text=" + encodeURIComponent(address) + "&size=1&boundary.country=CH";
@@ -727,7 +688,6 @@ async function geocodeAddressORS(address, orsApiKey) {
   const [lon, lat] = feature.geometry.coordinates;
   return { lat, lon };
 }
-__name(geocodeAddressORS, "geocodeAddressORS");
 
 async function findNearestStopSwiss(lat, lon) {
   const url = "https://transport.opendata.ch/v1/locations?x=" + lat + "&y=" + lon + "&type=station";
@@ -741,7 +701,6 @@ async function findNearestStopSwiss(lat, lon) {
   if (!stop || !stop.coordinate) return null;
   return { name: stop.name, lat: stop.coordinate.x, lon: stop.coordinate.y };
 }
-__name(findNearestStopSwiss, "findNearestStopSwiss");
 
 async function computeWalkingSegmentORS(fromLat, fromLon, toLat, toLon, orsApiKey) {
   const res = await fetch("https://api.openrouteservice.org/v2/directions/foot-walking/geojson", {
@@ -765,7 +724,6 @@ async function computeWalkingSegmentORS(fromLat, fromLon, toLat, toLon, orsApiKe
     elevationM: Math.max(ascent, descent)
   };
 }
-__name(computeWalkingSegmentORS, "computeWalkingSegmentORS");
 
 async function computeTrainJourneySwiss(originStopName, destStopName) {
   const url = "https://transport.opendata.ch/v1/connections?from=" + encodeURIComponent(originStopName) + "&to=" + encodeURIComponent(destStopName) + "&limit=1";
@@ -781,7 +739,6 @@ async function computeTrainJourneySwiss(originStopName, destStopName) {
     transfers: conn.transfers != null ? conn.transfers : null
   };
 }
-__name(computeTrainJourneySwiss, "computeTrainJourneySwiss");
 
 async function computeAccessibility(address, originStopName, env, db, bId) {
   if (!address) return null;
@@ -855,7 +812,6 @@ async function computeAccessibility(address, originStopName, env, db, bId) {
     return null;
   }
 }
-__name(computeAccessibility, "computeAccessibility");
 
 async function getOrComputeAccess(db, bId, address, originStopName, env, budget) {
   if (!address) return null;
@@ -884,7 +840,6 @@ async function getOrComputeAccess(db, bId, address, originStopName, env, budget)
   }
   return Object.assign({ bien_id: bId, address }, fresh);
 }
-__name(getOrComputeAccess, "getOrComputeAccess");
 
 async function computeBienRecord(db, bId, listings, weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien, originStopName, env, budget) {
   const sorted = [...listings].sort((a, b) => a.last_seen < b.last_seen ? -1 : 1);
@@ -962,7 +917,6 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
     rescue
   };
 }
-__name(computeBienRecord, "computeBienRecord");
 
 async function loadRecomputeCaches(db) {
   const sourcesRes = await db.prepare("SELECT id, name FROM sources").all();
@@ -977,7 +931,6 @@ async function loadRecomputeCaches(db) {
   }
   return { sourceNamesMap, discardedByBien, historyByBien };
 }
-__name(loadRecomputeCaches, "loadRecomputeCaches");
 
 async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienSourceDelete) {
   const BATCH_SIZE = 3;
@@ -1054,14 +1007,11 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
     await db.prepare(`INSERT OR IGNORE INTO bien_sources (bien_id, source_name, url) VALUES ${placeholders}`).bind(...values).run();
   }
 }
-__name(writeBiensInBatches, "writeBiensInBatches");
 
 function isComparisOnly(listings, sourceNamesMap) {
   const names = new Set(listings.map((l) => sourceNamesMap.get(l.source_id) || "?"));
   return names.size === 1 && names.has("Comparis");
 }
-__name(isComparisOnly, "isComparisOnly");
-__name2(isComparisOnly, "isComparisOnly");
 async function recomputeFull(db, env, budgetSize) {
   const prefsRes = await db.prepare("SELECT * FROM preferences WHERE id=1").all();
   const weights = JSON.parse(prefsRes.results[0].weights_json);
@@ -1112,8 +1062,6 @@ async function recomputeFull(db, env, budgetSize) {
   }
   return { biens: allComputed.length, rescues: rescuesThisRun.length };
 }
-__name(recomputeFull, "recomputeFull");
-__name2(recomputeFull, "recomputeFull");
 
 async function recomputeTargeted(db, bienIds, env) {
   if (!bienIds || bienIds.length === 0) return { biens: 0, rescues: 0 };
@@ -1152,14 +1100,12 @@ async function recomputeTargeted(db, bienIds, env) {
   }
   return { biens: allComputed.length, rescues: rescuesThisRun.length };
 }
-__name(recomputeTargeted, "recomputeTargeted");
 
 async function fullRefresh(db, fetchFn, env) {
   const report = await ingest(db, fetchFn);
   const stats = await recomputeFull(db, env);
   return Object.assign({ ingestion: report }, stats);
 }
-__name(fullRefresh, "fullRefresh");
 
 async function getPreferences(db) {
   const res = await db.prepare("SELECT * FROM preferences WHERE id=1").all();
@@ -1175,7 +1121,6 @@ async function getPreferences(db) {
     originStop: row.origine_trajet || "Fribourg"
   };
 }
-__name(getPreferences, "getPreferences");
 
 async function search(db, opts) {
   opts = opts || {};
@@ -1189,6 +1134,8 @@ async function search(db, opts) {
   const discardedIds = new Set(discRes.results.map((r) => r.bien_id));
   const favRes = await db.prepare("SELECT bien_id FROM favoris").all();
   const favoriteIds = new Set(favRes.results.map((r) => r.bien_id));
+  const vusRes = await db.prepare("SELECT bien_id FROM vus").all();
+  const vusIds = new Set(vusRes.results.map((r) => r.bien_id));
   const allRes = await db.prepare("SELECT * FROM biens").all();
   let rows = allRes.results.filter((b) => !discardedIds.has(b.id));
   if (opts.q) {
@@ -1204,10 +1151,10 @@ async function search(db, opts) {
   if (opts.favorisOnly) rows = rows.filter((b) => favoriteIds.has(b.id));
   if (opts.opportunitiesOnly) rows = rows.filter((b) => b.is_opportunity);
   const sortFns = {
-    jmfit: /* @__PURE__ */ __name((a, b) => b.jm_fit - a.jm_fit, "jmfit"),
-    price_asc: /* @__PURE__ */ __name((a, b) => a.price - b.price, "price_asc"),
-    price_desc: /* @__PURE__ */ __name((a, b) => b.price - a.price, "price_desc"),
-    recent: /* @__PURE__ */ __name((a, b) => (b.first_seen || "").localeCompare(a.first_seen || ""), "recent")
+    jmfit: (a, b) => b.jm_fit - a.jm_fit,
+    price_asc: (a, b) => a.price - b.price,
+    price_desc: (a, b) => b.price - a.price,
+    recent: (a, b) => (b.first_seen || "").localeCompare(a.first_seen || "")
   };
   rows.sort(sortFns[opts.sort || "jmfit"]);
   const out = [];
@@ -1215,18 +1162,17 @@ async function search(db, opts) {
     const srcRes = await db.prepare("SELECT source_name, url FROM bien_sources WHERE bien_id=?").bind(r.id).all();
     out.push(Object.assign({}, r, {
       is_favori: favoriteIds.has(r.id),
+      is_new: !vusIds.has(r.id),
       sources: srcRes.results,
       price_drop: r.price_drop_json ? JSON.parse(r.price_drop_json) : null
     }));
   }
   return out;
 }
-__name(search, "search");
 function json(obj, status) {
   status = status || 200;
   return new Response(JSON.stringify(obj), { status, headers: { "Content-Type": "application/json; charset=utf-8", "Access-Control-Allow-Origin": "*" } });
 }
-__name(json, "json");
 var FRONTEND_HTML = `<!DOCTYPE html>
 <html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>JM Immo</title>
@@ -1353,9 +1299,10 @@ function bienCard(b){
   if (b.price_drop) tags.push("<span class='tag drop'>-" + b.price_drop.pct + "%</span>");
   const sources = (b.sources||[]).map(function(s){return "<a href='" + s.url + "' target='_blank' rel='noopener'>" + s.source_name + "</a>";}).join(" - ");
   const primaryUrl = (b.sources && b.sources[0]) ? b.sources[0].url : null;
+  const star = b.is_new ? " <span title='Nouveaute jamais consultee' style='color:var(--gold)'>\u2605</span>" : "";
   const titleHtml = primaryUrl
-    ? "<a href='" + primaryUrl + "' target='_blank' rel='noopener' style='color:inherit;text-decoration:none'>" + b.title + "</a>"
-    : b.title;
+    ? "<a href='" + primaryUrl + "' target='_blank' rel='noopener' data-action='markview' data-id='" + b.id + "' style='color:inherit;text-decoration:none'>" + b.title + "</a>" + star
+    : b.title + star;
   const mapQuery = encodeURIComponent(b.address || ((b.locality||"") + " " + (b.region||"")));
   const mapUrl = "https://www.google.com/maps/search/?api=1&query=" + mapQuery;
   const explain = b.explain ? ("<div class='explain'>JM Fit " + b.jm_fit + "/100 - " + b.explain + "</div>") : "";
@@ -1497,6 +1444,7 @@ document.getElementById("main").addEventListener("click", function(e){
   else if (action === "restore") restore(id);
   else if (action === "togglecachet") togglePrefCachet();
   else if (action === "toggleregion") togglePrefRegion(el.dataset.region);
+  else if (action === "markview") { fetch("/api/marquer-vu", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bien_id:id})}).catch(function(){}); }
 });
 document.getElementById("tabs").addEventListener("click", function(e){
   const t = e.target.closest("[data-tab]"); if(!t) return;
@@ -1701,6 +1649,12 @@ var index_default = {
         const body = await request.json();
         await db.prepare("DELETE FROM discarded WHERE bien_id=?").bind(body.bien_id).run();
         await recomputeTargeted(db, [body.bien_id], env);
+        return json({ ok: true });
+      }
+      if (url.pathname === "/api/marquer-vu" && request.method === "POST") {
+        const body = await request.json();
+        if (!body.bien_id) return json({ error: "bien_id manquant" }, 400);
+        await db.prepare("INSERT INTO vus (bien_id, date_vu) VALUES (?,?) ON CONFLICT(bien_id) DO NOTHING").bind(body.bien_id, (/* @__PURE__ */ new Date()).toISOString()).run();
         return json({ ok: true });
       }
       if (url.pathname === "/api/favori" && request.method === "POST") {
