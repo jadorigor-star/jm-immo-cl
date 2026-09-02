@@ -1134,6 +1134,8 @@ async function search(db, opts) {
   const discardedIds = new Set(discRes.results.map((r) => r.bien_id));
   const favRes = await db.prepare("SELECT bien_id FROM favoris").all();
   const favoriteIds = new Set(favRes.results.map((r) => r.bien_id));
+  const vusRes = await db.prepare("SELECT bien_id FROM vus").all();
+  const vusIds = new Set(vusRes.results.map((r) => r.bien_id));
   const allRes = await db.prepare("SELECT * FROM biens").all();
   let rows = allRes.results.filter((b) => !discardedIds.has(b.id));
   if (opts.q) {
@@ -1160,6 +1162,7 @@ async function search(db, opts) {
     const srcRes = await db.prepare("SELECT source_name, url FROM bien_sources WHERE bien_id=?").bind(r.id).all();
     out.push(Object.assign({}, r, {
       is_favori: favoriteIds.has(r.id),
+      is_new: !vusIds.has(r.id),
       sources: srcRes.results,
       price_drop: r.price_drop_json ? JSON.parse(r.price_drop_json) : null
     }));
@@ -1296,9 +1299,10 @@ function bienCard(b){
   if (b.price_drop) tags.push("<span class='tag drop'>-" + b.price_drop.pct + "%</span>");
   const sources = (b.sources||[]).map(function(s){return "<a href='" + s.url + "' target='_blank' rel='noopener'>" + s.source_name + "</a>";}).join(" - ");
   const primaryUrl = (b.sources && b.sources[0]) ? b.sources[0].url : null;
+  const star = b.is_new ? " <span title='Nouveaute jamais consultee' style='color:var(--gold)'>\u2605</span>" : "";
   const titleHtml = primaryUrl
-    ? "<a href='" + primaryUrl + "' target='_blank' rel='noopener' style='color:inherit;text-decoration:none'>" + b.title + "</a>"
-    : b.title;
+    ? "<a href='" + primaryUrl + "' target='_blank' rel='noopener' data-action='markview' data-id='" + b.id + "' style='color:inherit;text-decoration:none'>" + b.title + "</a>" + star
+    : b.title + star;
   const mapQuery = encodeURIComponent(b.address || ((b.locality||"") + " " + (b.region||"")));
   const mapUrl = "https://www.google.com/maps/search/?api=1&query=" + mapQuery;
   const explain = b.explain ? ("<div class='explain'>JM Fit " + b.jm_fit + "/100 - " + b.explain + "</div>") : "";
@@ -1440,6 +1444,7 @@ document.getElementById("main").addEventListener("click", function(e){
   else if (action === "restore") restore(id);
   else if (action === "togglecachet") togglePrefCachet();
   else if (action === "toggleregion") togglePrefRegion(el.dataset.region);
+  else if (action === "markview") { fetch("/api/marquer-vu", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bien_id:id})}).catch(function(){}); }
 });
 document.getElementById("tabs").addEventListener("click", function(e){
   const t = e.target.closest("[data-tab]"); if(!t) return;
@@ -1644,6 +1649,12 @@ var index_default = {
         const body = await request.json();
         await db.prepare("DELETE FROM discarded WHERE bien_id=?").bind(body.bien_id).run();
         await recomputeTargeted(db, [body.bien_id], env);
+        return json({ ok: true });
+      }
+      if (url.pathname === "/api/marquer-vu" && request.method === "POST") {
+        const body = await request.json();
+        if (!body.bien_id) return json({ error: "bien_id manquant" }, 400);
+        await db.prepare("INSERT INTO vus (bien_id, date_vu) VALUES (?,?) ON CONFLICT(bien_id) DO NOTHING").bind(body.bien_id, (/* @__PURE__ */ new Date()).toISOString()).run();
         return json({ ok: true });
       }
       if (url.pathname === "/api/favori" && request.method === "POST") {
