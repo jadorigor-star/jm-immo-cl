@@ -1,4 +1,4 @@
-// BUILD-MARKER 1788358523 padding-251: fK6Zd5A7UTtJhwxaNq7il8dFy3oKCZNmXj10uadyRTyZgT9nauVnyfuvvCo79gHUqeKKYZ1uAdKxQrLcgI9AroVxhwBscXBd4yQhIu4JSsXdWmFdQOCCZ9qfTVTjO1mgl1s4hJb8A8PGxiaFQmFDhJNKIM0Zj6nSFzigJqmsH3DYQ66YbvDuxyPeAhCmEIgAVJcuP9UHisNksqHElCkVx6R1LiGIZw7EVgys9n40oNcEBeUskpSxU87gqHZ
+// BUILD-MARKER 1788359162 padding-308: Nb0202dBOvTULwAHMCxdzjobtjNsGJbEyX0PsfDhQUlcPLr0LcS1s0wBDuw3xYrhcsPDCyGlV0U3tHNE3iJEtuWHFXb1zXQ7aF5k6Y2q4WPtbRRkO9aojiuX5daZ3uykE6cvlf57XPpQNtiBonJyVTp1j0Eq95A1nzyI9LruIG40DdW8y4oXEdWnebcmWkTl6sOdLcVtItxoIEh3HFi7hP7yynh8xmyVliiBYvlX80k07ew8pmOIkuNO5yrGwj5R80L4mcGytzdc3wNnLxJubAt7HH9ZQFmhyHYfdD0k2YKklrGkUrxL
 // VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
@@ -703,6 +703,26 @@ async function findNearestStopSwiss(lat, lon) {
   return { name: stop.name, lat: stop.coordinate.x, lon: stop.coordinate.y };
 }
 
+function haversineDistanceM(lat1, lon1, lat2, lon2) {
+  const R = 6371000;
+  const toRad = (d) => d * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+__name(haversineDistanceM, "haversineDistanceM");
+function estimateWalkingFallback(fromLat, fromLon, toLat, toLon) {
+  const straightM = haversineDistanceM(fromLat, fromLon, toLat, toLon);
+  const distanceM = straightM * 1.3;
+  const walkingSpeedMPerMin = 80;
+  return {
+    distanceM,
+    durationMin: distanceM / walkingSpeedMPerMin,
+    elevationM: null
+  };
+}
+__name(estimateWalkingFallback, "estimateWalkingFallback");
 async function computeWalkingSegmentORS(fromLat, fromLon, toLat, toLon, orsApiKey) {
   const res = await fetch("https://api.heigit.org/openrouteservice/v2/directions/foot-walking/geojson", {
     method: "POST",
@@ -773,15 +793,23 @@ async function computeAccessibility(address, originStopName, env, db, bId) {
       }
       return null;
     }
-    const walk = await computeWalkingSegmentORS(stop.lat, stop.lon, addrPoint.lat, addrPoint.lon, env.ORS_API_KEY);
-    if (!walk) {
+    let walk = null;
+    let walkApprox = false;
+    try {
+      walk = await computeWalkingSegmentORS(stop.lat, stop.lon, addrPoint.lat, addrPoint.lon, env.ORS_API_KEY);
+    } catch (e) {
       if (db) {
         try {
-          await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "walking", "pas de sommaire dans la reponse", (/* @__PURE__ */ new Date()).toISOString()).run();
+          await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "walking_fallback", String(e && e.message ? e.message : e), (/* @__PURE__ */ new Date()).toISOString()).run();
         } catch (e2) {
         }
       }
-      return null;
+      walk = estimateWalkingFallback(stop.lat, stop.lon, addrPoint.lat, addrPoint.lon);
+      walkApprox = true;
+    }
+    if (!walk) {
+      walk = estimateWalkingFallback(stop.lat, stop.lon, addrPoint.lat, addrPoint.lon);
+      walkApprox = true;
     }
     let transit = null;
     try {
@@ -798,7 +826,8 @@ async function computeAccessibility(address, originStopName, env, db, bId) {
       nearest_stop_name: stop.name,
       last_mile_distance_m: Math.round(walk.distanceM),
       last_mile_duration_min: Math.round(walk.durationMin * 10) / 10,
-      last_mile_elevation_m: Math.round(walk.elevationM),
+      last_mile_elevation_m: walk.elevationM != null ? Math.round(walk.elevationM) : null,
+      last_mile_approx: walkApprox ? 1 : 0,
       transit_duration_min: transit ? transit.durationMin : null,
       transit_transfers: transit ? transit.transfers : null,
       accessibilite_score: accessibiliteScore
@@ -829,13 +858,13 @@ async function getOrComputeAccess(db, bId, address, originStopName, env, budget)
   const fresh = await computeAccessibility(address, originStopName, env, db, bId);
   if (!fresh) return cached;
   try {
-    await db.prepare(`INSERT INTO access_cache (bien_id, address, nearest_stop_name, last_mile_distance_m, last_mile_duration_min, last_mile_elevation_m, transit_duration_min, transit_transfers, accessibilite_score, computed_at)
-      VALUES (?,?,?,?,?,?,?,?,?,?)
+    await db.prepare(`INSERT INTO access_cache (bien_id, address, nearest_stop_name, last_mile_distance_m, last_mile_duration_min, last_mile_elevation_m, last_mile_approx, transit_duration_min, transit_transfers, accessibilite_score, computed_at)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?)
       ON CONFLICT(bien_id) DO UPDATE SET address=excluded.address, nearest_stop_name=excluded.nearest_stop_name, last_mile_distance_m=excluded.last_mile_distance_m,
-        last_mile_duration_min=excluded.last_mile_duration_min, last_mile_elevation_m=excluded.last_mile_elevation_m, transit_duration_min=excluded.transit_duration_min,
+        last_mile_duration_min=excluded.last_mile_duration_min, last_mile_elevation_m=excluded.last_mile_elevation_m, last_mile_approx=excluded.last_mile_approx, transit_duration_min=excluded.transit_duration_min,
         transit_transfers=excluded.transit_transfers, accessibilite_score=excluded.accessibilite_score, computed_at=excluded.computed_at`).bind(
       bId, address, fresh.nearest_stop_name, fresh.last_mile_distance_m, fresh.last_mile_duration_min,
-      fresh.last_mile_elevation_m, fresh.transit_duration_min, fresh.transit_transfers, fresh.accessibilite_score, todayISO()
+      fresh.last_mile_elevation_m, fresh.last_mile_approx, fresh.transit_duration_min, fresh.transit_transfers, fresh.accessibilite_score, todayISO()
     ).run();
   } catch (e) {
   }
@@ -907,6 +936,7 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
       last_mile_distance_m: access ? access.last_mile_distance_m : null,
       last_mile_duration_min: access ? access.last_mile_duration_min : null,
       last_mile_elevation_m: access ? access.last_mile_elevation_m : null,
+      last_mile_approx: access ? access.last_mile_approx : null,
       transit_duration_min: access ? access.transit_duration_min : null,
       transit_transfers: access ? access.transit_transfers : null,
       jm_fit: fit,
@@ -937,7 +967,7 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
   const BATCH_SIZE = 3;
   for (let i = 0; i < allComputed.length; i += BATCH_SIZE) {
     const batch = allComputed.slice(i, i + BATCH_SIZE);
-    const placeholders = batch.map(() => "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").join(",");
+    const placeholders = batch.map(() => "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").join(",");
     const values = [];
     for (const c of batch) {
       const r = c.record;
@@ -964,6 +994,7 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
         r.last_mile_distance_m,
         r.last_mile_duration_min,
         r.last_mile_elevation_m,
+        r.last_mile_approx,
         r.transit_duration_min,
         r.transit_transfers,
         r.jm_fit,
@@ -975,7 +1006,7 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
       );
     }
     if (values.length > 100) throw new Error("writeBiensInBatches : lot de " + values.length + " parametres depasse la limite D1 de 100 \u2014 reduire BATCH_SIZE");
-    await db.prepare(`INSERT INTO biens (id,title,locality,region,type,rooms,surface,price,cachet,confidence,first_seen,last_seen,deal_score,retraite_score,locatif_score,cachet_score,risk_score,accessibilite_score,nearest_stop_name,last_mile_distance_m,last_mile_duration_min,last_mile_elevation_m,transit_duration_min,transit_transfers,jm_fit,is_opportunity,explain,price_drop_json,address,residence_secondaire)
+    await db.prepare(`INSERT INTO biens (id,title,locality,region,type,rooms,surface,price,cachet,confidence,first_seen,last_seen,deal_score,retraite_score,locatif_score,cachet_score,risk_score,accessibilite_score,nearest_stop_name,last_mile_distance_m,last_mile_duration_min,last_mile_elevation_m,last_mile_approx,transit_duration_min,transit_transfers,jm_fit,is_opportunity,explain,price_drop_json,address,residence_secondaire)
       VALUES ${placeholders}
       ON CONFLICT(id) DO UPDATE SET title=excluded.title, locality=excluded.locality, region=excluded.region, type=excluded.type,
         rooms=excluded.rooms, surface=excluded.surface, price=excluded.price, cachet=excluded.cachet, confidence=excluded.confidence,
@@ -983,7 +1014,7 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
         locatif_score=excluded.locatif_score, cachet_score=excluded.cachet_score, risk_score=excluded.risk_score,
         accessibilite_score=excluded.accessibilite_score, nearest_stop_name=excluded.nearest_stop_name,
         last_mile_distance_m=excluded.last_mile_distance_m, last_mile_duration_min=excluded.last_mile_duration_min,
-        last_mile_elevation_m=excluded.last_mile_elevation_m, transit_duration_min=excluded.transit_duration_min,
+        last_mile_elevation_m=excluded.last_mile_elevation_m, last_mile_approx=excluded.last_mile_approx, transit_duration_min=excluded.transit_duration_min,
         transit_transfers=excluded.transit_transfers, jm_fit=excluded.jm_fit,
         is_opportunity=excluded.is_opportunity, explain=excluded.explain, price_drop_json=excluded.price_drop_json, address=excluded.address,
         residence_secondaire=excluded.residence_secondaire`).bind(...values).run();
@@ -1282,10 +1313,12 @@ function accessLine(b){
   if (!b.nearest_stop_name || b.last_mile_duration_min == null) {
     return "<div class='access-row'>Dernier km non calcule (adresse manquante ou cle ORS absente)</div>";
   }
-  const pente = (b.last_mile_elevation_m && b.last_mile_distance_m) ? Math.round((b.last_mile_elevation_m / b.last_mile_distance_m) * 100) : null;
+  const approx = !!b.last_mile_approx;
+  const pente = (!approx && b.last_mile_elevation_m && b.last_mile_distance_m) ? Math.round((b.last_mile_elevation_m / b.last_mile_distance_m) * 100) : null;
   const warn = (pente != null && pente >= 15) || b.last_mile_duration_min > 12;
-  let txt = "A pied : " + b.last_mile_duration_min + " min depuis " + b.nearest_stop_name +
-    " (" + b.last_mile_distance_m + "m, deniv. " + (b.last_mile_elevation_m||0) + "m" + (pente!=null?(", pente ~"+pente+"%"):"") + ")";
+  const approxTag = approx ? " (\u2248 approx.)" : "";
+  let txt = "A pied" + approxTag + " : " + b.last_mile_duration_min + " min depuis " + b.nearest_stop_name +
+    " (" + Math.round(b.last_mile_distance_m) + "m" + (pente!=null?(", d\u00e9niv. " + (b.last_mile_elevation_m||0) + "m, pente ~"+pente+"%"):"") + ")";
   if (b.transit_duration_min != null) {
     const hh = Math.floor(b.transit_duration_min/60), mm = b.transit_duration_min%60;
     txt += " - trajet " + hh + "h" + (mm<10?"0":"") + mm + (b.transit_transfers!=null?(" (" + b.transit_transfers + " chgt)"):"");
