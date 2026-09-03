@@ -1,4 +1,4 @@
-// BUILD-MARKER 1788374444 padding-363: 9ns0xKxzZs4lTS2VG7HxSrsPaTJFPtn3G9aucmBEpQ8slCR2bmHIRz0C7V4J1PL7ZGpFbQNYTKAehzJqXSW1wRipNZlxdVtIb7kS6yyJV9s6yNIwx4gW4RvBVuVgGGEwEMjjR6LFPFTgzjwomerMhl5i2hl4o4n2Z4B2Irgc7FsMBZFhNdoUmPk9XP2mzM4olGxqqhyP4mFHEOXPBQwcm8NrLwwKnfsylNlz9UceNWhJcRsRT14JD1nEQoJMliht65rgSucviepNIi2rePdhtQEoA09RgbVp95s9EfDoHb3z75nR1MNNUdOiHMqPOX8wJguHgK1raWdSAAskgse2iYtypeDykiRavx4yLAnWOL5
+// BUILD-MARKER 1788412541 padding-391: TSyx1GYrbn6Vkm8tVc78pVTycSDjQsqSGHtonlzqS3aatzOypJuBYCPD6yqLiJWYm1tJ78eSOeC7m6QsukVgOOJa8r2zhlflStW56qWizoRgpxxkLyW9x8efHXzgqr6KCAtPAdBLcr0FGFIkd8t8poRDY06BLd9oH6cfYNxRaspaT3lfIEMG6Iq1cZn8JpV9aVA4uV7tNKtGXHHmuSCc3Xfuglw7eybXZoMtrbhArKingNrlFP9aMf8ZcEjqQWcPKMve4Vj21J6OhbN6wWXZs5I5xtg7XXOoZDZ4Cq07eKXrVVFnEJqKNaqT2c0OPlpCMZzMHldWxd8B9L3Mx2ldRUj8eP21Iuwl2HdvnAs6idMqHOEkWasvEnmoMJ51tFOl05hpMoA
 // VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
@@ -691,7 +691,7 @@ async function geocodeAddressORS(address, orsApiKey) {
 }
 
 async function findNearestStopSwiss(lat, lon) {
-  const url = "https://transport.opendata.ch/v1/locations?x=" + lon + "&y=" + lat + "&type=station";
+  const url = "https://transport.opendata.ch/v1/locations?x=" + lat + "&y=" + lon + "&type=station";
   const res = await fetch(url);
   if (!res.ok) {
     const bodyText = await res.text().catch(() => "");
@@ -700,7 +700,7 @@ async function findNearestStopSwiss(lat, lon) {
   const data = await res.json();
   const stop = data.stations && data.stations[0];
   if (!stop || !stop.coordinate) return null;
-  return { name: stop.name, lat: stop.coordinate.y, lon: stop.coordinate.x };
+  return { name: stop.name, lat: stop.coordinate.x, lon: stop.coordinate.y };
 }
 
 function haversineDistanceM(lat1, lon1, lat2, lon2) {
