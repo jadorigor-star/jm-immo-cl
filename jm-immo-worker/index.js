@@ -1,4 +1,4 @@
-// BUILD-MARKER 1788424230 padding-196: tetm8NiX2RgXg3cxhheGW96uxdVmmxIBvfanrkdpHIbolqDQqSgy5rsYTuAZDKUt8rzNJizJRp4SndbmOz0966E1dOKX5MPQ4YDy7WehMv59L2VqcEQy3uRwxRzaYjYaBcOB3U50OEbfRMDFFKsyPooXm9ydhiOB49rNtDupJUSAU6q9yV4uwizOgHNXILA3hpAm
+// BUILD-MARKER 1788432941 padding-268: 5xo6gUeeZ0hInKdqFY8JLUv4Q10cIxX9sxu0XzyB5JCrrkocBRf0W7LgjiLaGVpAMYOo73Lpu8h9oL5gzZICoM6vmxkHzH33pG5lRaaXLSNTSNp5U6QMtHX056S1XltgkOUB9tSDtMpHM0IPykJ45udtBFw9PMI04leR3MpwiqK0s3NVurJRvGNZetNLAP7xhzbltmyw1UO6NIi0Kry0J8vZbObGuOpXcRpHBxmCl0J9wXu1dUthq8OnS4GFzLWgnS7LTPsYghlL
 // VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
@@ -908,7 +908,10 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
   const cachet = sorted.some((l) => l.cachet) || cachetParMotsCles;
   const address = sorted.map((l) => l.address).find((a) => a) || null;
   const isVillageCenter = !address;
-  const geoTarget = address || (latest.locality ? latest.locality + ", Suisse" : null);
+  const addressContainsLocality = address && latest.locality && address.toLowerCase().includes(String(latest.locality).toLowerCase());
+  const geoTarget = address
+    ? (addressContainsLocality ? address : address + (latest.locality ? ", " + latest.locality : "") + ", Suisse")
+    : (latest.locality ? latest.locality + ", Suisse" : null);
   const texteComplet = sorted.map((l) => (l.title || "") + " " + (l.description || "")).join(" ").toLowerCase();
   const residenceSecondaire = RESIDENCE_SECONDAIRE_KEYWORDS.some((k) => texteComplet.includes(k));
   const history = historyByBien.get(bId) || [];
@@ -1093,18 +1096,31 @@ async function recomputeFull(db, env, budgetSize) {
   const { sourceNamesMap, discardedByBien, historyByBien } = await loadRecomputeCaches(db);
   const oldBiensRes = await db.prepare("SELECT id, title, locality, region, type, rooms, surface, price FROM biens").all();
   const oldBiens = oldBiensRes.results;
-  await db.prepare("DELETE FROM biens").run();
-  await db.prepare("DELETE FROM bien_sources").run();
   const allComputed = [];
   const rescuesThisRun = [];
   const accessBudget = { remaining: budgetSize || 6 };
   for (const bId in groups) {
     if (isComparisOnly(groups[bId], sourceNamesMap)) continue;
-    const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien, originStopName, env, accessBudget);
-    allComputed.push(computed);
-    if (computed.rescue) rescuesThisRun.push(computed.rescue);
+    try {
+      const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien, originStopName, env, accessBudget);
+      allComputed.push(computed);
+      if (computed.rescue) rescuesThisRun.push(computed.rescue);
+    } catch (e) {
+      accessBudget.remaining = 0;
+    }
   }
-  if (allComputed.length > 0) await writeBiensInBatches(db, allComputed, sourceNamesMap, true);
+  if (allComputed.length > 0) await writeBiensInBatches(db, allComputed, sourceNamesMap);
+  const keptIds = new Set(allComputed.map((c) => c.record.id));
+  try {
+    const existingRes = await db.prepare("SELECT id FROM biens").all();
+    for (const row of existingRes.results) {
+      if (!keptIds.has(row.id) && !groups[row.id]) {
+        await db.prepare("DELETE FROM biens WHERE id=?").bind(row.id).run();
+        await db.prepare("DELETE FROM bien_sources WHERE bien_id=?").bind(row.id).run();
+      }
+    }
+  } catch (e) {
+  }
   for (const r of rescuesThisRun) {
     await db.prepare("INSERT INTO rescues (bien_id, old_price, new_price, date) VALUES (?,?,?,?)").bind(r.bienId, r.oldPrice, r.newPrice, (/* @__PURE__ */ new Date()).toISOString()).run();
   }
@@ -1564,7 +1580,7 @@ var index_default = {
         return json(report);
       }
       if (url.pathname === "/api/compute-access" && (request.method === "POST" || request.method === "GET")) {
-        const stats = await recomputeFull(db, env, 10);
+        const stats = await recomputeFull(db, env, 5);
         return json(stats);
       }
       if (url.pathname === "/api/ingest-raw" && request.method === "POST") {
