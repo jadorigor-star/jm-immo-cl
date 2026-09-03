@@ -1,4 +1,4 @@
-// BUILD-MARKER 1788452200 padding-121: PZ45NB9RVNU3rOAaRg4I3HkAZcsmwrcVh7AsMgOn4qovytB74vWZgRtrMRXV8cBiQjRV0N0EhyVdMluMtEnHYn12iaJTTZlKl4B1krj3UsMf70Jg95f0neko5
+// BUILD-MARKER 1788453223 padding-366: BiFoezOYfsbWvp5JYBbQ4eUN3XKc3c98LDnybfQpO9e60FvyifSw1sFHT8zg2GJyDqNRMUTh8b3V4ySo93PbxVmrwupY13PNp4A43VctBAd8oipKEhuPMX7GIDki7L4Jawlp8RWO9IyySDKRyX4WlyItO94zelMcoTAnN5hx13Lm8y6DFVJXpyNpx0NW8I6qEP6Yj1y4nvKU9MDnfux8arIHI6MHcG6YobW3I1b22hUEyzy9ebfs927Fn5zAfM0HhQ8fbSqxZbvHpFRqHdV6kjaPPMFFyv8ieZJ89HScbSiu1gYQ5VdgMauAvKOsHgyCU2U8IzGynpXJzV4bWCyNzZbWiyLJmSrKfsyeswL4Y5Jxp1
 // VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
@@ -106,6 +106,7 @@ var JURA_HORS_PERIMETRE = /* @__PURE__ */ new Set([
 var CONF_ORDER = { "V\xE9rifi\xE9e": 3, "Probable": 2, "\xC0 contr\xF4ler": 1 };
 var CACHET_KEYWORDS = ["r\xE9nov\xE9", "historique", "authentique", "cachet", "poutres", "chemin\xE9e", "charme", "chalet", "ferme", "vo\xFBte", "madrier"];
 var RESIDENCE_SECONDAIRE_KEYWORDS = ["residenza secondaria", "r\xE9sidence secondaire", "ressidenza secondaria", "zweitwohnung", "seconda casa"];
+var RESIDENCE_PRINCIPALE_UNIQUEMENT_KEYWORDS = ["r\xE9sidence principale uniquement", "r\xE9sidence principale exclusivement", "pas de r\xE9sidence secondaire", "aucune r\xE9sidence secondaire", "interdiction de r\xE9sidence secondaire", "residenza primaria", "primary residence only", "soumis \xE0 la lrs", "quota r\xE9sidence secondaire atteint", "restriction lex weber"];
 var TOURISTIC_REGIONS = /* @__PURE__ */ new Set(["Tessin", "Gruy\xE8re", "Zweisimmen"]);
 function computeRegion(locality, extra) {
   extra = extra || { map: {}, excluded: /* @__PURE__ */ new Set() };
@@ -917,6 +918,8 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
     ? (addressContainsLocality ? address : address + (latest.locality ? ", " + latest.locality : "") + ", Suisse")
     : (latest.locality ? latest.locality + ", Suisse" : null);
   const residenceSecondaire = RESIDENCE_SECONDAIRE_KEYWORDS.some((k) => texteComplet.includes(k));
+  const residencePrincipaleUniquement = RESIDENCE_PRINCIPALE_UNIQUEMENT_KEYWORDS.some((k) => texteComplet.includes(k));
+  const residenceSecondaireStatut = residencePrincipaleUniquement ? "non_possible" : residenceSecondaire ? "possible" : "inconnu";
   const history = historyByBien.get(bId) || [];
   const disc = discardedByBien.get(bId);
   let discardedNow = false, rescue = null;
@@ -958,6 +961,7 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
       confidence: bestConf,
       address,
       residence_secondaire: residenceSecondaire ? 1 : 0,
+      residence_secondaire_statut: residenceSecondaireStatut,
       first_seen: firstSeen,
       last_seen: latest.last_seen,
       deal_score: scores.deal,
@@ -1004,7 +1008,7 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
   const BATCH_SIZE = 3;
   for (let i = 0; i < allComputed.length; i += BATCH_SIZE) {
     const batch = allComputed.slice(i, i + BATCH_SIZE);
-    const placeholders = batch.map(() => "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").join(",");
+    const placeholders = batch.map(() => "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").join(",");
     const values = [];
     for (const c of batch) {
       const r = c.record;
@@ -1042,11 +1046,12 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
         r.explain,
         r.price_drop_json,
         r.address,
-        r.residence_secondaire
+        r.residence_secondaire,
+        r.residence_secondaire_statut
       );
     }
     if (values.length > 100) throw new Error("writeBiensInBatches : lot de " + values.length + " parametres depasse la limite D1 de 100 \u2014 reduire BATCH_SIZE");
-    await db.prepare(`INSERT INTO biens (id,title,locality,region,type,rooms,surface,price,cachet,confidence,first_seen,last_seen,deal_score,retraite_score,locatif_score,cachet_score,risk_score,accessibilite_score,nearest_stop_name,last_mile_distance_m,last_mile_duration_min,last_mile_elevation_m,last_mile_approx,is_village_center,geo_lat,geo_lon,transit_duration_min,transit_transfers,jm_fit,is_opportunity,explain,price_drop_json,address,residence_secondaire)
+    await db.prepare(`INSERT INTO biens (id,title,locality,region,type,rooms,surface,price,cachet,confidence,first_seen,last_seen,deal_score,retraite_score,locatif_score,cachet_score,risk_score,accessibilite_score,nearest_stop_name,last_mile_distance_m,last_mile_duration_min,last_mile_elevation_m,last_mile_approx,is_village_center,geo_lat,geo_lon,transit_duration_min,transit_transfers,jm_fit,is_opportunity,explain,price_drop_json,address,residence_secondaire,residence_secondaire_statut)
       VALUES ${placeholders}
       ON CONFLICT(id) DO UPDATE SET title=excluded.title, locality=excluded.locality, region=excluded.region, type=excluded.type,
         rooms=excluded.rooms, surface=excluded.surface, price=excluded.price, cachet=excluded.cachet, confidence=excluded.confidence,
@@ -1057,7 +1062,7 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
         last_mile_elevation_m=excluded.last_mile_elevation_m, last_mile_approx=excluded.last_mile_approx, is_village_center=excluded.is_village_center, geo_lat=excluded.geo_lat, geo_lon=excluded.geo_lon, transit_duration_min=excluded.transit_duration_min,
         transit_transfers=excluded.transit_transfers, jm_fit=excluded.jm_fit,
         is_opportunity=excluded.is_opportunity, explain=excluded.explain, price_drop_json=excluded.price_drop_json, address=excluded.address,
-        residence_secondaire=excluded.residence_secondaire`).bind(...values).run();
+        residence_secondaire=excluded.residence_secondaire, residence_secondaire_statut=excluded.residence_secondaire_statut`).bind(...values).run();
   }
   if (!skipPerBienSourceDelete) {
     for (const c of allComputed) {
@@ -1231,7 +1236,7 @@ async function search(db, opts) {
   rows = rows.filter((b) => (b.surface || 0) >= surfaceMin);
   rows = rows.filter((b) => (b.rooms || 0) >= roomsMin);
   if (cachet) rows = rows.filter((b) => b.cachet);
-  if (opts.hideResidenceSecondaire) rows = rows.filter((b) => !b.residence_secondaire);
+  if (opts.residenceSecondaireStatut) rows = rows.filter((b) => (b.residence_secondaire_statut || "inconnu") === opts.residenceSecondaireStatut);
   if (opts.type) rows = rows.filter((b) => b.type === opts.type);
   if (regions) rows = rows.filter((b) => regions.includes(b.region));
   if (opts.favorisOnly) rows = rows.filter((b) => favoriteIds.has(b.id));
@@ -1346,9 +1351,11 @@ main{padding:14px 16px;max-width:660px;margin:0 auto;}
       <option value="accessibilite">Tri : meilleure accessibilite</option>
       <option value="surface_desc">Tri : plus grande surface</option>
     </select>
-    <select id="fHideResSec">
-      <option value="0">Residences secondaires : incluses</option>
-      <option value="1">Residences secondaires : masquees</option>
+    <select id="fResSec">
+      <option value="">Residence secondaire : tous</option>
+      <option value="possible">Residence secondaire : possible</option>
+      <option value="non_possible">Residence secondaire : non possible</option>
+      <option value="inconnu">Residence secondaire : inconnu</option>
     </select>
   </div>
   <div class="tabs" id="tabs"></div>
@@ -1397,7 +1404,8 @@ function accessLine(b){
 function bienCard(b){
   const tags = ["<span class='tag'>" + (b.type||"") + "</span>", "<span class='tag'>" + (b.region||"") + "</span>", "<span class='tag'>" + (b.confidence||"") + "</span>"];
   if (b.cachet) tags.push("<span class='tag'>cachet</span>");
-  if (b.residence_secondaire) tags.push("<span class='tag' style='color:var(--blue)'>residence secondaire</span>");
+  if (b.residence_secondaire_statut === "possible") tags.push("<span class='tag' style='color:var(--teal)'>residence secondaire possible</span>");
+  else if (b.residence_secondaire_statut === "non_possible") tags.push("<span class='tag' style='color:var(--clay)'>residence secondaire non possible</span>");
   if (b.is_opportunity) tags.push("<span class='tag opp'>Opportunite</span>");
   if (b.price_drop) tags.push("<span class='tag drop'>-" + b.price_drop.pct + "%</span>");
   const sources = (b.sources||[]).map(function(s){return "<a href='" + s.url + "' target='_blank' rel='noopener'>" + s.source_name + "</a>";}).join(" - ");
@@ -1551,7 +1559,8 @@ async function load(){
   const type_ = document.getElementById("fType").value; if (type_) params.set("type", type_);
   params.set("budget_max", document.getElementById("fBudget").value);
   params.set("sort", document.getElementById("fSort").value);
-  if (document.getElementById("fHideResSec").value === "1") params.set("hide_residence_sec", "1");
+  const resSecVal = document.getElementById("fResSec").value;
+  if (resSecVal) params.set("residence_sec_statut", resSecVal);
   if (activeTab === "opportunites") params.set("opportunites", "1");
   if (activeTab === "favoris") params.set("favoris", "1");
 
@@ -1602,7 +1611,7 @@ document.getElementById("btnComputeAccess").onclick = async function(){
   btn.innerHTML = original;
   load();
 };
-["fRegion","fType","fBudget","fSort","fHideResSec"].forEach(function(id){document.getElementById(id).onchange = load;});
+["fRegion","fType","fBudget","fSort","fResSec"].forEach(function(id){document.getElementById(id).onchange = load;});
 document.getElementById("q").addEventListener("keydown", function(e){ if(e.key==="Enter") load(); });
 api("/api/preferences").then(function(p){ window._accessGoodThreshold = p.access_good_threshold_min || 12; load(); });
 <\/script>
@@ -1704,7 +1713,7 @@ var index_default = {
           sort: q.get("sort") || "jmfit",
           favorisOnly: q.get("favoris") === "1",
           opportunitiesOnly: q.get("opportunites") === "1",
-          hideResidenceSecondaire: q.get("hide_residence_sec") === "1"
+          residenceSecondaireStatut: q.get("residence_sec_statut") || null
         });
         return json({ count: results.length, results });
       }
