@@ -1,4 +1,4 @@
-// BUILD-MARKER 1788412541 padding-391: TSyx1GYrbn6Vkm8tVc78pVTycSDjQsqSGHtonlzqS3aatzOypJuBYCPD6yqLiJWYm1tJ78eSOeC7m6QsukVgOOJa8r2zhlflStW56qWizoRgpxxkLyW9x8efHXzgqr6KCAtPAdBLcr0FGFIkd8t8poRDY06BLd9oH6cfYNxRaspaT3lfIEMG6Iq1cZn8JpV9aVA4uV7tNKtGXHHmuSCc3Xfuglw7eybXZoMtrbhArKingNrlFP9aMf8ZcEjqQWcPKMve4Vj21J6OhbN6wWXZs5I5xtg7XXOoZDZ4Cq07eKXrVVFnEJqKNaqT2c0OPlpCMZzMHldWxd8B9L3Mx2ldRUj8eP21Iuwl2HdvnAs6idMqHOEkWasvEnmoMJ51tFOl05hpMoA
+// BUILD-MARKER 1788419915 padding-323: CPl94K9Kp4d6rqUgjB4fZB0DSfoXcSB6o2WyRNJRPcAhfMA3Qqgv8Csrrw2o06xgexVEXzalE8UHjgeuI92syhdFh3pmF5k9jNKbr5EjsYQGhHKYcrzoRSlGbQPdbJlHywEiWZNcYtTugn01AGeRCUqjIFnPZCctJWhfE3vc7PpXmhYmy8ialyABEhpj1FPUDhKZXCIJjZ1VeXAPMbicTe9jRbIfown2xPBPZkfgkjYES97Y3vSWaVk2HbrQkblb98YtNa16QJscvwfYwTqY5s7iMI2nzb9dkMHAcnyrzuWa0HGwJt1fAkYdOHgiujdSviF
 // VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
@@ -785,7 +785,19 @@ async function computeAccessibility(address, originStopName, env, db, bId) {
       }
       return null;
     }
+    if (db) {
+      try {
+        await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "coords_addr", "lat=" + addrPoint.lat + " lon=" + addrPoint.lon, (/* @__PURE__ */ new Date()).toISOString()).run();
+      } catch (e2) {
+      }
+    }
     const stop = await findNearestStopSwiss(addrPoint.lat, addrPoint.lon);
+    if (stop && db) {
+      try {
+        await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "coords_stop", "name=" + stop.name + " lat=" + stop.lat + " lon=" + stop.lon, (/* @__PURE__ */ new Date()).toISOString()).run();
+      } catch (e2) {
+      }
+    }
     if (!stop) {
       if (db) {
         try {
