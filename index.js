@@ -1,4 +1,4 @@
-// BUILD-MARKER 1788412541 padding-391: TSyx1GYrbn6Vkm8tVc78pVTycSDjQsqSGHtonlzqS3aatzOypJuBYCPD6yqLiJWYm1tJ78eSOeC7m6QsukVgOOJa8r2zhlflStW56qWizoRgpxxkLyW9x8efHXzgqr6KCAtPAdBLcr0FGFIkd8t8poRDY06BLd9oH6cfYNxRaspaT3lfIEMG6Iq1cZn8JpV9aVA4uV7tNKtGXHHmuSCc3Xfuglw7eybXZoMtrbhArKingNrlFP9aMf8ZcEjqQWcPKMve4Vj21J6OhbN6wWXZs5I5xtg7XXOoZDZ4Cq07eKXrVVFnEJqKNaqT2c0OPlpCMZzMHldWxd8B9L3Mx2ldRUj8eP21Iuwl2HdvnAs6idMqHOEkWasvEnmoMJ51tFOl05hpMoA
+// BUILD-MARKER 1788432941 padding-268: 5xo6gUeeZ0hInKdqFY8JLUv4Q10cIxX9sxu0XzyB5JCrrkocBRf0W7LgjiLaGVpAMYOo73Lpu8h9oL5gzZICoM6vmxkHzH33pG5lRaaXLSNTSNp5U6QMtHX056S1XltgkOUB9tSDtMpHM0IPykJ45udtBFw9PMI04leR3MpwiqK0s3NVurJRvGNZetNLAP7xhzbltmyw1UO6NIi0Kry0J8vZbObGuOpXcRpHBxmCl0J9wXu1dUthq8OnS4GFzLWgnS7LTPsYghlL
 // VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
@@ -698,8 +698,9 @@ async function findNearestStopSwiss(lat, lon) {
     throw new Error("transport.opendata.ch locations HTTP " + res.status + " : " + bodyText.slice(0, 300));
   }
   const data = await res.json();
-  const stop = data.stations && data.stations[0];
-  if (!stop || !stop.coordinate) return null;
+  const stations = data.stations || [];
+  const stop = stations.find((s) => s && s.coordinate && typeof s.coordinate.x === "number" && typeof s.coordinate.y === "number" && s.id);
+  if (!stop) return null;
   return { name: stop.name, lat: stop.coordinate.x, lon: stop.coordinate.y };
 }
 
@@ -712,8 +713,10 @@ function haversineDistanceM(lat1, lon1, lat2, lon2) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 function estimateWalkingFallback(fromLat, fromLon, toLat, toLon) {
+  if (typeof fromLat !== "number" || typeof fromLon !== "number" || typeof toLat !== "number" || typeof toLon !== "number") return null;
   const straightM = haversineDistanceM(fromLat, fromLon, toLat, toLon);
   const distanceM = straightM * 1.3;
+  if (!isFinite(distanceM) || distanceM > 2e4) return null;
   const walkingSpeedMPerMin = 80;
   return {
     distanceM,
@@ -785,7 +788,19 @@ async function computeAccessibility(address, originStopName, env, db, bId) {
       }
       return null;
     }
+    if (db) {
+      try {
+        await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "coords_addr", "lat=" + addrPoint.lat + " lon=" + addrPoint.lon, (/* @__PURE__ */ new Date()).toISOString()).run();
+      } catch (e2) {
+      }
+    }
     const stop = await findNearestStopSwiss(addrPoint.lat, addrPoint.lon);
+    if (stop && db) {
+      try {
+        await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "coords_stop", "name=" + stop.name + " lat=" + stop.lat + " lon=" + stop.lon, (/* @__PURE__ */ new Date()).toISOString()).run();
+      } catch (e2) {
+      }
+    }
     if (!stop) {
       if (db) {
         try {
@@ -812,6 +827,15 @@ async function computeAccessibility(address, originStopName, env, db, bId) {
     if (!walk) {
       walk = estimateWalkingFallback(stop.lat, stop.lon, addrPoint.lat, addrPoint.lon);
       walkApprox = true;
+    }
+    if (!walk) {
+      if (db) {
+        try {
+          await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "walking_impossible", "coords invalides ou distance aberrante (stop " + stop.name + ")", (/* @__PURE__ */ new Date()).toISOString()).run();
+        } catch (e2) {
+        }
+      }
+      return null;
     }
     let transit = null;
     try {
@@ -884,7 +908,10 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
   const cachet = sorted.some((l) => l.cachet) || cachetParMotsCles;
   const address = sorted.map((l) => l.address).find((a) => a) || null;
   const isVillageCenter = !address;
-  const geoTarget = address || (latest.locality ? latest.locality + ", Suisse" : null);
+  const addressContainsLocality = address && latest.locality && address.toLowerCase().includes(String(latest.locality).toLowerCase());
+  const geoTarget = address
+    ? (addressContainsLocality ? address : address + (latest.locality ? ", " + latest.locality : "") + ", Suisse")
+    : (latest.locality ? latest.locality + ", Suisse" : null);
   const texteComplet = sorted.map((l) => (l.title || "") + " " + (l.description || "")).join(" ").toLowerCase();
   const residenceSecondaire = RESIDENCE_SECONDAIRE_KEYWORDS.some((k) => texteComplet.includes(k));
   const history = historyByBien.get(bId) || [];
@@ -1069,18 +1096,31 @@ async function recomputeFull(db, env, budgetSize) {
   const { sourceNamesMap, discardedByBien, historyByBien } = await loadRecomputeCaches(db);
   const oldBiensRes = await db.prepare("SELECT id, title, locality, region, type, rooms, surface, price FROM biens").all();
   const oldBiens = oldBiensRes.results;
-  await db.prepare("DELETE FROM biens").run();
-  await db.prepare("DELETE FROM bien_sources").run();
   const allComputed = [];
   const rescuesThisRun = [];
   const accessBudget = { remaining: budgetSize || 6 };
   for (const bId in groups) {
     if (isComparisOnly(groups[bId], sourceNamesMap)) continue;
-    const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien, originStopName, env, accessBudget);
-    allComputed.push(computed);
-    if (computed.rescue) rescuesThisRun.push(computed.rescue);
+    try {
+      const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien, originStopName, env, accessBudget);
+      allComputed.push(computed);
+      if (computed.rescue) rescuesThisRun.push(computed.rescue);
+    } catch (e) {
+      accessBudget.remaining = 0;
+    }
   }
-  if (allComputed.length > 0) await writeBiensInBatches(db, allComputed, sourceNamesMap, true);
+  if (allComputed.length > 0) await writeBiensInBatches(db, allComputed, sourceNamesMap);
+  const keptIds = new Set(allComputed.map((c) => c.record.id));
+  try {
+    const existingRes = await db.prepare("SELECT id FROM biens").all();
+    for (const row of existingRes.results) {
+      if (!keptIds.has(row.id) && !groups[row.id]) {
+        await db.prepare("DELETE FROM biens WHERE id=?").bind(row.id).run();
+        await db.prepare("DELETE FROM bien_sources WHERE bien_id=?").bind(row.id).run();
+      }
+    }
+  } catch (e) {
+  }
   for (const r of rescuesThisRun) {
     await db.prepare("INSERT INTO rescues (bien_id, old_price, new_price, date) VALUES (?,?,?,?)").bind(r.bienId, r.oldPrice, r.newPrice, (/* @__PURE__ */ new Date()).toISOString()).run();
   }
@@ -1540,7 +1580,7 @@ var index_default = {
         return json(report);
       }
       if (url.pathname === "/api/compute-access" && (request.method === "POST" || request.method === "GET")) {
-        const stats = await recomputeFull(db, env, 10);
+        const stats = await recomputeFull(db, env, 5);
         return json(stats);
       }
       if (url.pathname === "/api/ingest-raw" && request.method === "POST") {
