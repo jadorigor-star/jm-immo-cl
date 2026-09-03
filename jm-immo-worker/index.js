@@ -1,4 +1,4 @@
-// BUILD-MARKER 1788451117 padding-99: t3EL8urQLazW9gcjJXiDXT1TXayQkxHb0dsEexf0feaagZwFvrt43uigQjv7BJnqJGDjJRyn3DsnjEWpOtsvuqe7jv5ToudeqYL
+// BUILD-MARKER 1788452200 padding-121: PZ45NB9RVNU3rOAaRg4I3HkAZcsmwrcVh7AsMgOn4qovytB74vWZgRtrMRXV8cBiQjRV0N0EhyVdMluMtEnHYn12iaJTTZlKl4B1krj3UsMf70Jg95f0neko5
 // VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
@@ -134,10 +134,9 @@ function estimateDealScore(price, regionPrices) {
   const score = 100 - (price / median - 1) * 120;
   return Math.max(0, Math.min(100, Math.round(score)));
 }
-function estimateCachetScore(title, cachetFlag) {
+function estimateCachetScore(cachetFlag, hits) {
   const base = cachetFlag ? 88 : 15;
-  const hits = CACHET_KEYWORDS.filter((k) => (title || "").toLowerCase().includes(k)).length;
-  return Math.max(0, Math.min(100, base + hits * 4));
+  return Math.max(0, Math.min(100, base + (hits || 0) * 4));
 }
 function estimateRetraiteScore(rooms, surface, region) {
   let score = 50;
@@ -907,8 +906,9 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
   const cheapestPrice = Math.min(...sorted.map((l) => l.price));
   const bestConf = sorted.reduce((acc, l) => CONF_ORDER[l.confidence] > CONF_ORDER[acc] ? l.confidence : acc, "\xC0 contr\xF4ler");
   const firstSeen = sorted.reduce((acc, l) => l.first_seen < acc ? l.first_seen : acc, sorted[0].first_seen);
-  const titreLower = (sorted[sorted.length - 1].title || "").toLowerCase();
-  const cachetParMotsCles = CACHET_KEYWORDS.filter((k) => titreLower.includes(k)).length >= 2;
+  const texteComplet = sorted.map((l) => (l.title || "") + " " + (l.description || "")).join(" ").toLowerCase();
+  const cachetHits = CACHET_KEYWORDS.filter((k) => texteComplet.includes(k)).length;
+  const cachetParMotsCles = cachetHits >= 1;
   const cachet = sorted.some((l) => l.cachet) || cachetParMotsCles;
   const address = sorted.map((l) => l.address).find((a) => a) || null;
   const isVillageCenter = !address;
@@ -916,7 +916,6 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
   const geoTarget = address
     ? (addressContainsLocality ? address : address + (latest.locality ? ", " + latest.locality : "") + ", Suisse")
     : (latest.locality ? latest.locality + ", Suisse" : null);
-  const texteComplet = sorted.map((l) => (l.title || "") + " " + (l.description || "")).join(" ").toLowerCase();
   const residenceSecondaire = RESIDENCE_SECONDAIRE_KEYWORDS.some((k) => texteComplet.includes(k));
   const history = historyByBien.get(bId) || [];
   const disc = discardedByBien.get(bId);
@@ -939,7 +938,7 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
     deal: estimateDealScore(cheapestPrice, regionPrices[latest.region] || []),
     retraite: estimateRetraiteScore(latest.rooms, latest.surface, latest.region),
     locatif: estimateLocatifScore(latest.region, latest.rooms),
-    cachet: estimateCachetScore(latest.title, cachet),
+    cachet: estimateCachetScore(cachet, cachetHits),
     risk: estimateRiskScore(bestConf, history.length),
     accessibilite: access && access.accessibilite_score != null ? access.accessibilite_score : 55
   };
@@ -1232,6 +1231,7 @@ async function search(db, opts) {
   rows = rows.filter((b) => (b.surface || 0) >= surfaceMin);
   rows = rows.filter((b) => (b.rooms || 0) >= roomsMin);
   if (cachet) rows = rows.filter((b) => b.cachet);
+  if (opts.hideResidenceSecondaire) rows = rows.filter((b) => !b.residence_secondaire);
   if (opts.type) rows = rows.filter((b) => b.type === opts.type);
   if (regions) rows = rows.filter((b) => regions.includes(b.region));
   if (opts.favorisOnly) rows = rows.filter((b) => favoriteIds.has(b.id));
@@ -1240,7 +1240,9 @@ async function search(db, opts) {
     jmfit: (a, b) => b.jm_fit - a.jm_fit,
     price_asc: (a, b) => a.price - b.price,
     price_desc: (a, b) => b.price - a.price,
-    recent: (a, b) => (b.first_seen || "").localeCompare(a.first_seen || "")
+    recent: (a, b) => (b.first_seen || "").localeCompare(a.first_seen || ""),
+    accessibilite: (a, b) => (b.accessibilite_score || 0) - (a.accessibilite_score || 0),
+    surface_desc: (a, b) => (b.surface || 0) - (a.surface || 0)
   };
   rows.sort(sortFns[opts.sort || "jmfit"]);
   const out = [];
@@ -1339,7 +1341,14 @@ main{padding:14px 16px;max-width:660px;margin:0 auto;}
     <select id="fSort">
       <option value="jmfit">Tri : JM Fit</option>
       <option value="price_asc">Tri : prix croissant</option>
+      <option value="price_desc">Tri : prix decroissant</option>
       <option value="recent">Tri : plus recents</option>
+      <option value="accessibilite">Tri : meilleure accessibilite</option>
+      <option value="surface_desc">Tri : plus grande surface</option>
+    </select>
+    <select id="fHideResSec">
+      <option value="0">Residences secondaires : incluses</option>
+      <option value="1">Residences secondaires : masquees</option>
     </select>
   </div>
   <div class="tabs" id="tabs"></div>
@@ -1367,10 +1376,11 @@ function accessLine(b){
   if (!b.nearest_stop_name || b.last_mile_duration_min == null) {
     return "<div class='access-row'>Dernier km non calcule (adresse manquante ou cle ORS absente)</div>";
   }
+  const goodThreshold = window._accessGoodThreshold || 12;
   const approx = !!b.last_mile_approx;
   const villageCenter = !!b.is_village_center;
   const pente = (!approx && b.last_mile_elevation_m && b.last_mile_distance_m) ? Math.round((b.last_mile_elevation_m / b.last_mile_distance_m) * 100) : null;
-  const warn = (pente != null && pente >= 15) || b.last_mile_duration_min > 12;
+  const warn = (pente != null && pente >= 15) || b.last_mile_duration_min > goodThreshold;
   const parts = [];
   if (b.transit_duration_min != null) {
     const hh = Math.floor(b.transit_duration_min/60), mm = b.transit_duration_min%60;
@@ -1387,6 +1397,7 @@ function accessLine(b){
 function bienCard(b){
   const tags = ["<span class='tag'>" + (b.type||"") + "</span>", "<span class='tag'>" + (b.region||"") + "</span>", "<span class='tag'>" + (b.confidence||"") + "</span>"];
   if (b.cachet) tags.push("<span class='tag'>cachet</span>");
+  if (b.residence_secondaire) tags.push("<span class='tag' style='color:var(--blue)'>residence secondaire</span>");
   if (b.is_opportunity) tags.push("<span class='tag opp'>Opportunite</span>");
   if (b.price_drop) tags.push("<span class='tag drop'>-" + b.price_drop.pct + "%</span>");
   const sources = (b.sources||[]).map(function(s){return "<a href='" + s.url + "' target='_blank' rel='noopener'>" + s.source_name + "</a>";}).join(" - ");
@@ -1441,24 +1452,43 @@ async function loadPrefs(){
       "<div class='slider-row'><input type='range' min='0' max='5' value='" + v + "' data-weight-key='" + k + "'></div></div>";
   });
   const regionChips = REGIONS.map(function(r){return "<span class='chip " + (regionsAllowed.includes(r)?"on":"") + "' data-action='toggleregion' data-region='" + r + "'>" + r + "</span>";}).join("");
+  const oppThreshold = p.opportunity_threshold != null ? p.opportunity_threshold : 70;
+  const accThreshold = p.access_good_threshold_min != null ? p.access_good_threshold_min : 12;
   const html = "<div class='card'>" +
     "<div class='pref-block'><label>Cachet indispensable</label><div class='chip-row'><span class='chip " + (p.cachet_required?"on":"") + "' data-action='togglecachet'>" + (p.cachet_required?"Active":"Desactive") + "</span></div></div>" +
     "<div class='pref-block'><label>Gare / ville de depart pour le calcul du trajet</label><div class='chip-row'><input id='originStopInput' value='" + (p.origine_trajet||"Fribourg") + "' style='padding:6px 10px;border-radius:8px;border:1px solid #262E3A;background:#1D2430;color:#E7EAEE;font-size:12.5px;width:100%'></div></div>" +
+    "<div class='pref-block'><label>Seuil JM Fit pour etre une opportunite - <span class='mono'>" + oppThreshold + "/100</span></label><div class='slider-row'><input type='range' min='40' max='95' step='5' value='" + oppThreshold + "' id='oppThresholdInput'></div></div>" +
+    "<div class='pref-block'><label>Seuil marche a pied jugee bonne - <span class='mono'>" + accThreshold + " min</span></label><div class='slider-row'><input type='range' min='3' max='30' step='1' value='" + accThreshold + "' id='accThresholdInput'></div></div>" +
     "<div class='pref-block'><label>Regions autorisees</label><div class='chip-row'>" + regionChips + "</div></div>" +
     slidersHtml + "</div>";
   document.getElementById("main").innerHTML = html;
   window._prefsCache = p;
+  window._accessGoodThreshold = accThreshold;
   const originInput = document.getElementById("originStopInput");
   if (originInput) originInput.addEventListener("change", function(){ updateOriginStop(originInput.value); });
+  const oppInput = document.getElementById("oppThresholdInput");
+  if (oppInput) oppInput.addEventListener("change", function(){ updateThreshold("opportunity_threshold", parseInt(oppInput.value)); });
+  const accInput = document.getElementById("accThresholdInput");
+  if (accInput) accInput.addEventListener("change", function(){ updateThreshold("access_good_threshold_min", parseInt(accInput.value)); });
   document.querySelectorAll("input[data-weight-key]").forEach(function(el){
     el.addEventListener("input", function(){ updateWeight(el.dataset.weightKey, el.value); });
   });
+}
+async function updateThreshold(key, v){
+  const p = window._prefsCache;
+  p[key] = v;
+  if (key === "access_good_threshold_min") window._accessGoodThreshold = v;
+  await api("/api/preferences", {method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify({
+    budget_max:p.budget_max, types_allowed:JSON.parse(p.types_allowed), regions_allowed:JSON.parse(p.regions_allowed),
+    surface_min:p.surface_min, rooms_min:p.rooms_min, cachet_required:!!p.cachet_required, weights: JSON.parse(p.weights_json), origine_trajet:p.origine_trajet,
+    opportunity_threshold:p.opportunity_threshold, access_good_threshold_min:p.access_good_threshold_min})});
+  loadPrefs();
 }
 async function togglePrefCachet(){
   const p = window._prefsCache;
   await api("/api/preferences", {method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify({
     budget_max:p.budget_max, types_allowed:JSON.parse(p.types_allowed), regions_allowed:JSON.parse(p.regions_allowed),
-    surface_min:p.surface_min, rooms_min:p.rooms_min, cachet_required: !p.cachet_required, weights: JSON.parse(p.weights_json), origine_trajet:p.origine_trajet})});
+    surface_min:p.surface_min, rooms_min:p.rooms_min, cachet_required: !p.cachet_required, weights: JSON.parse(p.weights_json), origine_trajet:p.origine_trajet, opportunity_threshold:p.opportunity_threshold, access_good_threshold_min:p.access_good_threshold_min})});
   loadPrefs();
 }
 async function togglePrefRegion(r){
@@ -1467,7 +1497,7 @@ async function togglePrefRegion(r){
   regions = regions.includes(r) ? regions.filter(function(x){return x!==r;}) : regions.concat([r]);
   await api("/api/preferences", {method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify({
     budget_max:p.budget_max, types_allowed:JSON.parse(p.types_allowed), regions_allowed:regions,
-    surface_min:p.surface_min, rooms_min:p.rooms_min, cachet_required:!!p.cachet_required, weights: JSON.parse(p.weights_json), origine_trajet:p.origine_trajet})});
+    surface_min:p.surface_min, rooms_min:p.rooms_min, cachet_required:!!p.cachet_required, weights: JSON.parse(p.weights_json), origine_trajet:p.origine_trajet, opportunity_threshold:p.opportunity_threshold, access_good_threshold_min:p.access_good_threshold_min})});
   loadPrefs();
 }
 async function updateWeight(k, v){
@@ -1475,14 +1505,14 @@ async function updateWeight(k, v){
   const weights = JSON.parse(p.weights_json); weights[k] = parseInt(v);
   await api("/api/preferences", {method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify({
     budget_max:p.budget_max, types_allowed:JSON.parse(p.types_allowed), regions_allowed:JSON.parse(p.regions_allowed),
-    surface_min:p.surface_min, rooms_min:p.rooms_min, cachet_required:!!p.cachet_required, weights:weights, origine_trajet:p.origine_trajet})});
+    surface_min:p.surface_min, rooms_min:p.rooms_min, cachet_required:!!p.cachet_required, weights:weights, origine_trajet:p.origine_trajet, opportunity_threshold:p.opportunity_threshold, access_good_threshold_min:p.access_good_threshold_min})});
   window._prefsCache.weights_json = JSON.stringify(weights);
 }
 async function updateOriginStop(v){
   const p = window._prefsCache;
   await api("/api/preferences", {method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify({
     budget_max:p.budget_max, types_allowed:JSON.parse(p.types_allowed), regions_allowed:JSON.parse(p.regions_allowed),
-    surface_min:p.surface_min, rooms_min:p.rooms_min, cachet_required:!!p.cachet_required, weights: JSON.parse(p.weights_json), origine_trajet:v})});
+    surface_min:p.surface_min, rooms_min:p.rooms_min, cachet_required:!!p.cachet_required, weights: JSON.parse(p.weights_json), origine_trajet:v, opportunity_threshold:p.opportunity_threshold, access_good_threshold_min:p.access_good_threshold_min})});
   window._prefsCache.origine_trajet = v;
 }
 
@@ -1521,6 +1551,7 @@ async function load(){
   const type_ = document.getElementById("fType").value; if (type_) params.set("type", type_);
   params.set("budget_max", document.getElementById("fBudget").value);
   params.set("sort", document.getElementById("fSort").value);
+  if (document.getElementById("fHideResSec").value === "1") params.set("hide_residence_sec", "1");
   if (activeTab === "opportunites") params.set("opportunites", "1");
   if (activeTab === "favoris") params.set("favoris", "1");
 
@@ -1571,9 +1602,9 @@ document.getElementById("btnComputeAccess").onclick = async function(){
   btn.innerHTML = original;
   load();
 };
-["fRegion","fType","fBudget","fSort"].forEach(function(id){document.getElementById(id).onchange = load;});
+["fRegion","fType","fBudget","fSort","fHideResSec"].forEach(function(id){document.getElementById(id).onchange = load;});
 document.getElementById("q").addEventListener("keydown", function(e){ if(e.key==="Enter") load(); });
-load();
+api("/api/preferences").then(function(p){ window._accessGoodThreshold = p.access_good_threshold_min || 12; load(); });
 <\/script>
 </body></html>`;
 var index_default = {
@@ -1672,7 +1703,8 @@ var index_default = {
           cachet: q.has("cachet") ? q.get("cachet") === "1" : void 0,
           sort: q.get("sort") || "jmfit",
           favorisOnly: q.get("favoris") === "1",
-          opportunitiesOnly: q.get("opportunites") === "1"
+          opportunitiesOnly: q.get("opportunites") === "1",
+          hideResidenceSecondaire: q.get("hide_residence_sec") === "1"
         });
         return json({ count: results.length, results });
       }
@@ -1707,9 +1739,10 @@ var index_default = {
         const before = beforeRes.results[0];
         const newWeightsJson = JSON.stringify(body.weights || { deal: 4, retraite: 2, locatif: 2, cachet: 3, risk: 3, accessibilite: 3 });
         const newThreshold = body.opportunity_threshold || 70;
+        const newAccessThreshold = body.access_good_threshold_min || 12;
         const newOriginStop = body.origine_trajet || "Fribourg";
         const needsRecompute = before.weights_json !== newWeightsJson || before.opportunity_threshold !== newThreshold || before.origine_trajet !== newOriginStop;
-        await db.prepare("UPDATE preferences SET budget_max=?, types_allowed=?, regions_allowed=?, surface_min=?, rooms_min=?, cachet_required=?, weights_json=?, origine_trajet=?, opportunity_threshold=? WHERE id=1").bind(
+        await db.prepare("UPDATE preferences SET budget_max=?, types_allowed=?, regions_allowed=?, surface_min=?, rooms_min=?, cachet_required=?, weights_json=?, origine_trajet=?, opportunity_threshold=?, access_good_threshold_min=? WHERE id=1").bind(
           body.budget_max || 5e5,
           JSON.stringify(body.types_allowed || []),
           JSON.stringify(body.regions_allowed || []),
@@ -1718,7 +1751,8 @@ var index_default = {
           body.cachet_required ? 1 : 0,
           newWeightsJson,
           newOriginStop,
-          newThreshold
+          newThreshold,
+          newAccessThreshold
         ).run();
         if (needsRecompute) await recomputeFull(db, env);
         return json({ ok: true, recomputed: needsRecompute });
