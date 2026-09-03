@@ -1,4 +1,4 @@
-// BUILD-MARKER 1788419915 padding-323: CPl94K9Kp4d6rqUgjB4fZB0DSfoXcSB6o2WyRNJRPcAhfMA3Qqgv8Csrrw2o06xgexVEXzalE8UHjgeuI92syhdFh3pmF5k9jNKbr5EjsYQGhHKYcrzoRSlGbQPdbJlHywEiWZNcYtTugn01AGeRCUqjIFnPZCctJWhfE3vc7PpXmhYmy8ialyABEhpj1FPUDhKZXCIJjZ1VeXAPMbicTe9jRbIfown2xPBPZkfgkjYES97Y3vSWaVk2HbrQkblb98YtNa16QJscvwfYwTqY5s7iMI2nzb9dkMHAcnyrzuWa0HGwJt1fAkYdOHgiujdSviF
+// BUILD-MARKER 1788424230 padding-196: tetm8NiX2RgXg3cxhheGW96uxdVmmxIBvfanrkdpHIbolqDQqSgy5rsYTuAZDKUt8rzNJizJRp4SndbmOz0966E1dOKX5MPQ4YDy7WehMv59L2VqcEQy3uRwxRzaYjYaBcOB3U50OEbfRMDFFKsyPooXm9ydhiOB49rNtDupJUSAU6q9yV4uwizOgHNXILA3hpAm
 // VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
@@ -698,8 +698,9 @@ async function findNearestStopSwiss(lat, lon) {
     throw new Error("transport.opendata.ch locations HTTP " + res.status + " : " + bodyText.slice(0, 300));
   }
   const data = await res.json();
-  const stop = data.stations && data.stations[0];
-  if (!stop || !stop.coordinate) return null;
+  const stations = data.stations || [];
+  const stop = stations.find((s) => s && s.coordinate && typeof s.coordinate.x === "number" && typeof s.coordinate.y === "number" && s.id);
+  if (!stop) return null;
   return { name: stop.name, lat: stop.coordinate.x, lon: stop.coordinate.y };
 }
 
@@ -712,8 +713,10 @@ function haversineDistanceM(lat1, lon1, lat2, lon2) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 function estimateWalkingFallback(fromLat, fromLon, toLat, toLon) {
+  if (typeof fromLat !== "number" || typeof fromLon !== "number" || typeof toLat !== "number" || typeof toLon !== "number") return null;
   const straightM = haversineDistanceM(fromLat, fromLon, toLat, toLon);
   const distanceM = straightM * 1.3;
+  if (!isFinite(distanceM) || distanceM > 2e4) return null;
   const walkingSpeedMPerMin = 80;
   return {
     distanceM,
@@ -824,6 +827,15 @@ async function computeAccessibility(address, originStopName, env, db, bId) {
     if (!walk) {
       walk = estimateWalkingFallback(stop.lat, stop.lon, addrPoint.lat, addrPoint.lon);
       walkApprox = true;
+    }
+    if (!walk) {
+      if (db) {
+        try {
+          await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "walking_impossible", "coords invalides ou distance aberrante (stop " + stop.name + ")", (/* @__PURE__ */ new Date()).toISOString()).run();
+        } catch (e2) {
+        }
+      }
+      return null;
     }
     let transit = null;
     try {
