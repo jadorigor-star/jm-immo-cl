@@ -1,4 +1,4 @@
-// BUILD-MARKER 1788453223 padding-366: BiFoezOYfsbWvp5JYBbQ4eUN3XKc3c98LDnybfQpO9e60FvyifSw1sFHT8zg2GJyDqNRMUTh8b3V4ySo93PbxVmrwupY13PNp4A43VctBAd8oipKEhuPMX7GIDki7L4Jawlp8RWO9IyySDKRyX4WlyItO94zelMcoTAnN5hx13Lm8y6DFVJXpyNpx0NW8I6qEP6Yj1y4nvKU9MDnfux8arIHI6MHcG6YobW3I1b22hUEyzy9ebfs927Fn5zAfM0HhQ8fbSqxZbvHpFRqHdV6kjaPPMFFyv8ieZJ89HScbSiu1gYQ5VdgMauAvKOsHgyCU2U8IzGynpXJzV4bWCyNzZbWiyLJmSrKfsyeswL4Y5Jxp1
+// BUILD-MARKER 1788454689 padding-154: 3E7hmn0TPunFkO2PD8rRbrM4JreohUkQRpoOmcUVCwze2gPONtZkcDLNj3nRucPk0FrmSdzvGM7UDRRwxdgf7t6sa73sxWYetdofTziqaVNYcLyBibNBLkiV5xdUMT0yHerhgzlgqpcpFCd059OPE0cAF5
 // VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
@@ -590,7 +590,7 @@ async function ingest(db, fetchFn) {
   if (allSources.length === 0) return report;
   const offset = (await getSourceOffset(db)) % allSources.length;
   const rotated = allSources.slice(offset).concat(allSources.slice(0, offset));
-  const fetchBudget = { remaining: 35 };
+  const fetchBudget = { remaining: 38 };
   let attempted = 0;
   for (const srcRow of rotated) {
     if (fetchBudget.remaining <= 0) break;
@@ -598,14 +598,25 @@ async function ingest(db, fetchFn) {
     const adapter = srcRow.adapter === "demo" ? demoAdapter() : genericAdapter(srcRow, extra);
     let state = "enregistr\xE9e", error = null, stored = 0;
     try {
-      state = await adapter.check(fetchFn, fetchBudget);
       const rawListings = await adapter.fetchListings(fetchFn, fetchBudget);
+      state = "accessible";
       for (const rl of rawListings) stored += await storeListing(db, srcRow, rl, extra);
       if (stored > 0) state = "productive";
     } catch (e) {
       error = String(e && e.message ? e.message : e);
     }
-    await db.prepare("UPDATE sources SET state=?, last_checked=?, last_error=?, last_productive_count=? WHERE id=?").bind(state, (/* @__PURE__ */ new Date()).toISOString(), error, stored, srcRow.id).run();
+    const isHardFailure = !!error && /HTTP (40[034]|41[04]|5\d\d)/.test(error);
+    const newFailures = isHardFailure ? (srcRow.consecutive_failures || 0) + 1 : 0;
+    const autoDisable = newFailures >= 5;
+    await db.prepare("UPDATE sources SET state=?, last_checked=?, last_error=?, last_productive_count=?, consecutive_failures=?, enabled=? WHERE id=?").bind(
+      state,
+      (/* @__PURE__ */ new Date()).toISOString(),
+      error,
+      stored,
+      newFailures,
+      autoDisable ? 0 : 1,
+      srcRow.id
+    ).run();
     report.push({ source: srcRow.name, state, stored, error });
   }
   await setSourceOffset(db, (offset + attempted) % allSources.length);
@@ -1532,7 +1543,11 @@ async function load(){
   if (activeTab === "sources"){
     const r = await api("/api/sources");
     main.innerHTML = "<div class='card'><table class='sources-table'><thead><tr><th>Source</th><th>Etat</th><th>Annonces</th></tr></thead><tbody>" +
-      r.results.map(function(s){return "<tr><td><span class='dot " + s.state + "'></span>" + s.name + "</td><td>" + s.state + "</td><td class='mono'>" + (s.last_productive_count||0) + "</td></tr>";}).join("") +
+      r.results.map(function(s){
+        const err = s.last_error ? ("<div style='font-size:10.5px;color:var(--clay);margin-top:2px'>" + s.last_error.slice(0,60) + "</div>") : "";
+        const off = s.enabled ? "" : "<div style='font-size:10.5px;color:var(--muted);margin-top:2px'>desactivee</div>";
+        return "<tr><td><span class='dot " + s.state + "'></span>" + s.name + err + off + "</td><td>" + s.state + "</td><td class='mono'>" + (s.last_productive_count||0) + "</td></tr>";
+      }).join("") +
       "</tbody></table></div>";
     return;
   }
@@ -1613,7 +1628,7 @@ document.getElementById("btnComputeAccess").onclick = async function(){
 };
 ["fRegion","fType","fBudget","fSort","fResSec"].forEach(function(id){document.getElementById(id).onchange = load;});
 document.getElementById("q").addEventListener("keydown", function(e){ if(e.key==="Enter") load(); });
-api("/api/preferences").then(function(p){ window._accessGoodThreshold = p.access_good_threshold_min || 12; load(); });
+api("/api/preferences").then(function(p){ window._accessGoodThreshold = p.access_good_threshold_min || 12; }).catch(function(){}).then(function(){ load(); });
 <\/script>
 </body></html>`;
 var index_default = {
