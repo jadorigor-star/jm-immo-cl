@@ -1,4 +1,4 @@
-// BUILD-MARKER 1788434495 padding-314: JvBNqnVdPdskMFjOXDBC4WptACIodiDMFmd1QOMiAnLrXLbM4CD4kTvYPreUTbxZVu3Hi91A8mXZXRunay8Oem3lFxe3Hqmw9VsXbPagqAtaK2PkWsHfr3bBx1eIHOasyYPmI0vO40vimNjDnzXYJls1cdLsIGzFWeta11DE8CdchriBzs9QK5shZxn9Y6lifdjAIAB7YVTLUiHEP0OLPLaV0VwGV2k8LrvIGWjOGmg5yNLTfeqdPkJN65iKiZJRQ3BcvE16ePiFurvXwS1F90fH2AnwvcbUsP7YaNOZc1sKeMEu44bCyFAxgu
+// BUILD-MARKER 1788451117 padding-99: t3EL8urQLazW9gcjJXiDXT1TXayQkxHb0dsEexf0feaagZwFvrt43uigQjv7BJnqJGDjJRyn3DsnjEWpOtsvuqe7jv5ToudeqYL
 // VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
@@ -676,8 +676,9 @@ function estimateAccessibiliteScore(lastMileDurationMin, lastMileElevationM, tra
   return Math.max(0, Math.min(100, Math.round(score)));
 }
 
-async function geocodeAddressORS(address, orsApiKey) {
-  const url = "https://api.heigit.org/pelias/v1/search?api_key=" + encodeURIComponent(orsApiKey) + "&text=" + encodeURIComponent(address) + "&size=1&boundary.country=CH";
+async function geocodeAddressORS(address, orsApiKey, villageMode) {
+  const layers = villageMode ? "&layers=locality,borough,neighbourhood,localadmin" : "";
+  const url = "https://api.heigit.org/pelias/v1/search?api_key=" + encodeURIComponent(orsApiKey) + "&text=" + encodeURIComponent(address) + "&size=1&boundary.country=CH" + layers;
   const res = await fetch(url, { headers: { "Authorization": orsApiKey } });
   if (!res.ok) {
     const bodyText = await res.text().catch(() => "");
@@ -766,7 +767,7 @@ async function computeTrainJourneySwiss(originStopName, destStopName) {
   };
 }
 
-async function computeAccessibility(address, originStopName, env, db, bId) {
+async function computeAccessibility(address, originStopName, env, db, bId, villageMode) {
   if (!address) return null;
   if (!env.ORS_API_KEY) {
     if (db) {
@@ -778,7 +779,7 @@ async function computeAccessibility(address, originStopName, env, db, bId) {
     return null;
   }
   try {
-    const addrPoint = await geocodeAddressORS(address, env.ORS_API_KEY);
+    const addrPoint = await geocodeAddressORS(address, env.ORS_API_KEY, villageMode);
     if (!addrPoint) {
       if (db) {
         try {
@@ -883,7 +884,7 @@ async function getOrComputeAccess(db, bId, address, originStopName, env, budget,
   if (cached && cached.address === address) return cached;
   if (budget && budget.remaining <= 0) return cached;
   if (budget) budget.remaining--;
-  const fresh = await computeAccessibility(address, originStopName, env, db, bId);
+  const fresh = await computeAccessibility(address, originStopName, env, db, bId, !!isVillageCenter);
   if (!fresh) return cached;
   try {
     await db.prepare(`INSERT INTO access_cache (bien_id, address, nearest_stop_name, last_mile_distance_m, last_mile_duration_min, last_mile_elevation_m, last_mile_approx, is_village_center, geo_lat, geo_lon, transit_duration_min, transit_transfers, accessibilite_score, computed_at)
