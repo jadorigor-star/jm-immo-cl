@@ -1,4 +1,4 @@
-// BUILD-MARKER 1788432941 padding-268: 5xo6gUeeZ0hInKdqFY8JLUv4Q10cIxX9sxu0XzyB5JCrrkocBRf0W7LgjiLaGVpAMYOo73Lpu8h9oL5gzZICoM6vmxkHzH33pG5lRaaXLSNTSNp5U6QMtHX056S1XltgkOUB9tSDtMpHM0IPykJ45udtBFw9PMI04leR3MpwiqK0s3NVurJRvGNZetNLAP7xhzbltmyw1UO6NIi0Kry0J8vZbObGuOpXcRpHBxmCl0J9wXu1dUthq8OnS4GFzLWgnS7LTPsYghlL
+// BUILD-MARKER 1788434495 padding-314: JvBNqnVdPdskMFjOXDBC4WptACIodiDMFmd1QOMiAnLrXLbM4CD4kTvYPreUTbxZVu3Hi91A8mXZXRunay8Oem3lFxe3Hqmw9VsXbPagqAtaK2PkWsHfr3bBx1eIHOasyYPmI0vO40vimNjDnzXYJls1cdLsIGzFWeta11DE8CdchriBzs9QK5shZxn9Y6lifdjAIAB7YVTLUiHEP0OLPLaV0VwGV2k8LrvIGWjOGmg5yNLTfeqdPkJN65iKiZJRQ3BcvE16ePiFurvXwS1F90fH2AnwvcbUsP7YaNOZc1sKeMEu44bCyFAxgu
 // VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
@@ -850,6 +850,8 @@ async function computeAccessibility(address, originStopName, env, db, bId) {
     );
     return {
       nearest_stop_name: stop.name,
+      geo_lat: addrPoint.lat,
+      geo_lon: addrPoint.lon,
       last_mile_distance_m: Math.round(walk.distanceM),
       last_mile_duration_min: Math.round(walk.durationMin * 10) / 10,
       last_mile_elevation_m: walk.elevationM != null ? Math.round(walk.elevationM) : null,
@@ -884,13 +886,14 @@ async function getOrComputeAccess(db, bId, address, originStopName, env, budget,
   const fresh = await computeAccessibility(address, originStopName, env, db, bId);
   if (!fresh) return cached;
   try {
-    await db.prepare(`INSERT INTO access_cache (bien_id, address, nearest_stop_name, last_mile_distance_m, last_mile_duration_min, last_mile_elevation_m, last_mile_approx, is_village_center, transit_duration_min, transit_transfers, accessibilite_score, computed_at)
-      VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+    await db.prepare(`INSERT INTO access_cache (bien_id, address, nearest_stop_name, last_mile_distance_m, last_mile_duration_min, last_mile_elevation_m, last_mile_approx, is_village_center, geo_lat, geo_lon, transit_duration_min, transit_transfers, accessibilite_score, computed_at)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
       ON CONFLICT(bien_id) DO UPDATE SET address=excluded.address, nearest_stop_name=excluded.nearest_stop_name, last_mile_distance_m=excluded.last_mile_distance_m,
-        last_mile_duration_min=excluded.last_mile_duration_min, last_mile_elevation_m=excluded.last_mile_elevation_m, last_mile_approx=excluded.last_mile_approx, is_village_center=excluded.is_village_center, transit_duration_min=excluded.transit_duration_min,
+        last_mile_duration_min=excluded.last_mile_duration_min, last_mile_elevation_m=excluded.last_mile_elevation_m, last_mile_approx=excluded.last_mile_approx, is_village_center=excluded.is_village_center,
+        geo_lat=excluded.geo_lat, geo_lon=excluded.geo_lon, transit_duration_min=excluded.transit_duration_min,
         transit_transfers=excluded.transit_transfers, accessibilite_score=excluded.accessibilite_score, computed_at=excluded.computed_at`).bind(
       bId, address, fresh.nearest_stop_name, fresh.last_mile_distance_m, fresh.last_mile_duration_min,
-      fresh.last_mile_elevation_m, fresh.last_mile_approx, isVillageCenter ? 1 : 0, fresh.transit_duration_min, fresh.transit_transfers, fresh.accessibilite_score, todayISO()
+      fresh.last_mile_elevation_m, fresh.last_mile_approx, isVillageCenter ? 1 : 0, fresh.geo_lat, fresh.geo_lon, fresh.transit_duration_min, fresh.transit_transfers, fresh.accessibilite_score, todayISO()
     ).run();
   } catch (e) {
   }
@@ -969,6 +972,8 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
       last_mile_elevation_m: access ? access.last_mile_elevation_m : null,
       last_mile_approx: access ? access.last_mile_approx : null,
       is_village_center: access ? access.is_village_center : null,
+      geo_lat: access ? access.geo_lat : null,
+      geo_lon: access ? access.geo_lon : null,
       transit_duration_min: access ? access.transit_duration_min : null,
       transit_transfers: access ? access.transit_transfers : null,
       jm_fit: fit,
@@ -999,7 +1004,7 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
   const BATCH_SIZE = 3;
   for (let i = 0; i < allComputed.length; i += BATCH_SIZE) {
     const batch = allComputed.slice(i, i + BATCH_SIZE);
-    const placeholders = batch.map(() => "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").join(",");
+    const placeholders = batch.map(() => "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").join(",");
     const values = [];
     for (const c of batch) {
       const r = c.record;
@@ -1028,6 +1033,8 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
         r.last_mile_elevation_m,
         r.last_mile_approx,
         r.is_village_center,
+        r.geo_lat,
+        r.geo_lon,
         r.transit_duration_min,
         r.transit_transfers,
         r.jm_fit,
@@ -1039,7 +1046,7 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
       );
     }
     if (values.length > 100) throw new Error("writeBiensInBatches : lot de " + values.length + " parametres depasse la limite D1 de 100 \u2014 reduire BATCH_SIZE");
-    await db.prepare(`INSERT INTO biens (id,title,locality,region,type,rooms,surface,price,cachet,confidence,first_seen,last_seen,deal_score,retraite_score,locatif_score,cachet_score,risk_score,accessibilite_score,nearest_stop_name,last_mile_distance_m,last_mile_duration_min,last_mile_elevation_m,last_mile_approx,is_village_center,transit_duration_min,transit_transfers,jm_fit,is_opportunity,explain,price_drop_json,address,residence_secondaire)
+    await db.prepare(`INSERT INTO biens (id,title,locality,region,type,rooms,surface,price,cachet,confidence,first_seen,last_seen,deal_score,retraite_score,locatif_score,cachet_score,risk_score,accessibilite_score,nearest_stop_name,last_mile_distance_m,last_mile_duration_min,last_mile_elevation_m,last_mile_approx,is_village_center,geo_lat,geo_lon,transit_duration_min,transit_transfers,jm_fit,is_opportunity,explain,price_drop_json,address,residence_secondaire)
       VALUES ${placeholders}
       ON CONFLICT(id) DO UPDATE SET title=excluded.title, locality=excluded.locality, region=excluded.region, type=excluded.type,
         rooms=excluded.rooms, surface=excluded.surface, price=excluded.price, cachet=excluded.cachet, confidence=excluded.confidence,
@@ -1047,7 +1054,7 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
         locatif_score=excluded.locatif_score, cachet_score=excluded.cachet_score, risk_score=excluded.risk_score,
         accessibilite_score=excluded.accessibilite_score, nearest_stop_name=excluded.nearest_stop_name,
         last_mile_distance_m=excluded.last_mile_distance_m, last_mile_duration_min=excluded.last_mile_duration_min,
-        last_mile_elevation_m=excluded.last_mile_elevation_m, last_mile_approx=excluded.last_mile_approx, is_village_center=excluded.is_village_center, transit_duration_min=excluded.transit_duration_min,
+        last_mile_elevation_m=excluded.last_mile_elevation_m, last_mile_approx=excluded.last_mile_approx, is_village_center=excluded.is_village_center, geo_lat=excluded.geo_lat, geo_lon=excluded.geo_lon, transit_duration_min=excluded.transit_duration_min,
         transit_transfers=excluded.transit_transfers, jm_fit=excluded.jm_fit,
         is_opportunity=excluded.is_opportunity, explain=excluded.explain, price_drop_json=excluded.price_drop_json, address=excluded.address,
         residence_secondaire=excluded.residence_secondaire`).bind(...values).run();
@@ -1387,10 +1394,12 @@ function bienCard(b){
   const titleHtml = primaryUrl
     ? "<a href='" + primaryUrl + "' target='_blank' rel='noopener' data-action='markview' data-id='" + b.id + "' style='color:inherit;text-decoration:none'>" + b.title + "</a>" + star
     : b.title + star;
-  const mapQuery = encodeURIComponent(b.address || ((b.locality||"") + " " + (b.region||"")));
-  const mapUrl = "https://www.google.com/maps/search/?api=1&query=" + mapQuery;
+  const mapUrl = (b.geo_lat != null && b.geo_lon != null)
+    ? "https://www.google.com/maps/search/?api=1&query=" + b.geo_lat + "," + b.geo_lon
+    : "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(b.address || ((b.locality||"") + ", Suisse"));
   const explain = b.explain ? ("<div class='explain'>JM Fit " + b.jm_fit + "/100 - " + b.explain + "</div>") : "";
-  return "<div class='card'><div class='card-top'><div><div class='title'>" + titleHtml + "</div><div class='locality'>" + b.locality + " - " + b.region + " - <a href='" + mapUrl + "' target='_blank' rel='noopener'>Carte</a></div></div>" +
+  const addrLine = b.address ? ("<div class='locality' style='margin-top:3px'>" + b.address + "</div>") : "";
+  return "<div class='card'><div class='card-top'><div><div class='title'>" + titleHtml + "</div><div class='locality'>" + b.locality + " - " + b.region + " - <a href='" + mapUrl + "' target='_blank' rel='noopener'>Carte</a></div>" + addrLine + "</div>" +
     "<div class='fit-badge " + (b.is_opportunity?"hot":"") + "'>" + (b.jm_fit != null ? b.jm_fit : "") + "</div></div>" +
     "<div class='price' style='margin-top:8px'>" + fmtCHF(b.price) + "</div>" +
     "<div class='meta-row'><span>" + (b.rooms||"?") + " pieces</span><span>" + (b.surface||"?") + " m2</span></div>" +
