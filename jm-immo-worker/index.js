@@ -1,4 +1,4 @@
-// BUILD-MARKER 1788505987 padding-239: cuKXLYBaHlQUimTijTPIDvudJXApZ5Olcwnxncuj5UcZrTy2cAeAWw7TWCIiU0kbactK8SfrcQAFbBVYJXzYBhxDdgyPX4icbZxOptyzh5ePDhd3snZWkc45TMKNSmlqAX0xMx5g5eI4Tf9eE5sb8fSUHmno8WqMdyWSqXmDxGPDDuelkiu70i3HlHm6oqLkTXH4AU2OHPM4qFq7efH7gzBuTyokRYYWOxRGGiewPWnSPEj
+// BUILD-MARKER 1788506977 padding-350: YotapqldevErw8CUiqv1YFjnsPWpZFw5YRssGDqp4XEEOTviGsFVjtd3iiCQzAI2xRtmxNUhvOAMgN426Bds1HKa0v0ftQzlgZecB0HJLAMVmKOmxUTSuuSZepJfQvw65Smcp7SqzMjEY7OH4YUoGLvV5gQ4s4VDUhwviNpiw7ALGu1QVahodTjMRgpyQKAKvoumBMdmxSbPY36exJ0OOIxpdSXyCwDOg1pxdyF38PFdpUT3SgLz2RPxHg6sq2wTnXQkngSrc5P1y02d9nZL1BtLW6fA3x8I6U1cgoMF1EWMNqhR0otjLM5i6qmWcMPBU1gv38GfNt8DOrnGs24ZL5VDr2Z2lF
 // VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
@@ -1681,56 +1681,56 @@ var index_default = {
       if (url.pathname === "/api/health") return json({ status: "ok", time: (/* @__PURE__ */ new Date()).toISOString() });
       if (url.pathname === "/api/debug-source") {
         const sid = url.searchParams.get("id");
-        if (!sid) return json({ error: "parametre id manquant" }, 400);
-        const sres = await db.prepare("SELECT * FROM sources WHERE id=?").bind(sid).all();
-        const srow = sres.results[0];
-        if (!srow) return json({ error: "source introuvable" }, 404);
-        const cfg = JSON.parse(srow.config_json || "{}");
-        const target = cfg.mode === "two_step" ? cfg.list_url : (cfg.urls || [])[0];
-        if (!target) return json({ error: "aucune url dans la config" }, 400);
+        const rawUrl = url.searchParams.get("url");
+        let srow = null, cfg = {}, target = rawUrl;
+        if (sid) {
+          const sres = await db.prepare("SELECT * FROM sources WHERE id=?").bind(sid).all();
+          srow = sres.results[0];
+          if (!srow) return json({ error: "source introuvable" }, 404);
+          cfg = JSON.parse(srow.config_json || "{}");
+          if (!target) target = cfg.mode === "two_step" ? cfg.list_url : (cfg.urls || [])[0];
+        }
+        if (!target) return json({ error: "fournir ?id=N ou ?url=..." }, 400);
         const res = await fetch(target, { headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36", "Accept-Language": "fr-CH,fr;q=0.9" } });
         const html = await res.text();
         const out = {
-          source: srow.name,
+          source: srow ? srow.name : "(url libre)",
           url: target,
           http_status: res.status,
           html_length: html.length,
-          has_json_ld: /application\/ld\+json/i.test(html),
           json_ld_count: (html.match(/application\/ld\+json/gi) || []).length,
-          json_ld_sample: null,
+          json_ld_types: [],
+          json_ld_with_price: null,
           link_pattern_matches: null,
           link_samples: [],
           block_pattern_matches: null,
-          block_sample: null,
-          html_head: html.slice(0, 600)
+          price_snippets: []
         };
-        const ldRe = /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/i;
-        const ldm = ldRe.exec(html);
-        if (ldm) out.json_ld_sample = ldm[1].trim().slice(0, 900);
+        const ldRe = /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+        let ldm;
+        while ((ldm = ldRe.exec(html)) !== null) {
+          const raw = ldm[1].trim();
+          const typeMatch = /"@type"\s*:\s*"([^"]+)"/.exec(raw);
+          out.json_ld_types.push(typeMatch ? typeMatch[1] : "?");
+          if (/"price"/.test(raw) && !out.json_ld_with_price) out.json_ld_with_price = raw.slice(0, 1200);
+        }
+        const priceRe = /CHF[^<]{0,40}/gi;
+        let pm, pn = 0;
+        while ((pm = priceRe.exec(html)) !== null && pn < 6) {
+          out.price_snippets.push(pm[0].slice(0, 60));
+          pn++;
+        }
         if (cfg.link_pattern) {
           try {
             const lre = new RegExp(cfg.link_pattern, "gi");
             let lm, n = 0;
             while ((lm = lre.exec(html)) !== null && n < 2e3) {
               n++;
-              if (out.link_samples.length < 5) out.link_samples.push(lm[cfg.link_group || 1]);
+              if (out.link_samples.length < 3) out.link_samples.push(lm[cfg.link_group || 1]);
             }
             out.link_pattern_matches = n;
           } catch (e) {
             out.link_pattern_matches = "regex invalide: " + e.message;
-          }
-        }
-        if (cfg.block_pattern) {
-          try {
-            const bre = new RegExp(cfg.block_pattern, "gi");
-            let bm, n = 0;
-            while ((bm = bre.exec(html)) !== null && n < 500) {
-              n++;
-              if (!out.block_sample) out.block_sample = bm.slice(0, 8);
-            }
-            out.block_pattern_matches = n;
-          } catch (e) {
-            out.block_pattern_matches = "regex invalide: " + e.message;
           }
         }
         return json(out);
