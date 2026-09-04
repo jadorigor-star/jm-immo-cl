@@ -1,4 +1,4 @@
-// BUILD-MARKER 1788525611 padding-340: bI4nq4pIucbSLeA5vyqc1XBdN6NBcVhRbWPuxYWA6NuhmCyUB1q4K0tyAEjWz0F02ouF6ACSpxsazL24NnqDTVplNck66mM8fjk2oSFYEftgFud5fAFh525aIStqqsVEcD30KFSbddV74vhPtXuhyhZZEZ3PLci7ShNasPBehMsmwYy4yC8DMfZBbVPn6MiWrldYpTAVM4J9M6ymfcOzDCAFUItLgVIPkMjF34OrPsrGmCJ61dD6kWSKygGuLJ6tbHhbdQudlOVgMzWjcfEupJ6aKQmi48FvyKXDaIClr8JJHrvFTZ2FWbZwFXny0JzzksHgrKxjubvWjWM6YZl2
+// BUILD-MARKER 1788526740 padding-394: h6j7MDgOEm6IZGh73Oh0tY5TrlrfPPhnuLtUr7MZn40sUDE3SXPWhlOxbMMBgcqwp4AJ8IOErHVussHFJEtia7XCvSFZzpo4rRvjkFSs6Mq6z8Lk0ZjsTayvi9kKKua3Wxpx4YQF22T0Eoa49qvBjlf4P9KZPgEOQx3KJgP51aS68QUkrKg0eLaztIioPcB3rSvOoTDeYw5BBuEnkS2XToz6S9SzblLyVN9OHYAFQIXy7r94LyGVyic1Km8c7bv6sLPKaJiieuQ6oQJNlIysmIIOxBef5l44ZAnh1LThqv257Q3w8jVDs5pQxk8ylMtl8eBDGJOxLC64mn0xSJwacjthB1fJAe8SF53tiwQh4Nyhcp4vNsZdRKgZg7RSqaAFWG7LaQ1Dwe
 // VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
@@ -609,9 +609,23 @@ async function ingest(db, fetchFn) {
   if (allSources.length === 0) return report;
   const offset = (await getSourceOffset(db)) % allSources.length;
   const rotated = allSources.slice(offset).concat(allSources.slice(0, offset));
+  function tierOf(s) {
+    if (s.state === "productive" && (s.last_productive_count || 0) > 0) return 0;
+    if (!s.last_checked) return 1;
+    if (s.state === "accessible") return 2;
+    return 3;
+  }
+  const prioritized = rotated.map((s, i) => ({ s, i, t: tierOf(s) })).sort((a, b) => {
+    if (a.t !== b.t) return a.t - b.t;
+    if (a.t === 0) {
+      const diff = (b.s.last_productive_count || 0) - (a.s.last_productive_count || 0);
+      if (diff !== 0) return diff;
+    }
+    return a.i - b.i;
+  }).map((x) => x.s);
   const fetchBudget = { remaining: 38 };
   let attempted = 0;
-  for (const srcRow of rotated) {
+  for (const srcRow of prioritized) {
     if (fetchBudget.remaining <= 0) break;
     attempted++;
     const adapter = srcRow.adapter === "demo" ? demoAdapter() : genericAdapter(srcRow, extra);
@@ -1889,7 +1903,7 @@ var index_default = {
         return json({ results: res.results, rescues: resc.results });
       }
       if (url.pathname === "/api/sources") {
-        const res = await db.prepare("SELECT * FROM sources ORDER BY name").all();
+        const res = await db.prepare("SELECT * FROM sources ORDER BY enabled DESC, (CASE state WHEN 'productive' THEN 0 WHEN 'accessible' THEN 1 ELSE 2 END), last_productive_count DESC, name").all();
         return json({ results: res.results });
       }
       if (url.pathname === "/api/preferences" && request.method === "GET") {
