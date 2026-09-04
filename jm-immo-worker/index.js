@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788541356 padding-493: DVVbuUr0hGgruWHeZsYpvYR1hd9la9n0kRbABahNc8hpXXP5PqYGeF1036ebAZsdRSEGeXU2NGtldTkQSKiTrlvJEfJZM8xSwuDvmssupH3BFBcv1ndoQQUE9NsUwowFIvrNMRKJMehl0DyKZ9DutGEF8Tjd0ANdsMHrMRJZSojLqV9uzr5BA5Fk6lROlUPCROV82ZXuYAsMBur4qrr2fYfrKVvOk58eD7KGpAyguQPiFb0SHipsjuoXAZMk3PlR58F5iGoeAj7pRbefNggC2N1uctIIPiDqKhMaxVSHKIa1ttVdCB04Cvf8XTU6PY5aJ9fBo
-// VERSION_MARKER_JMIMMO_20260904_CRONINGEST_v4
+// BUILD-MARKER 1788558373 padding-533: 3TaD9Apl1TaXS4dlXovQCSRq2q5qCNWUwFfoVwketfVnJ0sT6dVDnjr0IZJW46cvf72mrA4Pozf4PwJUaFJGXkAtrOEsBlzUkUYxDlj8MPAZwxZ8FcvsCgxwuW28CQXoF2FMgNrlvPbo1XiUMh23jVVTKLbAPG4yYKnoqZacdSLkYS9gMiR0n2H64Tq9KLuQ5hqU030WkOLckHjhoAs5D76w7R0xYUtboN6vU737rJIyzMFE9fIAAcZ5Uj74s3FrRSwVBSaEqzbhfnLX6gJGNyTxWWA4iZjv6RytrgSEQvkNSJPwBl33I82pennyza6BpoEswg1w7lljqfTwCBleEEFykRkOGWzQXxZiDvA302HZm2OsMGCFjCYHZ4u5ov
+// VERSION_MARKER_JMIMMO_20260904_RECOMPUTE_v5
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -913,19 +913,7 @@ async function computeAccessibility(address, originStopName, env, db, bId, villa
       }
       return null;
     }
-    if (db) {
-      try {
-        await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "coords_addr", "lat=" + addrPoint.lat + " lon=" + addrPoint.lon, (/* @__PURE__ */ new Date()).toISOString()).run();
-      } catch (e2) {
-      }
-    }
     const stop = await findNearestStopSwiss(addrPoint.lat, addrPoint.lon);
-    if (stop && db) {
-      try {
-        await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "coords_stop", "name=" + stop.name + " lat=" + stop.lat + " lon=" + stop.lon, (/* @__PURE__ */ new Date()).toISOString()).run();
-      } catch (e2) {
-      }
-    }
     if (!stop) {
       if (db) {
         try {
@@ -996,14 +984,18 @@ async function computeAccessibility(address, originStopName, env, db, bId, villa
   }
 }
 
-async function getOrComputeAccess(db, bId, address, originStopName, env, budget, isVillageCenter) {
+async function getOrComputeAccess(db, bId, address, originStopName, env, budget, isVillageCenter, accessMap) {
   if (!address) return null;
   let cached = null;
-  try {
-    const cacheRes = await db.prepare("SELECT * FROM access_cache WHERE bien_id=?").bind(bId).all();
-    cached = cacheRes.results[0] || null;
-  } catch (e) {
-    return null;
+  if (accessMap) {
+    cached = accessMap.get(bId) || null;
+  } else {
+    try {
+      const cacheRes = await db.prepare("SELECT * FROM access_cache WHERE bien_id=?").bind(bId).all();
+      cached = cacheRes.results[0] || null;
+    } catch (e) {
+      return null;
+    }
   }
   if (cached && cached.address === address) return cached;
   if (budget && budget.remaining <= 0) return cached;
@@ -1025,7 +1017,7 @@ async function getOrComputeAccess(db, bId, address, originStopName, env, budget,
   return Object.assign({ bien_id: bId, address, is_village_center: isVillageCenter ? 1 : 0 }, fresh);
 }
 
-async function computeBienRecord(db, bId, listings, weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien, originStopName, env, budget) {
+async function computeBienRecord(db, bId, listings, weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien, originStopName, env, budget, accessMap) {
   const sorted = [...listings].sort((a, b) => a.last_seen < b.last_seen ? -1 : 1);
   const latest = sorted[sorted.length - 1];
   const cheapestPrice = Math.min(...sorted.map((l) => l.price));
@@ -1060,7 +1052,7 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
     const prev = history[history.length - 2].price, cur = history[history.length - 1].price;
     if (cur < prev) priceDrop = { old: prev, current: cur, pct: Math.round((1 - cur / prev) * 1e3) / 10 };
   }
-  const access = await getOrComputeAccess(db, bId, geoTarget, originStopName, env, budget, isVillageCenter);
+  const access = await getOrComputeAccess(db, bId, geoTarget, originStopName, env, budget, isVillageCenter, accessMap);
   const scores = {
     deal: estimateDealScore(cheapestPrice, regionPrices[latest.region] || []),
     retraite: estimateRetraiteScore(latest.rooms, latest.surface, latest.region),
@@ -1125,11 +1117,17 @@ async function loadRecomputeCaches(db) {
     if (!historyByBien.has(h.bien_id)) historyByBien.set(h.bien_id, []);
     historyByBien.get(h.bien_id).push({ date: h.date, price: h.price });
   }
-  return { sourceNamesMap, discardedByBien, historyByBien };
+  const accessMap = /* @__PURE__ */ new Map();
+  try {
+    const accRes = await db.prepare("SELECT * FROM access_cache").all();
+    for (const a of accRes.results) accessMap.set(a.bien_id, a);
+  } catch (e) {
+  }
+  return { sourceNamesMap, discardedByBien, historyByBien, accessMap };
 }
 
 async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienSourceDelete) {
-  const BATCH_SIZE = 3;
+  const BATCH_SIZE = 2;
   for (let i = 0; i < allComputed.length; i += BATCH_SIZE) {
     const batch = allComputed.slice(i, i + BATCH_SIZE);
     const placeholders = batch.map(() => "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").join(",");
@@ -1189,8 +1187,12 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
         residence_secondaire=excluded.residence_secondaire, residence_secondaire_statut=excluded.residence_secondaire_statut`).bind(...values).run();
   }
   if (!skipPerBienSourceDelete) {
-    for (const c of allComputed) {
-      await db.prepare("DELETE FROM bien_sources WHERE bien_id=?").bind(c.record.id).run();
+    const idsToClear = allComputed.map((c) => c.record.id);
+    const DEL_CHUNK = 90;
+    for (let i = 0; i < idsToClear.length; i += DEL_CHUNK) {
+      const chunk = idsToClear.slice(i, i + DEL_CHUNK);
+      const ph = chunk.map(() => "?").join(",");
+      await db.prepare("DELETE FROM bien_sources WHERE bien_id IN (" + ph + ")").bind(...chunk).run();
     }
   }
   const allSourceRows = [];
@@ -1218,7 +1220,7 @@ async function recomputeFull(db, env, budgetSize) {
   const weights = JSON.parse(prefsRes.results[0].weights_json);
   const opportunityThreshold = prefsRes.results[0].opportunity_threshold || 70;
   const originStopName = prefsRes.results[0].origine_trajet || "Fribourg";
-  const activeRes = await db.prepare("SELECT * FROM listings WHERE status='active'").all();
+  const activeRes = await db.prepare("SELECT l.*, COALESCE(s.enabled,1) AS src_enabled FROM listings l LEFT JOIN sources s ON s.id=l.source_id WHERE l.status='active'").all();
   const groups = {};
   for (const l of activeRes.results) {
     if (!l.bien_id) continue;
@@ -1227,9 +1229,10 @@ async function recomputeFull(db, env, budgetSize) {
   const regionPrices = {};
   for (const bId in groups) {
     const latest = groups[bId][groups[bId].length - 1];
+    if (groups[bId].every((l) => l.src_enabled === 0)) continue;
     (regionPrices[latest.region] = regionPrices[latest.region] || []).push(latest.price);
   }
-  const { sourceNamesMap, discardedByBien, historyByBien } = await loadRecomputeCaches(db);
+  const { sourceNamesMap, discardedByBien, historyByBien, accessMap } = await loadRecomputeCaches(db);
   const oldBiensRes = await db.prepare("SELECT id, title, locality, region, type, rooms, surface, price FROM biens").all();
   const oldBiens = oldBiensRes.results;
   const allComputed = [];
@@ -1238,7 +1241,7 @@ async function recomputeFull(db, env, budgetSize) {
   for (const bId in groups) {
     if (isComparisOnly(groups[bId], sourceNamesMap)) continue;
     try {
-      const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien, originStopName, env, accessBudget);
+      const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien, originStopName, env, accessBudget, accessMap);
       allComputed.push(computed);
       if (computed.rescue) rescuesThisRun.push(computed.rescue);
     } catch (e) {
@@ -1268,11 +1271,9 @@ async function recomputeFull(db, env, budgetSize) {
       }
     }
   }
-  for (const bId in groups) {
-    try {
-      await db.prepare("DELETE FROM vendus WHERE bien_id=?").bind(bId).run();
-    } catch (e) {
-    }
+  try {
+    await db.prepare("DELETE FROM vendus WHERE bien_id IN (SELECT DISTINCT bien_id FROM listings WHERE status='active' AND bien_id IS NOT NULL)").run();
+  } catch (e) {
   }
   return { biens: allComputed.length, rescues: rescuesThisRun.length };
 }
@@ -1283,7 +1284,7 @@ async function recomputeTargeted(db, bienIds, env) {
   const weights = JSON.parse(prefsRes.results[0].weights_json);
   const opportunityThreshold = prefsRes.results[0].opportunity_threshold || 70;
   const originStopName = prefsRes.results[0].origine_trajet || "Fribourg";
-  const activeRes = await db.prepare("SELECT * FROM listings WHERE status='active'").all();
+  const activeRes = await db.prepare("SELECT l.*, COALESCE(s.enabled,1) AS src_enabled FROM listings l LEFT JOIN sources s ON s.id=l.source_id WHERE l.status='active'").all();
   const groups = {};
   for (const l of activeRes.results) {
     if (!l.bien_id) continue;
@@ -1292,9 +1293,10 @@ async function recomputeTargeted(db, bienIds, env) {
   const regionPrices = {};
   for (const bId in groups) {
     const latest = groups[bId][groups[bId].length - 1];
+    if (groups[bId].every((l) => l.src_enabled === 0)) continue;
     (regionPrices[latest.region] = regionPrices[latest.region] || []).push(latest.price);
   }
-  const { sourceNamesMap, discardedByBien, historyByBien } = await loadRecomputeCaches(db);
+  const { sourceNamesMap, discardedByBien, historyByBien, accessMap } = await loadRecomputeCaches(db);
   const allComputed = [];
   const rescuesThisRun = [];
   const accessBudget = { remaining: 6 };
@@ -1304,7 +1306,7 @@ async function recomputeTargeted(db, bienIds, env) {
       await db.prepare("DELETE FROM bien_sources WHERE bien_id=?").bind(bId).run();
       continue;
     }
-    const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien, originStopName, env, accessBudget);
+    const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien, originStopName, env, accessBudget, accessMap);
     allComputed.push(computed);
     if (computed.rescue) rescuesThisRun.push(computed.rescue);
   }
@@ -2046,7 +2048,7 @@ var index_default = {
           await cleanupStaleListings(env.DB, 21);
           await recomputeFull(env.DB, env);
         } else {
-          await ingest(env.DB, fetch.bind(globalThis), { budget: 45, maxSources: 6, maxPerSource: 12 });
+          await ingest(env.DB, fetch.bind(globalThis), { budget: 45, maxSources: 6, maxPerSource: 6 });
         }
       } catch (e) {
         try {
