@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788558373 padding-533: 3TaD9Apl1TaXS4dlXovQCSRq2q5qCNWUwFfoVwketfVnJ0sT6dVDnjr0IZJW46cvf72mrA4Pozf4PwJUaFJGXkAtrOEsBlzUkUYxDlj8MPAZwxZ8FcvsCgxwuW28CQXoF2FMgNrlvPbo1XiUMh23jVVTKLbAPG4yYKnoqZacdSLkYS9gMiR0n2H64Tq9KLuQ5hqU030WkOLckHjhoAs5D76w7R0xYUtboN6vU737rJIyzMFE9fIAAcZ5Uj74s3FrRSwVBSaEqzbhfnLX6gJGNyTxWWA4iZjv6RytrgSEQvkNSJPwBl33I82pennyza6BpoEswg1w7lljqfTwCBleEEFykRkOGWzQXxZiDvA302HZm2OsMGCFjCYHZ4u5ov
-// VERSION_MARKER_JMIMMO_20260904_RECOMPUTE_v5
+// BUILD-MARKER 1788558649 padding-603: pyMkIK00g0qXgctg2W4oBJmDva4mX0SdGlb8e753AcRhuuoUacReQuJgmsh9qOc1Wc7UXVgq06agaSXw5Bhhf8REsAN6EAxhJ09khpXM2WSovGafeJLGjFhcruYb5Qgz66MOzGR188EmbZ7ngnZObDnVOHWa1F3JtzHhZmr4RmQk7Uh66JBztZntksrZQzmvZLNrcEv497cA1qnc24Sr9fYH0ihNOYPff2jsdaGvMyVJAEhImtkbsWJ12sNuB5Ek1wp92sKdVu6cTWGVSfhDfTxlBIssLXn7gIn4F7f4wLaPxUzkPd9JQIldnIYkA7BpjnHNrRW6KO91IuKLsIe5P4irrE8iPjX6L9qOhil9acsQp9Jmi6MFtoRd5hnszKt2ViaIj8loagRphnSRIYhAZ4aXJDyCXJXKn8qnr4hLLOnwc86uFrJwWVFQEw3FHbYKbaTRa6z09I82fKIN0rw6Vqkgvu04JYJ
+// VERSION_MARKER_JMIMMO_20260905_STATS_v6
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -1455,6 +1455,7 @@ main{padding:14px 16px;max-width:660px;margin:0 auto;}
 <body>
 <header>
   <h1>JM Immo</h1>
+  <div id="stats" style="font-size:11.5px;color:#8992A3;margin-top:5px;font-family:'IBM Plex Mono',monospace">&nbsp;</div>
   <button id="btnRefresh" style="margin:8px 0;padding:8px 12px;border-radius:8px;border:1px solid #262E3A;background:#1D2430;color:#E7EAEE;font-size:12.5px;cursor:pointer">&#8635; Rafraichir les sources</button>
   <button id="btnComputeAccess" style="margin:0 0 8px 0;padding:8px 12px;border-radius:8px;border:1px solid #262E3A;background:#1D2430;color:#E7EAEE;font-size:12.5px;cursor:pointer">Calculer accessibilite (dernier km)</button>
   <div class="searchbar">
@@ -1504,6 +1505,19 @@ document.getElementById("tabs").innerHTML = TABS.map(function(t){return "<div cl
 
 function fmtCHF(n){ return "CHF " + Math.round(n).toLocaleString("fr-CH"); }
 async function api(path, opts){ const res = await fetch(path, opts); return res.json(); }
+async function loadStats(){
+  try {
+    const s = await api("/api/stats");
+    let maj = "-";
+    if (s.derniere_collecte) {
+      const d = new Date(s.derniere_collecte);
+      maj = String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
+    }
+    document.getElementById("stats").textContent =
+      s.biens + " biens - " + s.annonces + " annonces actives - " + s.opportunites + " opportunites - " +
+      s.sources_productives + "/" + s.sources_actives + " sources - collecte " + maj;
+  } catch(e) { document.getElementById("stats").textContent = "compteurs indisponibles"; }
+}
 
 function accessLine(b){
   if (!b.nearest_stop_name || b.last_mile_duration_min == null) {
@@ -1653,6 +1667,7 @@ async function updateOriginStop(v){
 async function load(){
   const main = document.getElementById("main");
   main.innerHTML = "<div class='status'>Chargement...</div>";
+  loadStats();
 
   if (activeTab === "preferences"){ return loadPrefs(); }
   if (activeTab === "sources"){
@@ -1910,6 +1925,10 @@ var index_default = {
           }
         }
         return json({ ok: true, stored, hitLimit, remaining: hitLimit ? records.length - stored : 0, source: srcRow.name });
+      }
+      if (url.pathname === "/api/stats") {
+        const st = await db.prepare("SELECT (SELECT COUNT(*) FROM biens) AS biens, (SELECT COUNT(*) FROM listings WHERE status='active') AS annonces, (SELECT COUNT(*) FROM sources WHERE enabled=1) AS sources_actives, (SELECT COUNT(*) FROM sources WHERE enabled=1 AND state='productive') AS sources_productives, (SELECT COUNT(*) FROM biens WHERE is_opportunity=1) AS opportunites, (SELECT MAX(last_checked) FROM sources WHERE enabled=1) AS derniere_collecte").all();
+        return json(st.results[0]);
       }
       if (url.pathname === "/api/search") {
         const q = url.searchParams;
