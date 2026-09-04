@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788558649 padding-603: pyMkIK00g0qXgctg2W4oBJmDva4mX0SdGlb8e753AcRhuuoUacReQuJgmsh9qOc1Wc7UXVgq06agaSXw5Bhhf8REsAN6EAxhJ09khpXM2WSovGafeJLGjFhcruYb5Qgz66MOzGR188EmbZ7ngnZObDnVOHWa1F3JtzHhZmr4RmQk7Uh66JBztZntksrZQzmvZLNrcEv497cA1qnc24Sr9fYH0ihNOYPff2jsdaGvMyVJAEhImtkbsWJ12sNuB5Ek1wp92sKdVu6cTWGVSfhDfTxlBIssLXn7gIn4F7f4wLaPxUzkPd9JQIldnIYkA7BpjnHNrRW6KO91IuKLsIe5P4irrE8iPjX6L9qOhil9acsQp9Jmi6MFtoRd5hnszKt2ViaIj8loagRphnSRIYhAZ4aXJDyCXJXKn8qnr4hLLOnwc86uFrJwWVFQEw3FHbYKbaTRa6z09I82fKIN0rw6Vqkgvu04JYJ
-// VERSION_MARKER_JMIMMO_20260905_STATS_v6
+// BUILD-MARKER 1788560140 padding-751: x29IrO3kPL6hEYApfANgkpHLC1lNm2QFfgPQhASlyraYSxojW5tiHeREMGmtsiimMaLpe7PhzoXScqVVHyq9GgzBDQoIvClGxUoxIyZ9DFfqEyhoD7U0wvY7JoDkXM7GKNkpMkWkdcAmsYkBn5otNL25hnSkiSxrtL6JkViXsQxi5VLRbwyk4MVjzVyAREhrM7FFBnUTucBi90LJUd4poVKxrVfmLb5QvabNWW5utchiMH86puYjz2LfZEKyEcbqgVwhK9EOl93Jo9qg3JcsVue2yCnxRMSnDEEO4X2RJRlSTPY1ypjk7gNYYvDyPsfpoiE1VsYd4XIDH1Lzh7lQfr9abrFXP7w5pjsNniLhNKpgiMsokf5lZvfiUtYzslIlcQtbixi8tlj21JNCQaCiDLbBLO1cT4SgjOKTDWdIIKAGYebieOvCINH4ONu1AJ1r1viB5QcB4Wr2ybDLuRvP0JuwswMRpAHWyZRk
+// VERSION_MARKER_JMIMMO_20260905_BIENKEY_v7
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -130,10 +130,14 @@ function isPlausiblePrice(p) {
   if (String(Math.round(p)).length === 4 && p < 9999) return false;
   return true;
 }
-function bienKey(locality, type, rooms, surface) {
+function bienKey(locality, type, rooms, surface, fallbackId) {
   const loc = (locality || "").trim().toLowerCase();
   const roomsR = Math.round((rooms || 0) * 2) / 2;
   const surfR = Math.round((surface || 0) / 5) * 5;
+  if (!roomsR && !surfR) {
+    const uid = String(fallbackId || "").trim().toLowerCase();
+    if (uid) return loc + "|" + type + "|u" + uid;
+  }
   return loc + "|" + type + "|" + roomsR + "|" + surfR;
 }
 function estimateDealScore(price, regionPrices) {
@@ -663,7 +667,7 @@ async function ingest(db, fetchFn, opts) {
     const adapter = srcRow.adapter === "demo" ? demoAdapter() : genericAdapter(srcRow, extra, knownUrls);
     const cap = Math.min(fetchBudget.remaining, maxPerSource);
     const srcBudget = { remaining: cap };
-    let state = "enregistr\xE9e", error = null, stored = 0;
+    let state = "enregistr\xE9e", error = null, stored = 0, rafraichies = 0, contribution = 0;
     try {
       const rawListings = await adapter.fetchListings(fetchFn, srcBudget);
       state = "accessible";
@@ -672,9 +676,10 @@ async function ingest(db, fetchFn, opts) {
       if (touched.length) {
         const ph = touched.map(() => "?").join(",");
         await db.prepare("UPDATE listings SET last_seen=?, status='active' WHERE source_id=? AND url IN (" + ph + ")").bind(todayISO(), srcRow.id, ...touched).run();
-        stored += touched.length;
       }
-      if (stored > 0) state = "productive";
+      rafraichies = touched.length;
+      contribution = knownUrls ? Math.max(knownUrls.size, stored) : stored;
+      if (contribution > 0) state = "productive";
     } catch (e) {
       error = String(e && e.message ? e.message : e);
     }
@@ -686,12 +691,12 @@ async function ingest(db, fetchFn, opts) {
       state,
       (/* @__PURE__ */ new Date()).toISOString(),
       error,
-      stored,
+      contribution,
       newFailures,
       autoDisable ? 0 : 1,
       srcRow.id
     ).run();
-    report.push({ source: srcRow.name, state, stored, error });
+    report.push({ source: srcRow.name, state, stored, rafraichies, contribution, error });
   }
   await setSourceOffset(db, (offset + attempted) % allSources.length);
   return report;
@@ -741,7 +746,7 @@ async function storeListing(db, srcRow, rl, extra) {
   const region = computeRegion(rl.locality, extra);
   if (!region) return 0;
   const listingId = srcRow.id + ":" + rl.external_id;
-  const bId = bienKey(rl.locality, rl.type, rl.rooms, rl.surface);
+  const bId = bienKey(rl.locality, rl.type, rl.rooms, rl.surface, listingId);
   const today = todayISO();
   const existing = await db.prepare("SELECT first_seen FROM listings WHERE id=?").bind(listingId).all();
   const firstSeen = existing.results.length ? existing.results[0].first_seen : today;
@@ -913,7 +918,19 @@ async function computeAccessibility(address, originStopName, env, db, bId, villa
       }
       return null;
     }
+    if (db) {
+      try {
+        await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "coords_addr", "lat=" + addrPoint.lat + " lon=" + addrPoint.lon, (/* @__PURE__ */ new Date()).toISOString()).run();
+      } catch (e2) {
+      }
+    }
     const stop = await findNearestStopSwiss(addrPoint.lat, addrPoint.lon);
+    if (stop && db) {
+      try {
+        await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "coords_stop", "name=" + stop.name + " lat=" + stop.lat + " lon=" + stop.lon, (/* @__PURE__ */ new Date()).toISOString()).run();
+      } catch (e2) {
+      }
+    }
     if (!stop) {
       if (db) {
         try {
@@ -954,6 +971,12 @@ async function computeAccessibility(address, originStopName, env, db, bId, villa
     try {
       transit = await computeTrainJourneySwiss(originStopName || "Fribourg", stop.name);
     } catch (e) {
+      if (db) {
+        try {
+          await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "transit", String(e && e.message ? e.message : e).slice(0, 200) + " | de=" + (originStopName || "Fribourg") + " a=" + stop.name, (/* @__PURE__ */ new Date()).toISOString()).run();
+        } catch (e2) {
+        }
+      }
     }
     const accessibiliteScore = estimateAccessibiliteScore(
       walk.durationMin,
@@ -997,7 +1020,8 @@ async function getOrComputeAccess(db, bId, address, originStopName, env, budget,
       return null;
     }
   }
-  if (cached && cached.address === address) return cached;
+  const transitARetenter = !!cached && cached.address === address && cached.transit_duration_min == null && cached.computed_at !== todayISO();
+  if (cached && cached.address === address && !transitARetenter) return cached;
   if (budget && budget.remaining <= 0) return cached;
   if (budget) budget.remaining--;
   const fresh = await computeAccessibility(address, originStopName, env, db, bId, !!isVillageCenter);
@@ -1318,7 +1342,7 @@ async function recomputeTargeted(db, bienIds, env) {
 }
 
 async function fullRefresh(db, fetchFn, env) {
-  const report = await ingest(db, fetchFn);
+  const report = await ingest(db, fetchFn, { budget: 45, maxPerSource: 6 });
   const stats = await recomputeFull(db, env);
   return Object.assign({ ingestion: report }, stats);
 }
@@ -1906,7 +1930,7 @@ var index_default = {
             const ok = await storeListing(db, srcRow, rl, extra);
             if (ok) {
               stored++;
-              dirtyBienIds.add(bienKey(rl.locality, rl.type, rl.rooms, rl.surface));
+              dirtyBienIds.add(bienKey(rl.locality, rl.type, rl.rooms, rl.surface, srcRow.id + ":" + rl.external_id));
             }
           } catch (e) {
             hitLimit = true;
