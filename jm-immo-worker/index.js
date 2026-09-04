@@ -1,4 +1,4 @@
-// BUILD-MARKER 1788502331 padding-283: hEs5lIsFt7i8hRJRAO95xG1QVhqR4uvSMLfyHm0xwAjODYYQfw1sFAY3wlTdehgu8binMUNFAl8QfcRO7KUwRCqUuJJlWyMhg3QItFzUaR3E1ScYWyf97Yev9So8jvVL7iYfXNqfyZeULXhdp1dEldwHfJ1MMWXTFgvgHDjGp4t5SG0UQhLeGjsaeLHE5A5BWbmYgr0kei57odwoOoQsvPlJBXOAYSzvfDZCszovxcYJdt4FJr1DVJsHtIH5DxuDjeU856regZDNtSzKpeXZVjSwl8N
+// BUILD-MARKER 1788505987 padding-239: cuKXLYBaHlQUimTijTPIDvudJXApZ5Olcwnxncuj5UcZrTy2cAeAWw7TWCIiU0kbactK8SfrcQAFbBVYJXzYBhxDdgyPX4icbZxOptyzh5ePDhd3snZWkc45TMKNSmlqAX0xMx5g5eI4Tf9eE5sb8fSUHmno8WqMdyWSqXmDxGPDDuelkiu70i3HlHm6oqLkTXH4AU2OHPM4qFq7efH7gzBuTyokRYYWOxRGGiewPWnSPEj
 // VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
@@ -1679,6 +1679,62 @@ var index_default = {
         return new Response(null, { status: 204, headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS", "Access-Control-Allow-Headers": "Content-Type" } });
       }
       if (url.pathname === "/api/health") return json({ status: "ok", time: (/* @__PURE__ */ new Date()).toISOString() });
+      if (url.pathname === "/api/debug-source") {
+        const sid = url.searchParams.get("id");
+        if (!sid) return json({ error: "parametre id manquant" }, 400);
+        const sres = await db.prepare("SELECT * FROM sources WHERE id=?").bind(sid).all();
+        const srow = sres.results[0];
+        if (!srow) return json({ error: "source introuvable" }, 404);
+        const cfg = JSON.parse(srow.config_json || "{}");
+        const target = cfg.mode === "two_step" ? cfg.list_url : (cfg.urls || [])[0];
+        if (!target) return json({ error: "aucune url dans la config" }, 400);
+        const res = await fetch(target, { headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36", "Accept-Language": "fr-CH,fr;q=0.9" } });
+        const html = await res.text();
+        const out = {
+          source: srow.name,
+          url: target,
+          http_status: res.status,
+          html_length: html.length,
+          has_json_ld: /application\/ld\+json/i.test(html),
+          json_ld_count: (html.match(/application\/ld\+json/gi) || []).length,
+          json_ld_sample: null,
+          link_pattern_matches: null,
+          link_samples: [],
+          block_pattern_matches: null,
+          block_sample: null,
+          html_head: html.slice(0, 600)
+        };
+        const ldRe = /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/i;
+        const ldm = ldRe.exec(html);
+        if (ldm) out.json_ld_sample = ldm[1].trim().slice(0, 900);
+        if (cfg.link_pattern) {
+          try {
+            const lre = new RegExp(cfg.link_pattern, "gi");
+            let lm, n = 0;
+            while ((lm = lre.exec(html)) !== null && n < 2e3) {
+              n++;
+              if (out.link_samples.length < 5) out.link_samples.push(lm[cfg.link_group || 1]);
+            }
+            out.link_pattern_matches = n;
+          } catch (e) {
+            out.link_pattern_matches = "regex invalide: " + e.message;
+          }
+        }
+        if (cfg.block_pattern) {
+          try {
+            const bre = new RegExp(cfg.block_pattern, "gi");
+            let bm, n = 0;
+            while ((bm = bre.exec(html)) !== null && n < 500) {
+              n++;
+              if (!out.block_sample) out.block_sample = bm.slice(0, 8);
+            }
+            out.block_pattern_matches = n;
+          } catch (e) {
+            out.block_pattern_matches = "regex invalide: " + e.message;
+          }
+        }
+        return json(out);
+      }
       if (url.pathname === "/api/refresh" && (request.method === "POST" || request.method === "GET")) {
         const report = await fullRefresh(db, fetch.bind(globalThis), env);
         return json(report);
