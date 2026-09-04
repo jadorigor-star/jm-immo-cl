@@ -1,4 +1,4 @@
-// BUILD-MARKER 1788523080 padding-166: 0j8zHT6Yt4CQ414jZNbtqCrMrTfWG57CUQxZhQQsp6PIJc5too56eZPsrcgKpmmBpUCw6WVD2pOY3ljp9lJwtj4z5BvjS5tbWJ7cV9MOziglYqnUlzOTz2VSOlKsRdiEBfhd7qxtalmYlr811YWGT8S9LrYgZuKT7JpPVI
+// BUILD-MARKER 1788525611 padding-340: bI4nq4pIucbSLeA5vyqc1XBdN6NBcVhRbWPuxYWA6NuhmCyUB1q4K0tyAEjWz0F02ouF6ACSpxsazL24NnqDTVplNck66mM8fjk2oSFYEftgFud5fAFh525aIStqqsVEcD30KFSbddV74vhPtXuhyhZZEZ3PLci7ShNasPBehMsmwYy4yC8DMfZBbVPn6MiWrldYpTAVM4J9M6ymfcOzDCAFUItLgVIPkMjF34OrPsrGmCJ61dD6kWSKygGuLJ6tbHhbdQudlOVgMzWjcfEupJ6aKQmi48FvyKXDaIClr8JJHrvFTZ2FWbZwFXny0JzzksHgrKxjubvWjWM6YZl2
 // VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
@@ -1750,6 +1750,31 @@ var index_default = {
             out.link_pattern_matches = n;
           } catch (e) {
             out.link_pattern_matches = "regex invalide: " + e.message;
+          }
+        }
+        if (rawUrl && srow) {
+          const extraDbg = await loadExtraLocalities(db);
+          const decoded = decodeEntitiesGeneric(html);
+          out.detail_test = {};
+          try {
+            if (cfg.detail_pattern) {
+              const dre = new RegExp(cfg.detail_pattern, "gi");
+              const dm = dre.exec(decoded);
+              out.detail_test.detail_pattern_matched = !!dm;
+              out.detail_test.detail_match_length = dm ? dm[0].length : 0;
+              if (dm && cfg.sub_fields) {
+                out.detail_test.sub_fields = {};
+                for (const k in cfg.sub_fields) {
+                  const sm = new RegExp(cfg.sub_fields[k], "i").exec(dm[0]);
+                  out.detail_test.sub_fields[k] = sm ? sm[1] : null;
+                }
+              }
+            }
+            const rec = extractDetailGeneric(decoded, cfg, extraDbg);
+            out.detail_test.extract_detail_result = rec;
+            if (rec && rec.locality) out.detail_test.locality_resolved = rec.locality;
+          } catch (e) {
+            out.detail_test.error = String(e && e.message ? e.message : e);
           }
         }
         return json(out);
