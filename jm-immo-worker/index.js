@@ -1,4 +1,4 @@
-// BUILD-MARKER 1788454689 padding-154: 3E7hmn0TPunFkO2PD8rRbrM4JreohUkQRpoOmcUVCwze2gPONtZkcDLNj3nRucPk0FrmSdzvGM7UDRRwxdgf7t6sa73sxWYetdofTziqaVNYcLyBibNBLkiV5xdUMT0yHerhgzlgqpcpFCd059OPE0cAF5
+// BUILD-MARKER 1788502331 padding-283: hEs5lIsFt7i8hRJRAO95xG1QVhqR4uvSMLfyHm0xwAjODYYQfw1sFAY3wlTdehgu8binMUNFAl8QfcRO7KUwRCqUuJJlWyMhg3QItFzUaR3E1ScYWyf97Yev9So8jvVL7iYfXNqfyZeULXhdp1dEldwHfJ1MMWXTFgvgHDjGp4t5SG0UQhLeGjsaeLHE5A5BWbmYgr0kei57odwoOoQsvPlJBXOAYSzvfDZCszovxcYJdt4FJr1DVJsHtIH5DxuDjeU856regZDNtSzKpeXZVjSwl8N
 // VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
@@ -622,9 +622,48 @@ async function ingest(db, fetchFn) {
   await setSourceOffset(db, (offset + attempted) % allSources.length);
   return report;
 }
+var TYPE_ALIASES = {
+  "appartamento": "Appartement",
+  "appartamenti": "Appartement",
+  "wohnung": "Appartement",
+  "attico": "Appartement",
+  "monolocale": "Appartement",
+  "studio": "Appartement",
+  "ppe": "Appartement",
+  "casa": "Maison",
+  "casa unifamiliare": "Maison",
+  "casa bifamiliare": "Maison",
+  "casa plurifamiliare": "Maison",
+  "haus": "Maison",
+  "einfamilienhaus": "Maison",
+  "maison individuelle": "Maison",
+  "maison mitoyenne": "Maison",
+  "villetta": "Villa",
+  "chalet": "Chalet",
+  "rustico": "Rustico",
+  "rustici": "Rustico",
+  "stalla": "Rustico",
+  "grange": "Rustico"
+};
+var TYPES_EXCLUS = ["terrain", "terreno", "bauland", "parcelle", "grundst\xFCck", "place de parc", "posteggio", "garage", "box", "commerce", "bureau", "ufficio", "capannone", "d\xE9p\xF4t", "deposito"];
+function normalizeType(rawType) {
+  const t = String(rawType || "").trim().toLowerCase();
+  if (!t) return "Appartement";
+  if (TYPES_EXCLUS.some((x) => t.includes(x))) return null;
+  if (TYPE_ALIASES[t]) return TYPE_ALIASES[t];
+  for (const key in TYPE_ALIASES) {
+    if (t.includes(key)) return TYPE_ALIASES[key];
+  }
+  return rawType.charAt(0).toUpperCase() + rawType.slice(1);
+}
 async function storeListing(db, srcRow, rl, extra) {
   if (!rl.title || !rl.locality || !isPlausiblePrice(rl.price)) return 0;
   if (rl.is_rental) return 0;
+  const normalizedType = normalizeType(rl.type);
+  if (!normalizedType) return 0;
+  rl.type = normalizedType;
+  const titreEtDesc = ((rl.title || "") + " " + (rl.description || "")).toLowerCase();
+  if (TYPES_EXCLUS.some((x) => titreEtDesc.startsWith(x) || titreEtDesc.includes("vendesi " + x) || titreEtDesc.includes("vente " + x))) return 0;
   const region = computeRegion(rl.locality, extra);
   if (!region) return 0;
   const listingId = srcRow.id + ":" + rl.external_id;
