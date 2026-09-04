@@ -1,4 +1,4 @@
-// BUILD-MARKER 1788506977 padding-350: YotapqldevErw8CUiqv1YFjnsPWpZFw5YRssGDqp4XEEOTviGsFVjtd3iiCQzAI2xRtmxNUhvOAMgN426Bds1HKa0v0ftQzlgZecB0HJLAMVmKOmxUTSuuSZepJfQvw65Smcp7SqzMjEY7OH4YUoGLvV5gQ4s4VDUhwviNpiw7ALGu1QVahodTjMRgpyQKAKvoumBMdmxSbPY36exJ0OOIxpdSXyCwDOg1pxdyF38PFdpUT3SgLz2RPxHg6sq2wTnXQkngSrc5P1y02d9nZL1BtLW6fA3x8I6U1cgoMF1EWMNqhR0otjLM5i6qmWcMPBU1gv38GfNt8DOrnGs24ZL5VDr2Z2lF
+// BUILD-MARKER 1788523080 padding-166: 0j8zHT6Yt4CQ414jZNbtqCrMrTfWG57CUQxZhQQsp6PIJc5too56eZPsrcgKpmmBpUCw6WVD2pOY3ljp9lJwtj4z5BvjS5tbWJ7cV9MOziglYqnUlzOTz2VSOlKsRdiEBfhd7qxtalmYlr811YWGT8S9LrYgZuKT7JpPVI
 // VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
@@ -112,7 +112,16 @@ function computeRegion(locality, extra) {
   extra = extra || { map: {}, excluded: /* @__PURE__ */ new Set() };
   const key = (locality || "").trim().toLowerCase().replace(/\s*\([^)]*\)\s*$/, "");
   if (JURA_HORS_PERIMETRE.has(key) || extra.excluded.has(key)) return null;
-  return REGION_MAP[key] || extra.map[key] || null;
+  const direct = REGION_MAP[key] || extra.map[key];
+  if (direct) return direct;
+  const keyPlain = stripAccents(key);
+  for (const k in REGION_MAP) {
+    if (stripAccents(k) === keyPlain) return REGION_MAP[k];
+  }
+  for (const k in extra.map) {
+    if (stripAccents(k) === keyPlain) return extra.map[k];
+  }
+  return null;
 }
 function isPlausiblePrice(p) {
   if (typeof p !== "number" || isNaN(p) || !isFinite(p)) return false;
@@ -203,18 +212,28 @@ function parsePriceGeneric(raw) {
   const price = parseFloat(cleaned);
   return isFinite(price) ? price : null;
 }
+function stripAccents(s) {
+  return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
 function findKnownLocalityGeneric(text, extra) {
   extra = extra || { map: {} };
   const lower = (text || "").toLowerCase();
+  const lowerPlain = stripAccents(lower);
   let best = null, bestIdx = Infinity;
   function checkMap(map) {
     for (const key in map) {
-      const escaped = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const re = new RegExp("(^|[^a-z0-9\xE0-\xFF])" + escaped + "($|[^a-z0-9\xE0-\xFF])", "i");
-      const m = re.exec(lower);
-      if (m && m.index < bestIdx) {
-        bestIdx = m.index;
-        best = key;
+      const variants = [key];
+      const keyPlain = stripAccents(key);
+      if (keyPlain !== key) variants.push(keyPlain);
+      for (const variant of variants) {
+        const escaped = variant.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const re = new RegExp("(^|[^a-z0-9\xE0-\xFF])" + escaped + "($|[^a-z0-9\xE0-\xFF])", "i");
+        let m = re.exec(lower);
+        if (!m) m = re.exec(lowerPlain);
+        if (m && m.index < bestIdx) {
+          bestIdx = m.index;
+          best = key;
+        }
       }
     }
   }
