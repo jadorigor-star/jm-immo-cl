@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788526740 padding-394: h6j7MDgOEm6IZGh73Oh0tY5TrlrfPPhnuLtUr7MZn40sUDE3SXPWhlOxbMMBgcqwp4AJ8IOErHVussHFJEtia7XCvSFZzpo4rRvjkFSs6Mq6z8Lk0ZjsTayvi9kKKua3Wxpx4YQF22T0Eoa49qvBjlf4P9KZPgEOQx3KJgP51aS68QUkrKg0eLaztIioPcB3rSvOoTDeYw5BBuEnkS2XToz6S9SzblLyVN9OHYAFQIXy7r94LyGVyic1Km8c7bv6sLPKaJiieuQ6oQJNlIysmIIOxBef5l44ZAnh1LThqv257Q3w8jVDs5pQxk8ylMtl8eBDGJOxLC64mn0xSJwacjthB1fJAe8SF53tiwQh4Nyhcp4vNsZdRKgZg7RSqaAFWG7LaQ1Dwe
-// VERSION_MARKER_JMIMMO_20260901_DATAACTION_v3
+// BUILD-MARKER 1788541356 padding-493: DVVbuUr0hGgruWHeZsYpvYR1hd9la9n0kRbABahNc8hpXXP5PqYGeF1036ebAZsdRSEGeXU2NGtldTkQSKiTrlvJEfJZM8xSwuDvmssupH3BFBcv1ndoQQUE9NsUwowFIvrNMRKJMehl0DyKZ9DutGEF8Tjd0ANdsMHrMRJZSojLqV9uzr5BA5Fk6lROlUPCROV82ZXuYAsMBur4qrr2fYfrKVvOk58eD7KGpAyguQPiFb0SHipsjuoXAZMk3PlR58F5iGoeAj7pRbefNggC2N1uctIIPiDqKhMaxVSHKIa1ttVdCB04Cvf8XTU6PY5aJ9fBo
+// VERSION_MARKER_JMIMMO_20260904_CRONINGEST_v4
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -478,7 +478,7 @@ function extractDetailGeneric(html, config, extra) {
   }
   return null;
 }
-function genericAdapter(sourceRow, extra) {
+function genericAdapter(sourceRow, extra, knownUrls) {
   let config = {};
   try {
     config = JSON.parse(sourceRow.config_json || "{}");
@@ -527,7 +527,13 @@ function genericAdapter(sourceRow, extra) {
       if (config.mode === "two_step") {
         const listHtml = await fetchText(fetchFn, config.list_url, budget);
         const links = extractLinks(listHtml);
+        const known = knownUrls || null;
+        const touched = [];
         for (const url of links.slice(0, config.max_details || 20)) {
+          if (known && known.has(url)) {
+            touched.push(url);
+            continue;
+          }
           try {
             const detHtml = await fetchText(fetchFn, url, budget);
             const detail = extractDetail(detHtml);
@@ -547,6 +553,7 @@ function genericAdapter(sourceRow, extra) {
             if (budget && budget.remaining <= 0) throw e;
           }
         }
+        out.touchedUrls = touched;
       } else {
         const urls = config.urls || [];
         for (const url of urls) {
@@ -601,7 +608,11 @@ async function setSourceOffset(db, offset) {
   } catch (e) {
   }
 }
-async function ingest(db, fetchFn) {
+async function ingest(db, fetchFn, opts) {
+  const o = opts || {};
+  const budgetTotal = o.budget || 38;
+  const maxSources = o.maxSources || 999;
+  const maxPerSource = o.maxPerSource || 12;
   const report = [];
   const extra = await loadExtraLocalities(db);
   const sourcesRes = await db.prepare("SELECT * FROM sources WHERE enabled=1 ORDER BY id ASC").all();
@@ -623,21 +634,51 @@ async function ingest(db, fetchFn) {
     }
     return a.i - b.i;
   }).map((x) => x.s);
-  const fetchBudget = { remaining: 38 };
+  let selection = prioritized;
+  if (maxSources < prioritized.length) {
+    const cutoff = new Date(Date.now() - (o.minRecheckMin || 45) * 6e4).toISOString();
+    const fresh = prioritized.filter((s) => !s.last_checked || String(s.last_checked) < cutoff);
+    const pool = fresh.length >= maxSources ? fresh : prioritized;
+    const nYield = Math.max(1, Math.ceil(maxSources * 0.6));
+    const picked = pool.slice(0, nYield);
+    const pickedIds = new Set(picked.map((s) => s.id));
+    const stale = pool.filter((s) => !pickedIds.has(s.id)).sort((a, b) => String(a.last_checked || "").localeCompare(String(b.last_checked || "")));
+    selection = picked.concat(stale.slice(0, maxSources - nYield));
+  }
+  const fetchBudget = { remaining: budgetTotal };
   let attempted = 0;
-  for (const srcRow of prioritized) {
+  for (const srcRow of selection) {
     if (fetchBudget.remaining <= 0) break;
+    if (attempted >= maxSources) break;
     attempted++;
-    const adapter = srcRow.adapter === "demo" ? demoAdapter() : genericAdapter(srcRow, extra);
+    let knownUrls = null;
+    if (srcRow.adapter !== "demo") {
+      try {
+        const ku = await db.prepare("SELECT url FROM listings WHERE source_id=? AND status='active' AND url<>''").bind(srcRow.id).all();
+        knownUrls = new Set(ku.results.map((r) => r.url));
+      } catch (e) {
+        knownUrls = null;
+      }
+    }
+    const adapter = srcRow.adapter === "demo" ? demoAdapter() : genericAdapter(srcRow, extra, knownUrls);
+    const cap = Math.min(fetchBudget.remaining, maxPerSource);
+    const srcBudget = { remaining: cap };
     let state = "enregistr\xE9e", error = null, stored = 0;
     try {
-      const rawListings = await adapter.fetchListings(fetchFn, fetchBudget);
+      const rawListings = await adapter.fetchListings(fetchFn, srcBudget);
       state = "accessible";
       for (const rl of rawListings) stored += await storeListing(db, srcRow, rl, extra);
+      const touched = rawListings.touchedUrls || [];
+      if (touched.length) {
+        const ph = touched.map(() => "?").join(",");
+        await db.prepare("UPDATE listings SET last_seen=?, status='active' WHERE source_id=? AND url IN (" + ph + ")").bind(todayISO(), srcRow.id, ...touched).run();
+        stored += touched.length;
+      }
       if (stored > 0) state = "productive";
     } catch (e) {
       error = String(e && e.message ? e.message : e);
     }
+    fetchBudget.remaining -= cap - srcBudget.remaining;
     const isHardFailure = !!error && /HTTP (40[034]|41[04]|5\d\d)/.test(error);
     const newFailures = isHardFailure ? (srcRow.consecutive_failures || 0) + 1 : 0;
     const autoDisable = newFailures >= 5;
@@ -1997,9 +2038,22 @@ var index_default = {
     }
   },
   async scheduled(event, env, ctx) {
+    const cron = event && event.cron ? event.cron : "";
+    const isMaintenance = cron.indexOf("*/") !== 0;
     ctx.waitUntil((async () => {
-      await cleanupStaleListings(env.DB, 21);
-      await recomputeFull(env.DB, env);
+      try {
+        if (isMaintenance) {
+          await cleanupStaleListings(env.DB, 21);
+          await recomputeFull(env.DB, env);
+        } else {
+          await ingest(env.DB, fetch.bind(globalThis), { budget: 45, maxSources: 6, maxPerSource: 12 });
+        }
+      } catch (e) {
+        try {
+          await env.DB.prepare("INSERT INTO app_config (key, value) VALUES ('last_cron_error', ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").bind(String(e && e.message ? e.message : e).slice(0, 300)).run();
+        } catch (e2) {
+        }
+      }
     })());
   }
 };
