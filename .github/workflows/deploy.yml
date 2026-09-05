@@ -32,12 +32,55 @@ jobs:
           node --check index.js
           echo "Syntaxe validee."
 
+      - name: Verifier la presence des secrets
+        run: |
+          mkdir -p diagnostic
+          {
+            echo "== Diagnostic du $(date -u +'%Y-%m-%d %H:%M:%S UTC') =="
+            if [ -z "${{ secrets.CLOUDFLARE_API_TOKEN }}" ]; then
+              echo "CLOUDFLARE_API_TOKEN : ABSENT"
+            else
+              echo "CLOUDFLARE_API_TOKEN : present (longueur ${#TOK})"
+            fi
+            if [ -z "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" ]; then
+              echo "CLOUDFLARE_ACCOUNT_ID : ABSENT"
+            else
+              echo "CLOUDFLARE_ACCOUNT_ID : present (longueur ${#ACC})"
+            fi
+          } > diagnostic/deploiement.txt
+          cat diagnostic/deploiement.txt
+        env:
+          TOK: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ACC: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
       - name: Deployer sur Cloudflare
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: jm-immo-worker
+        id: deploiement
+        continue-on-error: true
+        run: |
+          cd jm-immo-worker
+          npm install --no-save wrangler@latest >/dev/null 2>&1
+          set +e
+          npx wrangler deploy 2>&1 | tee ../diagnostic/wrangler.txt
+          echo "code_sortie=${PIPESTATUS[0]}" >> $GITHUB_OUTPUT
+          set -e
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Publier le diagnostic dans le depot
+        if: always()
+        run: |
+          git config user.name "JM Immo CI"
+          git config user.email "ci@jm-immo.local"
+          git add -f diagnostic/ || true
+          git commit -q -m "CI: diagnostic de deploiement [skip ci]" || echo "rien a committer"
+          git push || true
+
+      - name: Echouer si le deploiement a echoue
+        if: steps.deploiement.outputs.code_sortie != '0'
+        run: |
+          echo "Le deploiement a echoue. Voir diagnostic/wrangler.txt dans le depot."
+          exit 1
 
       - name: Verifier que le code en ligne correspond
         run: |
