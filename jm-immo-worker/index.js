@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788608532 padding-936: Wrug3VYRAf8aWSQC3HIlot564GYqtBzhnTTwNORTvpw0R2buxfvcBE71Bwr7HMql5CC3WaYdOArYp4ew2j1EJkJ8ZxuR2ZGhFyksR7U5dMkXs6XK48ApTMgKoG91f9BfgDUyA4Wz8mRyx8xKmhRjKPFlk6cM6TrLn5Z3VkAvTqcnDQ0rkNpfcAamtWEUL7QKvpePvbQeg8DZvFXrhAOyH4offtAJ3dKSk93JtS5nlTZch9eiArRRokeHNjvz791JLcDIcRi4km7b7V4OXKn87GsDuazkHLcv3dxCZThZxJgiy7QbGrj0lUOvqBpxLREGU7EfOT52Vzbn82yrWki32xIBKfMa4KgIodGnAyQ9O3rZGP6XBmzVhJOXqB7rcWJEmQk4m4ryeFyXGOdphCdHLABjFm6SmRYok3NOSUyD3KfjE4VUAWaLiVQdqYjBNM54HwuQABQLCWedjvFr9FV6irHbDsEBcASjAv9U89WyM3WG638MDEIGOUEFUtybpx31VhFFwPTvGWh5tBuX7njlcelqfTlpg9G0Ew3buCew3dTpPGwdzfT0TCy0M
-// VERSION_MARKER_JMIMMO_20260905_TITRES_PHOTOS_v8b
+// BUILD-MARKER 1788610189 padding-994: hfy9o6hmaNSlqMgoOvwkOKsWWqrYbfqkzoHBIFlO3cEhR9346k1R5UlYX8C4em8BaKyDwFntTgj9j2lZafsNd1xP2eASiTHJW0T4PsWO5q0c34kea6nG1wC8rsUCS9jjP86Ez6CWp5NY91FpitxOA8pAyt9MlqEcDBHjcSQPGooKPrtcnrWKU3cj3X9ZqcvIkwvbBOLj0aQ2KwSNCWv8EwXBPAqB4Kd30EFNbglUhIbfE5ud1UYt7liVLF5lkYDI9RnslZ5CzDkiWx0WYJ5ul3lG6XT1bgUQec73kMSV0CepBLk5Px5l0DQmHDtm22z7K6baG7jXpCjxocd70YjGB1EA2y3rLiEYZGjeX13WOkZ3E2ZL0d8yzbhL5EI9CRpSCoZPymNkcZ6lMenlzLPg6ZIF8LhRHSUQIgSeDA3NvUZInGtcGsC507B0gPiK03tylVG50qBRmZU2qbwzAKRy9
+// VERSION_MARKER_JMIMMO_20260905_SCORE_DEAL_v9
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -140,12 +140,18 @@ function bienKey(locality, type, rooms, surface, fallbackId) {
   }
   return loc + "|" + type + "|" + roomsR + "|" + surfR;
 }
-function estimateDealScore(price, regionPrices) {
-  if (!regionPrices || regionPrices.length === 0) return 55;
-  const sorted = [...regionPrices].sort((a, b) => a - b);
-  const median = sorted[Math.floor(sorted.length / 2)];
-  if (median <= 0) return 55;
-  const score = 100 - (price / median - 1) * 120;
+function medianeDe(valeurs) {
+  const t = valeurs.filter((v) => typeof v === "number" && isFinite(v) && v > 0).sort((a, b) => a - b);
+  if (!t.length) return 0;
+  return t.length % 2 ? t[(t.length - 1) / 2] : (t[t.length / 2 - 1] + t[t.length / 2]) / 2;
+}
+function estimateDealScore(price, surface, stats) {
+  if (!stats) return 50;
+  let ratio = null;
+  if (surface && surface >= 15 && stats.medianeM2 > 0) ratio = price / surface / stats.medianeM2;
+  else if (stats.medianePrix > 0) ratio = price / stats.medianePrix;
+  if (!ratio || !isFinite(ratio) || ratio <= 0) return 50;
+  const score = 50 - Math.log(ratio) / Math.log(2.2) * 50;
   return Math.max(0, Math.min(100, Math.round(score)));
 }
 function estimateCachetScore(cachetFlag, hits) {
@@ -1125,7 +1131,7 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
   const coordSource = listings.map((l) => (l.geo_lat != null && l.geo_lon != null ? { lat: Number(l.geo_lat), lon: Number(l.geo_lon) } : null)).find((c) => c) || null;
   const access = await getOrComputeAccess(db, bId, geoTarget, originStopName, env, budget, isVillageCenter, accessMap, coordSource);
   const scores = {
-    deal: estimateDealScore(cheapestPrice, regionPrices[latest.region] || []),
+    deal: estimateDealScore(cheapestPrice, latest.surface, regionPrices[latest.region]),
     retraite: estimateRetraiteScore(latest.rooms, latest.surface, latest.region),
     locatif: estimateLocatifScore(latest.region, latest.rooms),
     cachet: estimateCachetScore(cachet, cachetHits),
@@ -1299,12 +1305,16 @@ async function recomputeFull(db, env, budgetSize) {
     if (!l.bien_id) continue;
     (groups[l.bien_id] = groups[l.bien_id] || []).push(l);
   }
-  const regionPrices = {};
+  const brut = {};
   for (const bId in groups) {
     const latest = groups[bId][groups[bId].length - 1];
     if (groups[bId].every((l) => l.src_enabled === 0)) continue;
-    (regionPrices[latest.region] = regionPrices[latest.region] || []).push(latest.price);
+    const b = brut[latest.region] = brut[latest.region] || { prix: [], m2: [] };
+    b.prix.push(latest.price);
+    if (latest.surface && latest.surface >= 15) b.m2.push(latest.price / latest.surface);
   }
+  const regionPrices = {};
+  for (const r in brut) regionPrices[r] = { medianePrix: medianeDe(brut[r].prix), medianeM2: medianeDe(brut[r].m2) };
   const { sourceNamesMap, discardedByBien, historyByBien, accessMap } = await loadRecomputeCaches(db);
   const oldBiensRes = await db.prepare("SELECT id, title, locality, region, type, rooms, surface, price FROM biens").all();
   const oldBiens = oldBiensRes.results;
@@ -1363,12 +1373,16 @@ async function recomputeTargeted(db, bienIds, env) {
     if (!l.bien_id) continue;
     (groups[l.bien_id] = groups[l.bien_id] || []).push(l);
   }
-  const regionPrices = {};
+  const brut = {};
   for (const bId in groups) {
     const latest = groups[bId][groups[bId].length - 1];
     if (groups[bId].every((l) => l.src_enabled === 0)) continue;
-    (regionPrices[latest.region] = regionPrices[latest.region] || []).push(latest.price);
+    const b = brut[latest.region] = brut[latest.region] || { prix: [], m2: [] };
+    b.prix.push(latest.price);
+    if (latest.surface && latest.surface >= 15) b.m2.push(latest.price / latest.surface);
   }
+  const regionPrices = {};
+  for (const r in brut) regionPrices[r] = { medianePrix: medianeDe(brut[r].prix), medianeM2: medianeDe(brut[r].m2) };
   const { sourceNamesMap, discardedByBien, historyByBien, accessMap } = await loadRecomputeCaches(db);
   const allComputed = [];
   const rescuesThisRun = [];
