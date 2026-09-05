@@ -1,0 +1,6 @@
+page d'accueil     HTTP 200 | 231 ms | 26458 octets | <!DOCTYPE html> <html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"> <title>JM Immo</title>
+/api/health        HTTP 200 | 11 ms | 49 octets | {"status":"ok","time":"2026-09-05T12:47:53.788Z"}
+/api/stats         HTTP 200 | 129 ms | 139 octets | {"biens":285,"annonces":294,"sources_actives":59,"sources_productives":40,"opportunites":32,"derniere_collecte":"2026-09-05T12:43:56.052Z"}
+/api/search        HTTP 200 | 2835 ms | 32657 octets | {"count":28,"results":[{"id":"brissago|Appartement|4.5|120","title":"Brissago - Appartement rénové avec vue partielle sur le lac","locality":"brissago
+/api/preferences   HTTP 200 | 93 ms | 526 octets | {"id":1,"budget_max":500000,"types_allowed":"[]","regions_allowed":"[\"Zweisimmen\",\"Jura – Franches-Montagnes\",\"Jura – Clos du Doubs\",\"Gruyère\"
+/api/sources       HTTP 200 | 169 ms | 117838 octets | {"results":[{"id":96,"name":"immobilier.ch (portail romand)","region_hint":null,"adapter":"generic","base_url":null,"config_json":"{\"mode\":\"two_ste
