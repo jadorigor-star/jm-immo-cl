@@ -1,30 +1,85 @@
 const base = "https://jm-immo-cl.jadorigor.workers.dev";
+const TEST = "esp-recette01";
+let ok = 0, ko = 0;
+
 async function ap(chemin, espace, opts) {
   const o = Object.assign({}, opts || {});
-  o.headers = Object.assign({}, o.headers || {}, espace ? { "X-Espace": espace } : {});
+  o.headers = Object.assign({}, o.headers || {}, { "X-Espace": espace });
   const r = await fetch(base + chemin, o);
   const t = await r.text();
-  return { code: r.status, texte: t };
+  let j = null; try { j = JSON.parse(t); } catch (e) {}
+  return { code: r.status, texte: t, json: j };
 }
+function verifier(nom, condition, detail) {
+  if (condition) { ok++; console.log("  OK   " + nom); }
+  else { ko++; console.log("  ECHEC " + nom + (detail ? " -> " + detail : "")); }
+}
+const post = (b) => ({ method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(b) });
+
 (async () => {
-  console.log("--- isolation des espaces ---");
-  const a = await ap("/api/preferences", "principal");
-  const b = await ap("/api/preferences", "esp-amie01");
-  console.log("principal :", a.texte.slice(0, 110));
-  console.log("amie      :", b.texte.slice(0, 110));
+  console.log("=== 1. Points d'entree ===");
+  for (const c of ["/", "/api/health", "/api/stats", "/api/sources", "/api/preferences", "/api/search", "/api/ecartes", "/api/vendus", "/api/baisses"]) {
+    const r = await ap(c, TEST);
+    verifier(c.padEnd(18) + " HTTP " + r.code, r.code === 200);
+  }
 
-  const favA = await ap("/api/search?favoris=1", "principal");
-  const favB = await ap("/api/search?favoris=1", "esp-amie01");
-  console.log("favoris principal :", JSON.parse(favA.texte).count);
-  console.log("favoris amie      :", JSON.parse(favB.texte).count);
+  console.log("=== 2. Tris et filtres ===");
+  for (const tri of ["jmfit", "price_asc", "price_desc", "recent", "access", "surface"]) {
+    const r = await ap("/api/search?sort=" + tri, TEST);
+    verifier("tri " + tri.padEnd(11) + " (" + (r.json ? r.json.count : "?") + " biens)", r.code === 200 && r.json && Array.isArray(r.json.results));
+  }
+  const filtres = await ap("/api/search?budget_max=400000&rooms_min=3&q=lugano", TEST);
+  verifier("filtres combines", filtres.code === 200 && filtres.json);
 
-  const ecA = await ap("/api/ecartes", "principal");
-  const ecB = await ap("/api/ecartes", "esp-amie01");
-  const nA = (JSON.parse(ecA.texte).results || []).length;
-  const nB = (JSON.parse(ecB.texte).results || []).length;
-  console.log("ecartes principal :", nA, "| ecartes amie :", nB);
+  console.log("=== 3. Actions personnelles (espace de recette) ===");
+  const avant = await ap("/api/search", TEST);
+  const cible = avant.json.results[0];
+  verifier("un bien de reference existe", !!cible, "aucun bien");
+  if (cible) {
+    await ap("/api/favoris", TEST, post({ bien_id: cible.id }));
+    const favApres = await ap("/api/search?favoris=1", TEST);
+    verifier("ajout favori", favApres.json.count === 1, "compte=" + favApres.json.count);
 
-  const sA = JSON.parse((await ap("/api/search", "principal")).texte).count;
-  const sB = JSON.parse((await ap("/api/search", "esp-amie01")).texte).count;
-  console.log("biens visibles principal :", sA, "| amie :", sB, "(l'amie voit aussi les biens ecartes par JM)");
+    await ap("/api/ecarter", TEST, post({ bien_id: cible.id }));
+    const ec = await ap("/api/ecartes", TEST);
+    verifier("ecarter", (ec.json.results || []).length === 1);
+    const favVide = await ap("/api/search?favoris=1", TEST);
+    verifier("ecarter retire des favoris", favVide.json.count === 0);
+    const listeSansEcarte = await ap("/api/search", TEST);
+    verifier("bien ecarte masque de la liste", !listeSansEcarte.json.results.some((b) => b.id === cible.id));
+
+    await ap("/api/restaurer", TEST, post({ bien_id: cible.id }));
+    const ec2 = await ap("/api/ecartes", TEST);
+    verifier("restaurer", (ec2.json.results || []).length === 0);
+
+    await ap("/api/marquer-vu", TEST, post({ bien_id: cible.id }));
+    const apresVu = await ap("/api/search", TEST);
+    const b2 = apresVu.json.results.find((b) => b.id === cible.id);
+    verifier("marquer vu", b2 && b2.vu === true, "vu=" + (b2 && b2.vu));
+  }
+
+  console.log("=== 4. Preferences par espace ===");
+  const pr = await ap("/api/preferences", TEST);
+  const modif = Object.assign({}, pr.json, { budget_max: 333000, opportunity_threshold: 77 });
+  const put = await ap("/api/preferences", TEST, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(modif) });
+  verifier("ecriture preferences", put.code === 200);
+  const relu = await ap("/api/preferences", TEST);
+  verifier("relecture preferences", relu.json.budget_max === 333000 && relu.json.opportunity_threshold === 77,
+    "budget=" + relu.json.budget_max);
+  const principal = await ap("/api/preferences", "principal");
+  verifier("espace principal intact", principal.json.budget_max !== 333000, "budget principal=" + principal.json.budget_max);
+
+  console.log("=== 5. Non-regression de l'espace principal ===");
+  const fp = await ap("/api/search?favoris=1", "principal");
+  const ep = await ap("/api/ecartes", "principal");
+  verifier("favoris principal = 1", fp.json.count === 1, "compte=" + fp.json.count);
+  verifier("ecartes principal = 56", (ep.json.results || []).length === 56, "compte=" + (ep.json.results || []).length);
+
+  console.log("=== 6. Robustesse ===");
+  const sansEntete = await fetch(base + "/api/search");
+  verifier("appel sans en-tete d'espace", sansEntete.status === 200);
+  const bizarre = await ap("/api/search", "../../etc/passwd' OR 1=1--");
+  verifier("identifiant d'espace hostile neutralise", bizarre.code === 200);
+
+  console.log("\n=== RESULTAT : " + ok + " OK, " + ko + " ECHEC ===");
 })();
