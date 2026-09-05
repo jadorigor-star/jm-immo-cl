@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788620889 padding-1010: hq7xs5x0z55o0r714ylg5y7lhrc8w3xdtuewx6w0blyrtzbmq4pi0k0prpeth2h4u6qg4dps3tzsydts9o33u0m1exiilcoh2navtkz5qarvy8ak4q2yxys5ho0hz2cwm02zzlmym81tfgqfnvohacrjubej62hma81oop6lnm9smq6njgyyb17i7camzrfj7ds32v8hirvnu0mmjnfwww52sorhug2sf70akjj6qdtzvx7cfzq0uz8rbovvdz7s5ixjw5bi1a3b3wpap1umzoftt96x4v66pfzfzxo54pdce8vt22tm4x1q1rz3w9xemmftbnba5tbfm52a73y3bk2cogplp2wi61iq6snnmae5ryq73ko0vouwyob56hy60fo6911byazxgjfr2xmjzbnq4f27ya4glixhzel4p454kkviqpasmhkyh7uaepiqy7fd7hdw0bplwt6zouvbvf7fxm0wn2jqxvc0qpj44hdcbg72fwoxvvkcvg5w
-// VERSION_MARKER_JMIMMO_20260905_ESPACES_v10
+// BUILD-MARKER 1788625926 padding-1100: x6s4icuud1v14lthllf113amea1hx6rf29xe3wi9s2fd73gdevf5asnl1irjc8bg7knftq4jugd0i9bt6mvlz780rdrp404ppye6y889nw5r99le0y0cva141j12u73ckiou0b6nvbdugzlpd2ed75l291plnc2h646bjnq0qevnuyn4ipxp6vg79plmcu8wz3toc6n48h3uvu7spf9btz5hchylw2o4igsggz6icns05wra22unfqnyujj3bw4n6iyfajwryboksbyu50th5wurswbww1ue654qqxl5j5qnh52h0bgnt52ugrdxz8unbfqqmdzxf1fwfg0m9e0vgbzpbhszpchcjw2xqhdh3z1hci4lfsruf80fppm78ajt80jlwt5w6k6wyt8qofv1aske02a6o047wv77jdr7wtepe3l4ccg8qqnjptx22r5swm8ldjequfnnj6pze0gv9xn5s9dk580wp2ezo4o08cy21cdx23is5huyix3xayvrsyz4j4p71k5s0kqkjdv8gbl04zo4s06x4s2vl32dcv7xs46dy0uwq
+// VERSION_MARKER_JMIMMO_20260905_ECONOMIE_ECRITURES_v11
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -1209,7 +1209,22 @@ async function loadRecomputeCaches(db) {
   return { sourceNamesMap, discardedByBien, historyByBien, accessMap };
 }
 
+function signatureBien(r) {
+  return [r.price, r.jm_fit, r.deal_score, r.retraite_score, r.locatif_score, r.cachet_score, r.risk_score,
+    r.accessibilite_score, r.is_opportunity, r.title, r.image_url, r.surface, r.rooms, r.address,
+    r.transit_duration_min, r.last_mile_duration_min, r.nearest_stop_name, r.geo_lat, r.geo_lon,
+    r.price_drop_json, r.residence_secondaire_statut, r.sources_count, r.last_seen].join("|");
+}
 async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienSourceDelete) {
+  try {
+    const dejaLa = await db.prepare("SELECT id, price, jm_fit, deal_score, retraite_score, locatif_score, cachet_score, risk_score, accessibilite_score, is_opportunity, title, image_url, surface, rooms, address, transit_duration_min, last_mile_duration_min, nearest_stop_name, geo_lat, geo_lon, price_drop_json, residence_secondaire_statut, sources_count, last_seen FROM biens").all();
+    const sig = new Map(dejaLa.results.map((r) => [r.id, signatureBien(r)]));
+    const avant = allComputed.length;
+    allComputed = allComputed.filter((c) => sig.get(c.record.id) !== signatureBien(c.record));
+    if (avant !== allComputed.length) skipPerBienSourceDelete = skipPerBienSourceDelete || false;
+    if (allComputed.length === 0) return;
+  } catch (e) {
+  }
   const BATCH_SIZE = 2;
   for (let i = 0; i < allComputed.length; i += BATCH_SIZE) {
     const batch = allComputed.slice(i, i + BATCH_SIZE);
@@ -1409,8 +1424,9 @@ async function recomputeTargeted(db, bienIds, env) {
   return { biens: allComputed.length, rescues: rescuesThisRun.length };
 }
 
-async function fullRefresh(db, fetchFn, env) {
+async function fullRefresh(db, fetchFn, env, sansRecalcul) {
   const report = await ingest(db, fetchFn, { budget: 45, maxPerSource: 6 });
+  if (sansRecalcul) return { ingestion: report, recompute: "ignore" };
   const stats = await recomputeFull(db, env);
   return Object.assign({ ingestion: report }, stats);
 }
@@ -1987,7 +2003,7 @@ var index_default = {
         return json(out);
       }
       if (url.pathname === "/api/refresh" && (request.method === "POST" || request.method === "GET")) {
-        const report = await fullRefresh(db, fetch.bind(globalThis), env);
+        const report = await fullRefresh(db, fetch.bind(globalThis), env, url.searchParams.get("recompute") === "0");
         return json(report);
       }
       if (url.pathname === "/api/compute-access" && (request.method === "POST" || request.method === "GET")) {

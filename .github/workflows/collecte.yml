@@ -2,7 +2,7 @@ name: Collecte planifiee (filet de securite)
 
 "on":
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '*/20 * * * *'
   workflow_dispatch:
 
 concurrency:
@@ -16,7 +16,7 @@ jobs:
       - name: Declencher la collecte
         run: |
           CODE=$(curl -s -o /tmp/reponse.json -w "%{http_code}" --max-time 240 \
-            https://jm-immo-cl.jadorigor.workers.dev/api/refresh)
+            'https://jm-immo-cl.jadorigor.workers.dev/api/refresh?recompute=0')
           echo "Code HTTP : $CODE"
           head -c 800 /tmp/reponse.json || true
           echo

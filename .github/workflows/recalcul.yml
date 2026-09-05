@@ -1,0 +1,21 @@
+name: Recalcul periodique
+
+"on":
+  schedule:
+    - cron: '17 */3 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: recalcul
+  cancel-in-progress: true
+
+jobs:
+  recalculer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Declencher le recalcul complet
+        run: |
+          CODE=$(curl -s -o /tmp/r.json -w "%{http_code}" --max-time 280 \
+            https://jm-immo-cl.jadorigor.workers.dev/api/refresh)
+          echo "HTTP $CODE"; head -c 500 /tmp/r.json; echo
+          [ "$CODE" = "200" ] || exit 1
