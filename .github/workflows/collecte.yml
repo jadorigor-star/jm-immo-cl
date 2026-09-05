@@ -1,0 +1,26 @@
+name: Collecte planifiee (filet de securite)
+
+"on":
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: collecte
+  cancel-in-progress: true
+
+jobs:
+  collecter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Declencher la collecte
+        run: |
+          CODE=$(curl -s -o /tmp/reponse.json -w "%{http_code}" --max-time 240 \
+            https://jm-immo-cl.jadorigor.workers.dev/api/refresh)
+          echo "Code HTTP : $CODE"
+          head -c 800 /tmp/reponse.json || true
+          echo
+          if [ "$CODE" != "200" ]; then
+            echo "ECHEC : la collecte a renvoye $CODE"
+            exit 1
+          fi

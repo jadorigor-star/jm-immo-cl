@@ -1,0 +1,50 @@
+name: Deploiement du worker
+
+"on":
+  push:
+    branches: [main]
+    paths:
+      - 'jm-immo-worker/index.js'
+      - 'jm-immo-worker/wrangler.jsonc'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-worker
+  cancel-in-progress: false
+
+jobs:
+  deployer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Controle qualite avant deploiement
+        run: |
+          cd jm-immo-worker
+          echo "Taille : $(wc -c < index.js) octets"
+          RESIDUS=$(grep -c "__name" index.js || true)
+          echo "Residus de compilation : $RESIDUS"
+          if [ "$RESIDUS" != "0" ]; then
+            echo "ECHEC : le fichier contient des residus de compilation (__name)."
+            exit 1
+          fi
+          node --check index.js
+          echo "Syntaxe validee."
+
+      - name: Deployer sur Cloudflare
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: jm-immo-worker
+
+      - name: Verifier que le code en ligne correspond
+        run: |
+          sleep 15
+          MARQUEUR=$(grep -o 'VERSION_MARKER_[A-Za-z0-9_]*' jm-immo-worker/index.js | head -1)
+          echo "Marqueur attendu : $MARQUEUR"
+          EN_LIGNE=$(curl -s --max-time 30 https://jm-immo-cl.jadorigor.workers.dev/api/health)
+          echo "Reponse /api/health : $EN_LIGNE"
+          echo "$EN_LIGNE" | grep -q '"status":"ok"' || { echo "ECHEC : le worker ne repond pas."; exit 1; }
+          echo "Worker en ligne et fonctionnel."
