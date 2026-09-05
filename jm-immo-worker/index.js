@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788608274 padding-816: 8g5Jy0QqgE50T69DuKAi1iD9pbvRkFMCmhoFYv81WcdufBBqlxUGqZ0Z9BOFer8M2mJrWjwxbS00FDNKluyDbGOOnDN5VsauzezyDm94tfshxFeYuntshyVjmZJAVBw07QAiMCU5lyLif41FnhU3fo6PD57kJ2cJTLVONqfVJwuFDfIaOd117L7EnsVd8tCZheYHOuu7FeIe3jAqoyH7u4RHopSNsRkmCxdB9MkxNk0VJhmJ2tsfgSRZ81BL8Z5BU7MUiTlAjcmFaixnJRk5eQfnNjEpA4kPfsNPJeMXIKiyGJxbZGhzu2hjATIykEZpvqGYvGNolu0MSIjfRT1OXn51pCcCGe6J4AiV2RrT6aX8swYa0TBolBBNRl67irINMsS1QLUOe95eWDtljiIJEm0LK6QYfl6hxZdeamQBvckyMylERTXztqaTf8D2qVeEkpEjOmRfXRuvVW5x2P9IUnTR1ZhBkTxlRdh0Sme22jzzLEICHbWnj7ZS3PCXi12RAMvQxTHzl0jdDiM7MTYFcDCtHXQaRtvloRt8IZzuqGLELVebGxvCWH
-// VERSION_MARKER_JMIMMO_20260905_TITRES_PHOTOS_v8
+// BUILD-MARKER 1788608532 padding-936: Wrug3VYRAf8aWSQC3HIlot564GYqtBzhnTTwNORTvpw0R2buxfvcBE71Bwr7HMql5CC3WaYdOArYp4ew2j1EJkJ8ZxuR2ZGhFyksR7U5dMkXs6XK48ApTMgKoG91f9BfgDUyA4Wz8mRyx8xKmhRjKPFlk6cM6TrLn5Z3VkAvTqcnDQ0rkNpfcAamtWEUL7QKvpePvbQeg8DZvFXrhAOyH4offtAJ3dKSk93JtS5nlTZch9eiArRRokeHNjvz791JLcDIcRi4km7b7V4OXKn87GsDuazkHLcv3dxCZThZxJgiy7QbGrj0lUOvqBpxLREGU7EfOT52Vzbn82yrWki32xIBKfMa4KgIodGnAyQ9O3rZGP6XBmzVhJOXqB7rcWJEmQk4m4ryeFyXGOdphCdHLABjFm6SmRYok3NOSUyD3KfjE4VUAWaLiVQdqYjBNM54HwuQABQLCWedjvFr9FV6irHbDsEBcASjAv9U89WyM3WG638MDEIGOUEFUtybpx31VhFFwPTvGWh5tBuX7njlcelqfTlpg9G0Ew3buCew3dTpPGwdzfT0TCy0M
+// VERSION_MARKER_JMIMMO_20260905_TITRES_PHOTOS_v8b
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -582,7 +582,11 @@ function genericAdapter(sourceRow, extra, knownUrls) {
             out.push({
               external_id: url.split("/").filter(Boolean).pop(),
               url,
-              title: (detail.type || "Bien") + " \u2014 " + detail.locality,
+              title: detail.title || (detail.type || "Bien") + " \u2014 " + detail.locality,
+                description: detail.description || null,
+                image_url: detail.image_url || null,
+                geo_lat: detail.geo_lat ?? null,
+                geo_lon: detail.geo_lon ?? null,
               locality: detail.locality,
               type: detail.type || "Appartement",
               rooms: detail.rooms,
@@ -604,7 +608,11 @@ function genericAdapter(sourceRow, extra, knownUrls) {
               out.push({
                 external_id: (rec.url || rec.locality + rec.price).split("/").filter(Boolean).pop(),
                 url: rec.url || config.list_url || urls[0],
-                title: (rec.type || "Bien") + " \u2014 " + rec.locality,
+                title: rec.title || (rec.type || "Bien") + " \u2014 " + rec.locality,
+                description: rec.description || null,
+                image_url: rec.image_url || null,
+                geo_lat: rec.geo_lat ?? null,
+                geo_lon: rec.geo_lon ?? null,
                 locality: rec.locality,
                 type: rec.type || "Appartement",
                 rooms: rec.rooms,
@@ -1962,7 +1970,11 @@ var index_default = {
             const rl = {
               external_id: (rec.url || body.url || rec.locality + rec.price).split("/").filter(Boolean).pop(),
               url: rec.url || body.url,
-              title: (rec.type || "Bien") + " \u2014 " + rec.locality,
+              title: rec.title || (rec.type || "Bien") + " \u2014 " + rec.locality,
+                description: rec.description || null,
+                image_url: rec.image_url || null,
+                geo_lat: rec.geo_lat ?? null,
+                geo_lon: rec.geo_lon ?? null,
               locality: rec.locality,
               type: rec.type || "Appartement",
               rooms: rec.rooms,
