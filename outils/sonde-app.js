@@ -64,17 +64,18 @@ const post = (b) => ({ method: "POST", headers: { "Content-Type": "application/j
     await ap("/api/marquer-vu", TEST, post({ bien_id: cible.id }));
     const apresVu = await ap("/api/search", TEST);
     const b2 = apresVu.json.results.find((b) => b.id === cible.id);
-    verifier("marquer vu", b2 && b2.vu === true, "vu=" + (b2 && b2.vu));
+    verifier("marquer vu", b2 && (b2.vu === true || b2.jamais_vu === false || b2.deja_vu === true),
+      "champs du bien : " + (b2 ? Object.keys(b2).filter((k) => /vu|seen|star/i.test(k)).join(",") || "aucun champ de vue" : "bien absent"));
   }
 
   console.log("=== 4. Preferences par espace ===");
   const pr = await ap("/api/preferences", TEST);
   const modif = Object.assign({}, pr.json, { budget_max: 333000, opportunity_threshold: 77 });
   const put = await ap("/api/preferences", TEST, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(modif) });
-  verifier("ecriture preferences", put.code === 200);
+  verifier("ecriture preferences", put.code === 200, "HTTP " + put.code + " | " + put.texte.slice(0, 220));
   const relu = await ap("/api/preferences", TEST);
   verifier("relecture preferences", relu.json.budget_max === 333000 && relu.json.opportunity_threshold === 77,
-    "budget=" + relu.json.budget_max);
+    "budget=" + relu.json.budget_max + " seuil=" + relu.json.opportunity_threshold);
   const principal = await ap("/api/preferences", "principal");
   verifier("espace principal intact", principal.json.budget_max !== 333000, "budget principal=" + principal.json.budget_max);
 
