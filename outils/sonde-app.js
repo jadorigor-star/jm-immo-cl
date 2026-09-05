@@ -36,11 +36,11 @@ const post = (b) => ({ method: "POST", headers: { "Content-Type": "application/j
   const cible = avant.json.results[0];
   verifier("un bien de reference existe", !!cible, "aucun bien");
   if (cible) {
-    await ap("/api/favoris", TEST, post({ bien_id: cible.id }));
+    await ap("/api/favori", TEST, post({ bien_id: cible.id }));
     const favApres = await ap("/api/search?favoris=1", TEST);
     verifier("ajout favori", favApres.json.count === 1, "compte=" + favApres.json.count);
 
-    await ap("/api/ecarter", TEST, post({ bien_id: cible.id }));
+    await ap("/api/discard", TEST, post({ bien_id: cible.id }));
     const ec = await ap("/api/ecartes", TEST);
     verifier("ecarter", (ec.json.results || []).length === 1);
     const favVide = await ap("/api/search?favoris=1", TEST);
@@ -48,7 +48,7 @@ const post = (b) => ({ method: "POST", headers: { "Content-Type": "application/j
     const listeSansEcarte = await ap("/api/search", TEST);
     verifier("bien ecarte masque de la liste", !listeSansEcarte.json.results.some((b) => b.id === cible.id));
 
-    await ap("/api/restaurer", TEST, post({ bien_id: cible.id }));
+    await ap("/api/restore", TEST, post({ bien_id: cible.id }));
     const ec2 = await ap("/api/ecartes", TEST);
     verifier("restaurer", (ec2.json.results || []).length === 0);
 
