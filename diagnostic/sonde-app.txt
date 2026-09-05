@@ -1,6 +1,7 @@
-page d'accueil     HTTP 200 | 215 ms | 26444 octets | <!DOCTYPE html> <html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"> <title>JM Immo</title>
-/api/health        HTTP 200 | 10 ms | 49 octets | {"status":"ok","time":"2026-09-05T14:35:18.058Z"}
-/api/stats         HTTP 200 | 134 ms | 139 octets | {"biens":285,"annonces":294,"sources_actives":59,"sources_productives":41,"opportunites":33,"derniere_collecte":"2026-09-05T14:35:17.786Z"}
-/api/search        HTTP 200 | 2872 ms | 32657 octets | {"count":28,"results":[{"id":"brissago|Appartement|4.5|120","title":"Brissago - Appartement rénové avec vue partielle sur le lac","locality":"brissago
-/api/preferences   HTTP 200 | 91 ms | 526 octets | {"id":1,"budget_max":500000,"types_allowed":"[]","regions_allowed":"[\"Zweisimmen\",\"Jura – Franches-Montagnes\",\"Jura – Clos du Doubs\",\"Gruyère\"
-/api/sources       HTTP 200 | 193 ms | 117790 octets | {"results":[{"id":96,"name":"immobilier.ch (portail romand)","region_hint":null,"adapter":"generic","base_url":null,"config_json":"{\"mode\":\"two_ste
+--- isolation des espaces ---
+principal : {"espace_id":"principal","budget_max":500000,"types_allowed":"[]","regions_allowed":"[\"Zweisimmen\",\"Jura – 
+amie      : {"espace_id":"esp-amie01","budget_max":500000,"types_allowed":"[]","regions_allowed":"[]","surface_min":0,"roo
+favoris principal : 1
+favoris amie      : 0
+ecartes principal : 56 | ecartes amie : 0
+biens visibles principal : 28 | amie : 71 (l'amie voit aussi les biens ecartes par JM)
