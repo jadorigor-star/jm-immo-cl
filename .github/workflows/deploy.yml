@@ -16,6 +16,8 @@ concurrency:
 jobs:
   deployer:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -67,15 +69,6 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
-      - name: Publier le diagnostic dans le depot
-        if: always()
-        run: |
-          git config user.name "JM Immo CI"
-          git config user.email "ci@jm-immo.local"
-          git add -f diagnostic/ || true
-          git commit -q -m "CI: diagnostic de deploiement [skip ci]" || echo "rien a committer"
-          git push || true
-
       - name: Echouer si le deploiement a echoue
         if: steps.deploiement.outputs.code_sortie != '0'
         run: |
@@ -86,8 +79,24 @@ jobs:
         run: |
           sleep 15
           MARQUEUR=$(grep -o 'VERSION_MARKER_[A-Za-z0-9_]*' jm-immo-worker/index.js | head -1)
-          echo "Marqueur attendu : $MARQUEUR"
-          EN_LIGNE=$(curl -s --max-time 30 https://jm-immo-cl.jadorigor.workers.dev/api/health)
-          echo "Reponse /api/health : $EN_LIGNE"
-          echo "$EN_LIGNE" | grep -q '"status":"ok"' || { echo "ECHEC : le worker ne repond pas."; exit 1; }
-          echo "Worker en ligne et fonctionnel."
+          SANTE=$(curl -s --max-time 30 https://jm-immo-cl.jadorigor.workers.dev/api/health)
+          STATS=$(curl -s --max-time 60 https://jm-immo-cl.jadorigor.workers.dev/api/stats)
+          {
+            echo "version_livree=$MARQUEUR"
+            echo "taille=$(wc -c < jm-immo-worker/index.js) octets"
+            echo "sante=$SANTE"
+            echo "stats=$STATS"
+            echo "deploye_le=$(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          } >> diagnostic/deploiement.txt
+          cat diagnostic/deploiement.txt
+          echo "$SANTE" | grep -q '"status":"ok"' || { echo "ECHEC : le worker ne repond pas."; exit 1; }
+
+      - name: Publier le diagnostic dans le depot
+        if: always()
+        run: |
+          git config user.name "JM Immo CI"
+          git config user.email "ci@jm-immo.local"
+          git add -f diagnostic/ || true
+          git commit -q -m "CI: diagnostic de deploiement [skip ci]" || echo "rien a committer"
+          git push || true
+
