@@ -1,0 +1,8 @@
+== Diagnostic du 2026-09-05 11:29:28 UTC ==
+CLOUDFLARE_API_TOKEN : present (longueur 53)
+CLOUDFLARE_ACCOUNT_ID : present (longueur 32)
+version_livree=VERSION_MARKER_JMIMMO_20260905_BIENKEY_v7
+taille=109475 octets
+sante={"status":"ok","time":"2026-09-05T11:29:58.954Z"}
+stats={"biens":276,"annonces":285,"sources_actives":58,"sources_productives":35,"opportunites":76,"derniere_collecte":"2026-09-05T11:23:20.272Z"}
+deploye_le=2026-09-05 11:29:59 UTC
