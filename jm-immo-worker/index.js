@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788560140 padding-751: x29IrO3kPL6hEYApfANgkpHLC1lNm2QFfgPQhASlyraYSxojW5tiHeREMGmtsiimMaLpe7PhzoXScqVVHyq9GgzBDQoIvClGxUoxIyZ9DFfqEyhoD7U0wvY7JoDkXM7GKNkpMkWkdcAmsYkBn5otNL25hnSkiSxrtL6JkViXsQxi5VLRbwyk4MVjzVyAREhrM7FFBnUTucBi90LJUd4poVKxrVfmLb5QvabNWW5utchiMH86puYjz2LfZEKyEcbqgVwhK9EOl93Jo9qg3JcsVue2yCnxRMSnDEEO4X2RJRlSTPY1ypjk7gNYYvDyPsfpoiE1VsYd4XIDH1Lzh7lQfr9abrFXP7w5pjsNniLhNKpgiMsokf5lZvfiUtYzslIlcQtbixi8tlj21JNCQaCiDLbBLO1cT4SgjOKTDWdIIKAGYebieOvCINH4ONu1AJ1r1viB5QcB4Wr2ybDLuRvP0JuwswMRpAHWyZRk
-// VERSION_MARKER_JMIMMO_20260905_BIENKEY_v7
+// BUILD-MARKER 1788608274 padding-816: 8g5Jy0QqgE50T69DuKAi1iD9pbvRkFMCmhoFYv81WcdufBBqlxUGqZ0Z9BOFer8M2mJrWjwxbS00FDNKluyDbGOOnDN5VsauzezyDm94tfshxFeYuntshyVjmZJAVBw07QAiMCU5lyLif41FnhU3fo6PD57kJ2cJTLVONqfVJwuFDfIaOd117L7EnsVd8tCZheYHOuu7FeIe3jAqoyH7u4RHopSNsRkmCxdB9MkxNk0VJhmJ2tsfgSRZ81BL8Z5BU7MUiTlAjcmFaixnJRk5eQfnNjEpA4kPfsNPJeMXIKiyGJxbZGhzu2hjATIykEZpvqGYvGNolu0MSIjfRT1OXn51pCcCGe6J4AiV2RrT6aX8swYa0TBolBBNRl67irINMsS1QLUOe95eWDtljiIJEm0LK6QYfl6hxZdeamQBvckyMylERTXztqaTf8D2qVeEkpEjOmRfXRuvVW5x2P9IUnTR1ZhBkTxlRdh0Sme22jzzLEICHbWnj7ZS3PCXi12RAMvQxTHzl0jdDiM7MTYFcDCtHXQaRtvloRt8IZzuqGLELVebGxvCWH
+// VERSION_MARKER_JMIMMO_20260905_TITRES_PHOTOS_v8
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -279,9 +279,33 @@ function extractFieldsGeneric(m, fields, config, extra) {
   if (!out.locality) return null;
   return out;
 }
+function resolveSegments(obj, segments) {
+  if (obj === void 0 || obj === null) return void 0;
+  if (!segments.length) return obj;
+  const [head, ...rest] = segments;
+  if (head === "*") {
+    if (typeof obj !== "object") return void 0;
+    for (const k of Object.keys(obj)) {
+      const v = resolveSegments(obj[k], rest);
+      if (v !== void 0 && v !== null && v !== "") return v;
+    }
+    return void 0;
+  }
+  const m = /^([^\[]*)\[(\d+)\]$/.exec(head);
+  if (m) {
+    const base = m[1] ? obj[m[1]] : obj;
+    if (!Array.isArray(base)) return void 0;
+    return resolveSegments(base[Number(m[2])], rest);
+  }
+  return resolveSegments(obj[head], rest);
+}
 function getByPath(obj, path) {
   if (!path) return void 0;
-  return path.split(".").reduce((acc, key) => acc && acc[key] !== void 0 ? acc[key] : void 0, obj);
+  for (const variante of String(path).split("|")) {
+    const v = resolveSegments(obj, variante.trim().split("."));
+    if (v !== void 0 && v !== null && v !== "") return v;
+  }
+  return void 0;
 }
 function extractJsonAfterMarker(html, marker) {
   const idx = html.indexOf(marker);
@@ -352,7 +376,20 @@ function extractStateJsonGeneric(html, config) {
         address = String(street) + (houseNumber ? " " + houseNumber : "") + (postalCode ? ", " + postalCode + " " + (locality || "") : locality ? ", " + locality : "");
       }
     }
-    out.push({ price: parseFloat(price), locality, rooms, surface, url, address: address || null, type: null });
+    const title = f.title ? getByPath(item, f.title) : null;
+    const description = f.description ? getByPath(item, f.description) : null;
+    const image = f.image ? getByPath(item, f.image) : null;
+    const lat = f.geo_lat ? getByPath(item, f.geo_lat) : null;
+    const lon = f.geo_lon ? getByPath(item, f.geo_lon) : null;
+    out.push({
+      price: parseFloat(price), locality, rooms, surface, url,
+      address: address || null, type: null,
+      title: title ? String(title).trim() : null,
+      description: description ? String(description).trim() : null,
+      image_url: image ? String(image).trim() : null,
+      geo_lat: lat != null && isFinite(Number(lat)) ? Number(lat) : null,
+      geo_lon: lon != null && isFinite(Number(lon)) ? Number(lon) : null
+    });
   }
   return out;
 }
@@ -750,7 +787,7 @@ async function storeListing(db, srcRow, rl, extra) {
   const today = todayISO();
   const existing = await db.prepare("SELECT first_seen FROM listings WHERE id=?").bind(listingId).all();
   const firstSeen = existing.results.length ? existing.results[0].first_seen : today;
-  await db.prepare("INSERT INTO listings (id, source_id, external_id, url, title, locality, region, type, rooms, surface, price, currency, is_rental, cachet, status, confidence, first_seen, last_seen, bien_id, address, description) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET title=excluded.title, price=excluded.price, status=excluded.status, confidence=excluded.confidence, last_seen=excluded.last_seen, region=excluded.region, address=excluded.address, description=excluded.description").bind(
+  await db.prepare("INSERT INTO listings (id, source_id, external_id, url, title, locality, region, type, rooms, surface, price, currency, is_rental, cachet, status, confidence, first_seen, last_seen, bien_id, address, description, image_url) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET title=excluded.title, price=excluded.price, status=excluded.status, confidence=excluded.confidence, last_seen=excluded.last_seen, region=excluded.region, address=excluded.address, description=excluded.description, image_url=COALESCE(excluded.image_url, listings.image_url)").bind(
     listingId,
     srcRow.id,
     rl.external_id,
@@ -771,7 +808,8 @@ async function storeListing(db, srcRow, rl, extra) {
     today,
     bId,
     rl.address || null,
-    rl.description || null
+    rl.description || null,
+    rl.image_url || null
   ).run();
   const history = rl.history && rl.history.length ? rl.history : [[today, rl.price]];
   for (const pair of history) {
@@ -896,9 +934,9 @@ async function computeTrainJourneySwiss(originStopName, destStopName) {
   };
 }
 
-async function computeAccessibility(address, originStopName, env, db, bId, villageMode) {
+async function computeAccessibility(address, originStopName, env, db, bId, villageMode, coordSource) {
   if (!address) return null;
-  if (!env.ORS_API_KEY) {
+  if (!env.ORS_API_KEY && !coordSource) {
     if (db) {
       try {
         await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)").bind(bId, address, "config", "ORS_API_KEY manquant", (/* @__PURE__ */ new Date()).toISOString()).run();
@@ -908,7 +946,7 @@ async function computeAccessibility(address, originStopName, env, db, bId, villa
     return null;
   }
   try {
-    const addrPoint = await geocodeAddressORS(address, env.ORS_API_KEY, villageMode);
+    const addrPoint = coordSource && isFinite(coordSource.lat) && isFinite(coordSource.lon) ? { lat: coordSource.lat, lon: coordSource.lon, fromSource: true } : await geocodeAddressORS(address, env.ORS_API_KEY, villageMode);
     if (!addrPoint) {
       if (db) {
         try {
@@ -1007,7 +1045,7 @@ async function computeAccessibility(address, originStopName, env, db, bId, villa
   }
 }
 
-async function getOrComputeAccess(db, bId, address, originStopName, env, budget, isVillageCenter, accessMap) {
+async function getOrComputeAccess(db, bId, address, originStopName, env, budget, isVillageCenter, accessMap, coordSource) {
   if (!address) return null;
   let cached = null;
   if (accessMap) {
@@ -1024,7 +1062,7 @@ async function getOrComputeAccess(db, bId, address, originStopName, env, budget,
   if (cached && cached.address === address && !transitARetenter) return cached;
   if (budget && budget.remaining <= 0) return cached;
   if (budget) budget.remaining--;
-  const fresh = await computeAccessibility(address, originStopName, env, db, bId, !!isVillageCenter);
+  const fresh = await computeAccessibility(address, originStopName, env, db, bId, !!isVillageCenter && !coordSource, coordSource);
   if (!fresh) return cached;
   try {
     await db.prepare(`INSERT INTO access_cache (bien_id, address, nearest_stop_name, last_mile_distance_m, last_mile_duration_min, last_mile_elevation_m, last_mile_approx, is_village_center, geo_lat, geo_lon, transit_duration_min, transit_transfers, accessibilite_score, computed_at)
@@ -1076,7 +1114,8 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
     const prev = history[history.length - 2].price, cur = history[history.length - 1].price;
     if (cur < prev) priceDrop = { old: prev, current: cur, pct: Math.round((1 - cur / prev) * 1e3) / 10 };
   }
-  const access = await getOrComputeAccess(db, bId, geoTarget, originStopName, env, budget, isVillageCenter, accessMap);
+  const coordSource = listings.map((l) => (l.geo_lat != null && l.geo_lon != null ? { lat: Number(l.geo_lat), lon: Number(l.geo_lon) } : null)).find((c) => c) || null;
+  const access = await getOrComputeAccess(db, bId, geoTarget, originStopName, env, budget, isVillageCenter, accessMap, coordSource);
   const scores = {
     deal: estimateDealScore(cheapestPrice, regionPrices[latest.region] || []),
     retraite: estimateRetraiteScore(latest.rooms, latest.surface, latest.region),
@@ -1090,6 +1129,7 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
   return {
     record: {
       id: bId,
+      image_url: (listings.map((l) => l.image_url).find((u) => u) || null),
       title: latest.title,
       locality: latest.locality,
       region: latest.region,
@@ -1154,12 +1194,13 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
   const BATCH_SIZE = 2;
   for (let i = 0; i < allComputed.length; i += BATCH_SIZE) {
     const batch = allComputed.slice(i, i + BATCH_SIZE);
-    const placeholders = batch.map(() => "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").join(",");
+    const placeholders = batch.map(() => "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").join(",");
     const values = [];
     for (const c of batch) {
       const r = c.record;
       values.push(
         r.id,
+        r.image_url ?? null,
         r.title,
         r.locality,
         r.region,
@@ -1197,9 +1238,9 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
       );
     }
     if (values.length > 100) throw new Error("writeBiensInBatches : lot de " + values.length + " parametres depasse la limite D1 de 100 \u2014 reduire BATCH_SIZE");
-    await db.prepare(`INSERT INTO biens (id,title,locality,region,type,rooms,surface,price,cachet,confidence,first_seen,last_seen,deal_score,retraite_score,locatif_score,cachet_score,risk_score,accessibilite_score,nearest_stop_name,last_mile_distance_m,last_mile_duration_min,last_mile_elevation_m,last_mile_approx,is_village_center,geo_lat,geo_lon,transit_duration_min,transit_transfers,jm_fit,is_opportunity,explain,price_drop_json,address,residence_secondaire,residence_secondaire_statut)
+    await db.prepare(`INSERT INTO biens (id,image_url,title,locality,region,type,rooms,surface,price,cachet,confidence,first_seen,last_seen,deal_score,retraite_score,locatif_score,cachet_score,risk_score,accessibilite_score,nearest_stop_name,last_mile_distance_m,last_mile_duration_min,last_mile_elevation_m,last_mile_approx,is_village_center,geo_lat,geo_lon,transit_duration_min,transit_transfers,jm_fit,is_opportunity,explain,price_drop_json,address,residence_secondaire,residence_secondaire_statut)
       VALUES ${placeholders}
-      ON CONFLICT(id) DO UPDATE SET title=excluded.title, locality=excluded.locality, region=excluded.region, type=excluded.type,
+      ON CONFLICT(id) DO UPDATE SET image_url=COALESCE(excluded.image_url, biens.image_url), title=excluded.title, locality=excluded.locality, region=excluded.region, type=excluded.type,
         rooms=excluded.rooms, surface=excluded.surface, price=excluded.price, cachet=excluded.cachet, confidence=excluded.confidence,
         first_seen=excluded.first_seen, last_seen=excluded.last_seen, deal_score=excluded.deal_score, retraite_score=excluded.retraite_score,
         locatif_score=excluded.locatif_score, cachet_score=excluded.cachet_score, risk_score=excluded.risk_score,
@@ -1583,7 +1624,10 @@ function bienCard(b){
     : "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(b.address || ((b.locality||"") + ", Suisse"));
   const explain = b.explain ? ("<div class='explain'>JM Fit " + b.jm_fit + "/100 - " + b.explain + "</div>") : "";
   const addrLine = b.address ? ("<div class='locality' style='margin-top:3px'>" + b.address + "</div>") : "";
-  return "<div class='card'><div class='card-top'><div><div class='title'>" + titleHtml + "</div><div class='locality'>" + b.locality + " - " + b.region + " - <a href='" + mapUrl + "' target='_blank' rel='noopener'>Carte</a></div>" + addrLine + "</div>" +
+  const photo = b.image_url
+    ? "<img src='" + b.image_url + "' alt='' loading='lazy' referrerpolicy='no-referrer' style='width:78px;height:58px;object-fit:cover;border-radius:7px;flex:0 0 auto;background:#20242c' onerror=\"this.style.display='none'\">"
+    : "";
+  return "<div class='card'><div class='card-top'><div style='display:flex;gap:10px;align-items:flex-start;min-width:0'>" + photo + "<div style='min-width:0'><div class='title'>" + titleHtml + "</div><div class='locality'>" + b.locality + " - " + b.region + " - <a href='" + mapUrl + "' target='_blank' rel='noopener'>Carte</a></div>" + addrLine + "</div></div>" +
     "<div class='fit-badge " + (b.is_opportunity?"hot":"") + "'>" + (b.jm_fit != null ? b.jm_fit : "") + "</div></div>" +
     "<div class='price' style='margin-top:8px'>" + fmtCHF(b.price) + "</div>" +
     "<div class='meta-row'><span>" + (b.rooms||"?") + " pieces</span><span>" + (b.surface||"?") + " m2</span></div>" +
