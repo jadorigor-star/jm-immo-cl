@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788618796 padding-991: 9kvfngc7mrpfic5400st3v0q4hdw0szsmfrtfgs4n29wgs0pvx6951lep0j0z2105v13iroojtydtjlk790mdhqjt8h30dtf7bazbannyqjfvbk80rpn4xxpg6p0dyxysn1rtcuwro0jbjb54v3c7wcbdcdm4z3dipv79mcwjt5dsicfk78xxlhikqf54n4gizhoz86lwxvofvxkpdtfobxkds6zfxatkpjxg0g9zmt02xwg5gm898dx8bnqeqr0zh17cs6itrzloqa43go70y4ajl8oanyaadxisksqcir3wmonb5bnm313e4sk1n9a9yitq3q9h5zer4glotwsnjodvh62t7rtxypaehn6g3kx6p94q5mjru1ezv3nhpfnjhhv2j1h5p2ge1fc1jnbs4ezhxpa6fekmuwhgvux77vv94322w6wnhgcar1lvmi47om7p970a0wf
-// VERSION_MARKER_JMIMMO_20260905_CORRECTIF_AFFICHAGE_v9b
+// BUILD-MARKER 1788620889 padding-1010: hq7xs5x0z55o0r714ylg5y7lhrc8w3xdtuewx6w0blyrtzbmq4pi0k0prpeth2h4u6qg4dps3tzsydts9o33u0m1exiilcoh2navtkz5qarvy8ak4q2yxys5ho0hz2cwm02zzlmym81tfgqfnvohacrjubej62hma81oop6lnm9smq6njgyyb17i7camzrfj7ds32v8hirvnu0mmjnfwww52sorhug2sf70akjj6qdtzvx7cfzq0uz8rbovvdz7s5ixjw5bi1a3b3wpap1umzoftt96x4v66pfzfzxo54pdce8vt22tm4x1q1rz3w9xemmftbnba5tbfm52a73y3bk2cogplp2wi61iq6snnmae5ryq73ko0vouwyob56hy60fo6911byazxgjfr2xmjzbnq4f27ya4glixhzel4p454kkviqpasmhkyh7uaepiqy7fd7hdw0bplwt6zouvbvf7fxm0wn2jqxvc0qpj44hdcbg72fwoxvvkcvg5w
+// VERSION_MARKER_JMIMMO_20260905_ESPACES_v10
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -129,6 +129,11 @@ function isPlausiblePrice(p) {
   if (/^0[1-9]/.test(String(Math.round(p)))) return false;
   if (String(Math.round(p)).length === 4 && p < 9999) return false;
   return true;
+}
+function espaceDe(request, url) {
+  const brut = (request && request.headers && request.headers.get("x-espace")) || (url && url.searchParams && url.searchParams.get("espace")) || "";
+  const propre = String(brut).toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 40);
+  return propre || "principal";
 }
 function bienKey(locality, type, rooms, surface, fallbackId) {
   const loc = (locality || "").trim().toLowerCase();
@@ -1118,7 +1123,7 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
   if (disc) {
     if (cheapestPrice < disc.price_at_exclusion) {
       rescue = { bienId: bId, oldPrice: disc.price_at_exclusion, newPrice: cheapestPrice };
-      await db.prepare("DELETE FROM discarded WHERE bien_id=?").bind(bId).run();
+      await db.prepare("DELETE FROM discarded WHERE bien_id=? AND espace_id='principal'").bind(bId).run();
     } else {
       discardedNow = true;
     }
@@ -1187,7 +1192,7 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
 async function loadRecomputeCaches(db) {
   const sourcesRes = await db.prepare("SELECT id, name FROM sources").all();
   const sourceNamesMap = new Map(sourcesRes.results.map((s) => [s.id, s.name]));
-  const discRes = await db.prepare("SELECT bien_id, price_at_exclusion FROM discarded").all();
+  const discRes = await db.prepare("SELECT bien_id, price_at_exclusion FROM discarded WHERE espace_id='principal'").all();
   const discardedByBien = new Map(discRes.results.map((d) => [d.bien_id, d]));
   const histRes = await db.prepare("SELECT bien_id, date, price FROM price_history ORDER BY date ASC").all();
   const historyByBien = /* @__PURE__ */ new Map();
@@ -1295,7 +1300,7 @@ function isComparisOnly(listings, sourceNamesMap) {
   return names.size === 1 && names.has("Comparis");
 }
 async function recomputeFull(db, env, budgetSize) {
-  const prefsRes = await db.prepare("SELECT * FROM preferences WHERE id=1").all();
+  const prefsRes = await db.prepare("SELECT * FROM preferences WHERE espace_id=?").bind("principal").all();
   const weights = JSON.parse(prefsRes.results[0].weights_json);
   const opportunityThreshold = prefsRes.results[0].opportunity_threshold || 70;
   const originStopName = prefsRes.results[0].origine_trajet || "Fribourg";
@@ -1363,7 +1368,7 @@ async function recomputeFull(db, env, budgetSize) {
 
 async function recomputeTargeted(db, bienIds, env) {
   if (!bienIds || bienIds.length === 0) return { biens: 0, rescues: 0 };
-  const prefsRes = await db.prepare("SELECT * FROM preferences WHERE id=1").all();
+  const prefsRes = await db.prepare("SELECT * FROM preferences WHERE espace_id=?").bind("principal").all();
   const weights = JSON.parse(prefsRes.results[0].weights_json);
   const opportunityThreshold = prefsRes.results[0].opportunity_threshold || 70;
   const originStopName = prefsRes.results[0].origine_trajet || "Fribourg";
@@ -1410,8 +1415,13 @@ async function fullRefresh(db, fetchFn, env) {
   return Object.assign({ ingestion: report }, stats);
 }
 
-async function getPreferences(db) {
-  const res = await db.prepare("SELECT * FROM preferences WHERE id=1").all();
+async function getPreferences(db, espace) {
+  const esp = espace || "principal";
+  let res = await db.prepare("SELECT * FROM preferences WHERE espace_id=?").bind(esp).all();
+  if (!res.results.length) {
+    try { await db.prepare("INSERT INTO preferences (espace_id) VALUES (?)").bind(esp).run(); } catch (e) {}
+    res = await db.prepare("SELECT * FROM preferences WHERE espace_id=?").bind(esp).all();
+  }
   const row = res.results[0];
   return {
     budgetMax: row.budget_max,
@@ -1427,17 +1437,18 @@ async function getPreferences(db) {
 
 async function search(db, opts) {
   opts = opts || {};
-  const prefs = await getPreferences(db);
+  const espace = opts.espace || "principal";
+  const prefs = await getPreferences(db, espace);
   const budgetMax = opts.budgetMax !== void 0 ? opts.budgetMax : prefs.budgetMax;
   const roomsMin = opts.roomsMin !== void 0 ? opts.roomsMin : prefs.roomsMin;
   const surfaceMin = opts.surfaceMin !== void 0 ? opts.surfaceMin : prefs.surfaceMin;
   const cachet = opts.cachet !== void 0 ? opts.cachet : prefs.cachetRequired;
   const regions = opts.region ? [opts.region] : prefs.regionsAllowed.length ? prefs.regionsAllowed : null;
-  const discRes = await db.prepare("SELECT bien_id FROM discarded").all();
+  const discRes = await db.prepare("SELECT bien_id FROM discarded WHERE espace_id=?").bind(espace).all();
   const discardedIds = new Set(discRes.results.map((r) => r.bien_id));
-  const favRes = await db.prepare("SELECT bien_id FROM favoris").all();
+  const favRes = await db.prepare("SELECT bien_id FROM favoris WHERE espace_id=?").bind(espace).all();
   const favoriteIds = new Set(favRes.results.map((r) => r.bien_id));
-  const vusRes = await db.prepare("SELECT bien_id FROM vus").all();
+  const vusRes = await db.prepare("SELECT bien_id FROM vus WHERE espace_id=?").bind(espace).all();
   const vusIds = new Set(vusRes.results.map((r) => r.bien_id));
   const allRes = await db.prepare("SELECT * FROM biens").all();
   let rows = allRes.results.filter((b) => !discardedIds.has(b.id));
@@ -1591,7 +1602,35 @@ document.getElementById("fType").innerHTML += TYPES.map(function(t){return "<opt
 document.getElementById("tabs").innerHTML = TABS.map(function(t){return "<div class='tab " + (t.id===activeTab?"active":"") + "' data-tab='" + t.id + "'>" + t.label + "</div>";}).join("");
 
 function fmtCHF(n){ return "CHF " + Math.round(n).toLocaleString("fr-CH"); }
-async function api(path, opts){ const res = await fetch(path, opts); return res.json(); }
+function espaceLocal(){
+  try {
+    var e = localStorage.getItem('jm_espace');
+    if (!e) { e = 'esp-' + Math.random().toString(36).slice(2,8) + Math.random().toString(36).slice(2,6); localStorage.setItem('jm_espace', e); }
+    return e;
+  } catch(err) { return 'principal'; }
+}
+function definirEspace(e){
+  var propre = String(e||'').toLowerCase().replace(/[^a-z0-9-]/g,'').slice(0,40);
+  if (!propre) return false;
+  try { localStorage.setItem('jm_espace', propre); } catch(err) {}
+  return true;
+}
+async function api(path, opts){
+  opts = opts || {};
+  opts.headers = Object.assign({}, opts.headers || {}, { 'X-Espace': espaceLocal() });
+  const res = await fetch(path, opts);
+  return res.json();
+}
+function blocEspace(){
+  var e = espaceLocal();
+  return "<div style='border:1px solid #2c313b;border-radius:9px;padding:11px;margin-bottom:14px'>"
+    + "<div style='font-weight:600;margin-bottom:5px'>Espace personnel</div>"
+    + "<div style='font-size:12px;color:#8992A3;margin-bottom:8px'>Vos favoris, biens ecartes et reglages sont propres a cet espace. Pour retrouver le meme espace sur un autre appareil, saisissez-y cet identifiant.</div>"
+    + "<div style='font-family:monospace;font-size:13px;margin-bottom:8px'>" + e + "</div>"
+    + "<input id='champ-espace' placeholder='Rejoindre un autre espace' style='width:100%;padding:7px;border-radius:6px;border:1px solid #2c313b;background:#171a20;color:inherit;margin-bottom:7px'>"
+    + "<button data-action='changer-espace' style='padding:7px 12px;border-radius:6px;border:1px solid #2c313b;background:#20242c;color:inherit'>Rejoindre</button>"
+    + "</div>";
+}
 async function loadStats(){
   try {
     const s = await api("/api/stats");
@@ -1699,7 +1738,7 @@ async function loadPrefs(){
     "<div class='pref-block'><label>Seuil marche a pied jugee bonne - <span class='mono'>" + accThreshold + " min</span></label><div class='slider-row'><input type='range' min='3' max='30' step='1' value='" + accThreshold + "' id='accThresholdInput'></div></div>" +
     "<div class='pref-block'><label>Regions autorisees</label><div class='chip-row'>" + regionChips + "</div></div>" +
     slidersHtml + "</div>";
-  document.getElementById("main").innerHTML = html;
+  document.getElementById("main").innerHTML = blocEspace() + html;
   window._prefsCache = p;
   window._accessGoodThreshold = accThreshold;
   const originInput = document.getElementById("originStopInput");
@@ -1813,6 +1852,11 @@ document.getElementById("main").addEventListener("click", function(e){
   else if (action === "restore") restore(id);
   else if (action === "togglecachet") togglePrefCachet();
   else if (action === "toggleregion") togglePrefRegion(el.dataset.region);
+  else if (action === "changer-espace") {
+    const champ = document.getElementById("champ-espace");
+    if (champ && definirEspace(champ.value)) { location.reload(); }
+    else if (champ) { champ.style.borderColor = "#a04a4a"; }
+  }
   else if (action === "markview") { fetch("/api/marquer-vu", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bien_id:id})}).catch(function(){}); }
 });
 document.getElementById("tabs").addEventListener("click", function(e){
@@ -1854,6 +1898,7 @@ api("/api/preferences").then(function(p){ window._accessGoodThreshold = p.access
 var index_default = {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    const espace = espaceDe(request, url);
     const db = env.DB;
     try {
       if (request.method === "OPTIONS") {
@@ -2027,6 +2072,7 @@ var index_default = {
       if (url.pathname === "/api/search") {
         const q = url.searchParams;
         const results = await search(db, {
+          espace,
           q: q.get("q"),
           region: q.get("region"),
           type: q.get("type"),
@@ -2042,11 +2088,11 @@ var index_default = {
         return json({ count: results.length, results });
       }
       if (url.pathname === "/api/favoris") {
-        const results = await search(db, { favorisOnly: true, limit: 500 });
+        const results = await search(db, { espace, favorisOnly: true, limit: 500 });
         return json({ results });
       }
       if (url.pathname === "/api/ecartes") {
-        const res = await db.prepare("SELECT * FROM discarded ORDER BY date_exclusion DESC").all();
+        const res = await db.prepare("SELECT * FROM discarded WHERE espace_id=? ORDER BY date_exclusion DESC").bind(espace).all();
         return json({ results: res.results });
       }
       if (url.pathname === "/api/vendus") {
@@ -2054,7 +2100,7 @@ var index_default = {
         return json({ results: res.results });
       }
       if (url.pathname === "/api/baisses") {
-        const res = await db.prepare("SELECT * FROM biens WHERE price_drop_json IS NOT NULL AND id NOT IN (SELECT bien_id FROM discarded)").all();
+        const res = await db.prepare("SELECT * FROM biens WHERE price_drop_json IS NOT NULL AND id NOT IN (SELECT bien_id FROM discarded WHERE espace_id=?)").bind(espace).all();
         const resc = await db.prepare("SELECT * FROM rescues ORDER BY date DESC LIMIT 30").all();
         return json({ results: res.results, rescues: resc.results });
       }
@@ -2063,19 +2109,21 @@ var index_default = {
         return json({ results: res.results });
       }
       if (url.pathname === "/api/preferences" && request.method === "GET") {
-        const res = await db.prepare("SELECT * FROM preferences WHERE id=1").all();
-        return json(res.results[0]);
+        await getPreferences(db, espace);
+        const res = await db.prepare("SELECT * FROM preferences WHERE espace_id=?").bind(espace).all();
+        return json(Object.assign({ espace_id: espace }, res.results[0]));
       }
       if (url.pathname === "/api/preferences" && request.method === "PUT") {
         const body = await request.json();
-        const beforeRes = await db.prepare("SELECT weights_json, opportunity_threshold, origine_trajet FROM preferences WHERE id=1").all();
-        const before = beforeRes.results[0];
+        const beforeRes = await db.prepare("SELECT weights_json, opportunity_threshold, origine_trajet FROM preferences WHERE espace_id=?").bind(espace).all();
+        if (!beforeRes.results.length) { await getPreferences(db, espace); }
+        const before = (await db.prepare("SELECT weights_json, opportunity_threshold, origine_trajet FROM preferences WHERE espace_id=?").bind(espace).all()).results[0];
         const newWeightsJson = JSON.stringify(body.weights || { deal: 4, retraite: 2, locatif: 2, cachet: 3, risk: 3, accessibilite: 3 });
         const newThreshold = body.opportunity_threshold || 70;
         const newAccessThreshold = body.access_good_threshold_min || 12;
         const newOriginStop = body.origine_trajet || "Fribourg";
         const needsRecompute = before.weights_json !== newWeightsJson || before.opportunity_threshold !== newThreshold || before.origine_trajet !== newOriginStop;
-        await db.prepare("UPDATE preferences SET budget_max=?, types_allowed=?, regions_allowed=?, surface_min=?, rooms_min=?, cachet_required=?, weights_json=?, origine_trajet=?, opportunity_threshold=?, access_good_threshold_min=? WHERE id=1").bind(
+        await db.prepare("UPDATE preferences SET budget_max=?, types_allowed=?, regions_allowed=?, surface_min=?, rooms_min=?, cachet_required=?, weights_json=?, origine_trajet=?, opportunity_threshold=?, access_good_threshold_min=? WHERE espace_id=?").bind(
           body.budget_max || 5e5,
           JSON.stringify(body.types_allowed || []),
           JSON.stringify(body.regions_allowed || []),
@@ -2085,9 +2133,10 @@ var index_default = {
           newWeightsJson,
           newOriginStop,
           newThreshold,
-          newAccessThreshold
+          newAccessThreshold,
+          espace
         ).run();
-        if (needsRecompute) await recomputeFull(db, env);
+        if (needsRecompute && espace === "principal") await recomputeFull(db, env);
         return json({ ok: true, recomputed: needsRecompute });
       }
       if (url.pathname.indexOf("/api/biens/") === 0) {
@@ -2101,33 +2150,33 @@ var index_default = {
         const bRes = await db.prepare("SELECT * FROM biens WHERE id=?").bind(body.bien_id).all();
         const b = bRes.results[0];
         if (!b) return json({ error: "bien introuvable" }, 404);
-        await db.prepare("INSERT INTO discarded (bien_id, price_at_exclusion, date_exclusion, title_at_exclusion, locality, region, type, rooms, surface) VALUES (?,?,?,?,?,?,?,?,?) ON CONFLICT(bien_id) DO NOTHING").bind(body.bien_id, b.price, (/* @__PURE__ */ new Date()).toISOString(), b.title, b.locality, b.region, b.type, b.rooms, b.surface).run();
-        await db.prepare("DELETE FROM favoris WHERE bien_id=?").bind(body.bien_id).run();
+        await db.prepare("INSERT INTO discarded (espace_id, bien_id, price_at_exclusion, date_exclusion, title_at_exclusion, locality, region, type, rooms, surface) VALUES (?,?,?,?,?,?,?,?,?,?) ON CONFLICT(espace_id, bien_id) DO NOTHING").bind(espace, body.bien_id, b.price, (/* @__PURE__ */ new Date()).toISOString(), b.title, b.locality, b.region, b.type, b.rooms, b.surface).run();
+        await db.prepare("DELETE FROM favoris WHERE bien_id=? AND espace_id=?").bind(body.bien_id, espace).run();
         await recomputeTargeted(db, [body.bien_id], env);
         return json({ ok: true });
       }
       if (url.pathname === "/api/restore" && request.method === "POST") {
         const body = await request.json();
-        await db.prepare("DELETE FROM discarded WHERE bien_id=?").bind(body.bien_id).run();
+        await db.prepare("DELETE FROM discarded WHERE bien_id=? AND espace_id=?").bind(body.bien_id, espace).run();
         await recomputeTargeted(db, [body.bien_id], env);
         return json({ ok: true });
       }
       if (url.pathname === "/api/marquer-vu" && request.method === "POST") {
         const body = await request.json();
         if (!body.bien_id) return json({ error: "bien_id manquant" }, 400);
-        await db.prepare("INSERT INTO vus (bien_id, date_vu) VALUES (?,?) ON CONFLICT(bien_id) DO NOTHING").bind(body.bien_id, (/* @__PURE__ */ new Date()).toISOString()).run();
+        await db.prepare("INSERT INTO vus (espace_id, bien_id, date_vu) VALUES (?,?,?) ON CONFLICT(espace_id, bien_id) DO NOTHING").bind(espace, body.bien_id, (/* @__PURE__ */ new Date()).toISOString()).run();
         return json({ ok: true });
       }
       if (url.pathname === "/api/favori" && request.method === "POST") {
         const body = await request.json();
-        const discRes = await db.prepare("SELECT 1 FROM discarded WHERE bien_id=?").bind(body.bien_id).all();
+        const discRes = await db.prepare("SELECT 1 FROM discarded WHERE bien_id=? AND espace_id=?").bind(body.bien_id, espace).all();
         if (discRes.results.length) return json({ error: "bien \xE9cart\xE9" }, 400);
-        await db.prepare("INSERT OR IGNORE INTO favoris (bien_id, date_added) VALUES (?,?)").bind(body.bien_id, (/* @__PURE__ */ new Date()).toISOString()).run();
+        await db.prepare("INSERT OR IGNORE INTO favoris (espace_id, bien_id, date_added) VALUES (?,?,?)").bind(espace, body.bien_id, (/* @__PURE__ */ new Date()).toISOString()).run();
         return json({ ok: true });
       }
       if (url.pathname.indexOf("/api/favori/") === 0 && request.method === "DELETE") {
         const id = url.pathname.slice("/api/favori/".length);
-        await db.prepare("DELETE FROM favoris WHERE bien_id=?").bind(id).run();
+        await db.prepare("DELETE FROM favoris WHERE bien_id=? AND espace_id=?").bind(id, espace).run();
         return json({ ok: true });
       }
       if (url.pathname === "/api/report-check" && request.method === "POST") {
