@@ -1,0 +1,192 @@
+Sonde du 2026-09-05T12:00:34.465Z
+
+================================================================
+#6  MPP Fiduciaria
+https://immobiliare.mpp.ch/immobile/
+HTTP 200 | 390012 octets
+JSON-LD : 1 bloc(s), types=[], avec prix=0
+PINIA : non | NEXT_DATA : non | casawp : non
+prix CHF visibles : 0 | 'kaufen|acheter|vendre|vendita' : 8
+liens candidats : 19
+   https://immobiliare.mpp.ch/immobile/
+   https://immobiliare.mpp.ch/immobile/page/2/
+   https://immobiliare.mpp.ch/en/immobile/
+   https://immobiliare.mpp.ch/de/immobile/
+   https://immobiliare.mpp.ch/immobile/s2564/
+
+================================================================
+#27  Fiduciaria Cheda SA
+https://www.immoscout24.ch/agency/p436/fiduciaria-cheda-sa
+HTTP 200 | 134943 octets
+JSON-LD : 0 bloc(s), types=[], avec prix=0
+PINIA : oui | NEXT_DATA : non | casawp : non
+prix CHF visibles : 75 | 'kaufen|acheter|vendre|vendita' : 0
+liens candidats : 3
+   https://immoscout24.ch/en/property-valuation/owners
+   https://immoscout24.ch/en/property-prices-m2
+   https://immoscout24.ch/en/property-valuation
+offerType BUY : 0 | RENT : 8
+
+================================================================
+#37  Colombo Fiduciaria SA
+https://www.immoscout24.ch/agency/p435/colombo-fiduciaria-sa
+HTTP 200 | 83093 octets
+JSON-LD : 0 bloc(s), types=[], avec prix=0
+PINIA : oui | NEXT_DATA : non | casawp : non
+prix CHF visibles : 0 | 'kaufen|acheter|vendre|vendita' : 0
+liens candidats : 3
+   https://immoscout24.ch/en/property-valuation/owners
+   https://immoscout24.ch/en/property-prices-m2
+   https://immoscout24.ch/en/property-valuation
+offerType BUY : 0 | RENT : 3
+
+================================================================
+#40  Livit SA
+https://www.immoscout24.ch/agency/livt/livit-sa
+HTTP 200 | 50745 octets
+JSON-LD : 0 bloc(s), types=[], avec prix=0
+PINIA : oui | NEXT_DATA : non | casawp : non
+prix CHF visibles : 0 | 'kaufen|acheter|vendre|vendita' : 0
+liens candidats : 3
+   https://immoscout24.ch/en/property-valuation/owners
+   https://immoscout24.ch/en/property-prices-m2
+   https://immoscout24.ch/en/property-valuation
+offerType BUY : 0 | RENT : 0
+
+================================================================
+#46  Immobiliare e Fiduciaria Caccia
+https://www.immoscout24.ch/agency/c019/immobiliare-e-fiduciaria-caccia-sa
+HTTP 410 | 47766 octets
+
+================================================================
+#54  Alloggi Ticino SA
+https://www.immoscout24.ch/agency/c303/alloggi-ticino-sa
+HTTP 200 | 150656 octets
+JSON-LD : 0 bloc(s), types=[], avec prix=0
+PINIA : oui | NEXT_DATA : non | casawp : non
+prix CHF visibles : 2 | 'kaufen|acheter|vendre|vendita' : 0
+liens candidats : 3
+   https://immoscout24.ch/en/property-valuation/owners
+   https://immoscout24.ch/en/property-prices-m2
+   https://immoscout24.ch/en/property-valuation
+offerType BUY : 0 | RENT : 8
+
+================================================================
+#65  Bulliard Immobilier SA
+https://www.immoscout24.ch/agency/bull/bulliard-immobilier-sa
+HTTP 200 | 153850 octets
+JSON-LD : 0 bloc(s), types=[], avec prix=0
+PINIA : oui | NEXT_DATA : non | casawp : non
+prix CHF visibles : 0 | 'kaufen|acheter|vendre|vendita' : 8
+liens candidats : 3
+   https://immoscout24.ch/en/property-valuation/owners
+   https://immoscout24.ch/en/property-prices-m2
+   https://immoscout24.ch/en/property-valuation
+offerType BUY : 0 | RENT : 8
+
+================================================================
+#77  PRIVERA AG
+https://www.immoscout24.ch/agency/asib18/privera-ag
+HTTP 200 | 96971 octets
+JSON-LD : 0 bloc(s), types=[], avec prix=0
+PINIA : oui | NEXT_DATA : non | casawp : non
+prix CHF visibles : 4 | 'kaufen|acheter|vendre|vendita' : 0
+liens candidats : 3
+   https://immoscout24.ch/en/property-valuation/owners
+   https://immoscout24.ch/en/property-prices-m2
+   https://immoscout24.ch/en/property-valuation
+offerType BUY : 0 | RENT : 4
+
+================================================================
+#87  Neuschwander Immobilier
+https://www.neu-immo.ch/acheter/
+HTTP 200 | 1649113 octets
+JSON-LD : 2 bloc(s), types=[], avec prix=0
+PINIA : non | NEXT_DATA : non | casawp : non
+prix CHF visibles : 216 | 'kaufen|acheter|vendre|vendita' : 18
+liens candidats : 261
+   https://www.neu-immo.ch/acheter/
+   https://www.neu-immo.ch/vendre/
+   https://www.neu-immo.ch/vendre/estimation/
+   https://www.neu-immo.ch/vendre/courtage/
+   https://www.neu-immo.ch/vendre/maisons/delemont/villa-12015
+
+================================================================
+#88  Gruyere Immo SA
+https://acheter.gruyere-immo.ch/fr/objects-sale
+HTTP 200 | 142731 octets
+JSON-LD : 1 bloc(s), types=[Organization], avec prix=0
+PINIA : non | NEXT_DATA : non | casawp : non
+prix CHF visibles : 11 | 'kaufen|acheter|vendre|vendita' : 8
+liens candidats : 5
+   https://acheter.gruyere-immo.ch/fr/objects-sale
+   https://acheter.gruyere-immo.ch/de/objects-sale
+   https://acheter.gruyere-immo.ch/en/ol/21767
+   /fr/objects-sale
+   /fr/objects-rent
+
+================================================================
+#90  JPF Immobilier SA
+https://jpf-immobilier.ch/
+HTTP 200 | 11770 octets
+JSON-LD : 2 bloc(s), types=[], avec prix=0
+PINIA : non | NEXT_DATA : non | casawp : non
+prix CHF visibles : 0 | 'kaufen|acheter|vendre|vendita' : 0
+liens candidats : 0
+
+================================================================
+#92  HUH Immobilien AG
+https://www.huh-immobilien.ch/immobilien/?casawp_salestypes=buy
+HTTP 200 | 137055 octets
+JSON-LD : 1 bloc(s), types=[], avec prix=0
+PINIA : non | NEXT_DATA : non | casawp : oui
+prix CHF visibles : 0 | 'kaufen|acheter|vendre|vendita' : 5
+liens candidats : 17
+   https://www.huh-immobilien.ch/immobilien/
+   https://www.huh-immobilien.ch/immobilien/feed/
+   /immobilien/?casawp_salestypes=buy
+   /immobilien/?casawp_salestypes=rent
+   https://www.huh-immobilien.ch/immobilien/1792059de-helle-35-zimmerwohnung-im-dachgeschoss-mit-suedbalkon-zusatzzimmer-un
+
+================================================================
+#93  Casa Vera Immobilien GmbH
+https://casa-vera-immo.ch/immobilien/?casawp_salestypes=buy
+ERREUR : fetch failed
+
+================================================================
+#94  PREMIUM HOMES AG
+https://premium-homes.ch/immobilien/
+HTTP 200 | 272509 octets
+JSON-LD : 2 bloc(s), types=[Organization], avec prix=0
+PINIA : non | NEXT_DATA : non | casawp : oui
+prix CHF visibles : 0 | 'kaufen|acheter|vendre|vendita' : 8
+liens candidats : 21
+   https://premium-homes.ch/immobilien/
+   https://premium-homes.ch/immobilien/page/2/
+   https://premium-homes.ch/immobilien/feed/
+   https://premium-homes.ch/en/immobilien/
+   https://premium-homes.ch/fr/immobilien/
+
+================================================================
+#95  IMMOprima AG
+https://immoprima.ch/Aktuelle-Objekte/
+HTTP 200 | 41008 octets
+JSON-LD : 0 bloc(s), types=[], avec prix=0
+PINIA : non | NEXT_DATA : non | casawp : non
+prix CHF visibles : 0 | 'kaufen|acheter|vendre|vendita' : 10
+liens candidats : 0
+
+================================================================
+#99  immobilier.ch Jura
+https://www.immobilier.ch/fr/acheter/appartement-maison/jura/page-1
+HTTP 200 | 176589 octets
+JSON-LD : 2 bloc(s), types=[BreadcrumbList,ItemList], avec prix=0
+PINIA : non | NEXT_DATA : non | casawp : non
+prix CHF visibles : 18 | 'kaufen|acheter|vendre|vendita' : 129
+liens candidats : 61
+   https://www.immobilier.ch/fr/acheter/appartement-maison/jura/page-1
+   https://www.immobilier.ch/de/kaufen/wohnung-haus/jura/seite-1
+   https://www.immobilier.ch/fr/acheter/appartement-maison/jura/page-2
+   /fr/carte/acheter/appartement-maison/jura/page-1?t=sale&amp;c=1%3B2&amp;p=s55&amp;nb=false&amp;sc=395&amp;sm=70&amp;sd=6
+   /fr/acheter/appartement-maison/jura/page-1?t=sale&amp;c=1%3B2&amp;p=s55&amp;nb=false&amp;sc=395&amp;sm=70&amp;sd=6392421
+
