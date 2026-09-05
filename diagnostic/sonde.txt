@@ -1,0 +1,67 @@
+URL : https://www.immoscout24.ch/agency/p447/area-immobiliare-ticino
+HTTP : 200
+Taille : 197885
+
+Nombre d'annonces : 8
+
+=== STRUCTURE DE LA PREMIERE ANNONCE ===
+listingType.type = STANDARD
+id = 4003444829
+listing.address.geoCoordinates.accuracy = HIGH
+listing.address.geoCoordinates.latitude = 45.876864201717
+listing.address.geoCoordinates.longitude = 8.942469231778
+listing.address.geoTags[0] = geo-region-mendrisio
+listing.address.locality = Arzo
+listing.address.postalCode = 6864
+listing.address.region = TI
+listing.categories[0] = APARTMENT
+listing.characteristics.isWheelchairAccessible = true
+listing.characteristics.numberOfBathrooms = 2
+listing.characteristics.totalFloorSpace = 110
+listing.characteristics.hasParking = true
+listing.characteristics.hasNiceView = true
+listing.characteristics.hasDishwasher = true
+listing.characteristics.floor = 1
+listing.characteristics.hasBalcony = true
+listing.characteristics.isQuiet = true
+listing.characteristics.numberOfRooms = 4.5
+listing.characteristics.isGroundFloorRaised = true
+listing.characteristics.yearBuilt = 2027
+listing.characteristics.isChildFriendly = true
+listing.characteristics.hasElevator = true
+listing.id = 4003444829
+listing.localization.primary = it
+listing.localization.en.isMachineTranslated = true
+listing.localization.en.text.description = We offer for sale a modern and spacious 4.5-room apartment in the "Residenza 443", an elegant complex located …
+listing.localization.en.text.title = CURATO 4.5 ROOMS NEW BUILDING WITH TERRACES
+listing.localization.en.attachments = [] (vide)
+listing.localization.de.text.title = CURATO 4.5 LOCALE NEUBAU MIT TERRASSEN
+listing.localization.de.text.description = Wir bieten zum Verkauf eine moderne und geräumige 4.5-Zimmer-Wohnung in der "Residenza 443", einem eleganten K…
+listing.localization.de.attachments = [] (vide)
+listing.localization.de.isMachineTranslated = true
+listing.localization.fr.text.description = Nous proposons à la vente un appartement moderne et spacieux de 4.5 pièces dans la "Residenza 443", un complex…
+listing.localization.fr.text.title = CURATO 4.5 PIÈCES CONSTRUCTION NEUVE AVEC TERRASSES
+listing.localization.fr.attachments = [] (vide)
+listing.localization.fr.isMachineTranslated = true
+listing.localization.it.attachments[0].type = IMAGE
+listing.localization.it.attachments[0].url = https://cdn.immoscout24.ch/listings/v2/p447/4003444829/image/9c3c13acf386c599d58335c62f1a59de.jpg
+listing.localization.it.attachments[0].file = 1cea83359f.jpg
+listing.localization.it.text.description = Proponiamo in vendita un moderno e spazioso appartamento di nuova costruzione di 4.5 locali nella "Residenza 4…
+listing.localization.it.text.title = CURATO 4.5 LOCALI DI NUOVA COSTRUZIONE CON TERRAZZE
+listing.localization.it.urls[0].title = Sito web
+listing.localization.it.urls[0].value = https://www.areaimmobiliare.ch/case-appartamenti-vendita/lugano/appartamento-ppp3-arzo/18123
+listing.localization.it.urls[0].type = LINK
+listing.localization.it.isMachineTranslated = false
+listing.meta.createdAt = 2026-09-04T15:25:49.610Z
+listing.offerType = BUY
+listing.platforms[0] = homegate
+listing.prices.buy.price = 690000
+listing.prices.currency = CHF
+listingCard.size = XL
+listingScores.packageScore = 16
+listingScores.listingCompletenessScore = 9
+listerBranding.logoUrl = https://cdn.immoscout24.ch/logos/l_p447_0e37ce44-2c3b-4ce9-8343-727809694bfb.png
+listerBranding.isQualityPartner = false
+listerBranding.subscriptionType = Gold
+listerBranding.isPremiumBranding = false
+listerBranding.basePackage = RE_GOLD
