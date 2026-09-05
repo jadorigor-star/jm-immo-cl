@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788610189 padding-994: hfy9o6hmaNSlqMgoOvwkOKsWWqrYbfqkzoHBIFlO3cEhR9346k1R5UlYX8C4em8BaKyDwFntTgj9j2lZafsNd1xP2eASiTHJW0T4PsWO5q0c34kea6nG1wC8rsUCS9jjP86Ez6CWp5NY91FpitxOA8pAyt9MlqEcDBHjcSQPGooKPrtcnrWKU3cj3X9ZqcvIkwvbBOLj0aQ2KwSNCWv8EwXBPAqB4Kd30EFNbglUhIbfE5ud1UYt7liVLF5lkYDI9RnslZ5CzDkiWx0WYJ5ul3lG6XT1bgUQec73kMSV0CepBLk5Px5l0DQmHDtm22z7K6baG7jXpCjxocd70YjGB1EA2y3rLiEYZGjeX13WOkZ3E2ZL0d8yzbhL5EI9CRpSCoZPymNkcZ6lMenlzLPg6ZIF8LhRHSUQIgSeDA3NvUZInGtcGsC507B0gPiK03tylVG50qBRmZU2qbwzAKRy9
-// VERSION_MARKER_JMIMMO_20260905_SCORE_DEAL_v9
+// BUILD-MARKER 1788618796 padding-991: 9kvfngc7mrpfic5400st3v0q4hdw0szsmfrtfgs4n29wgs0pvx6951lep0j0z2105v13iroojtydtjlk790mdhqjt8h30dtf7bazbannyqjfvbk80rpn4xxpg6p0dyxysn1rtcuwro0jbjb54v3c7wcbdcdm4z3dipv79mcwjt5dsicfk78xxlhikqf54n4gizhoz86lwxvofvxkpdtfobxkds6zfxatkpjxg0g9zmt02xwg5gm898dx8bnqeqr0zh17cs6itrzloqa43go70y4ajl8oanyaadxisksqcir3wmonb5bnm313e4sk1n9a9yitq3q9h5zer4glotwsnjodvh62t7rtxypaehn6g3kx6p94q5mjru1ezv3nhpfnjhhv2j1h5p2ge1fc1jnbs4ezhxpa6fekmuwhgvux77vv94322w6wnhgcar1lvmi47om7p970a0wf
+// VERSION_MARKER_JMIMMO_20260905_CORRECTIF_AFFICHAGE_v9b
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -1647,7 +1647,7 @@ function bienCard(b){
   const explain = b.explain ? ("<div class='explain'>JM Fit " + b.jm_fit + "/100 - " + b.explain + "</div>") : "";
   const addrLine = b.address ? ("<div class='locality' style='margin-top:3px'>" + b.address + "</div>") : "";
   const photo = b.image_url
-    ? "<img src='" + b.image_url + "' alt='' loading='lazy' referrerpolicy='no-referrer' style='width:78px;height:58px;object-fit:cover;border-radius:7px;flex:0 0 auto;background:#20242c' onerror=\"this.style.display='none'\">"
+    ? "<img src='" + b.image_url + "' alt='' loading='lazy' referrerpolicy='no-referrer' style='width:78px;height:58px;object-fit:cover;border-radius:7px;flex:0 0 auto;background:#20242c' onerror=this.remove()>"
     : "";
   return "<div class='card'><div class='card-top'><div style='display:flex;gap:10px;align-items:flex-start;min-width:0'>" + photo + "<div style='min-width:0'><div class='title'>" + titleHtml + "</div><div class='locality'>" + b.locality + " - " + b.region + " - <a href='" + mapUrl + "' target='_blank' rel='noopener'>Carte</a></div>" + addrLine + "</div></div>" +
     "<div class='fit-badge " + (b.is_opportunity?"hot":"") + "'>" + (b.jm_fit != null ? b.jm_fit : "") + "</div></div>" +

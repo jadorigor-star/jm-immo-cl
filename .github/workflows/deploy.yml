@@ -33,6 +33,8 @@ jobs:
           fi
           node --check index.js
           echo "Syntaxe validee."
+          cd ..
+          node outils/verifier-frontend.js
 
       - name: Verifier la presence des secrets
         run: |
