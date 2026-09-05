@@ -1,0 +1,25 @@
+name: Sonde par lot
+
+"on":
+  workflow_dispatch:
+
+jobs:
+  sonder:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: |
+          mkdir -p diagnostic
+          node outils/sonde-lot.js > diagnostic/sonde-lot.txt 2>&1 || true
+          wc -l diagnostic/sonde-lot.txt
+      - run: |
+          git config user.name "JM Immo CI"
+          git config user.email "ci@jm-immo.local"
+          git add -f diagnostic/sonde-lot.txt outils/
+          git commit -q -m "Sonde par lot [skip ci]" || echo "rien a committer"
+          git push || true
