@@ -1,0 +1,34 @@
+name: Sonde de structure
+
+"on":
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "URL a sonder"
+        required: true
+        default: "https://www.immoscout24.ch/agency/p447/area-immobiliare-ticino"
+
+jobs:
+  sonder:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Executer la sonde
+        env:
+          URL_CIBLE: ${{ inputs.url }}
+        run: |
+          mkdir -p diagnostic
+          node outils/sonde-structure.js > diagnostic/sonde.txt 2>&1 || true
+          head -80 diagnostic/sonde.txt
+      - name: Publier
+        run: |
+          git config user.name "JM Immo CI"
+          git config user.email "ci@jm-immo.local"
+          git add -f diagnostic/sonde.txt outils/
+          git commit -q -m "Sonde de structure [skip ci]" || echo "rien a committer"
+          git push || true
