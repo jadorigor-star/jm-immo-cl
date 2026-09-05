@@ -17,6 +17,12 @@ function verifier(nom, condition, detail) {
 const post = (b) => ({ method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(b) });
 
 (async () => {
+  // remise a zero de l'espace de recette pour un test reproductible
+  await ap("/api/preferences", TEST, { method: "PUT", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ budget_max: 9000000, surface_min: 0, rooms_min: 0, cachet_required: 0,
+      types_allowed: [], regions_allowed: [], weights: { deal: 4, retraite: 2, locatif: 2, cachet: 3, risk: 3, accessibilite: 3 },
+      origine_trajet: "Fribourg", opportunity_threshold: 70, access_good_threshold_min: 12 }) });
+
   console.log("=== 1. Points d'entree ===");
   for (const c of ["/", "/api/health", "/api/stats", "/api/sources", "/api/preferences", "/api/search", "/api/ecartes", "/api/vendus", "/api/baisses"]) {
     const r = await ap(c, TEST);
@@ -32,6 +38,9 @@ const post = (b) => ({ method: "POST", headers: { "Content-Type": "application/j
   verifier("filtres combines", filtres.code === 200 && filtres.json);
 
   console.log("=== 3. Actions personnelles (espace de recette) ===");
+  const refFav = (await ap("/api/search?favoris=1", "principal")).json.count;
+  const refEc = (await ap("/api/ecartes", "principal")).json.results.length;
+  console.log("  (reference espace principal : " + refFav + " favoris, " + refEc + " ecartes)");
   const avant = await ap("/api/search", TEST);
   const cible = avant.json.results[0];
   verifier("un bien de reference existe", !!cible, "aucun bien");
@@ -70,16 +79,22 @@ const post = (b) => ({ method: "POST", headers: { "Content-Type": "application/j
   verifier("espace principal intact", principal.json.budget_max !== 333000, "budget principal=" + principal.json.budget_max);
 
   console.log("=== 5. Non-regression de l'espace principal ===");
-  const fp = await ap("/api/search?favoris=1", "principal");
-  const ep = await ap("/api/ecartes", "principal");
-  verifier("favoris principal = 1", fp.json.count === 1, "compte=" + fp.json.count);
-  verifier("ecartes principal = 56", (ep.json.results || []).length === 56, "compte=" + (ep.json.results || []).length);
+  const fp2 = (await ap("/api/search?favoris=1", "principal")).json.count;
+  const ep2 = (await ap("/api/ecartes", "principal")).json.results.length;
+  verifier("favoris principal inchanges (" + refFav + " -> " + fp2 + ")", fp2 === refFav);
+  verifier("ecartes principal inchanges (" + refEc + " -> " + ep2 + ")", ep2 === refEc);
+  const prefP = await ap("/api/preferences", "principal");
+  verifier("preferences principal non polluees", prefP.json.budget_max !== 9000000 && prefP.json.budget_max !== 333000,
+    "budget=" + prefP.json.budget_max);
 
   console.log("=== 6. Robustesse ===");
   const sansEntete = await fetch(base + "/api/search");
   verifier("appel sans en-tete d'espace", sansEntete.status === 200);
   const bizarre = await ap("/api/search", "../../etc/passwd' OR 1=1--");
   verifier("identifiant d'espace hostile neutralise", bizarre.code === 200);
+
+  // nettoyage de l'espace de recette
+  if (cible) { await ap("/api/restore", TEST, post({ bien_id: cible.id })); await ap("/api/favori/" + encodeURIComponent(cible.id), TEST, { method: "DELETE" }); }
 
   console.log("\n=== RESULTAT : " + ok + " OK, " + ko + " ECHEC ===");
 })();
