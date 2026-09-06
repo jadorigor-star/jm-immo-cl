@@ -1,24 +1,32 @@
 
-===== origins=gg25,zipcode,gazetteer =====
-  Cabbio         [{"label":"Populated Place Cabbio (TI) - Breggia","origin":"gazetteer","lat":45.895,"lon":9.0451},{"label":"Toponym swisstopo Cabbio (TI) - Pollegio","origin":"gazetteer","lat":46.3619,"lon":8.9401}]
-  Besazio        [{"label":"Populated Place Besazio (TI) - Mendrisio","origin":"gazetteer","lat":45.8726,"lon":8.9513}]
-  Rancate        [{"label":"Populated Place Rancate (TI) - Mendrisio","origin":"gazetteer","lat":45.8737,"lon":8.9701},{"label":"Wastewater treatment plant    Rancate/Mendrisio (TI) - Mendrisio","origin":"gazetteer","lat":45.8878,"lon":8.9746}]
-  Albeuve        [{"label":"Populated Place Albeuve (FR) - Haut-Intyamon","origin":"gazetteer","lat":46.5167,"lon":7.0561},{"label":"Building Albeuve 50m (FR) - Haut-Intyamon","origin":"gazetteer","lat":46.5133,"lon":7.0627}]
-  Les Brenets    [{"label":"Populated Place Les Brenets (NE) - Le Locle","origin":"gazetteer","lat":47.0673,"lon":6.7044},{"label":"Wastewater treatment plant    Les Brenets (NE) - Le Locle","origin":"gazetteer","lat":47.0637,"lon":6.6958}]
-  Zzzinexistant  [{"label":"Populated Place Siessen (SG) - Eschenbach (SG)","origin":"gazetteer","lat":47.2444,"lon":8.9336},{"label":"Populated Place Susauna (GR) - S-chanf","origin":"gazetteer","lat":46.6364,"lon":9.9913}]
+Rancate  HTTP 200  resultats=3
+   brut   : "<i>Populated Place</i> <b>Rancate</b> (TI) - Mendrisio"
+   nettoye: "Populated Place Rancate (TI) - Mendrisio"
+   regex  : ["Rancate","TI","Mendrisio"]
+   brut   : "<i>Wastewater treatment plant   </i> <b>Rancate/Mendrisio</b> (TI) - Mendrisio"
+   nettoye: "Wastewater treatment plant    Rancate/Mendrisio (TI) - Mendrisio"
+   regex  : AUCUNE CORRESPONDANCE
+   brut   : "<i>School</i> <b>Scuola Elementare di Rancate</b> (TI) - Mendrisio"
+   nettoye: "School Scuola Elementare di Rancate (TI) - Mendrisio"
+   regex  : AUCUNE CORRESPONDANCE
 
-===== origins=gazetteer =====
-  Cabbio         [{"label":"Populated Place Cabbio (TI) - Breggia","origin":"gazetteer","lat":45.895,"lon":9.0451},{"label":"Toponym swisstopo Cabbio (TI) - Pollegio","origin":"gazetteer","lat":46.3619,"lon":8.9401}]
-  Besazio        [{"label":"Populated Place Besazio (TI) - Mendrisio","origin":"gazetteer","lat":45.8726,"lon":8.9513}]
-  Rancate        [{"label":"Populated Place Rancate (TI) - Mendrisio","origin":"gazetteer","lat":45.8737,"lon":8.9701},{"label":"Wastewater treatment plant    Rancate/Mendrisio (TI) - Mendrisio","origin":"gazetteer","lat":45.8878,"lon":8.9746}]
-  Albeuve        [{"label":"Populated Place Albeuve (FR) - Haut-Intyamon","origin":"gazetteer","lat":46.5167,"lon":7.0561},{"label":"Building Albeuve 50m (FR) - Haut-Intyamon","origin":"gazetteer","lat":46.5133,"lon":7.0627}]
-  Les Brenets    [{"label":"Populated Place Les Brenets (NE) - Le Locle","origin":"gazetteer","lat":47.0673,"lon":6.7044},{"label":"Wastewater treatment plant    Les Brenets (NE) - Le Locle","origin":"gazetteer","lat":47.0637,"lon":6.6958}]
-  Zzzinexistant  [{"label":"Populated Place Siessen (SG) - Eschenbach (SG)","origin":"gazetteer","lat":47.2444,"lon":8.9336},{"label":"Populated Place Susauna (GR) - S-chanf","origin":"gazetteer","lat":46.6364,"lon":9.9913}]
+Cabbio  HTTP 200  resultats=5
+   brut   : "<i>Populated Place</i> <b>Cabbio</b> (TI) - Breggia"
+   nettoye: "Populated Place Cabbio (TI) - Breggia"
+   regex  : ["Cabbio","TI","Breggia"]
+   brut   : "<i>Toponym swisstopo</i> <b>Cabbio</b> (TI) - Pollegio"
+   nettoye: "Toponym swisstopo Cabbio (TI) - Pollegio"
+   regex  : AUCUNE CORRESPONDANCE
+   brut   : "<i>Local name swisstopo</i> <b>Cabbio</b> (GR) - Calanca"
+   nettoye: "Local name swisstopo Cabbio (GR) - Calanca"
+   regex  : AUCUNE CORRESPONDANCE
 
-===== origins=(defaut) =====
-  Cabbio         [{"label":"Populated Place Cabbio (TI) - Breggia","origin":"gazetteer","lat":45.895,"lon":9.0451},{"label":"Toponym swisstopo Cabbio (TI) - Pollegio","origin":"gazetteer","lat":46.3619,"lon":8.9401}]
-  Besazio        [{"label":"Populated Place Besazio (TI) - Mendrisio","origin":"gazetteer","lat":45.8726,"lon":8.9513},{"label":"bus Besazio, Via Rive","origin":"haltestellen","lat":45.872,"lon":8.9591}]
-  Rancate        [{"label":"Populated Place Rancate (TI) - Mendrisio","origin":"gazetteer","lat":45.8737,"lon":8.9701},{"label":"Wastewater treatment plant    Rancate/Mendrisio (TI) - Mendrisio","origin":"gazetteer","lat":45.8878,"lon":8.9746}]
-  Albeuve        [{"label":"Populated Place Albeuve (FR) - Haut-Intyamon","origin":"gazetteer","lat":46.5167,"lon":7.0561},{"label":"Building Albeuve 50m (FR) - Haut-Intyamon","origin":"gazetteer","lat":46.5133,"lon":7.0627}]
-  Les Brenets    [{"label":"Populated Place Les Brenets (NE) - Le Locle","origin":"gazetteer","lat":47.0673,"lon":6.7044},{"label":"Wastewater treatment plant    Les Brenets (NE) - Le Locle","origin":"gazetteer","lat":47.0637,"lon":6.6958}]
-  Zzzinexistant  [{"label":"Populated Place Siessen (SG) - Eschenbach (SG)","origin":"gazetteer","lat":47.2444,"lon":8.9336},{"label":"Populated Place Susauna (GR) - S-chanf","origin":"gazetteer","lat":46.6364,"lon":9.9913}]
+Besazio  HTTP 200  resultats=1
+   brut   : "<i>Populated Place</i> <b>Besazio</b> (TI) - Mendrisio"
+   nettoye: "Populated Place Besazio (TI) - Mendrisio"
+   regex  : ["Besazio","TI","Mendrisio"]
+
+Scudellate  HTTP 200  resultats=1
+   brut   : "<i>Populated Place</i> <b>Scudellate</b> (TI) - Breggia"
+   nettoye: "Populated Place Scudellate (TI) - Breggia"
+   regex  : ["Scudellate","TI","Breggia"]
