@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788690860 padding-2100: 9fzx4uzkbrc4g7oxz7bbl8ubra1of4jxw4c37mhsd1uzcofr50epkeh3b70wxlt6bvn6sd8rafwgn0cpqi0qcb1poapwk2h96v4wgppng8whektoay7kktlqkhday2jcywmmo5gych248va0z7w9ausbuliozefj9j5uyi2i6cbrn07k0eo5ufmaygkejvtrf79hkjl1co86ayeh6rppsd9d41pm43h9vn78hvpn7ryejrteivq5od1q8u7y5qwydfzcrb2jfwa2ptjn3c035bq6un5p1udr7ayk4soh9tl9h5639h4fcp5gsv6co6s6aaz59bwa0t9kt5w7nzpw0r36xntidp5d9g24uvmjdu571scy0yjr8imp1rhocrrf0c4zcf85j3vh5bmmy6xewft68x9vpmk1qnewfh2fxmis5dgd5jge4c5uo742fk4q99wvp9oqdaayo6bljw56vnqthlv4yube2ar8fwwag5o090h86wq8woqfrb9v0qtkfzvkkueehet2d2bn74r77yndfw9dp6r7jgl0azveb8t66dwjbjk1jhx2w284fhlmkyex55lie8udw24jy4jdlr4tmq33l1m45yg398hdctfjujzlg6ris9gzt4ut8cqsb8wsvk5j1zbxmi2s8jsq217m0vao2zdhxxk1bmgm
-// VERSION_MARKER_JMIMMO_20260906_LIENS_v21
+// BUILD-MARKER 1788691343 padding-2200: 4fkb96ggl1noqbl945n98wdhx12yyxvfhdi9k28jl5ec03c24bptiw61no0q19rgb4mfdnszxz3yyjdl06mq0yb97mky2m5z0e8wedhl3w0rpnizrqxd2dp8vptlgioxe3zoe4gdsbza9xv880rxm50luqc8o15bevbr6i7z2olubog09se4bur199rlo8zeipborn82cdyy7jscyljgtyjd9v7cfaqzzx8k1qvglsboflop6s8sqbcayyp63lcy2iqhrhyz3sf8j72w0hp54jt0bosq8mmemcjz3ako4fzs4jnt7ie77ijr4o4ymeu0dtt64s1aiytrwoq5rdkg4i6wj3dq39reql0v2m6huccdowbfxles5soj3ujlqzejgkfo74sbs3oj33izo448i1hnuaszevb5o60texnfd64pjyv73cstrhicpmf47owgepnyyny4nfgfyebjy0vbvhi4jelpgsbu4sx42zd96y9frvjadyx8yx1805j3y8ohrsejoe1icxh2n46fa20njb7ebnctl6lvx56aqjhyg7dg0fshkm7ht3r95y3klo4s5iagp4b6sxoriwl4jq21soivwzlnnl873mb2ck85qa16v6zxue7w08rd03049dg1tsk8536882wy76n8rd82bc05vekncbf8fj32rpwi89tial42oanu8kdzzvjk
+// VERSION_MARKER_JMIMMO_20260906_TRI_PRIX_M2_v22
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -1623,9 +1623,17 @@ async function search(db, opts) {
     price_desc: (a, b) => b.price - a.price,
     recent: (a, b) => (b.first_seen || "").localeCompare(a.first_seen || ""),
     accessibilite: (a, b) => (b.accessibilite_score || 0) - (a.accessibilite_score || 0),
-    surface_desc: (a, b) => (b.surface || 0) - (a.surface || 0)
+    surface_desc: (a, b) => (b.surface || 0) - (a.surface || 0),
+    prix_m2_asc: (a, b) => {
+      const m = (x) => (x.price && x.surface && x.surface >= 15) ? x.price / x.surface : Infinity;
+      return m(a) - m(b);
+    },
+    prix_m2_desc: (a, b) => {
+      const m = (x) => (x.price && x.surface && x.surface >= 15) ? x.price / x.surface : -1;
+      return m(b) - m(a);
+    }
   };
-  rows.sort(sortFns[opts.sort || "jmfit"]);
+  rows.sort(sortFns[opts.sort] || sortFns.jmfit);
   const out = [];
   for (const r of rows.slice(0, opts.limit || 1e3)) {
     const srcRes = await db.prepare("SELECT source_name, url FROM bien_sources WHERE bien_id=?").bind(r.id).all();
@@ -1738,6 +1746,8 @@ main{padding:14px 16px;max-width:660px;margin:0 auto;}
       <option value="recent">Tri : plus récents</option>
       <option value="accessibilite">Tri : meilleure accessibilité</option>
       <option value="surface_desc">Tri : plus grande surface</option>
+    <option value="prix_m2_asc">Tri : prix au m\u00b2 croissant</option>
+    <option value="prix_m2_desc">Tri : prix au m\u00b2 d\u00e9croissant</option>
     </select>
     <select id="fResSec">
       <option value="">Residence secondaire : tous</option>
