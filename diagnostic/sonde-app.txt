@@ -1,13 +1,12 @@
-passe 1 : HTTP 200 | examinees=140 corrigees=8
-   bellinzona -> Giubiasco (Residenza Kira - appartement raffiné de )
-   bellinzona -> Giubiasco (Appartement lumineux 3.5 pièces à vendre)
-   riaz -> Riazzino (Casa indipendente in splendida posizione)
-   brione -> Brione sopra Minusio (Maison mitoyenne avec 5 pièces + salle d)
-   mendrisio -> Besazio (Belle maison avec vue panoramique et mon)
-   lugano -> Breganzona (Appartement spacieux d'une pièce complèt)
-   sonvico -> Dino (Villa moderne exclusive à construire à D)
-   mendrisio -> Rancate (Appartement moderne 4.5 pièces avec gran)
-passe 2 : HTTP 200 | examinees=140 corrigees=1
+passe 1 : HTTP 200 | examinees=140 corrigees=1
    Dino -> Sonvico (Villa moderne exclusive à construire à D)
-passe 3 : HTTP 200 | examinees=140 corrigees=1
-   Sonvico -> Dino (Villa moderne exclusive à construire à D)
+passe 2 : HTTP 200 | examinees=140 corrigees=6
+   sonvico -> Dino (Villa moderne exclusive à construire à L)
+   minusio -> Tegna (Propriété à rendement au cœur des Terres)
+   Dino -> Sonvico (Villa moderne exclusive à construire à D)
+   corcelles -> Corcelles-près-Payerne (Bien — corcelles)
+   corcelles -> Corcelles-près-Payerne (Bien — corcelles)
+   corcelles -> Corcelles-près-Payerne (Bien — corcelles)
+passe 3 : HTTP 200 | examinees=46 corrigees=1
+   Mendrisio -> Cabbio (Appartement 2.5 pièces rénové, Cabbio)
+passe 4 : HTTP 200 | examinees=0 corrigees=0
