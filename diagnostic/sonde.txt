@@ -1,6 +1,6 @@
 URL : https://www.immoscout24.ch/agency/p447/area-immobiliare-ticino
 HTTP : 200
-Taille : 197885
+Taille : 197890
 
 Nombre d'annonces : 8
 
@@ -8,8 +8,8 @@ Nombre d'annonces : 8
 listingType.type = STANDARD
 id = 4003444829
 listing.address.geoCoordinates.accuracy = HIGH
-listing.address.geoCoordinates.latitude = 45.876864201717
-listing.address.geoCoordinates.longitude = 8.942469231778
+listing.address.geoCoordinates.latitude = 45.876863941498
+listing.address.geoCoordinates.longitude = 8.942462362301
 listing.address.geoTags[0] = geo-region-mendrisio
 listing.address.locality = Arzo
 listing.address.postalCode = 6864
