@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788689835 padding-2000: x5gdemaa48r1kx1ymiu3kj3ehi67hbbsm9s3wvui2vmljot9c4qv1apfr8qib818xr9j5skugv9dv8ms17apwcmmewgxo6l0r4scnlnr8ul18inw0adglkkekymfhwbcgq0op2rp48arpzlh98stqgw36zg0ry3sc1xwbkckf52cdroxjrtti75z5wv62rxhw6uvd6oucpmtcmw2z8o6t3c0tx2l4drvh4a4910se12zmuz8epeg6095cghtzo8h6t6wogoywv00ynk3v3ybzaf3d1n8e6s6as51ka8wnbkrn334jnfcntv3trep62rmv2rfzm8hxvkleutvxkyj0spqz2etboh4icdjkgqb2t573upeooteh1u4nzt142irf0iqk5tpwdncy35anodl1jf3hsh6wkrioujngyd5lwfgxv0up7if2ftc3vm2ac4u0c79i5kt9t9srdzlgndofuqm8si4xh39ktf85cypz72dkso2r8dtmbcjw98xwf8ysffb31cxi5qk260zlqmxioqo14ci4aqru2gzabqnjdntuj4zs7zkjhx35e0hkj411adrk8js316no1eg9hprr3huhyne9d4n9tf7prhbcys9152y9qqgvzx0u8lnz134b6zsef0l2eood9bf9rpn
-// VERSION_MARKER_JMIMMO_20260906_CARTE_v20
+// BUILD-MARKER 1788690860 padding-2100: 9fzx4uzkbrc4g7oxz7bbl8ubra1of4jxw4c37mhsd1uzcofr50epkeh3b70wxlt6bvn6sd8rafwgn0cpqi0qcb1poapwk2h96v4wgppng8whektoay7kktlqkhday2jcywmmo5gych248va0z7w9ausbuliozefj9j5uyi2i6cbrn07k0eo5ufmaygkejvtrf79hkjl1co86ayeh6rppsd9d41pm43h9vn78hvpn7ryejrteivq5od1q8u7y5qwydfzcrb2jfwa2ptjn3c035bq6un5p1udr7ayk4soh9tl9h5639h4fcp5gsv6co6s6aaz59bwa0t9kt5w7nzpw0r36xntidp5d9g24uvmjdu571scy0yjr8imp1rhocrrf0c4zcf85j3vh5bmmy6xewft68x9vpmk1qnewfh2fxmis5dgd5jge4c5uo742fk4q99wvp9oqdaayo6bljw56vnqthlv4yube2ar8fwwag5o090h86wq8woqfrb9v0qtkfzvkkueehet2d2bn74r77yndfw9dp6r7jgl0azveb8t66dwjbjk1jhx2w284fhlmkyex55lie8udw24jy4jdlr4tmq33l1m45yg398hdctfjujzlg6ris9gzt4ut8cqsb8wsvk5j1zbxmi2s8jsq217m0vao2zdhxxk1bmgm
+// VERSION_MARKER_JMIMMO_20260906_LIENS_v21
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -487,7 +487,12 @@ function extractStateJsonGeneric(html, config) {
     const rooms = f.rooms ? getByPath(item, f.rooms) : null;
     const surface = f.surface ? getByPath(item, f.surface) : null;
     const id = f.id ? getByPath(item, f.id) : null;
-    const url = config.url_prefix && id != null ? config.url_prefix.replace(/\/$/, "") + "/" + (config.url_path_prefix || "") + id : null;
+    let url = null;
+    if (f.url) {
+      const direct = getByPath(item, f.url);
+      if (direct && /^https?:\/\//i.test(String(direct))) url = String(direct);
+    }
+    if (!url && config.url_prefix && id != null) url = config.url_prefix.replace(/\/$/, "") + "/" + (config.url_path_prefix || "") + id;
     let address = f.address ? getByPath(item, f.address) : null;
     if (!address && f.locality) {
       const addrBase = f.locality.replace(/\.[^.]+$/, "");
