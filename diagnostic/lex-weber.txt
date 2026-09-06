@@ -23,13 +23,20 @@ lignes : 2111
   [6] [6,"Kappel am Albis",1,"ZH",606,549,0,90.59,9.41,1,0]
   [7] [7,"Knonau",1,"ZH",1102,1016,0,92.2,7.8,1,0]
 
-en-tete ligne -1 : undefined
-/home/runner/work/jm-immo-cl/jm-immo-cl/outils/lex-weber.js:50
-  const ent = lignes[iEnt].map((c) => String(c).trim());
-                           ^
+lignes de donnees : 2110
+communes valides : 2110
+communes au-dessus de 20% : 329  (attendu ~331)
 
-TypeError: Cannot read properties of undefined (reading 'map')
-    at /home/runner/work/jm-immo-cl/jm-immo-cl/outils/lex-weber.js:50:28
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+controles :
+  Locarno       19.52%  libre
+  Muralto       46.31%  SOUMISE (nouvelles residences secondaires interdites)
+  Zweisimmen    43.09%  SOUMISE (nouvelles residences secondaires interdites)
+  Charmey       introuvable
+  Bulle         10.16%  libre
+  Saignelegier  introuvable
+  Neuchatel     introuvable
+  Ascona        54.88%  SOUMISE (nouvelles residences secondaires interdites)
+  Minusio       40.94%  SOUMISE (nouvelles residences secondaires interdites)
+  Brissago      72.2%  SOUMISE (nouvelles residences secondaires interdites)
 
-Node.js v20.20.2
+fichier ecrit (2110 communes)
