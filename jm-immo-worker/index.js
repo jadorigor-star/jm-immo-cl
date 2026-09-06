@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788691743 padding-2300: a3ovo4d5n6tq1ooqg0yo5p9zd48lcboifh5abo8aphze2ia2zlhsmozom02oyfsd08qstcxitrxrm78mawrmvhknh9trr9285t28dlhwpwtd9djy4stt4m2imrhgkqwl7jwz1hvnm16ihi4020kmgikp9502knax6qi8646e2dumipk3k64a8646jlw052bxotgls02c2lg47jqf2u417hz07eka2qwjv509khw3hko41sn5r0mjiwt2w0lbgnq1eqf2cbm1791norw2582zbk8pwd7mwx7p90n55ulhs852n3637eg278m69l6hj5nt2n6tw3po7cxqv5k6xlz8fqko0qee2jhkvhdl0gqs6hecjfhh4903kxb8ru6eke4lnib59qyndrjpa10pcaenxh098a25zfrzkid3a0zd0j3kfp14q3u6s55rurp5v86zwl5zy90z08wofgf6ztc5sosp6svrokve4f7ni62pb4qq4w5nz8kffpbsk200a36w0eg7l2xion319wps1ua8jza5paxpj9z9arl2k6tyridh8ekvp2uc3v1noij4kltpvsggr4skklth0uydyqf8v021vegsdnsci7rp5miilcr9qdy37xxu6th1rpswm23k8g4i8e0s6n9zqjgwtxcm4tvxviexvwmwuqcw0jv0dxwrobu4l1nzeznhz50iuhdqqtaxz0y7gkgd76ax
-// VERSION_MARKER_JMIMMO_20260906_TRI_DEFAUT_v23
+// BUILD-MARKER 1788693512 padding-2400: qla5vfkh0t1u4pjjgkay4cv81p0hxhhi2ioajeenvmzjd3cd5jjsh1lftfmm3suf8rup0mqfrar4la7n1gd6lpygg13lcdhj663v5os5ejrsnacnaxwwbqbm3niet2afe4jimhoap07b2pabbwdmhlkmxer8bdqrc62eujkf48k6btfzk85cllajvmawpc4o8rzfuf2be32dckp8h1usupb6znqwfgk826xvf3hqzm4c9jawt8501fuf9nzmtniel2gc7v9g22aujllfxjrbtgsxia9o8utm001wp6ozohf5cew2yimzk5vy9poyhkkpjk5zn79gslnjc2uqzopz8etzv281shucxwlsjryla72ui6hc8m9xrc426ue0o6szsyt69zdbrjac71t7wd3n6vtiqtk1denlzd0ersolt6ycv5sdo93g4iisbzx5znhs78g7jdqqj6kao7smnnfy22sbw4jl9oukftmmk2gjam95ugx25gemqc5v8guy6iw6vh7axtog434cwtak0cm88agavrxw7awrljlehc4k86jpdmtgj1w9ogx7hnftrwwzczbyrzvr66q339lw03x6t6svsj396kciuh4qv11elpswuhj1n5d5lt7ot24hqhi136ivchl8kt8uve4bicebqkgkwpb2xv9inf10cy0x7wr3auxr5soaskh1khnjz1ufkbgtmvhgs0i47fmofhddvio92a0l0jkbon60
+// VERSION_MARKER_JMIMMO_20260906_REANALYSE_v24
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -1559,6 +1559,40 @@ async function recomputeTargeted(db, bienIds, env) {
   return { biens: allComputed.length, rescues: rescuesThisRun.length };
 }
 
+
+async function reanalyserLocalites(db, fetchFn, limite) {
+  const budget = { remaining: 40 };
+  const res = await db.prepare("SELECT id, source_id, external_id, locality, region, title, address, description, bien_id, type, rooms, surface FROM listings WHERE status='active' ORDER BY last_seen DESC LIMIT ?").bind(limite || 120).all();
+  const rapport = { examinees: 0, corrigees: 0, details: [] };
+  for (const l of res.results) {
+    rapport.examinees++;
+    const rl = { locality: l.locality, title: l.title, address: l.address, description: l.description, geo_lat: null, geo_lon: null };
+    let change = false;
+    try { change = await affinerLocalite(db, rl, fetchFn, budget); } catch (e) { change = false; }
+    if (!change) continue;
+    const ancienBien = l.bien_id;
+    const nouvelleRegion = computeRegion(rl.locality) || l.region;
+    const nouveauBien = bienKey(rl.locality, l.type, l.rooms, l.surface, l.source_id + ":" + l.external_id);
+    if (nouveauBien === ancienBien && rl.locality === l.locality) continue;
+    try {
+      await db.prepare("UPDATE listings SET locality=?, region=?, bien_id=? WHERE id=?").bind(rl.locality, nouvelleRegion, nouveauBien, l.id).run();
+      for (const t of ["discarded", "vus", "favoris", "price_history"]) {
+        await db.prepare("UPDATE OR IGNORE " + t + " SET bien_id=? WHERE bien_id=?").bind(nouveauBien, ancienBien).run();
+      }
+      const restants = await db.prepare("SELECT COUNT(*) n FROM listings WHERE bien_id=? AND status='active'").bind(ancienBien).all();
+      if (!restants.results[0].n) {
+        await db.prepare("DELETE FROM biens WHERE id=?").bind(ancienBien).run();
+        await db.prepare("DELETE FROM bien_sources WHERE bien_id=?").bind(ancienBien).run();
+      }
+      rapport.corrigees++;
+      if (rapport.details.length < 40) rapport.details.push(l.locality + " -> " + rl.locality + " (" + String(l.title || "").slice(0, 40) + ")");
+    } catch (e) {
+      rapport.details.push("ERREUR " + l.id + " : " + String(e && e.message ? e.message : e).slice(0, 80));
+    }
+    if (budget.remaining <= 0) { rapport.details.push("budget epuise"); break; }
+  }
+  return rapport;
+}
 async function fullRefresh(db, fetchFn, env, sansRecalcul) {
   const report = await ingest(db, fetchFn, { budget: 45, maxPerSource: 6 });
   if (sansRecalcul) return { ingestion: report, recompute: "ignore" };
@@ -2287,6 +2321,10 @@ var index_default = {
       if (url.pathname === "/api/stats") {
         const st = await db.prepare("SELECT (SELECT COUNT(*) FROM biens WHERE id NOT IN (SELECT bien_id FROM discarded WHERE espace_id=?) AND id NOT IN (SELECT bien_id FROM favoris WHERE espace_id=?)) AS a_trier, (SELECT COUNT(*) FROM favoris WHERE espace_id=?) AS favoris, (SELECT COUNT(*) FROM discarded WHERE espace_id=?) AS ecartes, (SELECT COUNT(*) FROM vendus) AS vendus, (SELECT COUNT(*) FROM biens) AS biens, (SELECT COUNT(*) FROM listings WHERE status='active') AS annonces, (SELECT COUNT(*) FROM sources WHERE enabled=1) AS sources_actives, (SELECT COUNT(*) FROM sources WHERE enabled=1 AND state='productive') AS sources_productives, (SELECT COUNT(*) FROM biens WHERE is_opportunity=1) AS opportunites, (SELECT MAX(last_checked) FROM sources WHERE enabled=1) AS derniere_collecte").bind(espace, espace, espace, espace).all();
         return json(st.results[0]);
+      }
+      if (url.pathname === "/api/reanalyser-localites") {
+        const r = await reanalyserLocalites(db, fetch.bind(globalThis), parseInt(url.searchParams.get("limit") || "120", 10));
+        return json(r);
       }
       if (url.pathname === "/api/search") {
         const q = url.searchParams;
