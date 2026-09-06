@@ -4,15 +4,15 @@
 [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mUse "Index.js" instead of "index.js" to avoid issues with case-sensitive file systems[0m [different-path-case]
 
 
-Total Upload: 135.71 KiB / gzip: 35.56 KiB
+Total Upload: 138.11 KiB / gzip: 36.15 KiB
 Your Worker has access to the following bindings:
 Binding                  Resource         
 env.DB (jm-immo-db)      D1 Database      
 
-Uploaded jm-immo-cl (2.25 sec)
-Deployed jm-immo-cl triggers (0.85 sec)
+Uploaded jm-immo-cl (1.59 sec)
+Deployed jm-immo-cl triggers (0.63 sec)
   https://jm-immo-cl.jadorigor.workers.dev
   schedule: 0 */6 * * *
-Current Version ID: d30558e9-4b3d-4384-86ca-ba1e64db19dc
+Current Version ID: 9f93c6df-2dab-452d-a2d1-e03441f9b6b2
 
 Cloudflare collects anonymous telemetry about your usage of Wrangler. Learn more at https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler/telemetry.md
