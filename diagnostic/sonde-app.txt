@@ -9,32 +9,32 @@
   OK   /api/vendus        HTTP 200
   OK   /api/baisses       HTTP 200
 === 2. Tris et filtres ===
-  OK   tri jmfit       (286 biens)
-  OK   tri price_asc   (286 biens)
-  OK   tri price_desc  (286 biens)
-  OK   tri recent      (286 biens)
-  OK   tri access      (286 biens)
-  OK   tri surface     (286 biens)
+  OK   tri jmfit       (285 biens)
+  OK   tri price_asc   (285 biens)
+  OK   tri price_desc  (285 biens)
+  OK   tri recent      (285 biens)
+  OK   tri access      (285 biens)
+  OK   tri surface     (285 biens)
   OK   filtres combines
 === 3. Actions personnelles (espace de recette) ===
-  (reference espace principal : 4 favoris, 63 ecartes)
+  (reference espace principal : 5 favoris, 65 ecartes)
   OK   un bien de reference existe
   OK   ajout favori
   ECHEC ecarter
   OK   ecarter retire des favoris
   OK   bien ecarte masque de la liste
   ECHEC restaurer
-  ECHEC marquer vu -> champs du bien : bien absent
+  ECHEC marquer vu -> champs du bien : first_seen,last_seen
 === 4. Preferences par espace ===
-  ECHEC ecriture preferences -> HTTP 500 | {"error":"D1_ERROR: Your account has exceeded D1's free tier daily row write limit. Upgrade to a paid plan or wait until tomorrow (midnight UTC) to continue. See https://developers.cloudflare.com/d1/platform/limits/ for 
-  ECHEC relecture preferences -> budget=9000000 seuil=70
+  OK   ecriture preferences
+  OK   relecture preferences
   OK   espace principal intact
 === 5. Non-regression de l'espace principal ===
-  OK   favoris principal inchanges (4 -> 4)
-  ECHEC ecartes principal inchanges (63 -> 64)
+  OK   favoris principal inchanges (5 -> 5)
+  OK   ecartes principal inchanges (65 -> 65)
   OK   preferences principal non polluees
 === 6. Robustesse ===
   OK   appel sans en-tete d'espace
   OK   identifiant d'espace hostile neutralise
 
-=== RESULTAT : 25 OK, 6 ECHEC ===
+=== RESULTAT : 28 OK, 3 ECHEC ===
