@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788679537 padding-1200: owilz3wqwse2df0rpljndosogvly09k76xs1a9qh04vchayu7sp7oz8szixdkljgnp23ycb2ksnbdufzxx2oxzpnizs9av60rkdgenwiho38fhc5muaq5vj54kszfo4sclub36ngnf5a82zu6um8droaor07t4h43m5lzirs6pv0ip3dn0zw92xfubn4miid4s94fvjrezqs3n3lcebthu8842gbap2s5t8mx1aqrszrvaqjrv34z26du7l5zgmuse95yadiq44s6wplk2vi23cgdqlj3pc7cao94dt3y19jebhgdrg9f5j97kgjoq2nww94k1bcik9e84lj2l1x0d8ymzno022c9dicegvjc0jhtpexdwjmrdeihbhqx4nlqn5shpdtbdmqy7n3fotofqfb22iaxp809ejiy5yn8pgn21pgiddtos018pp385whg22xsqddnnc4auec85awkzr85ra3wnqh82f4qk8x5aw3zppis0rgvb6a70s
-// VERSION_MARKER_JMIMMO_20260906_ECRITURES_MINIMALES_v12
+// BUILD-MARKER 1788681060 padding-1300: 2x2zovihx3bdhkq2w736eb1ukfvnbwa5uln3c6j1xb9njdlb5hcc4p9aj7s9artfezj59lxlo75lmnd60xleaqe9wp7fr2io2q130zxbup5cxmfoc5t3vedy9yuqv1bhovo081ed19plx0t4w8udthaqco2paohnzh8naws2v60ddv9pctth0jdl85dfgn6a3nu3a19pjue26jda3ssushnmsmaqgbkksmbiud2xzpi3niced95jt0nxvv0fwzlnj69rbwg5zcspypd39rtlatyiuh9lc8sy3fxxi0sngo0ar6y4i8onxxo1fl7fculof6rpsy57yvoxjgxky928m6go4r7pmdnr6xsp229yyjpn28a0gd8u4viyeuygkn6jsa8n9c4wnkxp9jjoenz6p8tur2vphbkcxjudvgt9b7219yvwv4j5y33h551ilypc7ju7xgw9h8crag8ejollz29m5zqcnnrd3cm6o5h1q6bqhznb2ffdbz0xeerkui5p91c9ae1vrqa6svj5rb
+// VERSION_MARKER_JMIMMO_20260906_TRIAGE_REGIONS_v13
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -23,25 +23,25 @@ var REGION_MAP = {
   "losone": "Tessin",
   "tenero": "Tessin",
   "giubiasco": "Tessin",
-  "saignel\xE9gier": "Jura \u2013 Franches-Montagnes",
-  "saignelegier": "Jura \u2013 Franches-Montagnes",
-  "le noirmont": "Jura \u2013 Franches-Montagnes",
-  "les bois": "Jura \u2013 Franches-Montagnes",
-  "muriaux": "Jura \u2013 Franches-Montagnes",
-  "montfaucon": "Jura \u2013 Franches-Montagnes",
-  "les breuleux": "Jura \u2013 Franches-Montagnes",
-  "le b\xE9mont": "Jura \u2013 Franches-Montagnes",
-  "les genevez": "Jura \u2013 Franches-Montagnes",
-  "lajoux": "Jura \u2013 Franches-Montagnes",
-  "saint-ursanne": "Jura \u2013 Clos du Doubs",
-  "st-ursanne": "Jura \u2013 Clos du Doubs",
-  "ocourt": "Jura \u2013 Clos du Doubs",
-  "\xE9pauvillers": "Jura \u2013 Clos du Doubs",
-  "epauvillers": "Jura \u2013 Clos du Doubs",
-  "montenol": "Jura \u2013 Clos du Doubs",
-  "montmelon": "Jura \u2013 Clos du Doubs",
-  "seleute": "Jura \u2013 Clos du Doubs",
-  "soubey": "Jura \u2013 Clos du Doubs",
+  "saignel\xE9gier": "Jura",
+  "saignelegier": "Jura",
+  "le noirmont": "Jura",
+  "les bois": "Jura",
+  "muriaux": "Jura",
+  "montfaucon": "Jura",
+  "les breuleux": "Jura",
+  "le b\xE9mont": "Jura",
+  "les genevez": "Jura",
+  "lajoux": "Jura",
+  "saint-ursanne": "Jura",
+  "st-ursanne": "Jura",
+  "ocourt": "Jura",
+  "\xE9pauvillers": "Jura",
+  "epauvillers": "Jura",
+  "montenol": "Jura",
+  "montmelon": "Jura",
+  "seleute": "Jura",
+  "soubey": "Jura",
   "zweisimmen": "Zweisimmen",
   "st. stephan": "Zweisimmen",
   "saint-etienne": "Zweisimmen",
@@ -88,6 +88,8 @@ var REGION_MAP = {
   "le landeron": "Neuch\xE2tel",
   "val-de-ruz": "Neuch\xE2tel"
 };
+Object.assign(REGION_MAP, {"les enfers": "Jura", "les pommerats": "Jura", "goumois": "Jura", "saint-brais": "Jura", "st-brais": "Jura", "la chaux-des-breuleux": "Jura", "les emibois": "Jura", "le peuchapatte": "Jura", "clos du doubs": "Jura", "montfavergier": "Jura", "les rouges-terres": "Jura", "cerneux-veusil": "Jura", "epiquerez": "Jura", "épiquerez": "Jura", "albeuve": "Gruyère", "lessoc": "Gruyère", "neirivue": "Gruyère", "villars-sous-mont": "Gruyère", "estavannens": "Gruyère", "haut-intyamon": "Gruyère", "bas-intyamon": "Gruyère", "intyamon": "Gruyère", "villarvolard": "Gruyère", "hauteville": "Gruyère", "cerniat": "Gruyère", "morlon": "Gruyère", "le pâquier": "Gruyère", "le paquier": "Gruyère", "sales": "Gruyère", "sâles": "Gruyère", "vaulruz": "Gruyère", "semsales": "Gruyère", "la tour-de-trême": "Gruyère", "la tour-de-treme": "Gruyère", "marsens": "Gruyère", "sorens": "Gruyère", "avry-devant-pont": "Gruyère", "châtel-sur-montsalvens": "Gruyère", "bellegarde": "Gruyère", "val-de-charmey": "Gruyère", "gumefens": "Gruyère", "neuchâtel": "Neuchâtel", "le locle": "Neuchâtel", "la chaux-de-fonds": "Neuchâtel", "les brenets": "Neuchâtel", "les planchettes": "Neuchâtel", "la sagne": "Neuchâtel", "brot-plamboz": "Neuchâtel", "la chaux-du-milieu": "Neuchâtel", "le cerneux-péquignot": "Neuchâtel", "les ponts-de-martel": "Neuchâtel", "noiraigue": "Neuchâtel", "travers": "Neuchâtel", "couvet": "Neuchâtel", "fleurier": "Neuchâtel", "môtiers": "Neuchâtel", "saint-sulpice": "Neuchâtel", "buttes": "Neuchâtel", "la côte-aux-fées": "Neuchâtel", "les verrières": "Neuchâtel", "val-de-travers": "Neuchâtel", "cressier": "Neuchâtel", "le landeron": "Neuchâtel", "cornaux": "Neuchâtel", "saint-blaise": "Neuchâtel", "hauterive": "Neuchâtel", "marin-epagnier": "Neuchâtel", "la tène": "Neuchâtel", "colombier": "Neuchâtel", "bôle": "Neuchâtel", "boudry": "Neuchâtel", "cortaillod": "Neuchâtel", "bevaix": "Neuchâtel", "gorgier": "Neuchâtel", "saint-aubin": "Neuchâtel", "vaumarcus": "Neuchâtel", "peseux": "Neuchâtel", "corcelles": "Neuchâtel", "auvernier": "Neuchâtel", "milvignes": "Neuchâtel", "rochefort": "Neuchâtel", "valangin": "Neuchâtel", "les hauts-geneveys": "Neuchâtel"});
+
 var JURA_HORS_PERIMETRE = /* @__PURE__ */ new Set([
   "del\xE9mont",
   "delemont",
@@ -167,7 +169,7 @@ function estimateRetraiteScore(rooms, surface, region) {
   let score = 50;
   if (rooms && rooms <= 4) score += 10;
   if (surface && surface <= 140) score += 10;
-  if (["Jura \u2013 Clos du Doubs", "Jura \u2013 Franches-Montagnes", "Gruy\xE8re"].includes(region)) score += 8;
+  if (["Jura", "Jura", "Gruy\xE8re"].includes(region)) score += 8;
   return Math.max(0, Math.min(100, score));
 }
 function estimateLocatifScore(region, rooms) {
@@ -1478,6 +1480,7 @@ async function search(db, opts) {
   const vusIds = new Set(vusRes.results.map((r) => r.bien_id));
   const allRes = await db.prepare("SELECT * FROM biens").all();
   let rows = allRes.results.filter((b) => !discardedIds.has(b.id));
+  if (opts.triage) rows = rows.filter((b) => !favoriteIds.has(b.id));
   if (opts.q) {
     const q = opts.q.toLowerCase();
     rows = rows.filter((b) => (b.title || "").toLowerCase().includes(q) || (b.locality || "").toLowerCase().includes(q) || (b.type || "").toLowerCase().includes(q));
@@ -1615,12 +1618,12 @@ main{padding:14px 16px;max-width:660px;margin:0 auto;}
 
 <script>
 const TABS = [
-  {id:"tous", label:"Tous"}, {id:"opportunites", label:"Opportunites"}, {id:"favoris", label:"Favoris"},
+  {id:"tous", label:"\u00c0 trier"}, {id:"opportunites", label:"Opportunites"}, {id:"favoris", label:"Favoris"},
   {id:"baisses", label:"Baisses"}, {id:"ecartes", label:"Ecartes"}, {id:"vendus", label:"Vendus"}, {id:"sources", label:"Sources"},
   {id:"preferences", label:"Preferences"},
 ];
 let activeTab = "tous";
-const REGIONS = ["Tessin","Jura - Franches-Montagnes","Jura - Clos du Doubs","Zweisimmen","Gruyere","Neuchatel"];
+const REGIONS = ["Tessin","Gruy\u00e8re","Neuch\u00e2tel","Jura","Zweisimmen","Alpes vaudoises"];
 const TYPES = ["Appartement","Maison","Chalet","Rustico","Villa","Maison historique","PPE"];
 
 document.getElementById("fRegion").innerHTML += REGIONS.map(function(r){return "<option value='" + r + "'>" + r + "</option>";}).join("");
@@ -1863,9 +1866,13 @@ async function load(){
   if (resSecVal) params.set("residence_sec_statut", resSecVal);
   if (activeTab === "opportunites") params.set("opportunites", "1");
   if (activeTab === "favoris") params.set("favoris", "1");
+  if (activeTab === "tous") params.set("triage", "1");
 
   const r = await api("/api/search?" + params.toString());
-  main.innerHTML = r.results.length ? r.results.map(bienCard).join("") : "<div class='empty'>Aucun resultat pour ces criteres.</div>";
+  main.innerHTML = r.results.length ? r.results.map(bienCard).join("")
+    : (activeTab === "tous"
+        ? "<div class='empty'>Tout est trie. Les biens classes se trouvent dans Favoris et Ecartes.</div>"
+        : "<div class='empty'>Aucun resultat pour ces criteres.</div>");
 }
 
 document.getElementById("main").addEventListener("click", function(e){
@@ -2108,6 +2115,7 @@ var index_default = {
           cachet: q.has("cachet") ? q.get("cachet") === "1" : void 0,
           sort: q.get("sort") || "jmfit",
           favorisOnly: q.get("favoris") === "1",
+          triage: q.get("triage") === "1",
           opportunitiesOnly: q.get("opportunites") === "1",
           residenceSecondaireStatut: q.get("residence_sec_statut") || null
         });
