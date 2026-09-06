@@ -1,2 +1,6 @@
-via le worker : HTTP 200
-{"source":"immostreet → IS24 (SONDE)","url":"https://api3.geo.admin.ch/rest/services/api/SearchServer?type=locations&origins=gazetteer&limit=6&sr=4326&searchText=Rancate","http_status":200,"html_length":1289,"json_ld_count":0,"json_ld_types":[],"json_ld_with_price":null,"link_pattern_matches":0,"link_samples":[],"block_pattern_matches":null,"price_snippets":[],"detail_test":{"detail_pattern_matched":false,"detail_match_length":0,"extract_detail_result":null}}
+403                                                                                             https://www.immoscout24.ch/buy/4003423036
+404                                                                                             https://www.immoscout24.ch/fr/d/4003423036
+403                                                                                             https://www.immoscout24.ch/fr/acheter/4003423036
+403                                                                                             https://www.immoscout24.ch/kaufen/4003423036
+404                                                                                             https://www.immoscout24.ch/de/d/4003423036
+403                                                                                             https://www.immoscout24.ch/it/acquistare/4003423036
