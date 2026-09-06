@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788722921 padding-3400: sxennj2dpnrhw19uj9dd24f8q5qqn8yuoqmbpy1397vet3gr5q798vxs736pkompp1dx2aynyic6ddg63qf8ed5890sk1zcyddhpl60ashxxkowwibh0z83olcx3qc5lbkjxs2ymu9kaa5ua7gqstoddcobahynvexq6e2p89wj3ewrjopt8i8e0pobigwwjq0rjul90ocslkbwc3mbk320aqfr0krcl82d7hf7qxlaserpjitgfl2zk0ctc3k8ahmyxsf5ubzmhiudfxt2ycqz9iv4tir5zd3h46z12l2gznu8lmnt3o1yxmqd48js67seifk7n1uzf89yqqkvrcd3yh8lak58nrlxrj66j14rgxn27bgrgmnp187lmljgdtuvv7el0f19msp2r9b7cjvw5leb5itkmip244kss9336o84dutkluur7y7cxjj9o6ywscyq9iu5p3rnh1u433bqg7446s385b96pqutlg55gafbejuwkhbwfx0pbztds5rggfhb002e29cz5wf1ia3e3x9x15lussxfjitt0z85kg6zg7q933473kx0nckkviuims8h2kpdpoqj73nj3a1ghag1w6kezg88b0la63qq2l53abn9qejuthwzxapbxuendvjqn7a2osd169oudbizcan7pxho4ivmb3w2vvekcmcdwo6tvkbn11v3owa6zs2c8x6b9sy0gwyxk4w8l1mauuz7clcpxza9anfma9brvj35e8xuy4eluvjwkmqqrj2j5boxf9j6497oi9dixcf8wbgu1qfovebap2bbwd2ksf5u23i30l52lu5zo1gmx569ywfx95xv0rzw9qmhg1e31dgf0m1pmfmv601wphnlwgf6s2sitakq10k8ve62z46rvmp4514jfft4el37t5tuld0mqomnuq4b49a47473v
-// VERSION_MARKER_JMIMMO_20260906_SOUS_MOTIFS_v34
+// BUILD-MARKER 1788728046 padding-3500: 0z5jieubaztwfiplvuluo585jk2mfqczjy6k52qdlwfyqqf35kbwoh2dr9g6yiho8vu71qwtmmlyiqg2c1ex6tuegu3nk7yipp7hs2u9jeigrxr7yobel2g0flmi50e4ddaqrhhrv811mbpxlfybcgqflnj86iargu0i6ohgz41bxicn5g2svdkuhf5oh1rzp3ybgb03n3j6o4nsiumav0vk9b7abgq7nuogc3su514qtit3tynd5or6r2juxv0zmoiyty9wtlxslulrgwhv5r4uy7hnf5jyugno1sdgt9bals5newr4dp0fgfsf96b3d8qd9uld0t4165c0tlpcx9eilyhlsraukhfqp7ycmjxcr5jdkgyho56ef6ntpleamg8ljg4rf4bbsqulg06pzhfj7xie2is2a0rhb3077pg2icnazdx1ch7ieatr2vj3lc8qh4gx4ya1x3q6xid4rpc2xt87rtyavxnnn1qiubon5oxk9vijbsld82lx5pbxipyh0k29vjhuo03tu6c548a0a1sb6vlhm9tzb7oynzbtce6w0mm1k7p59q37cgh9wnbnjvaqaxcjj3ycye07mvba5tti15034oa4ijp90s080gf32sidfahzac5uftzs3vqetlhmdfe6kciexhky8z2j3yndk36ipmewg5kh1mjvl64lsnjxpt8folirc2gqplrxc2hhw0ornqv3ytx37dg32cs5iuot08eo39n26gjaoc1ax1tihe87x9yg3jh8y8fe55xhgzsra379blwzpc8v6j7rk7qdfu1cnlkcpjas8u16s8warlsthn4nlteob4186b5h6c3gxxmlxj93ndrmlbxteh8ic34cm0g2phjs4dh5dfcl0j0m3q9vvbld72t41q1xqinw3obutgkiklyihe0xrs1vl3uu5tojb38lcfvcvz7w6vvr669xklhi
+// VERSION_MARKER_JMIMMO_20260906_ORDRE_SOURCES_v35
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -844,6 +844,12 @@ async function ingest(db, fetchFn, opts) {
     const stale = pool.filter((s) => !pickedIds.has(s.id)).sort((a, b) => String(a.last_checked || "").localeCompare(String(b.last_checked || "")));
     selection = picked.concat(stale.slice(0, maxSources - nYield));
   }
+  // les sources a plusieurs telechargements passent en premier : sinon le budget
+  // est deja consomme quand leur tour arrive, et elles n'aboutissent jamais
+  const coutEleve = (s2) => {
+    try { return JSON.parse(s2.config_json || "{}").mode === "two_step" ? 0 : 1; } catch (e) { return 1; }
+  };
+  selection = selection.slice().sort((x, y) => coutEleve(x) - coutEleve(y));
   const fetchBudget = { remaining: budgetTotal };
   let attempted = 0;
   for (const srcRow of selection) {
