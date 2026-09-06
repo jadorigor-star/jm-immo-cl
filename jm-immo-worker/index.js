@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788694414 padding-2700: v2f70m6e32ifmel24mexg63lyh4vjss8p0zb17pfvybrp9e9be6ypx10csoenhrg70l2s20kgxxftbmxdmntvr3ro3kb1lof6s3ikra2ql1wupsxkl6gwf1ekarmv6jl32nohauybwnaic4948bnam212d0pxkom2s8vh5t00t0adutzyhy4ht2hndfjcrcmc4mw1kqkw5khbu62shru0e8mszojc6lbsrv3m0fh6c80umffok9qip5ortsw7klxdsuj2hc1mao0rheukocgrqmsqimsyxfaa1zu6gzu2slmma8rwy85bpx5heujgqimlzlyi42qhpgwrcdcit0f9bggpb0oshlrox0tkfhloxa7sf9eb821okf9zl6hzh9r40wxm87l760jc5cv8ihiqgua701cx7su0it8lf5xhtmhex2r5920pghv0l259k5hi3pd9ay2jzxnzzh7kmojhn59agd76fev7kdoc9zmaq0150ps9qqb9buxjbum3c6280m70tx0ulbigg2z82marwssca8yef7g8bod6vctly90z58k070s9j5wqs7xdyjcndcxav2agn8jfc4x65vv8ymuel4r8lekxmeqidn2f8xsev80ar0e2idox399jzu540110rinn0zybswixkroqj3u3nj728vj733tukql60mx2k6omg9ndf511kr8g2wuhsx1hv06khh71ssff8jskg3cluwx95q57zgmimn92fq64nr9nna67qr1w76outjvuelz2vnq42j4j20tm1t2wo68w070hs95
-// VERSION_MARKER_JMIMMO_20260906_REGION_RESOLUE_v27
+// BUILD-MARKER 1788717277 padding-2800: ldbwnbnbgh6bznnhke6gp5o6vrg931lfxmqnahpz3k5wf13zwkfxbf5689gdzjmbizshg16psguq1kkmdue9y1mowbq5m8s3tkhhjcqmcdnnsopy6e794sj8g0h6fj5jatzrnfl6um21l15ikxphh6tibtikep4tyscusp2ynx63m1xoqsdl3bh7m5q8kkvond9a8c3hxf0ibm1upg4u4zhrcnmzwcdr0gop010bwf97j5fd4g1rmibn6ul7b06cnxanncysk2wpjm1e8plfismdfcg2uokvyl19vyzx4qf4bdofhha74hy902mtv9wyrtd5csf8z6o786e5uxrza8hpc7a65xwswmzuvrc47cxh06bxwrdujklmbww8j3ma8i8ygonn4dfozqyoeryofntffmo6obnnsk7xirlris6bqu415n12x1kn5uy9tydc454aq0ory7nny00z813ursrudhjzj6ziwly2wxxupdhe3xquevbzlnyrgqahdfooktkvkf18t4xn5106i3uvykx1em4asl6d2ztzwl3hxf366x12i9tkl3lol6kwkoll4f9rx8wy1oi0fo1beltfbxwnsroouj71g1r43k8xt8nh8dvec88v3iwx0yntvdtmdxmq5kmuuq33evmgv0eklxw2hd0h6i6pahjfpqkuw2eitd15cji5kpj1bi8qu7g0fyei71f03qfqg4gcnem0jz8sv64tttn3l6b044vurg4k43g4d0p9ku0cv0qb224fbx2z6t4q94sm228w3lj3pavi5fpsc59l170kl6r3xztwn90gd28c
+// VERSION_MARKER_JMIMMO_20260906_GEOCODAGE_CH_v28
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -992,6 +992,19 @@ function estimateAccessibiliteScore(lastMileDurationMin, lastMileElevationM, tra
   return Math.max(0, Math.min(100, Math.round(score)));
 }
 
+async function geocodeAdresseSuisse(address, villageMode) {
+  // Service officiel de la Confederation : precision au batiment, sans cle.
+  const origins = villageMode ? "gazetteer,zipcode" : "address";
+  const u = "https://api3.geo.admin.ch/rest/services/api/SearchServer?type=locations&limit=4&sr=4326&lang=fr&origins="
+    + origins + "&searchText=" + encodeURIComponent(address);
+  const r = await fetch(u, { headers: { "User-Agent": "JMImmo/1.0" } });
+  if (!r.ok) return null;
+  const j = await r.json();
+  const res = (j.results || []).filter((x) => x && x.attrs && typeof x.attrs.lat === "number" && typeof x.attrs.lon === "number");
+  if (!res.length) return null;
+  const a = res[0].attrs;
+  return { lat: a.lat, lon: a.lon, source: "geo.admin", label: String(a.label || "").replace(/<[^>]+>/g, "").slice(0, 90) };
+}
 async function geocodeAddressORS(address, orsApiKey, villageMode) {
   const layers = villageMode ? "&layers=locality,borough,neighbourhood,localadmin" : "";
   const url = "https://api.heigit.org/pelias/v1/search?api_key=" + encodeURIComponent(orsApiKey) + "&text=" + encodeURIComponent(address) + "&size=1&boundary.country=CH" + layers;
@@ -1095,7 +1108,19 @@ async function computeAccessibility(address, originStopName, env, db, bId, villa
     return null;
   }
   try {
-    const addrPoint = coordSource && isFinite(coordSource.lat) && isFinite(coordSource.lon) ? { lat: coordSource.lat, lon: coordSource.lon, fromSource: true } : await geocodeAddressORS(address, env.ORS_API_KEY, villageMode);
+    let addrPoint = null;
+    if (coordSource && isFinite(coordSource.lat) && isFinite(coordSource.lon)) {
+      addrPoint = { lat: coordSource.lat, lon: coordSource.lon, fromSource: true };
+    } else {
+      try { addrPoint = await geocodeAdresseSuisse(address, villageMode); } catch (e) { addrPoint = null; }
+      if (addrPoint && db) {
+        try {
+          await db.prepare("INSERT INTO access_debug (bien_id, address, stage, error, ts) VALUES (?,?,?,?,?)")
+            .bind(bId, address, "geocode_ch", addrPoint.label || "", (/* @__PURE__ */ new Date()).toISOString()).run();
+        } catch (e2) {}
+      }
+      if (!addrPoint && env.ORS_API_KEY) addrPoint = await geocodeAddressORS(address, env.ORS_API_KEY, villageMode);
+    }
     if (!addrPoint) {
       if (db) {
         try {
