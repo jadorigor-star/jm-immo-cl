@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788717277 padding-2800: ldbwnbnbgh6bznnhke6gp5o6vrg931lfxmqnahpz3k5wf13zwkfxbf5689gdzjmbizshg16psguq1kkmdue9y1mowbq5m8s3tkhhjcqmcdnnsopy6e794sj8g0h6fj5jatzrnfl6um21l15ikxphh6tibtikep4tyscusp2ynx63m1xoqsdl3bh7m5q8kkvond9a8c3hxf0ibm1upg4u4zhrcnmzwcdr0gop010bwf97j5fd4g1rmibn6ul7b06cnxanncysk2wpjm1e8plfismdfcg2uokvyl19vyzx4qf4bdofhha74hy902mtv9wyrtd5csf8z6o786e5uxrza8hpc7a65xwswmzuvrc47cxh06bxwrdujklmbww8j3ma8i8ygonn4dfozqyoeryofntffmo6obnnsk7xirlris6bqu415n12x1kn5uy9tydc454aq0ory7nny00z813ursrudhjzj6ziwly2wxxupdhe3xquevbzlnyrgqahdfooktkvkf18t4xn5106i3uvykx1em4asl6d2ztzwl3hxf366x12i9tkl3lol6kwkoll4f9rx8wy1oi0fo1beltfbxwnsroouj71g1r43k8xt8nh8dvec88v3iwx0yntvdtmdxmq5kmuuq33evmgv0eklxw2hd0h6i6pahjfpqkuw2eitd15cji5kpj1bi8qu7g0fyei71f03qfqg4gcnem0jz8sv64tttn3l6b044vurg4k43g4d0p9ku0cv0qb224fbx2z6t4q94sm228w3lj3pavi5fpsc59l170kl6r3xztwn90gd28c
-// VERSION_MARKER_JMIMMO_20260906_GEOCODAGE_CH_v28
+// BUILD-MARKER 1788717417 padding-2900: m7c3nf9smxc5ts19l4gtfajdcd009d8dckfozyma04dxcdv0bz8abhk6rn2bkyfzasrit4bp4txr5c42q5g8ehr97d42xs9ijhu4mv796ce80970te4o2rrkpdj9hv1mcmxeiz0q0sfjjl3q5chno1ggwxl8kf0icw6hm561dmeif28me552hgq72kzzi08q0ot887qtr8g0twkfbndzzrft12zppnylrt30rbopldvkw28z2amdtj6mox8pgsnmhih8y7j6130lu1afegta2fq5rfvwr3a4j29szswyu5f5d68ps3o90ws9fmcaa0t6omouyqlntu2ihhqoym148xotpiymiycz8u8ne1p6qtl7ky5b6gqusp0g0d4xtvgjc8c4gvtann5n7njuqjyqsfhem08i208djeuklvv1tzs7j4m9qlgkgscl20sxcxq2djv1rl1vs58d4bhkt5762ad49qji4cep4t6vegw1wu58wo4gdumvh96psbzbpitj42art5ut545d5lhbl1xakafbperpw9ofh91npjh2ce7b3u47f0qs850slq1ptyr5jeii1r11t8uw1x72vrl41oh80alvd3zhalv7n8jusap4zi0ivf528stgw96e1lxj10wsalv5848g6nwqk78weibh4cel0jcr74qod77t2n36kcasqdfq6ib9rvbgz7tip5zwkf9abily36586vhoig9lynsdunkbfpfrfbvg4otynik4k6zgx3en5w6hplunmg6touki7r2ip9hcb3qb7wkwx1bykjt6qaj2gmhzrph6uf6pd0orxv31668f5o1aey560ang
+// VERSION_MARKER_JMIMMO_20260906_LIENS_REPLI_v29
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -492,6 +492,11 @@ function extractStateJsonGeneric(html, config) {
     if (f.url) {
       const direct = getByPath(item, f.url);
       if (direct && /^https?:\/\//i.test(String(direct))) url = String(direct);
+    }
+    if (!url) {
+      // repli : la page de l'agence, toujours valide, plutot qu'une URL construite
+      const repli = config.fallback_url || (Array.isArray(config.urls) ? config.urls[0] : null) || config.list_url || null;
+      if (repli && /^https?:\/\//i.test(repli)) url = repli;
     }
     if (!url && config.url_prefix && id != null) url = config.url_prefix.replace(/\/$/, "") + "/" + (config.url_path_prefix || "") + id;
     let address = f.address ? getByPath(item, f.address) : null;
