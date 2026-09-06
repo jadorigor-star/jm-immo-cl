@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788682511 padding-1400: irmaazvzpogi3vmgo2caer06qw5pzpkevveiiiea63q1qu68vs4aw8ust8ikre37wzrx7nswoqeckep9516r37w3xtf5qpc7kqm2eoc4sydg3vz05mnxwyfe9cmldf6hvufkv3qiz7ni94bjneqgo5qiv6syudjxu3g3qhicgsda7mmyyqmm9pwwtbyifjohan9oirqxxzy5g6blaqil80s3p5lybsxh0yv1slq9sbs075v2p2rkjg4z5z30ksf2ygovs5bhzgon9g1kmryetyrf5xqabu2l5kd5ahi3z3rwzsl3vwjnamd475poj0b7h6aij6ygy2637e9xp5zbns9fpt0df8mim6dhyq0ek6wllg2yw5r8lf8ghf8phzj5t3oqvg54qkk7ny3n3q17t0edzyr368n0ydzfvrica347jj8ay7zvczlk14i0fnr9wite6cyx4xlcaeqmlrgiwa95tk5c4e7xeo45b7khl3lgqwdnvm33xffv6o4rn4l3frps1m6dcfkz99oix5kxupifo2159scmkpop7y55crm3y6dvrelrnku7fxhvqdv2sfbyehvnv1wewv8ojmsrccyxs
-// VERSION_MARKER_JMIMMO_20260906_RESIDENCE_SECONDAIRE_v14
+// BUILD-MARKER 1788683655 padding-1500: 6uxsoqevh0e19ygs74v46lov81zrja31c40g507u01a0uu7x5izfflokm5k1ix7lis3065yz0z1dr0vkiuvjsz9tbyyhsyuegwk4mfxvx2uqdbmicf7mz98e4qo9in9o0cf8x2ui4u07hz0dycqvzd8f2dm84wpc7rzdrb22zcovdbd7ett5tqfu14psq6hln5ujb7ibzwv7c6o3yl9rg3kxxbpb3aqno11k62gptbur8md7lo7b9pslch5w1yml8bw9c9r8jqiptagf05a0pia7gwj02pitaffgr2hc9uo1zy9ivenqz688hiu06annmky1guig5zbvm0c1y6f7au9weja18mpfk53qg49l6b8i3ifrsi5r4epz8by5a500m546v3rv56bc8y546wya9vwdod9uxr4bmm5h0jdppgprv3taeb7jedx91ustbv2uhot7mu27idqwqu55mxgg0sjnua2sq2r8jnvm5n58zapggow51y591365l3n2kgvb3bxvkh2fpukz2xxq3apt5hp4xvn54rpcnn9do1w6ai2eqcoe2lr1rl4e
+// VERSION_MARKER_JMIMMO_20260906_LEX_WEBER_v15
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -107,6 +107,16 @@ var JURA_HORS_PERIMETRE = /* @__PURE__ */ new Set([
 ]);
 var CONF_ORDER = { "V\xE9rifi\xE9e": 3, "Probable": 2, "\xC0 contr\xF4ler": 1 };
 var CACHET_KEYWORDS = ["r\xE9nov\xE9", "historique", "authentique", "cachet", "poutres", "chemin\xE9e", "charme", "chalet", "ferme", "vo\xFBte", "madrier"];
+var LRS_COMMUNES = {"orvin":36.2,"sonvilier":24.6,"sauge":30.5,"luscherz":28.9,"vinelz":23.6,"adelboden":66.3,"kandersteg":51.4,"beatenberg":60.2,"brienz be":37.8,"brienzwiler":41.6,"darligen":35.9,"grindelwald":62.8,"habkern":47.6,"hofstetten bei brienz":24.4,"iseltwald":50.9,"lauterbrunnen":61.4,"leissigen":20.1,"niederried bei interlaken":48,"oberried am brienzersee":43.3,"saxeten":45.8,"schwanden bei brienz":34.2,"champoz":32.6,"cremines":27.1,"roches be":26.7,"saules be":26.7,"seehof":25.8,"rebevelier":41.2,"ligerz":20.7,"twann tuscherz":24.2,"diemtigen":31.4,"hasliberg":69.5,"innertkirchen":23.1,"boltigen":34.2,"lenk":64.9,"st stephan":46.9,"zweisimmen":43.1,"gsteig":40.5,"lauenen":49.6,"saanen":51.3,"guggisberg":24.3,"eriz":32.3,"sigriswil":34.4,"farnern":24.5,"fluhli":58.3,"vitznau":32.7,"weggis":25,"andermatt":61.6,"gurtnellen":50.2,"hospental":54.3,"realp":61.9,"seelisberg":32,"spiringen":50.1,"unterschachen":24.8,"wassen":39,"gersau":25,"innerthal":45,"alpthal":26.5,"morschach":51.8,"oberiberg":58.9,"riemenstalden":30,"engelberg":55.9,"emmetten":32.5,"glarus sud":29.5,"gletterens":22.8,"delley portalban":30,"cheyres chables":22.8,"chatel sur montsalvens":24.8,"cresuz":32,"jaun":36.2,"val de charmey":31.4,"plaffeien":20.8,"flums":44.4,"pfafers":31.5,"quarten":40.6,"amden":48.4,"wildhaus alt st johann":63.9,"nesslau":25.6,"vaz obervaz":76.2,"lantsch lenz":72.9,"schmitten gr":62.3,"albula alvra":59.1,"surses":74.6,"bergun filisur":69.9,"brusio":43,"poschiavo":45.8,"falera":77.9,"laax":72.1,"sagogn":55.2,"schluein":48.3,"vals":53.1,"lumnezia":62.7,"ilanz glion":33.2,"scharans":21.3,"cazis":27.2,"flerden":36.8,"tschappina":63,"urmein":69,"safiental":48.8,"domleschg":25.6,"avers":71.5,"sufers":56.8,"andeer":48.5,"zillis reischen":37.8,"ferrera":77.3,"rheinwald":64.5,"muntogna da schons":62.1,"flims":70.9,"trin":36.4,"zernez":38.2,"samnaun":56.5,"scuol":59.7,"valsot":49.1,"bever":52.3,"celerina schlarigna":68.5,"madulain":77.5,"pontresina":56.8,"la punt chamues ch":68.9,"samedan":48.9,"st moritz":53.4,"s chanf":40.4,"sils im engadin segl":72.1,"silvaplana":73.8,"zuoz":65.2,"bregaglia":63.1,"buseno":72.1,"castaneda":44.7,"rossa":71.9,"santa maria in calanca":71.4,"lostallo":20.7,"mesocco":71.1,"soazza":44.8,"roveredo gr":31.7,"calanca":78.3,"val mustair":47.9,"davos":58.9,"fideris":53,"furna":69.1,"jenaz":28.4,"klosters":65.1,"conters im prattigau":51.4,"kublis":27,"luzein":56,"churwalden":63.7,"arosa":73,"grusch":34.8,"schiers":25.6,"seewis im prattigau":34.1,"breil brigels":68,"disentis muster":57.7,"medel lucmagn":65.5,"sumvitg":55,"tujetsch":70.5,"trun":45.6,"obersaxen mundaun":81,"mammern":22.4,"isone":39,"acquarossa":62.9,"blenio":66.3,"serravalle":62.1,"airolo":40.6,"bedretto":71.1,"dalpe":73.2,"faido":65.8,"giornico":34.5,"personico":35.4,"pollegio":30.2,"quinto":60.7,"ascona":54.9,"brione sopra minusio":71.7,"brissago":72.2,"gordola":29.2,"lavertezzo":22.3,"mergoscia":82.9,"minusio":40.9,"muralto":46.3,"orselina":69.1,"ronco sopra ascona":77.9,"onsernone":76.7,"cugnasco gerra":36.2,"aranno":42.5,"arogno":38.1,"bissone":43.9,"brusino arsizio":57.7,"cademario":45,"caslano":31.6,"melide":30.7,"morcote":60.2,"muzzano":20.2,"neggio":27.4,"pura":33.9,"capriasca":34.5,"vernate":34.5,"vico morcote":60.4,"collina d oro":21.8,"alto malcantone":42.5,"tresa":40.6,"val mara":20.5,"breggia":41.5,"bosco gurin":87.6,"campo vallemaggia":90.2,"cerentino":83.3,"cevio":62.7,"linescio":79.3,"maggia":55,"lavizzara":80.2,"avegno gordevio":39.7,"lema":40.2,"terre di pedemonte":35.3,"centovalli":68.5,"gambarogno":62.1,"verzasca":81.5,"corbeyrier":28.5,"gryon":69.3,"leysin":47.4,"ollon":52.4,"ormont dessous":61.9,"ormont dessus":67.7,"cudrefin":24.4,"faoug":23.4,"vully les lacs":26.6,"mauraz":21.9,"bullet":35.8,"corcelles pres concise":24.8,"mauborget":42.4,"chevroux":29.2,"chateau d oex":43.4,"rossiniere":27.4,"rougemont":61.2,"l abbaye":21.6,"le chenit":20.7,"montreux":20.3,"eggerberg":47.7,"naters":32,"simplon":73.2,"termen":51.7,"zwischbergen":76.1,"chamoson":20.7,"nendaz":61.5,"bourg saint pierre":52.8,"liddes":43.3,"orsieres":50.1,"val de bagnes":54.1,"bellwald":85.7,"binn":76.5,"ernen":72.8,"fiesch":64.4,"fieschertal":55.9,"lax":66.8,"obergoms":79.1,"goms":76.6,"ayent":51.2,"evolene":63.9,"heremence":60.9,"saint martin vs":65.1,"vex":68.1,"mont noble":62,"albinen":71.4,"ergisch":76.8,"inden":64.5,"leuk":25.7,"leukerbad":75.8,"oberems":63.7,"guttet feschel":63.8,"gampel bratsch":37.4,"turtmann unterems":33.5,"bovernier":22.9,"iserables":46.4,"leytron":47.4,"martigny combe":25.8,"riddes":48.7,"saillon":25,"trient":52.1,"champery":63.1,"saint gingolph":41,"troistorrents":46.1,"val d illiez":53,"vionnaz":35.3,"bister":66.7,"grengiols":63.3,"riederalp":87.4,"ausserberg":36.8,"blatten":65.1,"burchen":66.1,"eischoll":64.5,"ferden":28.3,"kippel":57.9,"unterbach":64.7,"wiler lotschen":73.4,"morel filet":50.9,"bettmeralp":85.5,"finhaut":60.4,"salvan":47.9,"chalais":42.7,"grone":26.8,"icogne":57.2,"lens":58.2,"anniviers":74.5,"crans montana":58,"arbaz":39.1,"veysonnaz":68.4,"eisten":47.7,"embd":43.2,"grachen":69.3,"randa":47.9,"saas almagell":64.6,"saas balen":65.7,"saas fee":65.1,"saas grund":59.5,"st niklaus":36.3,"stalden vs":26.8,"staldenried":51.5,"tasch":36.4,"torbel":57.1,"visperterminen":49.8,"zeneggen":53.5,"zermatt":51.9,"les planchettes":31.8,"la brevine":24.2,"brot plamboz":29.4,"celigny":20.2,"mettembert":23,"movelier":23.4,"le bemont ju":23.7,"montfaucon":29,"saint brais":23.5,"soubey":63.1,"fahy":23,"clos du doubs":21.6,"moutier":20.2};
+function normCommune(n) {
+  return String(n || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
+}
+function partLRS(localite) {
+  const n = normCommune(localite);
+  if (LRS_COMMUNES[n] !== void 0) return LRS_COMMUNES[n];
+  for (const k in LRS_COMMUNES) if (k.startsWith(n + " ") || n.startsWith(k + " ")) return LRS_COMMUNES[k];
+  return null;
+}
 var RESIDENCE_SECONDAIRE_MOTIFS = [
   /r[ée]siden[cz][ae]?\s+secondar?i?[ae]s?/i,
   /residenza\s+secondaria/i,
@@ -1206,6 +1216,7 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
       address,
       residence_secondaire: residenceSecondaire ? 1 : 0,
       residence_secondaire_statut: residenceSecondaireStatut,
+      lrs_part: partLRS(latest.locality),
       first_seen: firstSeen,
       last_seen: latest.last_seen,
       deal_score: scores.deal,
@@ -1258,11 +1269,11 @@ function signatureBien(r) {
   return [r.price, r.jm_fit, r.deal_score, r.retraite_score, r.locatif_score, r.cachet_score, r.risk_score,
     r.accessibilite_score, r.is_opportunity, r.title, r.image_url, r.surface, r.rooms, r.address,
     r.transit_duration_min, r.last_mile_duration_min, r.nearest_stop_name, r.geo_lat, r.geo_lon,
-    r.price_drop_json, r.residence_secondaire_statut, r.sources_count, r.last_seen].join("|");
+    r.price_drop_json, r.residence_secondaire_statut, r.lrs_part, r.sources_count, r.last_seen].join("|");
 }
 async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienSourceDelete) {
   try {
-    const dejaLa = await db.prepare("SELECT id, price, jm_fit, deal_score, retraite_score, locatif_score, cachet_score, risk_score, accessibilite_score, is_opportunity, title, image_url, surface, rooms, address, transit_duration_min, last_mile_duration_min, nearest_stop_name, geo_lat, geo_lon, price_drop_json, residence_secondaire_statut, sources_count, last_seen FROM biens").all();
+    const dejaLa = await db.prepare("SELECT id, price, jm_fit, deal_score, retraite_score, locatif_score, cachet_score, risk_score, accessibilite_score, is_opportunity, title, image_url, surface, rooms, address, transit_duration_min, last_mile_duration_min, nearest_stop_name, geo_lat, geo_lon, price_drop_json, residence_secondaire_statut, lrs_part, sources_count, last_seen FROM biens").all();
     const sig = new Map(dejaLa.results.map((r) => [r.id, signatureBien(r)]));
     const avant = allComputed.length;
     allComputed = allComputed.filter((c) => sig.get(c.record.id) !== signatureBien(c.record));
@@ -1273,12 +1284,13 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
   const BATCH_SIZE = 2;
   for (let i = 0; i < allComputed.length; i += BATCH_SIZE) {
     const batch = allComputed.slice(i, i + BATCH_SIZE);
-    const placeholders = batch.map(() => "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").join(",");
+    const placeholders = batch.map(() => "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").join(",");
     const values = [];
     for (const c of batch) {
       const r = c.record;
       values.push(
         r.id,
+        r.lrs_part ?? null,
         r.image_url ?? null,
         r.title,
         r.locality,
@@ -1317,9 +1329,9 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
       );
     }
     if (values.length > 100) throw new Error("writeBiensInBatches : lot de " + values.length + " parametres depasse la limite D1 de 100 \u2014 reduire BATCH_SIZE");
-    await db.prepare(`INSERT INTO biens (id,image_url,title,locality,region,type,rooms,surface,price,cachet,confidence,first_seen,last_seen,deal_score,retraite_score,locatif_score,cachet_score,risk_score,accessibilite_score,nearest_stop_name,last_mile_distance_m,last_mile_duration_min,last_mile_elevation_m,last_mile_approx,is_village_center,geo_lat,geo_lon,transit_duration_min,transit_transfers,jm_fit,is_opportunity,explain,price_drop_json,address,residence_secondaire,residence_secondaire_statut)
+    await db.prepare(`INSERT INTO biens (id,lrs_part,image_url,title,locality,region,type,rooms,surface,price,cachet,confidence,first_seen,last_seen,deal_score,retraite_score,locatif_score,cachet_score,risk_score,accessibilite_score,nearest_stop_name,last_mile_distance_m,last_mile_duration_min,last_mile_elevation_m,last_mile_approx,is_village_center,geo_lat,geo_lon,transit_duration_min,transit_transfers,jm_fit,is_opportunity,explain,price_drop_json,address,residence_secondaire,residence_secondaire_statut)
       VALUES ${placeholders}
-      ON CONFLICT(id) DO UPDATE SET image_url=COALESCE(excluded.image_url, biens.image_url), title=excluded.title, locality=excluded.locality, region=excluded.region, type=excluded.type,
+      ON CONFLICT(id) DO UPDATE SET lrs_part=excluded.lrs_part, image_url=COALESCE(excluded.image_url, biens.image_url), title=excluded.title, locality=excluded.locality, region=excluded.region, type=excluded.type,
         rooms=excluded.rooms, surface=excluded.surface, price=excluded.price, cachet=excluded.cachet, confidence=excluded.confidence,
         first_seen=excluded.first_seen, last_seen=excluded.last_seen, deal_score=excluded.deal_score, retraite_score=excluded.retraite_score,
         locatif_score=excluded.locatif_score, cachet_score=excluded.cachet_score, risk_score=excluded.risk_score,
@@ -1747,10 +1759,13 @@ function bienCard(b){
     : "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(b.address || ((b.locality||"") + ", Suisse"));
   const explain = b.explain ? ("<div class='explain'>JM Fit " + b.jm_fit + "/100 - " + b.explain + "</div>") : "";
   const addrLine = b.address ? ("<div class='locality' style='margin-top:3px'>" + b.address + "</div>") : "";
+  const lrs = (b.lrs_part != null)
+    ? "<div style='font-size:11px;color:#8992A3;margin-top:6px'>Commune soumise a la LRS (" + b.lrs_part + "% de residences secondaires) : construction neuve en residence secondaire interdite. Un logement anterieur a 2012 reste utilisable comme tel.</div>"
+    : "";
   const photo = b.image_url
     ? "<img src='" + b.image_url + "' alt='' loading='lazy' referrerpolicy='no-referrer' style='width:78px;height:58px;object-fit:cover;border-radius:7px;flex:0 0 auto;background:#20242c' onerror=this.remove()>"
     : "";
-  return "<div class='card'><div class='card-top'><div style='display:flex;gap:10px;align-items:flex-start;min-width:0'>" + photo + "<div style='min-width:0'><div class='title'>" + titleHtml + "</div><div class='locality'>" + b.locality + " - " + b.region + " - <a href='" + mapUrl + "' target='_blank' rel='noopener'>Carte</a></div>" + addrLine + "</div></div>" +
+  return "<div class='card'><div class='card-top'><div style='display:flex;gap:10px;align-items:flex-start;min-width:0'>" + photo + "<div style='min-width:0'><div class='title'>" + titleHtml + "</div><div class='locality'>" + b.locality + " - " + b.region + " - <a href='" + mapUrl + "' target='_blank' rel='noopener'>Carte</a></div>" + addrLine + lrs + "</div></div>" +
     "<div class='fit-badge " + (b.is_opportunity?"hot":"") + "'>" + (b.jm_fit != null ? b.jm_fit : "") + "</div></div>" +
     "<div class='price' style='margin-top:8px'>" + fmtCHF(b.price) + "</div>" +
     "<div class='meta-row'><span>" + (b.rooms||"?") + " pieces</span><span>" + (b.surface||"?") + " m2</span></div>" +
