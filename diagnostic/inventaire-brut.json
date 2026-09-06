@@ -1,0 +1,362 @@
+[
+ [
+  "Wohnungsinventar, inventaire des logements, Inventario delle abitazioni",
+  "",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "Wohnungsinventar und Zweitwohnungsanteil, inventaire des logements et proportion de résidences secondaires ",
+  "",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "Quelle:",
+  "Wohnungsinventar",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "",
+  "Bundesamt für Raumentwicklung",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "Source:",
+  "inventaire des logements",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "",
+  "Office fédéral du développement territorial",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "Gemeindestand:",
+  "1.1.2026 (2110 Gemeinden)",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "Etat des communes:",
+  "1.1.2026 (2110 communes)",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "Datenstand / État des données:",
+  46022,
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "",
+  " ",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "Wohnungsinventar, inventaire des logements, Inventario delle abitazioni",
+  "",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "Attributname",
+  "Bezeichnung de",
+  "Bezeichnung fr",
+  "Bezeichnung en",
+  "Bezeichnung it",
+  "Bezeichnung rm",
+  ""
+ ],
+ [
+  "Gem_No",
+  "BFS-Nummer",
+  "Numéro OFS",
+  "FSO nummer",
+  "Numero UFS",
+  "Numer UST ",
+  ""
+ ],
+ [
+  "Name",
+  "Gemeinde",
+  "Commune",
+  "Commune",
+  "Comune",
+  "Vischnanca",
+  ""
+ ],
+ [
+  "ZWG_3150",
+  "Gesamtzahl aller Wohnungen",
+  "Nombre total de logements",
+  "Total number of homes",
+  "tutte le abitazioni",
+  "Total da tut las abitaziuns",
+  ""
+ ],
+ [
+  "ZWG_3010",
+  "Anzahl Erstwohnungen",
+  "Nombre de résidences principales",
+  "Number of primary homes",
+  "numero delle abitazioni primarie",
+  "Dumber d’emprimas abitaziuns",
+  ""
+ ],
+ [
+  "ZWG_3100",
+  "Anzahl Erstwohnungen gleichgestellte Wohnungen",
+  "Nombre de résidences assimilées à une résidence principale",
+  "Total number of appartements considered as primary homes",
+  "Numero delle abitazioni equiparate alle abitazioni primarie",
+  "Dumber d’abitaziuns equivalentas ad emprimas abitaziuns",
+  ""
+ ],
+ [
+  "ZWG_3110",
+  "Erstwohnungsanteil",
+  "Proportion de résidences principales",
+  "Primary home ratio",
+  "quota delle abitazioni primarie",
+  "Quota d’emprimas abitaziuns",
+  ""
+ ],
+ [
+  "ZWG_3120",
+  "Zweitwohnungsanteil",
+  "Proportion de résidences secondaires",
+  "Secondary home ratio",
+  "quota di abitazioni secondarie",
+  "Quota d’abitaziuns secundaras",
+  ""
+ ],
+ [
+  "Verfahren",
+  "Verfahren",
+  "Procédure",
+  "Case",
+  "procedimento",
+  "Procedura en elavuraziun",
+  ""
+ ],
+ [
+  "Status",
+  "Status",
+  "Statut",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "Attributwerte Verfahren",
+  "",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "Désignation d'attribut Procédure",
+  "",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ],
+ [
+  "Code",
+  "Verfahren (DE)",
+  "Procédure (FR)",
+  "Case (EN)",
+  "Procedimento (IT)",
+  "Procedura en elavuraziun (RM)",
+  ""
+ ],
+ [
+  1,
+  "Ohne Verfahren. Der Zweitwohnungsanteil liegt weiterhin unter 20 %.",
+  "Sans procédure. La proportion de résidences secondaires est toujours à moins de 20 %",
+  "",
+  "Senza procedura. La quota di abitazioni secondarie rimane inferiore al 20 %.",
+  "",
+  ""
+ ],
+ [
+  2,
+  "Ohne Verfahren. Der Zweitwohnungsanteil liegt weiterhin über 20 %.",
+  "Sans procédure. La proportion de résidences secondaires est toujours supérieure à 20 %",
+  "",
+  "Senza procedura. La quota di abitazioni secondarie rimane superiore al 20 %.",
+  "",
+  ""
+ ],
+ [
+  3,
+  "In einem Verfahren. Da der Zweitwohnungsanteil gemäss Inventar neu unter 20 % liegt, wird er überprüft.",
+  "Procédure pendante. Comme la proportion de résidences secondaires est à moins de 20 % selon l’inventaire, elle fait l’objet d’un examen.",
+  "",
+  "In una procedura. La quota di abitazioni secondarie viene riesaminata poiché secondo l’inventario è ora inferiore al 20 %.",
+  "",
+  ""
+ ],
+ [
+  4,
+  "In einem Verfahren. Da der Zweitwohnungsanteil gemäss Inventar neu über 20 % liegt, wird er überprüft.",
+  "Procédure pendante. Comme la proportion de résidences secondaires est supérieure à 20 % selon l’inventaire, elle fait l’objet d’un examen.",
+  "",
+  "In una procedura. La quota di abitazioni secondarie viene riesaminata poiché secondo l’inventario è ora superiore al 20 %.",
+  "",
+  ""
+ ],
+ [
+  5,
+  "Verfahren abgeschlossen. Der Zweitwohnungsanteil wurde überprüft, er liegt unter 20 %.",
+  "Procédure terminée. La proportion de résidences secondaires a été examiné. Elle est à moins de 20 %",
+  "",
+  "Procedura conclusa. La quota di abitazioni secondarie è stata riesaminata ed è inferiore al 20 %.",
+  "",
+  ""
+ ],
+ [
+  6,
+  "Verfahren abgeschlossen. Der Zweitwohnungsanteil wurde überprüft, er liegt über 20 %.",
+  "Procédure terminée. La proportion de résidences secondaires a été examiné. Elle est supérieure à 20 %",
+  "",
+  "Procedura conclusa. La quota di abitazioni secondarie è stata riesaminata ed è superiore al 20 %.",
+  "",
+  ""
+ ],
+ [
+  7,
+  "Verfahren abgeschlossen. Überprüfter Zweitwohnungsanteil entspricht nicht dem Inventar, er liegt unter 20 %.",
+  "Procédure terminée. La proportion de résidences secondaires examinée ne correspond pas avec l’inventaire. Elle est à moins de 20 %",
+  "",
+  "Procedura conclusa. La quota di abitazioni secondarie riesaminata non corrisponde all’inventario ed è inferiore al 20 %.",
+  "",
+  ""
+ ],
+ [
+  8,
+  "Verfahren abgeschlossen. Überprüfter Zweitwohnungsanteil entspricht nicht dem Inventar, er liegt über 20 %.",
+  "Procédure terminée. La proportion de résidences secondaires examinée ne correspond pas avec l’inventaire. Elle est supérieure à 20 %",
+  "",
+  "Procedura conclusa. La quota di abitazioni secondarie riesaminata non corrisponde all’inventario ed è superiore al 20 %.",
+  "",
+  ""
+ ],
+ [
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+  ""
+ ]
+]

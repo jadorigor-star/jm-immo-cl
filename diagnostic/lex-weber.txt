@@ -1,0 +1,24 @@
+page https://www.are.admin.ch/are/fr/home/developpement-et-amenagement-du-territoire/droit-de-l-amenagement-du-territoire/residences-secondaires.html -> HTTP 404
+page https://www.are.admin.ch/fr/inventaire-des-logements -> HTTP 404
+page https://www.are.admin.ch/de/wohnungsinventar -> HTTP 200
+  xlsx trouves : 17
+   https://www.are.admin.ch/dam/de/sd-web/UVfuge57zUfS/ZWG_2026_Q1.xlsx
+   https://www.are.admin.ch/dam/de/sd-web/zOaRJbhUxTJL/ZWG_2025_Q3.xlsx
+   https://www.are.admin.ch/dam/de/sd-web/M06wApXSluG5/zwg_2025q1.xlsx
+   https://www.are.admin.ch/dam/de/sd-web/uRabqNdtcerR/ZWG_2024_Q3.xlsx
+   https://www.are.admin.ch/dam/de/sd-web/PkiXWcInW4Ny/zwg2024q1.xlsx
+   https://www.are.admin.ch/dam/de/sd-web/7aWjHokjn38c/zwg_2023_q3.xlsx
+
+telechargement : https://www.are.admin.ch/dam/de/sd-web/UVfuge57zUfS/ZWG_2026_Q1.xlsx
+HTTP 200
+taille : 153564 octets
+feuilles : Metadaten_Métadonnées, ZWG_2026_Q1
+lignes : 58
+  [0] ["Wohnungsinventar, inventaire des logements, Inventario delle abitazioni","","","","","",""]
+  [1] ["Wohnungsinventar und Zweitwohnungsanteil, inventaire des logements et proportion de résidences secondaires ","","","","","",""]
+  [2] ["","","","","","",""]
+  [3] ["Quelle:","Wohnungsinventar","","","","",""]
+  [4] ["","Bundesamt für Raumentwicklung","","","","",""]
+  [5] ["","","","","","",""]
+  [6] ["Source:","inventaire des logements","","","","",""]
+  [7] ["","Office fédéral du développement territorial","","","","",""]
