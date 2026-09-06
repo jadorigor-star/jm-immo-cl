@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788687675 padding-1700: zn0ok9a4vla15ekj2ye58bracej77xmt7ckwq124vt6nenwdidlmvc006kay3ar9uxv89n65sixnjvoun3navcbrn5uywyt32u9leqg9mochfddumofyn9fjmq15x9gywftwn91af1un755qpzuhxnylk3p9zgsvqnihsl2eon5r8b19yvhvr87v07tsq2nqi4273qsd6ayvmuckt72iaz74uoauxvu5h72s7tr89hnskdll0kpct2rr9bv9ufdueqtty2h2z7ryqw78ojxgdvici9l8km7vxd147g2p49ywn5b42slb62qtzckapuwckf7es80pmcvmflwxgxcv2uahg30p7p7z2y0b8vsvpakf18mtpjwlpcblma12fx6yulchnnw3wqpov7e3a3xooe7ovmix6xrvc1k3ditel0w0wgbwugqrtvt8vu558pw4s2c4zpnunpblwv4cxxeu21vnpjuaugq3nokvivnz13j4ck3v2z2adenqh97nhicfxpicb6iad9yxmiulkhfhn2qlktszrm0oqy8ftks17tpvfyb5q4h50i0lirduqys8elv8s7ou38tebklzywbats1a
-// VERSION_MARKER_JMIMMO_20260906_LOCALITE_DIAG_v17
+// BUILD-MARKER 1788687974 padding-1800: chyec45hazkvfbg4ntbwpmmocy2t07rvdjuicery7mrrl48nj7g3we0pp8uiuzswnp9ajlpw5zgxdyvnzjqk1iz4lh4jbrj39pteg2moqnm6b1pn7opqmaug5t7lk3tas1yafi6026vvmsaklo7d4mpze1dblxvaizhv55wzr4ffl4ibufksuad9c61vg8kjgnio03h1r4yh4aonpwd0tx1uyrmcf9wbdntc0t34p28yzbkuig49glxsdtrzwqtmkforso80d863r03iaq0g7e1wnkiooqhcillv7vihsbn3zl8g1x01rhtz6xcwhd55e91h259pu8vy3jg1qrpu9l5tbggebmlhq2xgeiiada27v1p4shnxvnekpjyka4f41exttknvq8vqpmyuxpphhq00lh5amks3ea2xfizu01xoucgceb197o6ybjrdu5ly6frmg0i15stowojm5000p9j7baqar1yeora24zz2mymhr99rrv1kmxo7wibu799vvg2csur988ntm6twyk62beom75dt6h3evszaz9ph9g8uty5kh2aom0h0yntw515kh0xmv8tuhq8rzgaj58pwlgql6wm4paqttrcz9pxey05b
+// VERSION_MARKER_JMIMMO_20260906_LOCALITE_FINE_v18
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -146,16 +146,17 @@ async function resoudreLieu(db, terme, fetchFn, budget) {
   let trouve = null, note = "";
   try {
     budget.remaining--;
-    const u = "https://api3.geo.admin.ch/rest/services/api/SearchServer?type=locations&origins=gazetteer&limit=6&sr=4326&searchText=" + encodeURIComponent(terme);
-    const r = await fetchFn(u, { headers: { "User-Agent": "JMImmo/1.0" } });
+    const u = "https://api3.geo.admin.ch/rest/services/api/SearchServer?type=locations&origins=gazetteer&limit=8&sr=4326&lang=en&searchText=" + encodeURIComponent(terme);
+    const r = await fetchFn(u, { headers: { "User-Agent": "JMImmo/1.0", "Accept-Language": "en" } });
     note = "http" + r.status;
     if (r.ok) {
       const j = await r.json();
       note += " res=" + (j.results || []).length;
       for (const x of (j.results || [])) {
         const label = String(x.attrs.label).replace(/<[^>]+>/g, "");
-        const mm = /^Populated Place\s+(.+?)\s+\(([A-Z]{2})\)\s*-\s*(.+)$/.exec(label);
-        if (!mm) { note += " |NOPP:" + label.slice(0, 28); continue; }
+        const mm = /^(Populated Place|Ort|Localit\u00e9|Localit\u00e0|Luogo|Lieu habit\u00e9|Abitato|Village)\s+(.+?)\s+\(([A-Z]{2})\)\s*-\s*(.+)$/.exec(label);
+        if (!mm) { note += " |TYPE:" + label.slice(0, 26); continue; }
+        mm.splice(1, 1);
         if (normCommune(mm[1]) !== cle) { note += " |NOM:" + normCommune(mm[1]); continue; }
         if (!CANTONS_PERIMETRE.includes(mm[2])) { note += " |CANTON:" + mm[2]; continue; }
         trouve = { terme: cle, nom: mm[1].trim(), commune: mm[3].trim(), canton: mm[2], lat: x.attrs.lat, lon: x.attrs.lon };
