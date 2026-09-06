@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788693512 padding-2400: qla5vfkh0t1u4pjjgkay4cv81p0hxhhi2ioajeenvmzjd3cd5jjsh1lftfmm3suf8rup0mqfrar4la7n1gd6lpygg13lcdhj663v5os5ejrsnacnaxwwbqbm3niet2afe4jimhoap07b2pabbwdmhlkmxer8bdqrc62eujkf48k6btfzk85cllajvmawpc4o8rzfuf2be32dckp8h1usupb6znqwfgk826xvf3hqzm4c9jawt8501fuf9nzmtniel2gc7v9g22aujllfxjrbtgsxia9o8utm001wp6ozohf5cew2yimzk5vy9poyhkkpjk5zn79gslnjc2uqzopz8etzv281shucxwlsjryla72ui6hc8m9xrc426ue0o6szsyt69zdbrjac71t7wd3n6vtiqtk1denlzd0ersolt6ycv5sdo93g4iisbzx5znhs78g7jdqqj6kao7smnnfy22sbw4jl9oukftmmk2gjam95ugx25gemqc5v8guy6iw6vh7axtog434cwtak0cm88agavrxw7awrljlehc4k86jpdmtgj1w9ogx7hnftrwwzczbyrzvr66q339lw03x6t6svsj396kciuh4qv11elpswuhj1n5d5lt7ot24hqhi136ivchl8kt8uve4bicebqkgkwpb2xv9inf10cy0x7wr3auxr5soaskh1khnjz1ufkbgtmvhgs0i47fmofhddvio92a0l0jkbon60
-// VERSION_MARKER_JMIMMO_20260906_REANALYSE_v24
+// BUILD-MARKER 1788693825 padding-2500: f50pt5in7cih6yd0qzq4snw3mkzndiy16bovx0mlmi1izt758w3pqxg4e08tshox97r5c4g7ikgv2rbmn434aw2ej9elghjmvo7pijc8ob2przl6kb2p0co7tkm6u1slx8no5pozrsgw7e9tgufb1jnjkj9rmcpemvqwh90eun3021tyf9osgekbiqtgs2ldbn6r3vcqq9ua1purkhj2l5642tl4vlc9ub6of4pspu1ui1k2jhuerzhelbdgp4w659vvp9usehq9tp0u04xwdo8stvlchzgpjjbobpwp1lyss00rzskm5v3oq1yypfb7xfox2rfniyasxxrmhin0t810f1t9ebnqf3jvz6dysz5l0kzeykqwf16fmbkirbeowi2u3k5o6kjn2hzfxfymw1iizgqjk7vai4gwz17v74qhieqc8n3bn16hmxw1mjlvkz7nklmy8ahx0ilxo8pefcziq4ex34wvrjd4tu696qh3czft7971tymnwf9jvwz6edw2ymegn11jvti4hyyef376wv6m0nu4zgacqqjrs3zf7a26mgorevzwltcvb04r1kms4n6wdxjtkde94c2pjsba11ovz28b34nxg6feuh7dnu3ckug987kgqed096gnps3a2mlmz47bn3e5i4zirhyb0jqb3v2o0gn8rjjibdzkdkmrbao0z72satar8ztfqn8c171oby9o7kqppumnjgb0wjw6f1w7tlzl4nyanz7szhuhhtc6cjc1
+// VERSION_MARKER_JMIMMO_20260906_REANALYSE_v25
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -1562,13 +1562,14 @@ async function recomputeTargeted(db, bienIds, env) {
 
 async function reanalyserLocalites(db, fetchFn, limite) {
   const budget = { remaining: 40 };
-  const res = await db.prepare("SELECT id, source_id, external_id, locality, region, title, address, description, bien_id, type, rooms, surface FROM listings WHERE status='active' ORDER BY last_seen DESC LIMIT ?").bind(limite || 120).all();
+  const res = await db.prepare("SELECT id, source_id, external_id, locality, region, title, address, description, bien_id, type, rooms, surface FROM listings WHERE status='active' AND COALESCE(localite_affinee,0)=0 ORDER BY last_seen DESC LIMIT ?").bind(limite || 120).all();
   const rapport = { examinees: 0, corrigees: 0, details: [] };
   for (const l of res.results) {
     rapport.examinees++;
     const rl = { locality: l.locality, title: l.title, address: l.address, description: l.description, geo_lat: null, geo_lon: null };
     let change = false;
     try { change = await affinerLocalite(db, rl, fetchFn, budget); } catch (e) { change = false; }
+    try { await db.prepare("UPDATE listings SET localite_affinee=1 WHERE id=?").bind(l.id).run(); } catch (e) {}
     if (!change) continue;
     const ancienBien = l.bien_id;
     const nouvelleRegion = computeRegion(rl.locality) || l.region;
