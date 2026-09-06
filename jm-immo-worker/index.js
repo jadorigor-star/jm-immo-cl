@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788683655 padding-1500: 6uxsoqevh0e19ygs74v46lov81zrja31c40g507u01a0uu7x5izfflokm5k1ix7lis3065yz0z1dr0vkiuvjsz9tbyyhsyuegwk4mfxvx2uqdbmicf7mz98e4qo9in9o0cf8x2ui4u07hz0dycqvzd8f2dm84wpc7rzdrb22zcovdbd7ett5tqfu14psq6hln5ujb7ibzwv7c6o3yl9rg3kxxbpb3aqno11k62gptbur8md7lo7b9pslch5w1yml8bw9c9r8jqiptagf05a0pia7gwj02pitaffgr2hc9uo1zy9ivenqz688hiu06annmky1guig5zbvm0c1y6f7au9weja18mpfk53qg49l6b8i3ifrsi5r4epz8by5a500m546v3rv56bc8y546wya9vwdod9uxr4bmm5h0jdppgprv3taeb7jedx91ustbv2uhot7mu27idqwqu55mxgg0sjnua2sq2r8jnvm5n58zapggow51y591365l3n2kgvb3bxvkh2fpukz2xxq3apt5hp4xvn54rpcnn9do1w6ai2eqcoe2lr1rl4e
-// VERSION_MARKER_JMIMMO_20260906_LEX_WEBER_v15
+// BUILD-MARKER 1788687025 padding-1600: z8oxxmae6ndasojgah7s9ute80ux39mxwbas7zcdybw7d0teq6sdxjhwz3ofsrxxbnuttujqsih4i8d91o6yiaiyjc4rwf4rr9ttswccfb8kdxcc49iarfb2n9po9v0y1uaa7sx41thwie45y7k4xhl4zdaaklnxo3e7erq5k34k7rayl9w3lt9wpgro52r4vqy89n744q1t1b5797emded74toja6x9jabv9y250h7bhg128wcncs4lcaxjt305fueu9j2e57prkeiup3hj4nxr4pevserxd218fb1d2xuwlzrmongq1ul58spa55qwqca7vrobp1oftqm6hsxy6d465kipkjfvviwmoqiqdy0lj4x34e5tc7v590mg9h17lxq0moq8e6wmkiag5o9naioceed5kszrvcdgpnlg1fmg3ix4pnflgl3raay4125d850x67njac2tb4dxqf7rw7by1tesa4r3fcntax4gcbc29n5g99scnln0glxopff5ihvuh9naz9fi09vdosq1m0lyr7scuwxrbamlzq8tmjtudjw0z1xdgxp1fktct2zn5pdzg86gagxwjsjcilu
+// VERSION_MARKER_JMIMMO_20260906_LOCALITE_FINE_v16
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -116,6 +116,73 @@ function partLRS(localite) {
   if (LRS_COMMUNES[n] !== void 0) return LRS_COMMUNES[n];
   for (const k in LRS_COMMUNES) if (k.startsWith(n + " ") || n.startsWith(k + " ")) return LRS_COMMUNES[k];
   return null;
+}
+
+var CANTONS_PERIMETRE = ["TI", "FR", "NE", "JU", "BE", "VD"];
+function candidatsLieu(rl) {
+  const out = [];
+  const pousser = (v) => { const t = String(v || "").trim(); if (t.length >= 3 && t.length <= 32) out.push(t); };
+  const adr = String(rl.address || "");
+  let m = /\b\d{4}\s+([A-Za-z\u00C0-\u024F][A-Za-z\u00C0-\u024F'\u2019\- ]{2,30})/.exec(adr);
+  if (m) pousser(m[1].split(",")[0]);
+  const titre = String(rl.title || "");
+  m = /,\s*([A-Z\u00C0-\u024F][A-Za-z\u00C0-\u024F'\u2019\-]{2,24})\s*$/.exec(titre);
+  if (m) pousser(m[1]);
+  m = /(?:^|[\s(\u2013\u2014-])(?:\u00e0|a|in|di|de|au|aux)\s+([A-Z\u00C0-\u024F][A-Za-z\u00C0-\u024F'\u2019\-]{2,24})/.exec(titre);
+  if (m) pousser(m[1]);
+  const desc = String(rl.description || "").slice(0, 400);
+  m = /(?:frazione di|quartiere di|localit\u00e0 di|(?:^|[\s(])(?:\u00e0|a|in|nel|nella))\s+([A-Z\u00C0-\u024F][A-Za-z\u00C0-\u024F'\u2019\-]{2,24})/.exec(desc);
+  if (m) pousser(m[1]);
+  return [...new Set(out)];
+}
+async function resoudreLieu(db, terme, fetchFn, budget) {
+  const cle = normCommune(terme);
+  if (!cle) return null;
+  try {
+    const c = await db.prepare("SELECT * FROM lieux_resolus WHERE terme=?").bind(cle).all();
+    if (c.results.length) return c.results[0].nom ? c.results[0] : null;
+  } catch (e) { return null; }
+  if (!budget || budget.remaining <= 0) return null;
+  let trouve = null;
+  try {
+    budget.remaining--;
+    const u = "https://api3.geo.admin.ch/rest/services/api/SearchServer?type=locations&origins=gazetteer&limit=6&sr=4326&searchText=" + encodeURIComponent(terme);
+    const r = await fetchFn(u, { headers: { "User-Agent": "JMImmo/1.0" } });
+    if (r.ok) {
+      const j = await r.json();
+      for (const x of (j.results || [])) {
+        const label = String(x.attrs.label).replace(/<[^>]+>/g, "");
+        const mm = /^Populated Place\s+(.+?)\s+\(([A-Z]{2})\)\s*-\s*(.+)$/.exec(label);
+        if (!mm) continue;
+        if (normCommune(mm[1]) !== cle) continue;
+        if (!CANTONS_PERIMETRE.includes(mm[2])) continue;
+        trouve = { terme: cle, nom: mm[1].trim(), commune: mm[3].trim(), canton: mm[2], lat: x.attrs.lat, lon: x.attrs.lon };
+        break;
+      }
+    }
+  } catch (e) { trouve = null; }
+  try {
+    await db.prepare("INSERT INTO lieux_resolus (terme, nom, commune, canton, lat, lon, resolu_le) VALUES (?,?,?,?,?,?,?) ON CONFLICT(terme) DO UPDATE SET nom=excluded.nom, commune=excluded.commune, canton=excluded.canton, lat=excluded.lat, lon=excluded.lon, resolu_le=excluded.resolu_le")
+      .bind(cle, trouve ? trouve.nom : null, trouve ? trouve.commune : null, trouve ? trouve.canton : null, trouve ? trouve.lat : null, trouve ? trouve.lon : null, (/* @__PURE__ */ new Date()).toISOString()).run();
+  } catch (e) {}
+  return trouve;
+}
+async function affinerLocalite(db, rl, fetchFn, budget) {
+  const actuelle = normCommune(rl.locality);
+  for (const cand of candidatsLieu(rl)) {
+    if (normCommune(cand) === actuelle) continue;
+    const lieu = await resoudreLieu(db, cand, fetchFn, budget);
+    if (!lieu || !lieu.nom) continue;
+    const memeCommune = normCommune(lieu.commune) === actuelle;
+    const communeConnue = partLRS(lieu.commune) !== null || REGION_MAP[normCommune(lieu.commune)] || REGION_MAP[actuelle];
+    if (!memeCommune && !communeConnue) continue;
+    rl.locality_source = rl.locality;
+    rl.locality = lieu.nom;
+    rl.commune = lieu.commune;
+    if (rl.geo_lat == null && lieu.lat != null) { rl.geo_lat = lieu.lat; rl.geo_lon = lieu.lon; }
+    return true;
+  }
+  return false;
 }
 var RESIDENCE_SECONDAIRE_MOTIFS = [
   /r[ée]siden[cz][ae]?\s+secondar?i?[ae]s?/i,
@@ -768,7 +835,10 @@ async function ingest(db, fetchFn, opts) {
     try {
       const rawListings = await adapter.fetchListings(fetchFn, srcBudget);
       state = "accessible";
-      for (const rl of rawListings) stored += await storeListing(db, srcRow, rl, extra);
+      for (const rl of rawListings) {
+        try { await affinerLocalite(db, rl, fetchFn, srcBudget); } catch (e) {}
+        stored += await storeListing(db, srcRow, rl, extra);
+      }
       const touched = rawListings.touchedUrls || [];
       if (touched.length) {
         const ph = touched.map(() => "?").join(",");
