@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788718313 padding-3100: 80jnp16wis1t1ufj0isiio2xmok57xzxjpesambbg4yx2j6sgeenmovez787jmj5z79aysr55bkjdlwwotmudj3b7n0jagpqys9i994y0hstw0seanm9x4ffcph2n7otwixkwl80cwg45bz4o558949w92rqbcktri32hniqjzlxhcr9hhar90b8clo0ndklo7bulxpgy6x42ageap7xeat1sh2f7g32ww7p9spz80f6gf02nlz9u8h9a5xute1jk8vh3ykqejrm5fzx1hqnniest2ym7keaac09dwi2hpnf6t09czesf30tu6s7eg0hws7ish2zatxctfcpmr4zipp8owaxfp8wrtwhdmzewnwd8jiwtyjf7oztdqf0yb6slqj48qrk9iosbf2irpkhvo9att95t2ijf8ebz3kpi4y03m8968fjx0cge4jz3sgcom9xgy3eoiin3oupsk7wsswdb6r2svb6do99m2juc054k08zcr5zjtvs52ki3fsl4vshhlndwdf3bvmoi6wh1ktqidltop30ssumykxb8d7soes3ss3ulmf0nt3h2wr2cdk69akp41ug58e84fvcjn9s360jxp96me2938pl2swqrnyssze82ne8dguz89pxgrhxuejbjizrnqjlv2k0616c5spqknzcuukzu679qqn4bdtjooja99uzngs50lp7gfqg3xp0qgb3pcirt5q5esn2bnp5oykvgmtteti0dex0acz8tb31ol8opuzqwu9hzf6ngshmstjirdctz91mpi2bvrzuu1icathnz94ojs0d84hienl3j6g30jie87wsr7azhq1hwy2veivcx1lfl92v8ns242st3xtyojtr7x93qnfb
-// VERSION_MARKER_JMIMMO_20260906_IDENTIFIANTS_v31
+// BUILD-MARKER 1788722023 padding-3200: y2j67386tqqoppp6mr73merl83hquagqnkj7w64ob8o2r5ud98ewb8jby649e5x9nq79aeo2yjl26mc8pi5qmjyvannvfqaegk61seic441tu2oaiiaz57p5mrw3uutsyjn9xw21w3qp7irrbqcvxb2h8kz27fkhii6jdl1p2f7tf63at9a44vf4oc3bog0nalxbj14j69jy0d645zuxcbrq0nee6g1vup9f9fg9l2ocnb8sngefog75b0ui5x3l8a0dqnfh8teqs6piab22zhefzfc99c3db74ko13cpkb3ub4e7zxwcmuhwotg4ww5wou28il6gkp2du3rslk5ix6dn2bsp7v6j5jaa1u4hycwcfr08ix6of66n0nwnlbslmzvahugrl7vfj6jsiytwq1j9xltw2cxcxq1xp92y1n9a6uthfbg4g8bovx1djurx78tbdi3qhr1wy80blyeaws7uqml2a0apx0g15m5ivywhcr67r4f0khy2lju663i6kqanum9izijs62uzdl3b1p73uuicykp31h3xysp6bnx6skhdmpcp7hge75re08s2avypcbfs8h076ag9hifojbrgxq3v788t9obzqg982xdatd38bcmliyrjuq6ig758z9zo0xrku9a4vk0h9lbfqxe3qqo0zagmqbmnzgu4lx82wn0ii7quxachda9kdepq9sr4lbott738qmz6vwo5w121uezfe90n4oso9bn763bivsq74wkbvj3smzy2nll8ff4x668tkingo64clxw75ys3u8qcbkq6y0gaaoydxolxx9ms5kmdpz4b99uvis2ene9gjymctvjhlsbpexe67ub4nhjm0y21t3miwdqj6jv7wxu4707soef9u5i9b5ablrt
+// VERSION_MARKER_JMIMMO_20260906_ENTITES_v32
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -331,7 +331,20 @@ function demoAdapter() {
   };
 }
 function decodeEntitiesGeneric(s) {
-  return (s || "").replace(/&#0*39;/g, "'").replace(/&#x0*27;/gi, "'").replace(/&rsquo;/g, "\u2019").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
+  let t = (s || "").replace(/&#0*39;/g, "'").replace(/&#x0*27;/gi, "'").replace(/&rsquo;/g, "\u2019").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
+  // entites numeriques, en preservant les caracteres structurants du HTML
+  const proteges = /* @__PURE__ */ new Set([34, 38, 39, 60, 62]);
+  t = t.replace(/&#x([0-9a-f]{1,5});/gi, (m, h) => {
+    const c = parseInt(h, 16);
+    return proteges.has(c) || !isFinite(c) ? m : String.fromCodePoint(c);
+  });
+  t = t.replace(/&#(\d{1,6});/g, (m, d) => {
+    const c = parseInt(d, 10);
+    return proteges.has(c) || !isFinite(c) ? m : String.fromCodePoint(c);
+  });
+  const nommees = { eacute: "\u00e9", egrave: "\u00e8", agrave: "\u00e0", ecirc: "\u00ea", ocirc: "\u00f4", ccedil: "\u00e7", ugrave: "\u00f9", icirc: "\u00ee", euml: "\u00eb", acirc: "\u00e2", ntilde: "\u00f1", uuml: "\u00fc", ouml: "\u00f6", auml: "\u00e4", szlig: "\u00df", laquo: "\u00ab", raquo: "\u00bb", deg: "\u00b0", sup2: "\u00b2", hellip: "\u2026", ndash: "\u2013", mdash: "\u2014", lsquo: "\u2018", ldquo: "\u201c", rdquo: "\u201d" };
+  t = t.replace(/&([a-z]{2,8});/gi, (m, n) => nommees[n.toLowerCase()] !== void 0 ? nommees[n.toLowerCase()] : m);
+  return t;
 }
 function parsePriceGeneric(raw) {
   if (!raw) return null;
