@@ -13,12 +13,23 @@ telechargement : https://www.are.admin.ch/dam/de/sd-web/UVfuge57zUfS/ZWG_2026_Q1
 HTTP 200
 taille : 153564 octets
 feuilles : Metadaten_Métadonnées, ZWG_2026_Q1
-lignes : 58
-  [0] ["Wohnungsinventar, inventaire des logements, Inventario delle abitazioni","","","","","",""]
-  [1] ["Wohnungsinventar und Zweitwohnungsanteil, inventaire des logements et proportion de résidences secondaires ","","","","","",""]
-  [2] ["","","","","","",""]
-  [3] ["Quelle:","Wohnungsinventar","","","","",""]
-  [4] ["","Bundesamt für Raumentwicklung","","","","",""]
-  [5] ["","","","","","",""]
-  [6] ["Source:","inventaire des logements","","","","",""]
-  [7] ["","Office fédéral du développement territorial","","","","",""]
+lignes : 2111
+  [0] ["Gem_No","Name","Kt_No","Kt_Kz","ZWG_3150","ZWG_3010","ZWG_3100","ZWG_3110","ZWG_3120","Verfahren","Status"]
+  [1] [1,"Aeugst am Albis",1,"ZH",975,867,0,88.92,11.08,1,0]
+  [2] [2,"Affoltern am Albis",1,"ZH",6029,5660,0,93.88,6.12,1,0]
+  [3] [3,"Bonstetten",1,"ZH",2534,2414,0,95.26,4.74,1,0]
+  [4] [4,"Hausen am Albis",1,"ZH",1834,1696,0,92.48,7.52,1,0]
+  [5] [5,"Hedingen",1,"ZH",1764,1679,1,95.24,4.76,1,0]
+  [6] [6,"Kappel am Albis",1,"ZH",606,549,0,90.59,9.41,1,0]
+  [7] [7,"Knonau",1,"ZH",1102,1016,0,92.2,7.8,1,0]
+
+en-tete ligne -1 : undefined
+/home/runner/work/jm-immo-cl/jm-immo-cl/outils/lex-weber.js:50
+  const ent = lignes[iEnt].map((c) => String(c).trim());
+                           ^
+
+TypeError: Cannot read properties of undefined (reading 'map')
+    at /home/runner/work/jm-immo-cl/jm-immo-cl/outils/lex-weber.js:50:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+Node.js v20.20.2
