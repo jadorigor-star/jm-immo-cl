@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788722023 padding-3200: y2j67386tqqoppp6mr73merl83hquagqnkj7w64ob8o2r5ud98ewb8jby649e5x9nq79aeo2yjl26mc8pi5qmjyvannvfqaegk61seic441tu2oaiiaz57p5mrw3uutsyjn9xw21w3qp7irrbqcvxb2h8kz27fkhii6jdl1p2f7tf63at9a44vf4oc3bog0nalxbj14j69jy0d645zuxcbrq0nee6g1vup9f9fg9l2ocnb8sngefog75b0ui5x3l8a0dqnfh8teqs6piab22zhefzfc99c3db74ko13cpkb3ub4e7zxwcmuhwotg4ww5wou28il6gkp2du3rslk5ix6dn2bsp7v6j5jaa1u4hycwcfr08ix6of66n0nwnlbslmzvahugrl7vfj6jsiytwq1j9xltw2cxcxq1xp92y1n9a6uthfbg4g8bovx1djurx78tbdi3qhr1wy80blyeaws7uqml2a0apx0g15m5ivywhcr67r4f0khy2lju663i6kqanum9izijs62uzdl3b1p73uuicykp31h3xysp6bnx6skhdmpcp7hge75re08s2avypcbfs8h076ag9hifojbrgxq3v788t9obzqg982xdatd38bcmliyrjuq6ig758z9zo0xrku9a4vk0h9lbfqxe3qqo0zagmqbmnzgu4lx82wn0ii7quxachda9kdepq9sr4lbott738qmz6vwo5w121uezfe90n4oso9bn763bivsq74wkbvj3smzy2nll8ff4x668tkingo64clxw75ys3u8qcbkq6y0gaaoydxolxx9ms5kmdpz4b99uvis2ene9gjymctvjhlsbpexe67ub4nhjm0y21t3miwdqj6jv7wxu4707soef9u5i9b5ablrt
-// VERSION_MARKER_JMIMMO_20260906_ENTITES_v32
+// BUILD-MARKER 1788722345 padding-3300: f32qw4hl8qqi0fwlt5fkvhqo4vi75hb0l6k735yq419zlcc3rzrxzcw8p2f18rgjalflqtp1y5k6a843klosws0y2kie16bxi9yr8xd01wh0y9lj3dyq9gtoqf0h40tjjtj4a6tfkg00u9ex8i7iko5vm7mcgnalfxu1qlpo2pevgh60ulch5zojkfxlitg2uc8c340nhy967x6fgez84b3adnof9vbuw27el5s212wzatgx6egzop8h2vxj0v5zgn0cjg7x8yslqlh6dzlx1tl9r0mn8hcxm3wbi5gl2mp467vhp2185qt8qf8m1wnnc3qlpsx9j3wwtz41tjejtc0q63bulm0cbesfs50mmhmch4b9bwc28rfcshpeqvx0z9h5pdqvz4ervfzdsd4qz8imki567ldi4o6k4buwrql37dfwi5vrz6tnn8xb4i4cgog4k6b6lk1irzckvtwmzj4gri22qyhk53fntdgyg5pvpbbx49unngvr97j2kulgrxcw1hxfcxpht2fmuzstfvdd342kwdnbnlxxtjbai8i6a93cv8oxch969npwyt4nd15eo7zwnyhdopth6z0vlde92x3ebcoixy6xu7dw1efgqzg8tgf5murwsbde8tgw0hhknfxpfb04za2fsegy87omr712nkdwkdfuqyfn6b69b0hnrejp0a313vnb4wgkv10zpw3eswx7qhqmk8b7z0neyq99b8136x7h1cq4va5wjj5320qbga9typnleffm168eu31lmobfo0ipey3849xpnm7zqig47jvjyz1111myirxx7p94h5xsof3rqg5fxiphxj4uqwkip7r065jhbj4tzjufszdxnh2mf5h8feasudlmixtd84wrw8qwqag04yhbvwv3gv0lhbixcar4nq7e
+// VERSION_MARKER_JMIMMO_20260906_FORCE_v33
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -847,7 +847,7 @@ async function ingest(db, fetchFn, opts) {
     if (attempted >= maxSources) break;
     attempted++;
     let knownUrls = null;
-    if (srcRow.adapter !== "demo") {
+    if (srcRow.adapter !== "demo" && !o.forceDetails) {
       try {
         const ku = await db.prepare("SELECT url FROM listings WHERE source_id=? AND status='active' AND url<>''").bind(srcRow.id).all();
         knownUrls = new Set(ku.results.map((r) => r.url));
@@ -862,6 +862,7 @@ async function ingest(db, fetchFn, opts) {
     try {
       const rawListings = await adapter.fetchListings(fetchFn, srcBudget);
       state = "accessible";
+      if (o.forceDetails) extra.forceEcriture = true;
       for (const rl of rawListings) {
         try { await affinerLocalite(db, rl, fetchFn, srcBudget); } catch (e) {}
         stored += await storeListing(db, srcRow, rl, extra);
@@ -962,7 +963,7 @@ async function storeListing(db, srcRow, rl, extra) {
   const existing = await db.prepare("SELECT first_seen, last_seen, price, status, title, image_url, description, address, region, confidence FROM listings WHERE id=?").bind(listingId).all();
   const anc = existing.results[0] || null;
   const firstSeen = anc ? anc.first_seen : today;
-  if (anc && anc.last_seen === today
+  if (anc && !(extra && extra.forceEcriture) && anc.last_seen === today
     && Number(anc.price) === Number(rl.price)
     && anc.status === "active"
     && (anc.title || "") === (rl.title || "")
@@ -1672,8 +1673,8 @@ async function reanalyserLocalites(db, fetchFn, limite) {
   }
   return rapport;
 }
-async function fullRefresh(db, fetchFn, env, sansRecalcul) {
-  const report = await ingest(db, fetchFn, { budget: 45, maxPerSource: 6 });
+async function fullRefresh(db, fetchFn, env, sansRecalcul, forceDetails) {
+  const report = await ingest(db, fetchFn, { budget: 45, maxPerSource: 8, forceDetails: !!forceDetails });
   if (sansRecalcul) return { ingestion: report, recompute: "ignore" };
   const stats = await recomputeFull(db, env);
   return Object.assign({ ingestion: report }, stats);
@@ -2319,7 +2320,7 @@ var index_default = {
         return json(out);
       }
       if (url.pathname === "/api/refresh" && (request.method === "POST" || request.method === "GET")) {
-        const report = await fullRefresh(db, fetch.bind(globalThis), env, url.searchParams.get("recompute") === "0");
+        const report = await fullRefresh(db, fetch.bind(globalThis), env, url.searchParams.get("recompute") === "0", url.searchParams.get("force") === "1");
         return json(report);
       }
       if (url.pathname === "/api/compute-access" && (request.method === "POST" || request.method === "GET")) {
