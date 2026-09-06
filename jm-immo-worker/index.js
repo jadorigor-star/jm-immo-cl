@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788691343 padding-2200: 4fkb96ggl1noqbl945n98wdhx12yyxvfhdi9k28jl5ec03c24bptiw61no0q19rgb4mfdnszxz3yyjdl06mq0yb97mky2m5z0e8wedhl3w0rpnizrqxd2dp8vptlgioxe3zoe4gdsbza9xv880rxm50luqc8o15bevbr6i7z2olubog09se4bur199rlo8zeipborn82cdyy7jscyljgtyjd9v7cfaqzzx8k1qvglsboflop6s8sqbcayyp63lcy2iqhrhyz3sf8j72w0hp54jt0bosq8mmemcjz3ako4fzs4jnt7ie77ijr4o4ymeu0dtt64s1aiytrwoq5rdkg4i6wj3dq39reql0v2m6huccdowbfxles5soj3ujlqzejgkfo74sbs3oj33izo448i1hnuaszevb5o60texnfd64pjyv73cstrhicpmf47owgepnyyny4nfgfyebjy0vbvhi4jelpgsbu4sx42zd96y9frvjadyx8yx1805j3y8ohrsejoe1icxh2n46fa20njb7ebnctl6lvx56aqjhyg7dg0fshkm7ht3r95y3klo4s5iagp4b6sxoriwl4jq21soivwzlnnl873mb2ck85qa16v6zxue7w08rd03049dg1tsk8536882wy76n8rd82bc05vekncbf8fj32rpwi89tial42oanu8kdzzvjk
-// VERSION_MARKER_JMIMMO_20260906_TRI_PRIX_M2_v22
+// BUILD-MARKER 1788691743 padding-2300: a3ovo4d5n6tq1ooqg0yo5p9zd48lcboifh5abo8aphze2ia2zlhsmozom02oyfsd08qstcxitrxrm78mawrmvhknh9trr9285t28dlhwpwtd9djy4stt4m2imrhgkqwl7jwz1hvnm16ihi4020kmgikp9502knax6qi8646e2dumipk3k64a8646jlw052bxotgls02c2lg47jqf2u417hz07eka2qwjv509khw3hko41sn5r0mjiwt2w0lbgnq1eqf2cbm1791norw2582zbk8pwd7mwx7p90n55ulhs852n3637eg278m69l6hj5nt2n6tw3po7cxqv5k6xlz8fqko0qee2jhkvhdl0gqs6hecjfhh4903kxb8ru6eke4lnib59qyndrjpa10pcaenxh098a25zfrzkid3a0zd0j3kfp14q3u6s55rurp5v86zwl5zy90z08wofgf6ztc5sosp6svrokve4f7ni62pb4qq4w5nz8kffpbsk200a36w0eg7l2xion319wps1ua8jza5paxpj9z9arl2k6tyridh8ekvp2uc3v1noij4kltpvsggr4skklth0uydyqf8v021vegsdnsci7rp5miilcr9qdy37xxu6th1rpswm23k8g4i8e0s6n9zqjgwtxcm4tvxviexvwmwuqcw0jv0dxwrobu4l1nzeznhz50iuhdqqtaxz0y7gkgd76ax
+// VERSION_MARKER_JMIMMO_20260906_TRI_DEFAUT_v23
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -1740,15 +1740,15 @@ main{padding:14px 16px;max-width:660px;margin:0 auto;}
     <select id="fType"><option value="">Tous types</option></select>
     <input id="fBudget" type="number" min="0" step="50000" value="500000" title="Budget maximum en CHF" style="width:150px">
     <select id="fSort">
-      <option value="jmfit">Tri : JM Fit</option>
-      <option value="price_asc">Tri : prix croissant</option>
-      <option value="price_desc">Tri : prix décroissant</option>
-      <option value="recent">Tri : plus récents</option>
-      <option value="accessibilite">Tri : meilleure accessibilité</option>
-      <option value="surface_desc">Tri : plus grande surface</option>
     <option value="prix_m2_asc">Tri : prix au m\u00b2 croissant</option>
+    <option value="jmfit">Tri : JM Fit</option>
+    <option value="recent">Tri : plus r\u00e9cents</option>
+    <option value="price_asc">Tri : prix croissant</option>
+    <option value="price_desc">Tri : prix d\u00e9croissant</option>
     <option value="prix_m2_desc">Tri : prix au m\u00b2 d\u00e9croissant</option>
-    </select>
+    <option value="accessibilite">Tri : meilleure accessibilit\u00e9</option>
+    <option value="surface_desc">Tri : plus grande surface</option>
+  </select>
     <select id="fResSec">
       <option value="">Residence secondaire : tous</option>
       <option value="possible">Residence secondaire : possible</option>
