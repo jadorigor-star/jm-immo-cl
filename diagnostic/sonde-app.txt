@@ -1,26 +1,17 @@
-HTTP 200 | 24872 octets
+passe 1 : HTTP 200 | sources productives : Area Immobiliare Ticin=2, Bussard Immobilier=17, Neho=16, Agenzia Immobiliare Ce=16, TICINO.RE SA (IS24)=7, Fid SA=7, Monopoly Real Estate s=6, Metropolis Immobiliare=5, ImmoSky AG=1, Ticino Real Estate Sag=1, TICINO.RE SA=5, Domusdea Immobiliare S=5, FIDIFIM Sagl=5, Immoprogramm SA=2, Immobiliare Nodiroli &=5, SIT Immobiliare (IS24)=4, Assofide SA=4, Fiduciaria Ferro SA=3, Immobiliare Marazza Sa=4, Multiresidenza SA=4, Immostile SA=1, Raiffeisen Immo AG=2, Interfida SA=2, immobilier.ch - Saigne=3
+passe 2 : HTTP 200 | sources productives : Bussard Immobilier=17, Agenzia Immobiliare Ce=16, Neho=16, TICINO.RE SA (IS24)=7, Fid SA=7, Monopoly Real Estate s=6, Immobiliare Nodiroli &=5, Metropolis Immobiliare=5, TICINO.RE SA=5, Domusdea Immobiliare S=5, FIDIFIM Sagl=5, SIT Immobiliare (IS24)=4, Assofide SA=4, Immobiliare Marazza Sa=4, Multiresidenza SA=4, immobilier.ch - Saigne=3, Immobiliare Bandel=3, Fideconto gestioni imm=3, Galli Immobiliare SA=3, Fiduciaria Ferro SA=3, Immobiliare Mazzoleni =2, Fontana Sotheby's Inte=3, L'Idea Immobiliare=2, Immoprogramm SA=2, Multiconta SA=2, Raiffeisen Immo AG=2, Area Immobiliare Ticin=2, SKF Fiduciaria Sagl=2, Interfida SA=2, immobilier.ch - Gruyèr=1, Consulca SA=1, Wildi Immobiliare=1, Arifida SA=1, Immostile SA=1, ImmoSky AG=1, TERRIER SA=1, Ticino Real Estate Sag=1
+passe 3 : HTTP 200 | sources productives : Bussard Immobilier=17, Neho=16, Agenzia Immobiliare Ce=16, TICINO.RE SA (IS24)=7, Fid SA=7, Monopoly Real Estate s=6, Metropolis Immobiliare=5, TICINO.RE SA=5, Domusdea Immobiliare S=5, FIDIFIM Sagl=5, Immobiliare Nodiroli &=5, SIT Immobiliare (IS24)=4, Assofide SA=4, Immobiliare Marazza Sa=4, Multiresidenza SA=4, immobilier.ch - Saigne=3, Immobiliare Bandel=3, Fideconto gestioni imm=3, Galli Immobiliare SA=3, Fiduciaria Ferro SA=3, Fontana Sotheby's Inte=3, Raiffeisen Immo AG=2, Area Immobiliare Ticin=2, SKF Fiduciaria Sagl=2, Interfida SA=2, L'Idea Immobiliare=2, Immoprogramm SA=2, Multiconta SA=2, Immobiliare Mazzoleni =2, ImmoSky AG=1, TERRIER SA=1, Ticino Real Estate Sag=1, immobilier.ch - Gruyèr=1, Consulca SA=1, Wildi Immobiliare=1, Arifida SA=1, Immostile SA=1
+<anonymous_script>:1
+<!DOCTYPE html>
+^
 
-=== META OG ET DESCRIPTION ===
-  <meta name="description" content="Maison Bi-familiale &#xE0; Albeuve situ&#xE9; &#xE0; Albeuve. 173 m2, 5 pi&#xE8;ces, balcon, parking, chemin&#xE9;e. Disponible de suite. &#xC0; vendre par 
-  <meta property="og:type" content="website"/>
-  <meta property="og:site_name" content="immobilier.ch"/>
-  <meta property="og:locale" content="fr_CH"/>
-  <meta property="og:url" content="https://www.immobilier.ch/fr/acheter/maison/fribourg/albeuve/accordia-immo-2989/maison-bi-familiale-albeuve-1471303"/>
-  <meta property="og:title" content="Maison Bi-familiale &#xE0; Albeuve"/>
-  <meta property="og:description" content="Maison Bi-familiale &#xE0; Albeuve situ&#xE9; &#xE0; Albeuve. 173 m2, 5 pi&#xE8;ces, balcon, parking, chemin&#xE9;e. Disponible de suite. &#xC0; vend
-  <meta property="og:image" content="https://www.immobilier.ch/Medias/accordia-immo-2989/1471303/images/full/30727194.jpg"/>
-  <meta property="og:image:alt" content="Maison Bi-familiale &#xE0; Albeuve"/>
-  <meta property="og:image:width" content="960"/>
-  <meta property="og:image:height" content="500"/>
+SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+    at JSON.parse (<anonymous>)
+    at parseJSONFromBytes (node:internal/deps/undici/undici:5880:19)
+    at successSteps (node:internal/deps/undici/undici:5861:27)
+    at fullyReadBody (node:internal/deps/undici/undici:4753:9)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async consumeBody (node:internal/deps/undici/undici:5870:7)
+    at async /home/runner/work/jm-immo-cl/jm-immo-cl/outils/sonde-app.js:4:15
 
-=== TITRE ===
-  Immeuble r&#xE9;sidentiel 5 pces 173 m2 &#xE0; acheter &#xE0; Albeuve | CHF 850&#x27;000.-
-
-=== JSON-LD ===
-   { "@context": "https://schema.org", "@type": "RealEstateListing", "@id": "https://www.immobilier.ch/fr/acheter/maison/fribourg/albeuve/accordia-immo-2989/maison-bi-familiale-albeuve-1471303", "url": "https://www.immobilier.ch/fr/acheter/maison/fribourg/albeuve/accordia-immo-2989/maison-bi-familiale-albeuve-1471303", "name": "Immeuble r\u00E9sidentiel 5 pi\u00E8ces - CHF 850\u0027000.-", "descript
-   { "@context": "http://schema.org", "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "item": { "@id": "https://www.immobilier.ch/fr", "name": "Accueil" } } ,{ "@type": "ListItem", "position": 2, "item": { "@id": "https://www.immobilier.ch/fr/acheter", "name": "Acheter" } } ,{ "@type": "ListItem", "position": 3, "item": { "@id": "https://www.immobilier.ch/fr/ach
-
-=== INDICES PIECES / SURFACE DANS LE CORPS ===
-  []
-  ["173 m2","173 m2","173 m2","173 m2"]
-  []
+Node.js v20.20.2
