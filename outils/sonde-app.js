@@ -1,27 +1,22 @@
-const adresses = [
-  "Strada d'Indémen 28, 6574 Vira (Gambarogno)",
-  "Strada dal Castèl 20, 6574 Vira (Gambarogno)",
-  "Via Cabella, 6863 Besazio"
-];
-async function geoAdmin(q) {
-  const u = "https://api3.geo.admin.ch/rest/services/api/SearchServer?type=locations&origins=address&limit=3&sr=4326&searchText=" + encodeURIComponent(q);
-  const r = await fetch(u, { headers: { "User-Agent": "JMImmo/1.0" } });
-  const j = await r.json();
-  return (j.results || []).map((x) => ({ label: String(x.attrs.label).replace(/<[^>]+>/g, ""), lat: x.attrs.lat, lon: x.attrs.lon }));
-}
-async function arret(lat, lon) {
-  const r = await fetch("https://transport.opendata.ch/v1/locations?x=" + lat + "&y=" + lon + "&type=station");
-  const j = await r.json();
-  return (j.stations || []).filter((s) => s.coordinate && typeof s.coordinate.x === "number").slice(0, 4)
-    .map((s) => s.name + " (" + Math.round(1000 * Math.hypot((s.coordinate.x - lat) * 111, (s.coordinate.y - lon) * 78)) + " m)");
-}
+const u = "https://www.immobilier.ch/fr/acheter/maison/fribourg/albeuve/accordia-immo-2989/maison-bi-familiale-albeuve-1471303";
 (async () => {
-  for (const a of adresses) {
-    console.log("\n" + a);
-    const g = await geoAdmin(a);
-    if (!g.length) { console.log("  geo.admin : aucun resultat"); continue; }
-    for (const x of g.slice(0, 2)) console.log("  geo.admin -> " + x.label.slice(0, 62) + "  [" + x.lat.toFixed(5) + ", " + x.lon.toFixed(5) + "]");
-    const st = await arret(g[0].lat, g[0].lon);
-    console.log("  arrets les plus proches : " + st.join(" | "));
+  const r = await fetch(u, { headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36" } });
+  const html = await r.text();
+  console.log("HTTP " + r.status + " | " + html.length + " octets");
+  const head = html.slice(html.indexOf("<head"), html.indexOf("</head>"));
+  console.log("\n=== META OG ET DESCRIPTION ===");
+  for (const m of head.matchAll(/<meta[^>]+(property|name)="(og:[^"]+|description|keywords)"[^>]*>/gi)) {
+    console.log("  " + m[0].replace(/\s+/g, " ").slice(0, 190));
+  }
+  console.log("\n=== TITRE ===");
+  console.log("  " + (/<title>([^<]*)<\/title>/i.exec(head) || [])[1]);
+  console.log("\n=== JSON-LD ===");
+  for (const m of html.matchAll(/<script[^>]+ld\+json[^>]*>([\s\S]*?)<\/script>/gi)) {
+    console.log("  " + m[1].replace(/\s+/g, " ").slice(0, 400));
+  }
+  console.log("\n=== INDICES PIECES / SURFACE DANS LE CORPS ===");
+  for (const re of [/([\d.,]+)\s*(?:pi[eè]ces?|locali|Zimmer)/gi, /([\d'’]+)\s*m(?:²|2)\b/gi, /surface[^<]{0,60}/gi]) {
+    const t = [...html.matchAll(re)].slice(0, 4).map((x) => x[0].replace(/\s+/g, " ").trim());
+    console.log("  " + JSON.stringify(t));
   }
 })();
