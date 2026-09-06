@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788722345 padding-3300: f32qw4hl8qqi0fwlt5fkvhqo4vi75hb0l6k735yq419zlcc3rzrxzcw8p2f18rgjalflqtp1y5k6a843klosws0y2kie16bxi9yr8xd01wh0y9lj3dyq9gtoqf0h40tjjtj4a6tfkg00u9ex8i7iko5vm7mcgnalfxu1qlpo2pevgh60ulch5zojkfxlitg2uc8c340nhy967x6fgez84b3adnof9vbuw27el5s212wzatgx6egzop8h2vxj0v5zgn0cjg7x8yslqlh6dzlx1tl9r0mn8hcxm3wbi5gl2mp467vhp2185qt8qf8m1wnnc3qlpsx9j3wwtz41tjejtc0q63bulm0cbesfs50mmhmch4b9bwc28rfcshpeqvx0z9h5pdqvz4ervfzdsd4qz8imki567ldi4o6k4buwrql37dfwi5vrz6tnn8xb4i4cgog4k6b6lk1irzckvtwmzj4gri22qyhk53fntdgyg5pvpbbx49unngvr97j2kulgrxcw1hxfcxpht2fmuzstfvdd342kwdnbnlxxtjbai8i6a93cv8oxch969npwyt4nd15eo7zwnyhdopth6z0vlde92x3ebcoixy6xu7dw1efgqzg8tgf5murwsbde8tgw0hhknfxpfb04za2fsegy87omr712nkdwkdfuqyfn6b69b0hnrejp0a313vnb4wgkv10zpw3eswx7qhqmk8b7z0neyq99b8136x7h1cq4va5wjj5320qbga9typnleffm168eu31lmobfo0ipey3849xpnm7zqig47jvjyz1111myirxx7p94h5xsof3rqg5fxiphxj4uqwkip7r065jhbj4tzjufszdxnh2mf5h8feasudlmixtd84wrw8qwqag04yhbvwv3gv0lhbixcar4nq7e
-// VERSION_MARKER_JMIMMO_20260906_FORCE_v33
+// BUILD-MARKER 1788722921 padding-3400: sxennj2dpnrhw19uj9dd24f8q5qqn8yuoqmbpy1397vet3gr5q798vxs736pkompp1dx2aynyic6ddg63qf8ed5890sk1zcyddhpl60ashxxkowwibh0z83olcx3qc5lbkjxs2ymu9kaa5ua7gqstoddcobahynvexq6e2p89wj3ewrjopt8i8e0pobigwwjq0rjul90ocslkbwc3mbk320aqfr0krcl82d7hf7qxlaserpjitgfl2zk0ctc3k8ahmyxsf5ubzmhiudfxt2ycqz9iv4tir5zd3h46z12l2gznu8lmnt3o1yxmqd48js67seifk7n1uzf89yqqkvrcd3yh8lak58nrlxrj66j14rgxn27bgrgmnp187lmljgdtuvv7el0f19msp2r9b7cjvw5leb5itkmip244kss9336o84dutkluur7y7cxjj9o6ywscyq9iu5p3rnh1u433bqg7446s385b96pqutlg55gafbejuwkhbwfx0pbztds5rggfhb002e29cz5wf1ia3e3x9x15lussxfjitt0z85kg6zg7q933473kx0nckkviuims8h2kpdpoqj73nj3a1ghag1w6kezg88b0la63qq2l53abn9qejuthwzxapbxuendvjqn7a2osd169oudbizcan7pxho4ivmb3w2vvekcmcdwo6tvkbn11v3owa6zs2c8x6b9sy0gwyxk4w8l1mauuz7clcpxza9anfma9brvj35e8xuy4eluvjwkmqqrj2j5boxf9j6497oi9dixcf8wbgu1qfovebap2bbwd2ksf5u23i30l52lu5zo1gmx569ywfx95xv0rzw9qmhg1e31dgf0m1pmfmv601wphnlwgf6s2sitakq10k8ve62z46rvmp4514jfft4el37t5tuld0mqomnuq4b49a47473v
+// VERSION_MARKER_JMIMMO_20260906_SOUS_MOTIFS_v34
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -383,7 +383,7 @@ function findKnownLocalityGeneric(text, extra) {
 }
 function extractFieldsGeneric(m, fields, config, extra) {
   const priceMin = config.price_min || 5e4;
-  const out = { price: null, rooms: null, surface: null, locality: null, type: null, url: null };
+  const out = { price: null, rooms: null, surface: null, locality: null, type: null, url: null, title: null, description: null, image_url: null, address: null };
   if (fields.price != null && m[fields.price]) out.price = parsePriceGeneric(m[fields.price]);
   if (fields.rooms != null && m[fields.rooms]) out.rooms = parseFloat(String(m[fields.rooms]).replace(",", "."));
   if (fields.surface != null && m[fields.surface]) out.surface = parseFloat(m[fields.surface]);
@@ -409,6 +409,10 @@ function extractFieldsGeneric(m, fields, config, extra) {
       else if (key === "price") out.price = parsePriceGeneric(sm[1]);
       else if (key === "locality") out.locality = config.locality_lookup ? findKnownLocalityGeneric(sm[1], extra) : sm[1].trim();
       else if (key === "type") out.type = sm[1].trim();
+      else if (key === "title") out.title = decodeEntitiesGeneric(sm[1]).replace(/\s+/g, " ").trim();
+      else if (key === "description") out.description = decodeEntitiesGeneric(sm[1]).replace(/\s+/g, " ").trim();
+      else if (key === "image_url") out.image_url = sm[1].trim();
+      else if (key === "address") out.address = decodeEntitiesGeneric(sm[1]).replace(/\s+/g, " ").trim();
     }
   }
   if (!out.price || out.price < priceMin) return null;
