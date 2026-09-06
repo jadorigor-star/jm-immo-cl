@@ -44,26 +44,26 @@ const UA = { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKi
   for (let i = 0; i < Math.min(8, lignes.length); i++) {
     console.log("  [" + i + "] " + JSON.stringify(lignes[i]).slice(0, 260));
   }
-  // reperage de la ligne d'en-tete
-  let iEnt = lignes.findIndex((l) => l.some((c) => /gemeinde|commune|comune/i.test(String(c))));
-  console.log("\nen-tete ligne " + iEnt + " : " + JSON.stringify(lignes[iEnt]));
-  const ent = lignes[iEnt].map((c) => String(c).trim());
-  const iNom = ent.findIndex((c) => /gemeindename|nom.*commune|name/i.test(c));
-  const iPart = ent.findIndex((c) => /anteil|proportion|quota|%/i.test(c));
-  const iStatut = ent.findIndex((c) => /status|statut|stato/i.test(c));
-  console.log("colonnes -> nom=" + iNom + " part=" + iPart + " statut=" + iStatut);
+  // Structure observee : [numeroOFS, nom, ?, canton, total, principales, ?, %principales, %secondaires, ...]
+  const estDonnee = (l) => typeof l[0] === "number" && /^[A-Z]{2}$/.test(String(l[3]).trim());
+  const brutes = lignes.filter(estDonnee);
+  console.log("\nlignes de donnees : " + brutes.length);
 
-  const communes = [];
-  for (const l of lignes.slice(iEnt + 1)) {
-    const nom = String(l[iNom] || "").trim();
-    if (!nom) continue;
-    const part = parseFloat(String(l[iPart]).replace(",", "."));
-    communes.push({ nom, part: isFinite(part) ? part : null, statut: String(l[iStatut] || "").trim() });
+  const communes = brutes.map((l) => {
+    const pct = [7, 8].map((k) => parseFloat(String(l[k]).replace(",", ".")));
+    const somme = pct[0] + pct[1];
+    const part = Math.abs(somme - 100) < 1.5 ? pct[1] : parseFloat(String(l[8]).replace(",", "."));
+    return { ofs: l[0], nom: String(l[1]).trim(), canton: String(l[3]).trim(), part: isFinite(part) ? part : null };
+  }).filter((c) => c.nom && c.part !== null);
+
+  console.log("communes valides : " + communes.length);
+  const auDessus = communes.filter((c) => c.part > 20);
+  console.log("communes au-dessus de 20% : " + auDessus.length + "  (attendu ~331)");
+  console.log("\ncontroles :");
+  for (const n of ["Locarno", "Muralto", "Zweisimmen", "Charmey", "Bulle", "Saignelegier", "Neuchatel", "Ascona", "Minusio", "Brissago"]) {
+    const c = communes.find((x) => x.nom.toLowerCase().replace(/[^a-z]/g, "") === n.toLowerCase().replace(/[^a-z]/g, ""));
+    console.log("  " + n.padEnd(14) + (c ? c.part + "%  " + (c.part > 20 ? "SOUMISE (nouvelles residences secondaires interdites)" : "libre") : "introuvable"));
   }
-  console.log("communes lues : " + communes.length);
-  const auDessus = communes.filter((c) => c.part !== null && c.part > 20);
-  console.log("communes au-dessus de 20% : " + auDessus.length);
-  console.log("\nexemples : " + JSON.stringify(communes.slice(0, 3)));
-  fs.writeFileSync("outils/lex-weber-communes.json", JSON.stringify(communes, null, 0));
-  console.log("fichier ecrit : outils/lex-weber-communes.json");
+  fs.writeFileSync("outils/lex-weber-communes.json", JSON.stringify(communes));
+  console.log("\nfichier ecrit (" + communes.length + " communes)");
 })();
