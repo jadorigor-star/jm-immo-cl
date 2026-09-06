@@ -38,11 +38,32 @@ const UA = { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKi
 
   const wb = XLSX.readFile("/tmp/inventaire.xlsx");
   console.log("feuilles : " + wb.SheetNames.join(", "));
-  const ws = wb.Sheets[wb.SheetNames[0]];
+  const ws = wb.Sheets[wb.SheetNames[wb.SheetNames.length - 1]];
   const lignes = XLSX.utils.sheet_to_json(ws, { header: 1, defval: "" });
   console.log("lignes : " + lignes.length);
   for (let i = 0; i < Math.min(8, lignes.length); i++) {
     console.log("  [" + i + "] " + JSON.stringify(lignes[i]).slice(0, 260));
   }
-  fs.writeFileSync("diagnostic/inventaire-brut.json", JSON.stringify(lignes.slice(0, 40), null, 1));
+  // reperage de la ligne d'en-tete
+  let iEnt = lignes.findIndex((l) => l.some((c) => /gemeinde|commune|comune/i.test(String(c))));
+  console.log("\nen-tete ligne " + iEnt + " : " + JSON.stringify(lignes[iEnt]));
+  const ent = lignes[iEnt].map((c) => String(c).trim());
+  const iNom = ent.findIndex((c) => /gemeindename|nom.*commune|name/i.test(c));
+  const iPart = ent.findIndex((c) => /anteil|proportion|quota|%/i.test(c));
+  const iStatut = ent.findIndex((c) => /status|statut|stato/i.test(c));
+  console.log("colonnes -> nom=" + iNom + " part=" + iPart + " statut=" + iStatut);
+
+  const communes = [];
+  for (const l of lignes.slice(iEnt + 1)) {
+    const nom = String(l[iNom] || "").trim();
+    if (!nom) continue;
+    const part = parseFloat(String(l[iPart]).replace(",", "."));
+    communes.push({ nom, part: isFinite(part) ? part : null, statut: String(l[iStatut] || "").trim() });
+  }
+  console.log("communes lues : " + communes.length);
+  const auDessus = communes.filter((c) => c.part !== null && c.part > 20);
+  console.log("communes au-dessus de 20% : " + auDessus.length);
+  console.log("\nexemples : " + JSON.stringify(communes.slice(0, 3)));
+  fs.writeFileSync("outils/lex-weber-communes.json", JSON.stringify(communes, null, 0));
+  console.log("fichier ecrit : outils/lex-weber-communes.json");
 })();
