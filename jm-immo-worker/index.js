@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788694141 padding-2600: 8fjnm59xdr0c0fpkog8xab9ujpwlw0ieoydtv0in336kx61u0jz5vjqpbkwxnicqkupu8o7ej07t9zhlfw3xiwdwi0u217lxbu2zm9zsmc7g1bhwtkb2w44rbxtf9b07pfwfnfchoo0fuj27evzatgf5plij58tl5kosvqf6nfsr07rzzjy5dkgp0xm166uwbnq2y16wff5ctbeg47zqvsunrlt2w8qf38bn4tpoqu0nvtufus0mpsz8a0g5nao4f68o4nc3043aa23t9ouonnwgcf33wszskaepjvcmjl91xyxqwtcpvfios113atwvphe7l3thb2ea7mwe7g4sxggtu04lp8jfq1eheupbx51zxlnv7p0eux1a643ng5gcibb8smep9xce172hjtyn2v3297k7p5cu003sqhcqpza3bl8s96k1ocy75vjlqkra15ce36gc5ifp0m66hwgm8z1234e04lk4z71grxxr6zijwwhcvsvjo9lkumot7387qzqd7nbslbqz1rau1jspzqrpw7wuqpzc6tikgwx55sxio2qwwwhec0w55gkkedm3k293027pr7tezhczdniq3ffrc0avkk564edkqrvnos1jqt8iyv7btfjxrcqceofg1r721kj38uwux2j8s15zrssu5hhdc7x5vlasp8rxxbmyokclijgjed91mw63frc9pjd5jrlrt5rxg1e0vonds7a5l54to8kkq72mx670jtp7uor1pzvlsqupg3nentkg0wy8kdchymfb
-// VERSION_MARKER_JMIMMO_20260906_PERIMETRE_v26
+// BUILD-MARKER 1788694414 padding-2700: v2f70m6e32ifmel24mexg63lyh4vjss8p0zb17pfvybrp9e9be6ypx10csoenhrg70l2s20kgxxftbmxdmntvr3ro3kb1lof6s3ikra2ql1wupsxkl6gwf1ekarmv6jl32nohauybwnaic4948bnam212d0pxkom2s8vh5t00t0adutzyhy4ht2hndfjcrcmc4mw1kqkw5khbu62shru0e8mszojc6lbsrv3m0fh6c80umffok9qip5ortsw7klxdsuj2hc1mao0rheukocgrqmsqimsyxfaa1zu6gzu2slmma8rwy85bpx5heujgqimlzlyi42qhpgwrcdcit0f9bggpb0oshlrox0tkfhloxa7sf9eb821okf9zl6hzh9r40wxm87l760jc5cv8ihiqgua701cx7su0it8lf5xhtmhex2r5920pghv0l259k5hi3pd9ay2jzxnzzh7kmojhn59agd76fev7kdoc9zmaq0150ps9qqb9buxjbum3c6280m70tx0ulbigg2z82marwssca8yef7g8bod6vctly90z58k070s9j5wqs7xdyjcndcxav2agn8jfc4x65vv8ymuel4r8lekxmeqidn2f8xsev80ar0e2idox399jzu540110rinn0zybswixkroqj3u3nj728vj733tukql60mx2k6omg9ndf511kr8g2wuhsx1hv06khh71ssff8jskg3cluwx95q57zgmimn92fq64nr9nna67qr1w76outjvuelz2vnq42j4j20tm1t2wo68w070hs95
+// VERSION_MARKER_JMIMMO_20260906_REGION_RESOLUE_v27
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -182,6 +182,7 @@ async function affinerLocalite(db, rl, fetchFn, budget) {
     rl.locality_source = rl.locality;
     rl.locality = lieu.nom;
     rl.commune = lieu.commune;
+    rl.canton = lieu.canton;
     if (rl.geo_lat == null && lieu.lat != null) { rl.geo_lat = lieu.lat; rl.geo_lon = lieu.lon; }
     return true;
   }
@@ -1572,7 +1573,10 @@ async function reanalyserLocalites(db, fetchFn, limite) {
     try { await db.prepare("UPDATE listings SET localite_affinee=1 WHERE id=?").bind(l.id).run(); } catch (e) {}
     if (!change) continue;
     const ancienBien = l.bien_id;
-    const nouvelleRegion = computeRegion(rl.locality);
+    const nouvelleRegion = computeRegion(rl.locality)
+      || (rl.commune ? computeRegion(rl.commune) : null)
+      || (rl.canton === "TI" ? "Tessin" : null)
+      || (rl.commune && normCommune(rl.commune) === normCommune(l.locality) ? l.region : null);
     if (!nouvelleRegion) {
       // le lieu reel est hors perimetre : l'annonce etait mal etiquetee
       try {
