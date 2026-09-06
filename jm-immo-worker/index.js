@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788717417 padding-2900: m7c3nf9smxc5ts19l4gtfajdcd009d8dckfozyma04dxcdv0bz8abhk6rn2bkyfzasrit4bp4txr5c42q5g8ehr97d42xs9ijhu4mv796ce80970te4o2rrkpdj9hv1mcmxeiz0q0sfjjl3q5chno1ggwxl8kf0icw6hm561dmeif28me552hgq72kzzi08q0ot887qtr8g0twkfbndzzrft12zppnylrt30rbopldvkw28z2amdtj6mox8pgsnmhih8y7j6130lu1afegta2fq5rfvwr3a4j29szswyu5f5d68ps3o90ws9fmcaa0t6omouyqlntu2ihhqoym148xotpiymiycz8u8ne1p6qtl7ky5b6gqusp0g0d4xtvgjc8c4gvtann5n7njuqjyqsfhem08i208djeuklvv1tzs7j4m9qlgkgscl20sxcxq2djv1rl1vs58d4bhkt5762ad49qji4cep4t6vegw1wu58wo4gdumvh96psbzbpitj42art5ut545d5lhbl1xakafbperpw9ofh91npjh2ce7b3u47f0qs850slq1ptyr5jeii1r11t8uw1x72vrl41oh80alvd3zhalv7n8jusap4zi0ivf528stgw96e1lxj10wsalv5848g6nwqk78weibh4cel0jcr74qod77t2n36kcasqdfq6ib9rvbgz7tip5zwkf9abily36586vhoig9lynsdunkbfpfrfbvg4otynik4k6zgx3en5w6hplunmg6touki7r2ip9hcb3qb7wkwx1bykjt6qaj2gmhzrph6uf6pd0orxv31668f5o1aey560ang
-// VERSION_MARKER_JMIMMO_20260906_LIENS_REPLI_v29
+// BUILD-MARKER 1788718039 padding-3000: 841cn5dwkujq305cfx78e0yf0eevew5tuto2qb568tre4tyv17xhgk67r46qkoaw4bck46t7k5cnxxs2bcei9t52ei6pw2wcidvc8kx8r6al8numyl61qehcd5pqaypytt12c7zdytgldit12fxlj06wux6yvm2q2qzny164frcip51kzd5814ucsn7vyr3v6fa0ztfynlz5luletlr5lsrswgeq8ohu8twkkdjape998nav2nepgmjn1q1srwc2gxmy094n67mbjyumn5785ghko2h38p38so4zf6bts5id02tynph8liu879nk1in9e61d76zlhxpo20tpzh6egjmj6gt41mjdoba9ihvp25hpeleuvq3cz9d239lnwyedikdvsdux1n445j3ihnyb21tgqryibva4j99dqzppgdnxaf93w3zadesi4fie5gz63attndh8kunn789cychj0uv97wa7egvh2k088bd06em9fshepu0dmbqhw9fxhofnw8m5wokmra9bsoysvz6qwq8f7kp0gpuzairdgwin57ila5hzbsaf0zw4rxudipmi2hooolizzhirkw6x9hgjsepb309jmoi9y9l6nn7s343zlxbys5nrpnplh9gh26m1gsqm7qycgjjzwcsqs9ltkplje3l1948bzvc6vugyb3lrni3aas5j3lrz6i6n3onv35n64bjit0ekzdpxy4h1sr4c60wyo6j82cplgylze7bx6ex0e7wsodlewcqpmjr81ixhizilrhfbpvs81o7r409pds1t33xjasd61d6u4q65k259k10jhnydx4at81ubphm43c3mh6r5ddh8h1chqvspajc8
+// VERSION_MARKER_JMIMMO_20260906_ANNONCES_RETIREES_v30
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -493,12 +493,11 @@ function extractStateJsonGeneric(html, config) {
       const direct = getByPath(item, f.url);
       if (direct && /^https?:\/\//i.test(String(direct))) url = String(direct);
     }
+    if (!url && config.url_prefix && id != null) url = config.url_prefix.replace(/\/$/, "") + "/" + (config.url_path_prefix || "") + id;
     if (!url) {
-      // repli : la page de l'agence, toujours valide, plutot qu'une URL construite
       const repli = config.fallback_url || (Array.isArray(config.urls) ? config.urls[0] : null) || config.list_url || null;
       if (repli && /^https?:\/\//i.test(repli)) url = repli;
     }
-    if (!url && config.url_prefix && id != null) url = config.url_prefix.replace(/\/$/, "") + "/" + (config.url_path_prefix || "") + id;
     let address = f.address ? getByPath(item, f.address) : null;
     if (!address && f.locality) {
       const addrBase = f.locality.replace(/\.[^.]+$/, "");
@@ -859,6 +858,23 @@ async function ingest(db, fetchFn, opts) {
         await db.prepare("UPDATE listings SET last_seen=?, status='active' WHERE source_id=? AND url IN (" + ph + ")").bind(todayISO(), srcRow.id, ...touched).run();
       }
       rafraichies = touched.length;
+      // une annonce que la source ne publie plus disparait apres deux absences
+      try {
+        const mode = (extra && extra.parseConfig ? null : null);
+        const estListeComplete = rawListings.length >= 3 && !(rawListings.touchedUrls && rawListings.touchedUrls.length);
+        if (estListeComplete) {
+          const vus = new Set(rawListings.map((r) => srcRow.id + ":" + r.external_id).filter(Boolean));
+          const actifs = await db.prepare("SELECT id, absences FROM listings WHERE source_id=? AND status='active'").bind(srcRow.id).all();
+          for (const a of actifs.results) {
+            if (vus.has(a.id)) {
+              if (a.absences) await db.prepare("UPDATE listings SET absences=0 WHERE id=?").bind(a.id).run();
+            } else {
+              const n = (a.absences || 0) + 1;
+              await db.prepare("UPDATE listings SET absences=?, status=? WHERE id=?").bind(n, n >= 2 ? "inactive" : "active", a.id).run();
+            }
+          }
+        }
+      } catch (e) {}
       contribution = knownUrls ? Math.max(knownUrls.size, stored) : stored;
       if (contribution > 0) state = "productive";
     } catch (e) {
