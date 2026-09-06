@@ -1,8 +1,8 @@
-== Diagnostic du 2026-09-06 11:18:41 UTC ==
+== Diagnostic du 2026-09-06 11:23:54 UTC ==
 CLOUDFLARE_API_TOKEN : present (longueur 53)
 CLOUDFLARE_ACCOUNT_ID : present (longueur 32)
-version_livree=VERSION_MARKER_JMIMMO_20260906_REANALYSE_v24
-taille=137650 octets
-sante={"status":"ok","time":"2026-09-06T11:19:12.854Z"}
-stats={"a_trier":226,"favoris":5,"ecartes":68,"vendus":1,"biens":288,"annonces":326,"sources_actives":59,"sources_productives":40,"opportunites":42,"derniere_collecte":"2026-09-06T11:14:16.499Z"}
-deploye_le=2026-09-06 11:19:12 UTC
+version_livree=VERSION_MARKER_JMIMMO_20260906_REANALYSE_v25
+taille=137818 octets
+sante={"status":"ok","time":"2026-09-06T11:24:27.225Z"}
+stats={"a_trier":220,"favoris":5,"ecartes":68,"vendus":1,"biens":280,"annonces":326,"sources_actives":59,"sources_productives":40,"opportunites":41,"derniere_collecte":"2026-09-06T11:14:16.499Z"}
+deploye_le=2026-09-06 11:24:27 UTC
