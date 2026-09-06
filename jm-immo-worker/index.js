@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788687974 padding-1800: chyec45hazkvfbg4ntbwpmmocy2t07rvdjuicery7mrrl48nj7g3we0pp8uiuzswnp9ajlpw5zgxdyvnzjqk1iz4lh4jbrj39pteg2moqnm6b1pn7opqmaug5t7lk3tas1yafi6026vvmsaklo7d4mpze1dblxvaizhv55wzr4ffl4ibufksuad9c61vg8kjgnio03h1r4yh4aonpwd0tx1uyrmcf9wbdntc0t34p28yzbkuig49glxsdtrzwqtmkforso80d863r03iaq0g7e1wnkiooqhcillv7vihsbn3zl8g1x01rhtz6xcwhd55e91h259pu8vy3jg1qrpu9l5tbggebmlhq2xgeiiada27v1p4shnxvnekpjyka4f41exttknvq8vqpmyuxpphhq00lh5amks3ea2xfizu01xoucgceb197o6ybjrdu5ly6frmg0i15stowojm5000p9j7baqar1yeora24zz2mymhr99rrv1kmxo7wibu799vvg2csur988ntm6twyk62beom75dt6h3evszaz9ph9g8uty5kh2aom0h0yntw515kh0xmv8tuhq8rzgaj58pwlgql6wm4paqttrcz9pxey05b
-// VERSION_MARKER_JMIMMO_20260906_LOCALITE_FINE_v18
+// BUILD-MARKER 1788688746 padding-1900: k0tf8c4kct7nptfk6qijrfnbg5wakewctg9bmfe5h67pprw4befl35nemkol427ngf3ydkixndrlfr59hpq09tmzuar2nkfuvd2jay85gnfgkjshdvhm5xqqoh989c8wdj4fp3fcdsjwfoiqots7rb30luoxoahuy6mibag2knv2ypk09bjr8atiqrb8t78leqqohkkaw1d1hx6752apjiqsz1n62c9hpog480eeqp72chpe16v9zs7cwqyccz94gqq63edzmffxrjyyir0i1m00be7zg1whyoymjh3c2swk4giocwyciqzzaoqxdhcrs1abho3itvnvyspymekoeopnfiri0gtfdj734w1purb1j1cbbxp6wgxkh17ufsv7ux3g8vugufame36vvsmcd8kck3dq6e8a3zwa6rfhoqjjipb3iu5irud9ixpcjdknlg339e9wxkh1uokdawp54gqkom4sylidy5jznxjq1e8nsjlvwpbdg7djwm874pqpl1ex9kd3cgm944ahb7df3497qxvqxybmksawkxphbu7jebs19hkwz8saqlgiptkc5qgjfzdsqe1y3gsm2z2y93gt162jzf8jzyk16x6uod9pbdj5l1kypp48e55sih3g
+// VERSION_MARKER_JMIMMO_20260906_INTERFACE_v19
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -1695,32 +1695,32 @@ main{padding:14px 16px;max-width:660px;margin:0 auto;}
 .chip.on{background:#1d2938;color:var(--blue);border-color:#2c4260;}
 .slider-row{display:flex;align-items:center;gap:10px;}
 .slider-row input[type=range]{flex:1;accent-color:var(--gold);}
+.vignette{width:40vw;max-width:158px;aspect-ratio:4/3;object-fit:cover;border-radius:8px;flex:0 0 auto;background:var(--panel2)}
+@media(min-width:640px){.vignette{width:132px}}
+.btn-outil{padding:8px 12px;margin:0 6px 6px 0;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-size:12.5px;cursor:pointer}
+.tab .compteur{opacity:.6;font-size:11px;margin-left:4px}
 </style>
 </head>
 <body>
 <header>
   <h1>JM Immo</h1>
   <div id="stats" style="font-size:11.5px;color:#8992A3;margin-top:5px;font-family:'IBM Plex Mono',monospace">&nbsp;</div>
-  <button id="btnRefresh" style="margin:8px 0;padding:8px 12px;border-radius:8px;border:1px solid #262E3A;background:#1D2430;color:#E7EAEE;font-size:12.5px;cursor:pointer">&#8635; Rafraichir les sources</button>
-  <button id="btnComputeAccess" style="margin:0 0 8px 0;padding:8px 12px;border-radius:8px;border:1px solid #262E3A;background:#1D2430;color:#E7EAEE;font-size:12.5px;cursor:pointer">Calculer accessibilite (dernier km)</button>
+  <div id="outils" style="display:none"></div>
+  <div id="zoneOutils"></div>
   <div class="searchbar">
-    <input id="q" placeholder="Rechercher (village, type, mot-cle)...">
+    <input id="q" placeholder="Rechercher (village, type, mot-clé)…">
     <button id="btnSearch">Chercher</button>
   </div>
   <div class="filters">
-    <select id="fRegion"><option value="">Toutes regions</option></select>
+    <select id="fRegion"><option value="">Toutes régions</option></select>
     <select id="fType"><option value="">Tous types</option></select>
-    <select id="fBudget">
-      <option value="500000">Moins de CHF 500000</option>
-      <option value="400000">Moins de CHF 400000</option>
-      <option value="300000">Moins de CHF 300000</option>
-    </select>
+    <input id="fBudget" type="number" min="0" step="50000" value="500000" title="Budget maximum en CHF" style="width:150px">
     <select id="fSort">
       <option value="jmfit">Tri : JM Fit</option>
       <option value="price_asc">Tri : prix croissant</option>
-      <option value="price_desc">Tri : prix decroissant</option>
-      <option value="recent">Tri : plus recents</option>
-      <option value="accessibilite">Tri : meilleure accessibilite</option>
+      <option value="price_desc">Tri : prix décroissant</option>
+      <option value="recent">Tri : plus récents</option>
+      <option value="accessibilite">Tri : meilleure accessibilité</option>
       <option value="surface_desc">Tri : plus grande surface</option>
     </select>
     <select id="fResSec">
@@ -1736,9 +1736,9 @@ main{padding:14px 16px;max-width:660px;margin:0 auto;}
 
 <script>
 const TABS = [
-  {id:"tous", label:"\u00c0 trier"}, {id:"opportunites", label:"Opportunites"}, {id:"favoris", label:"Favoris"},
-  {id:"baisses", label:"Baisses"}, {id:"ecartes", label:"Ecartes"}, {id:"vendus", label:"Vendus"}, {id:"sources", label:"Sources"},
-  {id:"preferences", label:"Preferences"},
+  {id:"tous", label:"\u00c0 trier"}, {id:"opportunites", label:"Opportunités"}, {id:"favoris", label:"Favoris"},
+  {id:"baisses", label:"Baisses"}, {id:"ecartes", label:"Écartés"}, {id:"vendus", label:"Vendus"}, {id:"sources", label:"Sources"},
+  {id:"preferences", label:"Préférences"},
 ];
 let activeTab = "tous";
 const REGIONS = ["Tessin","Gruy\u00e8re","Neuch\u00e2tel","Jura","Zweisimmen","Alpes vaudoises"];
@@ -1746,7 +1746,16 @@ const TYPES = ["Appartement","Maison","Chalet","Rustico","Villa","Maison histori
 
 document.getElementById("fRegion").innerHTML += REGIONS.map(function(r){return "<option value='" + r + "'>" + r + "</option>";}).join("");
 document.getElementById("fType").innerHTML += TYPES.map(function(t){return "<option value='" + t + "'>" + t + "</option>";}).join("");
-document.getElementById("tabs").innerHTML = TABS.map(function(t){return "<div class='tab " + (t.id===activeTab?"active":"") + "' data-tab='" + t.id + "'>" + t.label + "</div>";}).join("");
+function rendreOnglets(c){
+  c = c || {};
+  const cles = {tous:"a_trier", opportunites:"opportunites", favoris:"favoris", ecartes:"ecartes", vendus:"vendus"};
+  document.getElementById("tabs").innerHTML = TABS.map(function(t){
+    const n = cles[t.id] ? c[cles[t.id]] : null;
+    const badge = (n !== null && n !== undefined) ? "<span class='compteur'>" + n + "</span>" : "";
+    return "<div class='tab " + (t.id===activeTab?"active":"") + "' data-tab='" + t.id + "'>" + t.label + badge + "</div>";
+  }).join("");
+}
+rendreOnglets();
 
 function fmtCHF(n){ return "CHF " + Math.round(n).toLocaleString("fr-CH"); }
 function espaceLocal(){
@@ -1768,11 +1777,19 @@ async function api(path, opts){
   const res = await fetch(path, opts);
   return res.json();
 }
+function blocOutils(){
+  return "<div class='card' style='padding:12px'>"
+    + "<div style='font-weight:600;margin-bottom:8px'>Maintenance</div>"
+    + "<div style='font-size:12px;color:var(--muted);margin-bottom:9px'>La collecte est automatique toutes les 30 minutes. Ces commandes ne servent qu\u2019a forcer une mise a jour immediate.</div>"
+    + "<button id='btnRefresh' class='btn-outil'>\u21bb Rafra\u00eechir les sources</button> "
+    + "<button id='btnComputeAccess' class='btn-outil'>Calculer l\u2019accessibilit\u00e9 (dernier km)</button>"
+    + "</div>";
+}
 function blocEspace(){
   var e = espaceLocal();
   return "<div style='border:1px solid #2c313b;border-radius:9px;padding:11px;margin-bottom:14px'>"
     + "<div style='font-weight:600;margin-bottom:5px'>Espace personnel</div>"
-    + "<div style='font-size:12px;color:#8992A3;margin-bottom:8px'>Vos favoris, biens ecartes et reglages sont propres a cet espace. Pour retrouver le meme espace sur un autre appareil, saisissez-y cet identifiant.</div>"
+    + "<div style='font-size:12px;color:#8992A3;margin-bottom:8px'>Vos favoris, biens écartés et réglages sont propres à cet espace. Pour retrouver le même espace sur un autre appareil, saisissez-y cet identifiant.</div>"
     + "<div style='font-family:monospace;font-size:13px;margin-bottom:8px'>" + e + "</div>"
     + "<input id='champ-espace' placeholder='Rejoindre un autre espace' style='width:100%;padding:7px;border-radius:6px;border:1px solid #2c313b;background:#171a20;color:inherit;margin-bottom:7px'>"
     + "<button data-action='changer-espace' style='padding:7px 12px;border-radius:6px;border:1px solid #2c313b;background:#20242c;color:inherit'>Rejoindre</button>"
@@ -1786,9 +1803,9 @@ async function loadStats(){
       const d = new Date(s.derniere_collecte);
       maj = String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
     }
+    rendreOnglets(s);
     document.getElementById("stats").textContent =
-      s.biens + " biens - " + s.annonces + " annonces actives - " + s.opportunites + " opportunites - " +
-      s.sources_productives + "/" + s.sources_actives + " sources - collecte " + maj;
+      s.biens + " biens \u00b7 " + s.annonces + " annonces \u00b7 " + s.sources_productives + "/" + s.sources_actives + " sources \u00b7 collecte " + maj;
   } catch(e) { document.getElementById("stats").textContent = "compteurs indisponibles"; }
 }
 
@@ -1833,10 +1850,10 @@ function bienCard(b){
   const explain = b.explain ? ("<div class='explain'>JM Fit " + b.jm_fit + "/100 - " + b.explain + "</div>") : "";
   const addrLine = b.address ? ("<div class='locality' style='margin-top:3px'>" + b.address + "</div>") : "";
   const lrs = (b.lrs_part != null)
-    ? "<div style='font-size:11px;color:#8992A3;margin-top:6px'>Commune soumise a la LRS (" + b.lrs_part + "% de residences secondaires) : construction neuve en residence secondaire interdite. Un logement anterieur a 2012 reste utilisable comme tel.</div>"
+    ? "<div style='font-size:11px;color:#8992A3;margin-top:6px'>Commune soumise à la LRS (" + b.lrs_part + "% de résidences secondaires) : construction neuve en résidence secondaire interdite. Un logement antérieur à 2012 reste utilisable comme tel.</div>"
     : "";
   const photo = b.image_url
-    ? "<img src='" + b.image_url + "' alt='' loading='lazy' referrerpolicy='no-referrer' style='width:78px;height:58px;object-fit:cover;border-radius:7px;flex:0 0 auto;background:#20242c' onerror=this.remove()>"
+    ? "<img src='" + b.image_url + "' alt='' loading='lazy' referrerpolicy='no-referrer' class='vignette' onerror=this.remove()>"
     : "";
   return "<div class='card'><div class='card-top'><div style='display:flex;gap:10px;align-items:flex-start;min-width:0'>" + photo + "<div style='min-width:0'><div class='title'>" + titleHtml + "</div><div class='locality'>" + b.locality + " - " + b.region + " - <a href='" + mapUrl + "' target='_blank' rel='noopener'>Carte</a></div>" + addrLine + lrs + "</div></div>" +
     "<div class='fit-badge " + (b.is_opportunity?"hot":"") + "'>" + (b.jm_fit != null ? b.jm_fit : "") + "</div></div>" +
@@ -1886,9 +1903,10 @@ async function loadPrefs(){
     "<div class='pref-block'><label>Gare / ville de depart pour le calcul du trajet</label><div class='chip-row'><input id='originStopInput' value='" + (p.origine_trajet||"Fribourg") + "' style='padding:6px 10px;border-radius:8px;border:1px solid #262E3A;background:#1D2430;color:#E7EAEE;font-size:12.5px;width:100%'></div></div>" +
     "<div class='pref-block'><label>Seuil JM Fit pour etre une opportunite - <span class='mono'>" + oppThreshold + "/100</span></label><div class='slider-row'><input type='range' min='40' max='95' step='5' value='" + oppThreshold + "' id='oppThresholdInput'></div></div>" +
     "<div class='pref-block'><label>Seuil marche a pied jugee bonne - <span class='mono'>" + accThreshold + " min</span></label><div class='slider-row'><input type='range' min='3' max='30' step='1' value='" + accThreshold + "' id='accThresholdInput'></div></div>" +
-    "<div class='pref-block'><label>Regions autorisees</label><div class='chip-row'>" + regionChips + "</div></div>" +
+    "<div class='pref-block'><label>Régions autorisées</label><div class='chip-row'>" + regionChips + "</div></div>" +
     slidersHtml + "</div>";
-  document.getElementById("main").innerHTML = blocEspace() + html;
+  document.getElementById("main").innerHTML = blocOutils() + blocEspace() + html;
+  brancherOutils();
   window._prefsCache = p;
   window._accessGoodThreshold = accThreshold;
   const originInput = document.getElementById("originStopInput");
@@ -1951,10 +1969,10 @@ async function load(){
   if (activeTab === "preferences"){ return loadPrefs(); }
   if (activeTab === "sources"){
     const r = await api("/api/sources");
-    main.innerHTML = "<div class='card'><table class='sources-table'><thead><tr><th>Source</th><th>Etat</th><th>Annonces</th></tr></thead><tbody>" +
+    main.innerHTML = "<div class='card'><table class='sources-table'><thead><tr><th>Source</th><th>État</th><th>Annonces</th></tr></thead><tbody>" +
       r.results.map(function(s){
         const err = s.last_error ? ("<div style='font-size:10.5px;color:var(--clay);margin-top:2px'>" + s.last_error.slice(0,60) + "</div>") : "";
-        const off = s.enabled ? "" : "<div style='font-size:10.5px;color:var(--muted);margin-top:2px'>desactivee</div>";
+        const off = s.enabled ? "" : "<div style='font-size:10.5px;color:var(--muted);margin-top:2px'>désactivée</div>";
         return "<tr><td><span class='dot " + s.state + "'></span>" + s.name + err + off + "</td><td>" + s.state + "</td><td class='mono'>" + (s.last_productive_count||0) + "</td></tr>";
       }).join("") +
       "</tbody></table></div>";
@@ -1962,12 +1980,12 @@ async function load(){
   }
   if (activeTab === "ecartes"){
     const r = await api("/api/ecartes");
-    main.innerHTML = r.results.length ? r.results.map(ecarteCard).join("") : "<div class='empty'>Aucun bien ecarte.</div>";
+    main.innerHTML = r.results.length ? r.results.map(ecarteCard).join("") : "<div class='empty'>Aucun bien écarté.</div>";
     return;
   }
   if (activeTab === "vendus"){
     const r = await api("/api/vendus");
-    main.innerHTML = r.results.length ? r.results.map(venduCard).join("") : "<div class='empty'>Aucun bien marque vendu pour l'instant.</div>";
+    main.innerHTML = r.results.length ? r.results.map(venduCard).join("") : "<div class='empty'>Aucun bien marqué vendu pour l'instant.</div>";
     return;
   }
   if (activeTab === "baisses"){
@@ -1992,8 +2010,8 @@ async function load(){
   const r = await api("/api/search?" + params.toString());
   main.innerHTML = r.results.length ? r.results.map(bienCard).join("")
     : (activeTab === "tous"
-        ? "<div class='empty'>Tout est trie. Les biens classes se trouvent dans Favoris et Ecartes.</div>"
-        : "<div class='empty'>Aucun resultat pour ces criteres.</div>");
+        ? "<div class='empty'>Tout est trié. Les biens classés se trouvent dans Favoris et Écartés.</div>"
+        : "<div class='empty'>Aucun résultat pour ces critères.</div>");
 }
 
 document.getElementById("main").addEventListener("click", function(e){
@@ -2020,7 +2038,8 @@ document.getElementById("tabs").addEventListener("click", function(e){
   load();
 });
 document.getElementById("btnSearch").onclick = load;
-document.getElementById("btnRefresh").onclick = async function(){
+function brancherOutils(){
+  const bR = document.getElementById("btnRefresh"); if (bR) bR.onclick = async function(){
   const btn = document.getElementById("btnRefresh");
   const original = btn.innerHTML;
   btn.disabled = true;
@@ -2032,7 +2051,7 @@ document.getElementById("btnRefresh").onclick = async function(){
   btn.innerHTML = original;
   load();
 };
-document.getElementById("btnComputeAccess").onclick = async function(){
+  const bA = document.getElementById("btnComputeAccess"); if (bA) bA.onclick = async function(){
   const btn = document.getElementById("btnComputeAccess");
   const original = btn.innerHTML;
   btn.disabled = true;
@@ -2044,6 +2063,8 @@ document.getElementById("btnComputeAccess").onclick = async function(){
   btn.innerHTML = original;
   load();
 };
+}
+
 ["fRegion","fType","fBudget","fSort","fResSec"].forEach(function(id){document.getElementById(id).onchange = load;});
 document.getElementById("q").addEventListener("keydown", function(e){ if(e.key==="Enter") load(); });
 api("/api/preferences").then(function(p){ window._accessGoodThreshold = p.access_good_threshold_min || 12; }).catch(function(){}).then(function(){ load(); });
@@ -2220,7 +2241,7 @@ var index_default = {
         return json({ ok: true, stored, hitLimit, remaining: hitLimit ? records.length - stored : 0, source: srcRow.name });
       }
       if (url.pathname === "/api/stats") {
-        const st = await db.prepare("SELECT (SELECT COUNT(*) FROM biens) AS biens, (SELECT COUNT(*) FROM listings WHERE status='active') AS annonces, (SELECT COUNT(*) FROM sources WHERE enabled=1) AS sources_actives, (SELECT COUNT(*) FROM sources WHERE enabled=1 AND state='productive') AS sources_productives, (SELECT COUNT(*) FROM biens WHERE is_opportunity=1) AS opportunites, (SELECT MAX(last_checked) FROM sources WHERE enabled=1) AS derniere_collecte").all();
+        const st = await db.prepare("SELECT (SELECT COUNT(*) FROM biens WHERE id NOT IN (SELECT bien_id FROM discarded WHERE espace_id=?) AND id NOT IN (SELECT bien_id FROM favoris WHERE espace_id=?)) AS a_trier, (SELECT COUNT(*) FROM favoris WHERE espace_id=?) AS favoris, (SELECT COUNT(*) FROM discarded WHERE espace_id=?) AS ecartes, (SELECT COUNT(*) FROM vendus) AS vendus, (SELECT COUNT(*) FROM biens) AS biens, (SELECT COUNT(*) FROM listings WHERE status='active') AS annonces, (SELECT COUNT(*) FROM sources WHERE enabled=1) AS sources_actives, (SELECT COUNT(*) FROM sources WHERE enabled=1 AND state='productive') AS sources_productives, (SELECT COUNT(*) FROM biens WHERE is_opportunity=1) AS opportunites, (SELECT MAX(last_checked) FROM sources WHERE enabled=1) AS derniere_collecte").bind(espace, espace, espace, espace).all();
         return json(st.results[0]);
       }
       if (url.pathname === "/api/search") {
