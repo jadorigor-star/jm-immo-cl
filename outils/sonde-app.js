@@ -1,17 +1,9 @@
-const id = "4003423036";
-const formats = [
-  "https://www.immoscout24.ch/buy/" + id,
-  "https://www.immoscout24.ch/fr/d/" + id,
-  "https://www.immoscout24.ch/fr/acheter/" + id,
-  "https://www.immoscout24.ch/kaufen/" + id,
-  "https://www.immoscout24.ch/de/d/" + id,
-  "https://www.immoscout24.ch/it/acquistare/" + id
-];
 (async () => {
-  for (const u of formats) {
-    try {
-      const r = await fetch(u, { redirect: "manual", headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36" } });
-      console.log(String(r.status).padEnd(4) + (r.headers.get("location") || "").slice(0, 90).padEnd(92) + u);
-    } catch (e) { console.log("ERR  " + u + " " + e.message); }
+  for (let i = 0; i < 3; i++) {
+    const r = await fetch("https://jm-immo-cl.jadorigor.workers.dev/api/reanalyser-localites?limit=140", { headers: { "X-Espace": "principal" } });
+    const j = await r.json();
+    console.log("passe " + (i + 1) + " : HTTP " + r.status + " | examinees=" + j.examinees + " corrigees=" + j.corrigees);
+    (j.details || []).forEach((d) => console.log("   " + d));
+    if (!j.corrigees) break;
   }
 })();
