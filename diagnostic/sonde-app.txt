@@ -9,22 +9,22 @@
   OK   /api/vendus        HTTP 200
   OK   /api/baisses       HTTP 200
 === 2. Tris et filtres ===
-  OK   tri jmfit       (285 biens)
-  OK   tri price_asc   (285 biens)
-  OK   tri price_desc  (285 biens)
-  OK   tri recent      (285 biens)
-  OK   tri access      (285 biens)
-  OK   tri surface     (285 biens)
+  OK   tri jmfit       (287 biens)
+  OK   tri price_asc   (287 biens)
+  OK   tri price_desc  (287 biens)
+  OK   tri recent      (287 biens)
+  OK   tri access      (287 biens)
+  OK   tri surface     (287 biens)
   OK   filtres combines
 === 3. Actions personnelles (espace de recette) ===
   (reference espace principal : 5 favoris, 65 ecartes)
   OK   un bien de reference existe
   OK   ajout favori
-  ECHEC ecarter
+  OK   ecarter
   OK   ecarter retire des favoris
   OK   bien ecarte masque de la liste
-  ECHEC restaurer
-  ECHEC marquer vu -> champs du bien : first_seen,last_seen
+  OK   restaurer
+  OK   marquer vu (is_new passe a false)
 === 4. Preferences par espace ===
   OK   ecriture preferences
   OK   relecture preferences
@@ -37,4 +37,4 @@
   OK   appel sans en-tete d'espace
   OK   identifiant d'espace hostile neutralise
 
-=== RESULTAT : 28 OK, 3 ECHEC ===
+=== RESULTAT : 31 OK, 0 ECHEC ===
