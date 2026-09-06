@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788718039 padding-3000: 841cn5dwkujq305cfx78e0yf0eevew5tuto2qb568tre4tyv17xhgk67r46qkoaw4bck46t7k5cnxxs2bcei9t52ei6pw2wcidvc8kx8r6al8numyl61qehcd5pqaypytt12c7zdytgldit12fxlj06wux6yvm2q2qzny164frcip51kzd5814ucsn7vyr3v6fa0ztfynlz5luletlr5lsrswgeq8ohu8twkkdjape998nav2nepgmjn1q1srwc2gxmy094n67mbjyumn5785ghko2h38p38so4zf6bts5id02tynph8liu879nk1in9e61d76zlhxpo20tpzh6egjmj6gt41mjdoba9ihvp25hpeleuvq3cz9d239lnwyedikdvsdux1n445j3ihnyb21tgqryibva4j99dqzppgdnxaf93w3zadesi4fie5gz63attndh8kunn789cychj0uv97wa7egvh2k088bd06em9fshepu0dmbqhw9fxhofnw8m5wokmra9bsoysvz6qwq8f7kp0gpuzairdgwin57ila5hzbsaf0zw4rxudipmi2hooolizzhirkw6x9hgjsepb309jmoi9y9l6nn7s343zlxbys5nrpnplh9gh26m1gsqm7qycgjjzwcsqs9ltkplje3l1948bzvc6vugyb3lrni3aas5j3lrz6i6n3onv35n64bjit0ekzdpxy4h1sr4c60wyo6j82cplgylze7bx6ex0e7wsodlewcqpmjr81ixhizilrhfbpvs81o7r409pds1t33xjasd61d6u4q65k259k10jhnydx4at81ubphm43c3mh6r5ddh8h1chqvspajc8
-// VERSION_MARKER_JMIMMO_20260906_ANNONCES_RETIREES_v30
+// BUILD-MARKER 1788718313 padding-3100: 80jnp16wis1t1ufj0isiio2xmok57xzxjpesambbg4yx2j6sgeenmovez787jmj5z79aysr55bkjdlwwotmudj3b7n0jagpqys9i994y0hstw0seanm9x4ffcph2n7otwixkwl80cwg45bz4o558949w92rqbcktri32hniqjzlxhcr9hhar90b8clo0ndklo7bulxpgy6x42ageap7xeat1sh2f7g32ww7p9spz80f6gf02nlz9u8h9a5xute1jk8vh3ykqejrm5fzx1hqnniest2ym7keaac09dwi2hpnf6t09czesf30tu6s7eg0hws7ish2zatxctfcpmr4zipp8owaxfp8wrtwhdmzewnwd8jiwtyjf7oztdqf0yb6slqj48qrk9iosbf2irpkhvo9att95t2ijf8ebz3kpi4y03m8968fjx0cge4jz3sgcom9xgy3eoiin3oupsk7wsswdb6r2svb6do99m2juc054k08zcr5zjtvs52ki3fsl4vshhlndwdf3bvmoi6wh1ktqidltop30ssumykxb8d7soes3ss3ulmf0nt3h2wr2cdk69akp41ug58e84fvcjn9s360jxp96me2938pl2swqrnyssze82ne8dguz89pxgrhxuejbjizrnqjlv2k0616c5spqknzcuukzu679qqn4bdtjooja99uzngs50lp7gfqg3xp0qgb3pcirt5q5esn2bnp5oykvgmtteti0dex0acz8tb31ol8opuzqwu9hzf6ngshmstjirdctz91mpi2bvrzuu1icathnz94ojs0d84hienl3j6g30jie87wsr7azhq1hwy2veivcx1lfl92v8ns242st3xtyojtr7x93qnfb
+// VERSION_MARKER_JMIMMO_20260906_IDENTIFIANTS_v31
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -514,6 +514,7 @@ function extractStateJsonGeneric(html, config) {
     const lat = f.geo_lat ? getByPath(item, f.geo_lat) : null;
     const lon = f.geo_lon ? getByPath(item, f.geo_lon) : null;
     out.push({
+      external_id: id != null && String(id).length ? String(id) : null,
       price: parseFloat(price), locality, rooms, surface, url,
       address: address || null, type: null,
       title: title ? String(title).trim() : null,
@@ -738,7 +739,7 @@ function genericAdapter(sourceRow, extra, knownUrls) {
             const html = await fetchText(fetchFn, url, budget);
             for (const rec of extractSingle(html)) {
               out.push({
-                external_id: (rec.url || rec.locality + rec.price).split("/").filter(Boolean).pop(),
+                external_id: rec.external_id || (rec.url || rec.locality + rec.price).split("/").filter(Boolean).pop(),
                 url: rec.url || config.list_url || urls[0],
                 title: rec.title || (rec.type || "Bien") + " \u2014 " + rec.locality,
                 description: rec.description || null,
