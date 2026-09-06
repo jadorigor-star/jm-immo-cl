@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788688746 padding-1900: k0tf8c4kct7nptfk6qijrfnbg5wakewctg9bmfe5h67pprw4befl35nemkol427ngf3ydkixndrlfr59hpq09tmzuar2nkfuvd2jay85gnfgkjshdvhm5xqqoh989c8wdj4fp3fcdsjwfoiqots7rb30luoxoahuy6mibag2knv2ypk09bjr8atiqrb8t78leqqohkkaw1d1hx6752apjiqsz1n62c9hpog480eeqp72chpe16v9zs7cwqyccz94gqq63edzmffxrjyyir0i1m00be7zg1whyoymjh3c2swk4giocwyciqzzaoqxdhcrs1abho3itvnvyspymekoeopnfiri0gtfdj734w1purb1j1cbbxp6wgxkh17ufsv7ux3g8vugufame36vvsmcd8kck3dq6e8a3zwa6rfhoqjjipb3iu5irud9ixpcjdknlg339e9wxkh1uokdawp54gqkom4sylidy5jznxjq1e8nsjlvwpbdg7djwm874pqpl1ex9kd3cgm944ahb7df3497qxvqxybmksawkxphbu7jebs19hkwz8saqlgiptkc5qgjfzdsqe1y3gsm2z2y93gt162jzf8jzyk16x6uod9pbdj5l1kypp48e55sih3g
-// VERSION_MARKER_JMIMMO_20260906_INTERFACE_v19
+// BUILD-MARKER 1788689835 padding-2000: x5gdemaa48r1kx1ymiu3kj3ehi67hbbsm9s3wvui2vmljot9c4qv1apfr8qib818xr9j5skugv9dv8ms17apwcmmewgxo6l0r4scnlnr8ul18inw0adglkkekymfhwbcgq0op2rp48arpzlh98stqgw36zg0ry3sc1xwbkckf52cdroxjrtti75z5wv62rxhw6uvd6oucpmtcmw2z8o6t3c0tx2l4drvh4a4910se12zmuz8epeg6095cghtzo8h6t6wogoywv00ynk3v3ybzaf3d1n8e6s6as51ka8wnbkrn334jnfcntv3trep62rmv2rfzm8hxvkleutvxkyj0spqz2etboh4icdjkgqb2t573upeooteh1u4nzt142irf0iqk5tpwdncy35anodl1jf3hsh6wkrioujngyd5lwfgxv0up7if2ftc3vm2ac4u0c79i5kt9t9srdzlgndofuqm8si4xh39ktf85cypz72dkso2r8dtmbcjw98xwf8ysffb31cxi5qk260zlqmxioqo14ci4aqru2gzabqnjdntuj4zs7zkjhx35e0hkj411adrk8js316no1eg9hprr3huhyne9d4n9tf7prhbcys9152y9qqgvzx0u8lnz134b6zsef0l2eood9bf9rpn
+// VERSION_MARKER_JMIMMO_20260906_CARTE_v20
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -1699,6 +1699,17 @@ main{padding:14px 16px;max-width:660px;margin:0 auto;}
 @media(min-width:640px){.vignette{width:132px}}
 .btn-outil{padding:8px 12px;margin:0 6px 6px 0;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-size:12.5px;cursor:pointer}
 .tab .compteur{opacity:.6;font-size:11px;margin-left:4px}
+.tete{display:flex;gap:11px;align-items:flex-start}
+.tete-txt{min-width:0;flex:1}
+.vignette.vide{background:var(--panel2);opacity:.45}
+.tete .price{margin-top:6px;font-size:19px}
+.tete .meta-row{margin-top:2px}
+.replie{margin-top:9px;border-top:1px solid var(--line);padding-top:7px}
+.replie summary{cursor:pointer;font-size:12px;color:var(--muted);list-style:none}
+.replie summary::-webkit-details-marker{display:none}
+.replie summary::before{content:"▸ ";display:inline-block;transition:transform .15s}
+.replie[open] summary::before{content:"▾ "}
+.note-lrs{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.45}
 </style>
 </head>
 <body>
@@ -1832,37 +1843,55 @@ function accessLine(b){
 }
 
 function bienCard(b){
-  const tags = ["<span class='tag'>" + (b.type||"") + "</span>", "<span class='tag'>" + (b.region||"") + "</span>", "<span class='tag'>" + (b.confidence||"") + "</span>"];
-  if (b.cachet) tags.push("<span class='tag'>cachet</span>");
-  if (b.residence_secondaire_statut === "possible") tags.push("<span class='tag' style='color:var(--teal)'>residence secondaire possible</span>");
-  else if (b.residence_secondaire_statut === "non_possible") tags.push("<span class='tag' style='color:var(--clay)'>residence secondaire non possible</span>");
-  if (b.is_opportunity) tags.push("<span class='tag opp'>Opportunite</span>");
-  if (b.price_drop) tags.push("<span class='tag drop'>-" + b.price_drop.pct + "%</span>");
-  const sources = (b.sources||[]).map(function(s){return "<a href='" + s.url + "' target='_blank' rel='noopener'>" + s.source_name + "</a>";}).join(" - ");
+  const sources = (b.sources||[]).map(function(s){return "<a href='" + s.url + "' target='_blank' rel='noopener'>" + s.source_name + "</a>";}).join(" \u00b7 ");
   const primaryUrl = (b.sources && b.sources[0]) ? b.sources[0].url : null;
-  const star = b.is_new ? " <span title='Nouveaute jamais consultee' style='color:var(--gold)'>\u2605</span>" : "";
+  const star = b.is_new ? " <span title='Jamais consult\u00e9' style='color:var(--gold)'>\u2605</span>" : "";
   const titleHtml = primaryUrl
     ? "<a href='" + primaryUrl + "' target='_blank' rel='noopener' data-action='markview' data-id='" + b.id + "' style='color:inherit;text-decoration:none'>" + b.title + "</a>" + star
     : b.title + star;
   const mapUrl = (b.geo_lat != null && b.geo_lon != null)
     ? "https://www.google.com/maps/search/?api=1&query=" + b.geo_lat + "," + b.geo_lon
     : "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(b.address || ((b.locality||"") + ", Suisse"));
-  const explain = b.explain ? ("<div class='explain'>JM Fit " + b.jm_fit + "/100 - " + b.explain + "</div>") : "";
-  const addrLine = b.address ? ("<div class='locality' style='margin-top:3px'>" + b.address + "</div>") : "";
-  const lrs = (b.lrs_part != null)
-    ? "<div style='font-size:11px;color:#8992A3;margin-top:6px'>Commune soumise à la LRS (" + b.lrs_part + "% de résidences secondaires) : construction neuve en résidence secondaire interdite. Un logement antérieur à 2012 reste utilisable comme tel.</div>"
-    : "";
   const photo = b.image_url
     ? "<img src='" + b.image_url + "' alt='' loading='lazy' referrerpolicy='no-referrer' class='vignette' onerror=this.remove()>"
-    : "";
-  return "<div class='card'><div class='card-top'><div style='display:flex;gap:10px;align-items:flex-start;min-width:0'>" + photo + "<div style='min-width:0'><div class='title'>" + titleHtml + "</div><div class='locality'>" + b.locality + " - " + b.region + " - <a href='" + mapUrl + "' target='_blank' rel='noopener'>Carte</a></div>" + addrLine + lrs + "</div></div>" +
-    "<div class='fit-badge " + (b.is_opportunity?"hot":"") + "'>" + (b.jm_fit != null ? b.jm_fit : "") + "</div></div>" +
-    "<div class='price' style='margin-top:8px'>" + fmtCHF(b.price) + "</div>" +
-    "<div class='meta-row'><span>" + (b.rooms||"?") + " pieces</span><span>" + (b.surface||"?") + " m2</span></div>" +
-    "<div class='tags'>" + tags.join("") + "</div>" + explain + accessLine(b) +
-    "<div class='sources-line'>" + (b.sources||[]).length + " source(s) : " + sources + "</div>" +
-    "<div class='actions'><button class='btn discard' data-action='discard' data-id='" + b.id + "'>Ecarter</button>" +
-    "<button class='btn fav " + (b.is_favori?"on":"") + "' data-action='togglefav' data-id='" + b.id + "' data-fav='" + (!!b.is_favori) + "'>" + (b.is_favori?"Favori (retirer)":"Favori (ajouter)") + "</button></div></div>";
+    : "<div class='vignette vide'></div>";
+
+  // signaux forts uniquement, en surface
+  const signaux = [];
+  if (b.is_opportunity) signaux.push("<span class='tag opp'>Opportunit\u00e9</span>");
+  if (b.price_drop) signaux.push("<span class='tag drop'>\u2212" + b.price_drop.pct + "%</span>");
+  if (b.residence_secondaire_statut === "possible") signaux.push("<span class='tag' style='color:var(--teal)'>R\u00e9s. secondaire OK</span>");
+  else if (b.residence_secondaire_statut === "non_possible") signaux.push("<span class='tag' style='color:var(--clay)'>R\u00e9s. secondaire non</span>");
+  if (b.cachet) signaux.push("<span class='tag'>cachet</span>");
+
+  const prixM2 = (b.price && b.surface && b.surface >= 15)
+    ? "<span>" + fmtCHF(Math.round(b.price / b.surface)).replace("CHF ", "") + "/m\u00b2</span>" : "";
+
+  // details replies
+  const det = [];
+  if (b.explain) det.push("<div class='explain'>JM Fit " + b.jm_fit + "/100 \u00b7 " + b.explain + "</div>");
+  const acc = accessLine(b);
+  if (acc) det.push(acc);
+  if (b.address) det.push("<div class='locality'>" + b.address + "</div>");
+  if (b.lrs_part != null) det.push("<div class='note-lrs'>Commune soumise \u00e0 la LRS (" + b.lrs_part + "% de r\u00e9sidences secondaires) : construction neuve en r\u00e9sidence secondaire interdite. Un logement ant\u00e9rieur \u00e0 2012 reste utilisable comme tel.</div>");
+  det.push("<div class='tags'><span class='tag'>" + (b.type||"") + "</span><span class='tag'>" + (b.confidence||"") + "</span></div>");
+  det.push("<div class='sources-line'>" + (b.sources||[]).length + " source(s) : " + sources + "</div>");
+
+  return "<div class='card'>"
+    + "<div class='tete'>" + photo
+      + "<div class='tete-txt'>"
+        + "<div class='title'>" + titleHtml + "</div>"
+        + "<div class='locality'>" + (b.locality||"") + " \u00b7 " + (b.region||"") + " \u00b7 <a href='" + mapUrl + "' target='_blank' rel='noopener'>Carte</a></div>"
+        + "<div class='price'>" + fmtCHF(b.price) + "</div>"
+        + "<div class='meta-row'><span>" + (b.rooms||"?") + " p.</span><span>" + (b.surface||"?") + " m\u00b2</span>" + prixM2 + "</div>"
+      + "</div>"
+      + "<div class='fit-badge " + (b.is_opportunity?"hot":"") + "'>" + (b.jm_fit != null ? b.jm_fit : "") + "</div>"
+    + "</div>"
+    + (signaux.length ? "<div class='tags'>" + signaux.join("") + "</div>" : "")
+    + "<details class='replie'><summary>D\u00e9tails</summary>" + det.join("") + "</details>"
+    + "<div class='actions'><button class='btn discard' data-action='discard' data-id='" + b.id + "'>\u00c9carter</button>"
+    + "<button class='btn fav " + (b.is_favori?"on":"") + "' data-action='togglefav' data-id='" + b.id + "' data-fav='" + (!!b.is_favori) + "'>" + (b.is_favori?"Favori (retirer)":"Favori") + "</button></div>"
+    + "</div>";
 }
 function ecarteCard(d){
   return "<div class='card'><div class='card-top'><div><div class='title'>" + d.title_at_exclusion + "</div><div class='locality'>" + (d.locality||"") + " - " + (d.region||"") + "</div></div></div>" +
