@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788687025 padding-1600: z8oxxmae6ndasojgah7s9ute80ux39mxwbas7zcdybw7d0teq6sdxjhwz3ofsrxxbnuttujqsih4i8d91o6yiaiyjc4rwf4rr9ttswccfb8kdxcc49iarfb2n9po9v0y1uaa7sx41thwie45y7k4xhl4zdaaklnxo3e7erq5k34k7rayl9w3lt9wpgro52r4vqy89n744q1t1b5797emded74toja6x9jabv9y250h7bhg128wcncs4lcaxjt305fueu9j2e57prkeiup3hj4nxr4pevserxd218fb1d2xuwlzrmongq1ul58spa55qwqca7vrobp1oftqm6hsxy6d465kipkjfvviwmoqiqdy0lj4x34e5tc7v590mg9h17lxq0moq8e6wmkiag5o9naioceed5kszrvcdgpnlg1fmg3ix4pnflgl3raay4125d850x67njac2tb4dxqf7rw7by1tesa4r3fcntax4gcbc29n5g99scnln0glxopff5ihvuh9naz9fi09vdosq1m0lyr7scuwxrbamlzq8tmjtudjw0z1xdgxp1fktct2zn5pdzg86gagxwjsjcilu
-// VERSION_MARKER_JMIMMO_20260906_LOCALITE_FINE_v16
+// BUILD-MARKER 1788687675 padding-1700: zn0ok9a4vla15ekj2ye58bracej77xmt7ckwq124vt6nenwdidlmvc006kay3ar9uxv89n65sixnjvoun3navcbrn5uywyt32u9leqg9mochfddumofyn9fjmq15x9gywftwn91af1un755qpzuhxnylk3p9zgsvqnihsl2eon5r8b19yvhvr87v07tsq2nqi4273qsd6ayvmuckt72iaz74uoauxvu5h72s7tr89hnskdll0kpct2rr9bv9ufdueqtty2h2z7ryqw78ojxgdvici9l8km7vxd147g2p49ywn5b42slb62qtzckapuwckf7es80pmcvmflwxgxcv2uahg30p7p7z2y0b8vsvpakf18mtpjwlpcblma12fx6yulchnnw3wqpov7e3a3xooe7ovmix6xrvc1k3ditel0w0wgbwugqrtvt8vu558pw4s2c4zpnunpblwv4cxxeu21vnpjuaugq3nokvivnz13j4ck3v2z2adenqh97nhicfxpicb6iad9yxmiulkhfhn2qlktszrm0oqy8ftks17tpvfyb5q4h50i0lirduqys8elv8s7ou38tebklzywbats1a
+// VERSION_MARKER_JMIMMO_20260906_LOCALITE_DIAG_v17
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -143,27 +143,29 @@ async function resoudreLieu(db, terme, fetchFn, budget) {
     if (c.results.length) return c.results[0].nom ? c.results[0] : null;
   } catch (e) { return null; }
   if (!budget || budget.remaining <= 0) return null;
-  let trouve = null;
+  let trouve = null, note = "";
   try {
     budget.remaining--;
     const u = "https://api3.geo.admin.ch/rest/services/api/SearchServer?type=locations&origins=gazetteer&limit=6&sr=4326&searchText=" + encodeURIComponent(terme);
     const r = await fetchFn(u, { headers: { "User-Agent": "JMImmo/1.0" } });
+    note = "http" + r.status;
     if (r.ok) {
       const j = await r.json();
+      note += " res=" + (j.results || []).length;
       for (const x of (j.results || [])) {
         const label = String(x.attrs.label).replace(/<[^>]+>/g, "");
         const mm = /^Populated Place\s+(.+?)\s+\(([A-Z]{2})\)\s*-\s*(.+)$/.exec(label);
-        if (!mm) continue;
-        if (normCommune(mm[1]) !== cle) continue;
-        if (!CANTONS_PERIMETRE.includes(mm[2])) continue;
+        if (!mm) { note += " |NOPP:" + label.slice(0, 28); continue; }
+        if (normCommune(mm[1]) !== cle) { note += " |NOM:" + normCommune(mm[1]); continue; }
+        if (!CANTONS_PERIMETRE.includes(mm[2])) { note += " |CANTON:" + mm[2]; continue; }
         trouve = { terme: cle, nom: mm[1].trim(), commune: mm[3].trim(), canton: mm[2], lat: x.attrs.lat, lon: x.attrs.lon };
         break;
       }
     }
-  } catch (e) { trouve = null; }
+  } catch (e) { trouve = null; note = "EX:" + String(e && e.message ? e.message : e).slice(0, 70); }
   try {
-    await db.prepare("INSERT INTO lieux_resolus (terme, nom, commune, canton, lat, lon, resolu_le) VALUES (?,?,?,?,?,?,?) ON CONFLICT(terme) DO UPDATE SET nom=excluded.nom, commune=excluded.commune, canton=excluded.canton, lat=excluded.lat, lon=excluded.lon, resolu_le=excluded.resolu_le")
-      .bind(cle, trouve ? trouve.nom : null, trouve ? trouve.commune : null, trouve ? trouve.canton : null, trouve ? trouve.lat : null, trouve ? trouve.lon : null, (/* @__PURE__ */ new Date()).toISOString()).run();
+    await db.prepare("INSERT INTO lieux_resolus (terme, nom, commune, canton, lat, lon, resolu_le, note) VALUES (?,?,?,?,?,?,?,?) ON CONFLICT(terme) DO UPDATE SET nom=excluded.nom, commune=excluded.commune, canton=excluded.canton, lat=excluded.lat, lon=excluded.lon, resolu_le=excluded.resolu_le, note=excluded.note")
+      .bind(cle, trouve ? trouve.nom : null, trouve ? trouve.commune : null, trouve ? trouve.canton : null, trouve ? trouve.lat : null, trouve ? trouve.lon : null, (/* @__PURE__ */ new Date()).toISOString(), note.slice(0, 180)).run();
   } catch (e) {}
   return trouve;
 }
