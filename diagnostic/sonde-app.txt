@@ -1,4 +1,38 @@
-passe 1 : HTTP 200 | examinees=2 corrigees=2
-   Dino -> Sonvico (Villa moderne exclusive à construire à D)
-   Dino -> Sonvico (Villa moderne exclusive à construire à D)
-passe 2 : HTTP 200 | examinees=0 corrigees=0
+
+Strada d'Indémen 28, 6574 Vira (Gambarogno)
+  geo.admin -> la Stráda d'Indéman 28 6574 Vira (Gambarogno)  [46.13935, 8.83735]
+  geo.admin -> la Stráda d'Indéman 128 6574 Vira (Gambarogno)  [46.13344, 8.83979]
+  arrets les plus proches : Scesana (80 m) | Vira (Gambarogno), Bellavista (256 m) | Fosano (386 m) | Vira (Gambarogno), Edifors (420 m)
+
+Strada dal Castèl 20, 6574 Vira (Gambarogno)
+  geo.admin -> la Stráda dal Castèl 20 6574 Vira (Gambarogno)  [46.14365, 8.84630]
+node:internal/deps/undici/undici:14976
+      Error.captureStackTrace(err);
+            ^
+
+TypeError: fetch failed
+    at node:internal/deps/undici/undici:14976:13
+    at async arret (/home/runner/work/jm-immo-cl/jm-immo-cl/outils/sonde-app.js:13:13)
+    at async /home/runner/work/jm-immo-cl/jm-immo-cl/outils/sonde-app.js:24:16 {
+  [cause]: SocketError: other side closed
+      at TLSSocket.<anonymous> (node:internal/deps/undici/undici:6436:28)
+      at TLSSocket.emit (node:events:536:35)
+      at endReadableNT (node:internal/streams/readable:1698:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
+    code: 'UND_ERR_SOCKET',
+    socket: {
+      localAddress: '10.1.0.250',
+      localPort: 56556,
+      remoteAddress: '5.148.188.59',
+      remotePort: 443,
+      remoteFamily: 'IPv4',
+      timeout: undefined,
+      bytesWritten: 490,
+      bytesRead: 1769
+    },
+    [Symbol(undici.error.UND_ERR)]: true,
+    [Symbol(undici.error.UND_ERR_SOCKET)]: true
+  }
+}
+
+Node.js v20.20.2
