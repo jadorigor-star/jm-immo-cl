@@ -41,6 +41,8 @@ const post = (b) => ({ method: "POST", headers: { "Content-Type": "application/j
   const refFav = (await ap("/api/search?favoris=1", "principal")).json.count;
   const refEc = (await ap("/api/ecartes", "principal")).json.results.length;
   console.log("  (reference espace principal : " + refFav + " favoris, " + refEc + " ecartes)");
+  const restes = await ap("/api/ecartes", TEST);
+  for (const r of (restes.json.results || [])) await ap("/api/restore", TEST, post({ bien_id: r.bien_id }));
   const avant = await ap("/api/search", TEST);
   const cible = avant.json.results[0];
   verifier("un bien de reference existe", !!cible, "aucun bien");
@@ -64,8 +66,7 @@ const post = (b) => ({ method: "POST", headers: { "Content-Type": "application/j
     await ap("/api/marquer-vu", TEST, post({ bien_id: cible.id }));
     const apresVu = await ap("/api/search", TEST);
     const b2 = apresVu.json.results.find((b) => b.id === cible.id);
-    verifier("marquer vu", b2 && (b2.vu === true || b2.jamais_vu === false || b2.deja_vu === true),
-      "champs du bien : " + (b2 ? Object.keys(b2).filter((k) => /vu|seen|star/i.test(k)).join(",") || "aucun champ de vue" : "bien absent"));
+    verifier("marquer vu (is_new passe a false)", b2 && b2.is_new === false, "is_new=" + (b2 && b2.is_new));
   }
 
   console.log("=== 4. Preferences par espace ===");
