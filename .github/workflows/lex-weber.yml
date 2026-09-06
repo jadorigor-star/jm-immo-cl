@@ -1,0 +1,23 @@
+name: Inventaire Lex Weber
+"on":
+  workflow_dispatch:
+jobs:
+  recuperer:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm install --no-save xlsx
+      - run: |
+          mkdir -p diagnostic
+          node outils/lex-weber.js > diagnostic/lex-weber.txt 2>&1 || true
+          cat diagnostic/lex-weber.txt
+      - run: |
+          git config user.name "JM Immo CI"; git config user.email "ci@jm-immo.local"
+          git add -f diagnostic/ outils/
+          git commit -q -m "Inventaire Lex Weber [skip ci]" || true
+          git push || true
