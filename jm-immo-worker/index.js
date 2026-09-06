@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788693825 padding-2500: f50pt5in7cih6yd0qzq4snw3mkzndiy16bovx0mlmi1izt758w3pqxg4e08tshox97r5c4g7ikgv2rbmn434aw2ej9elghjmvo7pijc8ob2przl6kb2p0co7tkm6u1slx8no5pozrsgw7e9tgufb1jnjkj9rmcpemvqwh90eun3021tyf9osgekbiqtgs2ldbn6r3vcqq9ua1purkhj2l5642tl4vlc9ub6of4pspu1ui1k2jhuerzhelbdgp4w659vvp9usehq9tp0u04xwdo8stvlchzgpjjbobpwp1lyss00rzskm5v3oq1yypfb7xfox2rfniyasxxrmhin0t810f1t9ebnqf3jvz6dysz5l0kzeykqwf16fmbkirbeowi2u3k5o6kjn2hzfxfymw1iizgqjk7vai4gwz17v74qhieqc8n3bn16hmxw1mjlvkz7nklmy8ahx0ilxo8pefcziq4ex34wvrjd4tu696qh3czft7971tymnwf9jvwz6edw2ymegn11jvti4hyyef376wv6m0nu4zgacqqjrs3zf7a26mgorevzwltcvb04r1kms4n6wdxjtkde94c2pjsba11ovz28b34nxg6feuh7dnu3ckug987kgqed096gnps3a2mlmz47bn3e5i4zirhyb0jqb3v2o0gn8rjjibdzkdkmrbao0z72satar8ztfqn8c171oby9o7kqppumnjgb0wjw6f1w7tlzl4nyanz7szhuhhtc6cjc1
-// VERSION_MARKER_JMIMMO_20260906_REANALYSE_v25
+// BUILD-MARKER 1788694141 padding-2600: 8fjnm59xdr0c0fpkog8xab9ujpwlw0ieoydtv0in336kx61u0jz5vjqpbkwxnicqkupu8o7ej07t9zhlfw3xiwdwi0u217lxbu2zm9zsmc7g1bhwtkb2w44rbxtf9b07pfwfnfchoo0fuj27evzatgf5plij58tl5kosvqf6nfsr07rzzjy5dkgp0xm166uwbnq2y16wff5ctbeg47zqvsunrlt2w8qf38bn4tpoqu0nvtufus0mpsz8a0g5nao4f68o4nc3043aa23t9ouonnwgcf33wszskaepjvcmjl91xyxqwtcpvfios113atwvphe7l3thb2ea7mwe7g4sxggtu04lp8jfq1eheupbx51zxlnv7p0eux1a643ng5gcibb8smep9xce172hjtyn2v3297k7p5cu003sqhcqpza3bl8s96k1ocy75vjlqkra15ce36gc5ifp0m66hwgm8z1234e04lk4z71grxxr6zijwwhcvsvjo9lkumot7387qzqd7nbslbqz1rau1jspzqrpw7wuqpzc6tikgwx55sxio2qwwwhec0w55gkkedm3k293027pr7tezhczdniq3ffrc0avkk564edkqrvnos1jqt8iyv7btfjxrcqceofg1r721kj38uwux2j8s15zrssu5hhdc7x5vlasp8rxxbmyokclijgjed91mw63frc9pjd5jrlrt5rxg1e0vonds7a5l54to8kkq72mx670jtp7uor1pzvlsqupg3nentkg0wy8kdchymfb
+// VERSION_MARKER_JMIMMO_20260906_PERIMETRE_v26
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -1572,7 +1572,21 @@ async function reanalyserLocalites(db, fetchFn, limite) {
     try { await db.prepare("UPDATE listings SET localite_affinee=1 WHERE id=?").bind(l.id).run(); } catch (e) {}
     if (!change) continue;
     const ancienBien = l.bien_id;
-    const nouvelleRegion = computeRegion(rl.locality) || l.region;
+    const nouvelleRegion = computeRegion(rl.locality);
+    if (!nouvelleRegion) {
+      // le lieu reel est hors perimetre : l'annonce etait mal etiquetee
+      try {
+        await db.prepare("UPDATE listings SET status='inactive', locality=? WHERE id=?").bind(rl.locality, l.id).run();
+        const reste = await db.prepare("SELECT COUNT(*) n FROM listings WHERE bien_id=? AND status='active'").bind(ancienBien).all();
+        if (!reste.results[0].n) {
+          await db.prepare("DELETE FROM biens WHERE id=?").bind(ancienBien).run();
+          await db.prepare("DELETE FROM bien_sources WHERE bien_id=?").bind(ancienBien).run();
+        }
+        rapport.corrigees++;
+        if (rapport.details.length < 40) rapport.details.push("HORS PERIMETRE : " + l.locality + " -> " + rl.locality + " (" + String(l.title || "").slice(0, 34) + ")");
+      } catch (e) {}
+      continue;
+    }
     const nouveauBien = bienKey(rl.locality, l.type, l.rooms, l.surface, l.source_id + ":" + l.external_id);
     if (nouveauBien === ancienBien && rl.locality === l.locality) continue;
     try {
