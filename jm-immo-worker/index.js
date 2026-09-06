@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788681060 padding-1300: 2x2zovihx3bdhkq2w736eb1ukfvnbwa5uln3c6j1xb9njdlb5hcc4p9aj7s9artfezj59lxlo75lmnd60xleaqe9wp7fr2io2q130zxbup5cxmfoc5t3vedy9yuqv1bhovo081ed19plx0t4w8udthaqco2paohnzh8naws2v60ddv9pctth0jdl85dfgn6a3nu3a19pjue26jda3ssushnmsmaqgbkksmbiud2xzpi3niced95jt0nxvv0fwzlnj69rbwg5zcspypd39rtlatyiuh9lc8sy3fxxi0sngo0ar6y4i8onxxo1fl7fculof6rpsy57yvoxjgxky928m6go4r7pmdnr6xsp229yyjpn28a0gd8u4viyeuygkn6jsa8n9c4wnkxp9jjoenz6p8tur2vphbkcxjudvgt9b7219yvwv4j5y33h551ilypc7ju7xgw9h8crag8ejollz29m5zqcnnrd3cm6o5h1q6bqhznb2ffdbz0xeerkui5p91c9ae1vrqa6svj5rb
-// VERSION_MARKER_JMIMMO_20260906_TRIAGE_REGIONS_v13
+// BUILD-MARKER 1788682511 padding-1400: irmaazvzpogi3vmgo2caer06qw5pzpkevveiiiea63q1qu68vs4aw8ust8ikre37wzrx7nswoqeckep9516r37w3xtf5qpc7kqm2eoc4sydg3vz05mnxwyfe9cmldf6hvufkv3qiz7ni94bjneqgo5qiv6syudjxu3g3qhicgsda7mmyyqmm9pwwtbyifjohan9oirqxxzy5g6blaqil80s3p5lybsxh0yv1slq9sbs075v2p2rkjg4z5z30ksf2ygovs5bhzgon9g1kmryetyrf5xqabu2l5kd5ahi3z3rwzsl3vwjnamd475poj0b7h6aij6ygy2637e9xp5zbns9fpt0df8mim6dhyq0ek6wllg2yw5r8lf8ghf8phzj5t3oqvg54qkk7ny3n3q17t0edzyr368n0ydzfvrica347jj8ay7zvczlk14i0fnr9wite6cyx4xlcaeqmlrgiwa95tk5c4e7xeo45b7khl3lgqwdnvm33xffv6o4rn4l3frps1m6dcfkz99oix5kxupifo2159scmkpop7y55crm3y6dvrelrnku7fxhvqdv2sfbyehvnv1wewv8ojmsrccyxs
+// VERSION_MARKER_JMIMMO_20260906_RESIDENCE_SECONDAIRE_v14
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -107,8 +107,37 @@ var JURA_HORS_PERIMETRE = /* @__PURE__ */ new Set([
 ]);
 var CONF_ORDER = { "V\xE9rifi\xE9e": 3, "Probable": 2, "\xC0 contr\xF4ler": 1 };
 var CACHET_KEYWORDS = ["r\xE9nov\xE9", "historique", "authentique", "cachet", "poutres", "chemin\xE9e", "charme", "chalet", "ferme", "vo\xFBte", "madrier"];
-var RESIDENCE_SECONDAIRE_KEYWORDS = ["residenza secondaria", "r\xE9sidence secondaire", "ressidenza secondaria", "zweitwohnung", "seconda casa"];
-var RESIDENCE_PRINCIPALE_UNIQUEMENT_KEYWORDS = ["r\xE9sidence principale uniquement", "r\xE9sidence principale exclusivement", "pas de r\xE9sidence secondaire", "aucune r\xE9sidence secondaire", "interdiction de r\xE9sidence secondaire", "residenza primaria", "primary residence only", "soumis \xE0 la lrs", "quota r\xE9sidence secondaire atteint", "restriction lex weber"];
+var RESIDENCE_SECONDAIRE_MOTIFS = [
+  /r[ée]siden[cz][ae]?\s+secondar?i?[ae]s?/i,
+  /residenza\s+secondaria/i,
+  /zweitwohnung(en)?/i,
+  /seconda\s+casa/i,
+  /second(ary)?\s+home/i,
+  /r[ée]sidence\s+de\s+vacances/i,
+  /ferienwohnung/i
+];
+var RESIDENCE_INTERDITE_MOTIFS = [
+  /r[ée]sidence\s+principale\s+(uniquement|exclusivement|obligatoire|impos[ée]e|seulement)/i,
+  /(pas|aucune|interdiction|interdite?)\s+de\s+r[ée]sidence\s+secondaire/i,
+  /r[ée]siden[cz][ae]?\s+secondar?i?[ae]s?\s+(non|pas|impossible|interdite?|exclue?|nicht)/i,
+  /(non|pas|impossible|interdite?|exclue?)\s+(en\s+)?r[ée]siden[cz][ae]?\s+secondar?i?[ae]s?/i,
+  /residenza\s+secondaria\s+non\s+(possibile|ammessa|consentita)/i,
+  /keine\s+zweitwohnung/i,
+  /zweitwohnung(en)?\s+nicht\s+(m[oö]glich|erlaubt|gestattet)/i,
+  /erstwohnung(spflicht|\s+pflicht)/i,
+  /obbligo\s+di\s+residenza\s+primaria/i,
+  /quota\s+de\s+r[ée]sidences?\s+secondaires?\s+atteinte?/i,
+  /nur\s+als\s+hauptwohnsitz/i,
+  /primary\s+residence\s+only/i
+];
+var RESIDENCE_POSSIBLE_MOTIFS = [
+  /r[ée]siden[cz][ae]?\s+secondar?i?[ae]s?\s+(possible|ammessa|consentita|autoris[ée]e|m[oö]glich|erlaubt)/i,
+  /(possibilit[ée]|possibile)\s+(de\s+|di\s+)?r[ée]siden[cz][ae]?\s+secondar?i?[ae]s?/i,
+  /zweitwohnung(en)?\s+(m[oö]glich|erlaubt|zul[aä]ssig)/i,
+  /(idea?le?|adatto|ideal)[^.]{0,80}(vacanz[ae]|vacances|ferien|holiday)/i,
+  /appartement\s+de\s+vacances/i,
+  /appartamento\s+di\s+vacanza/i
+];
 var TOURISTIC_REGIONS = /* @__PURE__ */ new Set(["Tessin", "Gruy\xE8re", "Zweisimmen"]);
 function computeRegion(locality, extra) {
   extra = extra || { map: {}, excluded: /* @__PURE__ */ new Set() };
@@ -1126,9 +1155,13 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
   const geoTarget = address
     ? (addressContainsLocality ? address : address + (latest.locality ? ", " + latest.locality : "") + ", Suisse")
     : (latest.locality ? latest.locality + ", Suisse" : null);
-  const residenceSecondaire = RESIDENCE_SECONDAIRE_KEYWORDS.some((k) => texteComplet.includes(k));
-  const residencePrincipaleUniquement = RESIDENCE_PRINCIPALE_UNIQUEMENT_KEYWORDS.some((k) => texteComplet.includes(k));
-  const residenceSecondaireStatut = residencePrincipaleUniquement ? "non_possible" : residenceSecondaire ? "possible" : "inconnu";
+  const interdite = RESIDENCE_INTERDITE_MOTIFS.some((re) => re.test(texteComplet));
+  const explicitementPossible = RESIDENCE_POSSIBLE_MOTIFS.some((re) => re.test(texteComplet));
+  const mentionne = RESIDENCE_SECONDAIRE_MOTIFS.some((re) => re.test(texteComplet));
+  const residenceSecondaireStatut = explicitementPossible && !interdite ? "possible"
+    : interdite ? "non_possible"
+    : mentionne ? "possible" : "inconnu";
+  const residenceSecondaire = residenceSecondaireStatut === "possible";
   const history = historyByBien.get(bId) || [];
   const disc = discardedByBien.get(bId);
   let discardedNow = false, rescue = null;
