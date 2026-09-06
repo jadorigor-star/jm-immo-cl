@@ -2,7 +2,7 @@ name: Collecte planifiee (filet de securite)
 
 "on":
   schedule:
-    - cron: '*/20 * * * *'
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 concurrency:

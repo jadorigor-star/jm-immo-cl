@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788625926 padding-1100: x6s4icuud1v14lthllf113amea1hx6rf29xe3wi9s2fd73gdevf5asnl1irjc8bg7knftq4jugd0i9bt6mvlz780rdrp404ppye6y889nw5r99le0y0cva141j12u73ckiou0b6nvbdugzlpd2ed75l291plnc2h646bjnq0qevnuyn4ipxp6vg79plmcu8wz3toc6n48h3uvu7spf9btz5hchylw2o4igsggz6icns05wra22unfqnyujj3bw4n6iyfajwryboksbyu50th5wurswbww1ue654qqxl5j5qnh52h0bgnt52ugrdxz8unbfqqmdzxf1fwfg0m9e0vgbzpbhszpchcjw2xqhdh3z1hci4lfsruf80fppm78ajt80jlwt5w6k6wyt8qofv1aske02a6o047wv77jdr7wtepe3l4ccg8qqnjptx22r5swm8ldjequfnnj6pze0gv9xn5s9dk580wp2ezo4o08cy21cdx23is5huyix3xayvrsyz4j4p71k5s0kqkjdv8gbl04zo4s06x4s2vl32dcv7xs46dy0uwq
-// VERSION_MARKER_JMIMMO_20260905_ECONOMIE_ECRITURES_v11
+// BUILD-MARKER 1788679537 padding-1200: owilz3wqwse2df0rpljndosogvly09k76xs1a9qh04vchayu7sp7oz8szixdkljgnp23ycb2ksnbdufzxx2oxzpnizs9av60rkdgenwiho38fhc5muaq5vj54kszfo4sclub36ngnf5a82zu6um8droaor07t4h43m5lzirs6pv0ip3dn0zw92xfubn4miid4s94fvjrezqs3n3lcebthu8842gbap2s5t8mx1aqrszrvaqjrv34z26du7l5zgmuse95yadiq44s6wplk2vi23cgdqlj3pc7cao94dt3y19jebhgdrg9f5j97kgjoq2nww94k1bcik9e84lj2l1x0d8ymzno022c9dicegvjc0jhtpexdwjmrdeihbhqx4nlqn5shpdtbdmqy7n3fotofqfb22iaxp809ejiy5yn8pgn21pgiddtos018pp385whg22xsqddnnc4auec85awkzr85ra3wnqh82f4qk8x5aw3zppis0rgvb6a70s
+// VERSION_MARKER_JMIMMO_20260906_ECRITURES_MINIMALES_v12
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -804,8 +804,18 @@ async function storeListing(db, srcRow, rl, extra) {
   const listingId = srcRow.id + ":" + rl.external_id;
   const bId = bienKey(rl.locality, rl.type, rl.rooms, rl.surface, listingId);
   const today = todayISO();
-  const existing = await db.prepare("SELECT first_seen FROM listings WHERE id=?").bind(listingId).all();
-  const firstSeen = existing.results.length ? existing.results[0].first_seen : today;
+  const existing = await db.prepare("SELECT first_seen, last_seen, price, status, title, image_url, description, address, region, confidence FROM listings WHERE id=?").bind(listingId).all();
+  const anc = existing.results[0] || null;
+  const firstSeen = anc ? anc.first_seen : today;
+  if (anc && anc.last_seen === today
+    && Number(anc.price) === Number(rl.price)
+    && anc.status === "active"
+    && (anc.title || "") === (rl.title || "")
+    && (anc.image_url || "") === (rl.image_url || "")
+    && (anc.description || "") === (rl.description || "")
+    && (anc.address || "") === (rl.address || "")) {
+    return 0;
+  }
   await db.prepare("INSERT INTO listings (id, source_id, external_id, url, title, locality, region, type, rooms, surface, price, currency, is_rental, cachet, status, confidence, first_seen, last_seen, bien_id, address, description, image_url) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET title=excluded.title, price=excluded.price, status=excluded.status, confidence=excluded.confidence, last_seen=excluded.last_seen, region=excluded.region, address=excluded.address, description=excluded.description, image_url=COALESCE(excluded.image_url, listings.image_url)").bind(
     listingId,
     srcRow.id,
