@@ -1,40 +1,8 @@
-=== 1. Points d'entree ===
-  OK   /                  HTTP 200
-  OK   /api/health        HTTP 200
-  OK   /api/stats         HTTP 200
-  OK   /api/sources       HTTP 200
-  OK   /api/preferences   HTTP 200
-  OK   /api/search        HTTP 200
-  OK   /api/ecartes       HTTP 200
-  OK   /api/vendus        HTTP 200
-  OK   /api/baisses       HTTP 200
-=== 2. Tris et filtres ===
-  OK   tri jmfit       (287 biens)
-  OK   tri price_asc   (287 biens)
-  OK   tri price_desc  (287 biens)
-  OK   tri recent      (287 biens)
-  OK   tri access      (287 biens)
-  OK   tri surface     (287 biens)
-  OK   filtres combines
-=== 3. Actions personnelles (espace de recette) ===
-  (reference espace principal : 5 favoris, 65 ecartes)
-  OK   un bien de reference existe
-  OK   ajout favori
-  OK   ecarter
-  OK   ecarter retire des favoris
-  OK   bien ecarte masque de la liste
-  OK   restaurer
-  OK   marquer vu (is_new passe a false)
-=== 4. Preferences par espace ===
-  OK   ecriture preferences
-  OK   relecture preferences
-  OK   espace principal intact
-=== 5. Non-regression de l'espace principal ===
-  OK   favoris principal inchanges (5 -> 5)
-  OK   ecartes principal inchanges (65 -> 65)
-  OK   preferences principal non polluees
-=== 6. Robustesse ===
-  OK   appel sans en-tete d'espace
-  OK   identifiant d'espace hostile neutralise
-
-=== RESULTAT : 31 OK, 0 ECHEC ===
+Cabbio          HTTP 200 -> []
+Rancate         HTTP 200 -> [{"label":"Reinach (BL)","detail":"reinach bl","origin":"gg25","lat":47.50055694580078,"lon":7.597525596618652},{"label":"Rheineck (SG)","detail":"rheineck sg","origin":"gg25","lat":47.47297668457031,"lon":9.582518577575684}]
+Besazio         HTTP 200 -> []
+Albeuve         HTTP 200 -> []
+Les Brenets     HTTP 200 -> [{"label":"Villars-les-Moines (BE)","detail":"villars-les-moines be","origin":"gg25","lat":46.90978240966797,"lon":7.125464916229248},{"label":"Les Montets (FR)","detail":"les montets fr","origin":"gg25","lat":46.80990982055664,"lon":6.849476337432861}]
+Muralto         HTTP 200 -> [{"label":"Muralto (TI)","detail":"muralto ti","origin":"gg25","lat":46.17229461669922,"lon":8.803741455078125}]
+Saignelegier    HTTP 200 -> [{"label":"Saignelégier (JU)","detail":"saignelegier ju","origin":"gg25","lat":47.263877868652344,"lon":6.976081371307373}]
+Zzzinexistant   HTTP 200 -> []
