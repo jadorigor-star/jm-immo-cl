@@ -1,12 +1,6 @@
 passe 1 : HTTP 200 | examinees=140 corrigees=1
-   Dino -> Sonvico (Villa moderne exclusive à construire à D)
-passe 2 : HTTP 200 | examinees=140 corrigees=6
-   sonvico -> Dino (Villa moderne exclusive à construire à L)
-   minusio -> Tegna (Propriété à rendement au cœur des Terres)
-   Dino -> Sonvico (Villa moderne exclusive à construire à D)
-   corcelles -> Corcelles-près-Payerne (Bien — corcelles)
-   corcelles -> Corcelles-près-Payerne (Bien — corcelles)
-   corcelles -> Corcelles-près-Payerne (Bien — corcelles)
-passe 3 : HTTP 200 | examinees=46 corrigees=1
-   Mendrisio -> Cabbio (Appartement 2.5 pièces rénové, Cabbio)
+   HORS PERIMETRE : Sonvico -> Dino (Villa moderne exclusive à construi)
+passe 2 : HTTP 200 | examinees=140 corrigees=1
+   HORS PERIMETRE : Sonvico -> Dino (Villa moderne exclusive à construi)
+passe 3 : HTTP 200 | examinees=43 corrigees=0
 passe 4 : HTTP 200 | examinees=0 corrigees=0
