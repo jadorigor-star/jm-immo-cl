@@ -1,0 +1,23 @@
+name: Recette fonctionnelle
+"on":
+  workflow_dispatch:
+jobs:
+  tester:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: |
+          mkdir -p diagnostic
+          node outils/recette.js > diagnostic/recette.txt 2>&1 || true
+          cat diagnostic/recette.txt
+      - run: |
+          git config user.name "JM Immo CI"; git config user.email "ci@jm-immo.local"
+          git pull --rebase -q || true
+          git add -f diagnostic/recette.txt outils/recette.js
+          git commit -q -m "Recette [skip ci]" || true
+          git push || true
