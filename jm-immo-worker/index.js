@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788767126 padding-3900: 1goikszlx6a7gywa8w16q2fqrc2o2lq4xw1ioeyfj7hmkmvncof41lmr7movxeals416shhyr5emzpoageyrnkjlahohhesd47vtnloiwatymzz2olbf5d0x5qju2b699pelb44tg8olkxlrgcshq291ql3xiovjq0vetpcvv2r3x62cvophyquecn0evdhw0ecmnmn7j9nezv9l8sxyj2yshzfhum7vgmdxnpz54h8ozpu90vzir23nxsm1juzkiao4qqxbqz0vuupjevcc1p44fvjozmo08q3n3hx2kviiug4am8d7zlveb9v8r52gtlp23oca20p8lm3pv0cc2fc911ukdv8qihbi1vcumu9fxcgy33yhb0oi3xoe35j2esb3suxnnol5tfyuwu0nldngoyeqbxojteod9uoif2yvfv867p3z6i4diky6um6vupylnzeedclrozotvhebnmeql80app3jm1g1sedp2gpi9al1gx4it8abtb3l9x4yr1p4noze3v1cm0upua1a9rrs0sgnvcjiscnzx8dmjd3oia8ymg9o7uy2z65doo5pmtjqzkpyveowt9qvgn5meek2cucixdhdedi5h0dlpwzbv70f0z4zc55ez0wgyyula34699az91zx9tvl7qb40t06p7nuvjz4dt1t40yj7qbbx6wecjyuxj5q587j7be82dbbdjoaed9x2babn7ogh5meshydv14xeeh6clbetizvx2zujieukxzj1xke3cxnyug2ta11400gds938gior22jtd8a10334tyijt095n6mpxb57l4e32uvorcu206i41bjwkwio0g65lm7zmgvhuecgu2955qhbzdu5k38h40vb3r52hfgi2na9hodd9z661jwcawtop0ew8s49dj22c11tw4qhemon1qq7qhvku175uyg7x83zoccnqz5p4i7q5wrbu6p09ousskoi00hw9eq45wzd9d7nmjh3047xgrj1ki8xdxvhkbdiatcau0d1pjylez7xtcve5y5
-// VERSION_MARKER_JMIMMO_20260907_RENDU_JS_v39
+// BUILD-MARKER 1788778333 padding-4000: yxz9pie9sz2wpz6bi6wpquyt0avkubo6oe775p1f9w66f4md4ggpxm2cnuhstzlcj9n6hvejia6lc7u81lwnq3oe61jr2ylx0yb19hm98c8mscbv4tckhxs5hx3t266111bgmmwl3mjunoqo92nmr00t4zymgr7ba9o3o1ehh3ame91qf6k1fcbkx51a718iq25d7y9xqq7hj766th80hzc8ddo8rczlckn3w7qj6uzx8jt173jtdvbqsgrkgmul2mrjmqd7cob9m8f6j917t846jvwwuljlcrfa6knaqt3fwvmep46w93mhhzce7pun2sejq6uptx7w6p3eoot0d5frj95leu23s5pda9xyjcpi0sywjh39a271jjmnmsn90bfktxzh79blkvcrmb9er82jzxnfc625s88p61yhj4999g7h62mktxvwat3djl18f2snxc6x94eqk1vurazazlrhbc9bxx1xqtep6fg7bimk9qagfuxq9utwlzma402teg5jqw20qcvfjgwpaacmt2qe8lg4atvyadmfr6oxgsoerx2k79z2cd9f903tvoh3g3a8kvv27x4oksvixqwmwf5jcwayxb0apr5rstif0gv2b1mx37lxrylwfwh1glla9cbmju9krkybf2u9ix8zb81f39cq1h726m0tujywp9zscdiwpzz93v52b3hdmmy04hfya53xmgvrr434whjl48kiqs1apl24yhh1hrkzmo18zbtvr1yqxyvcdwiciw6rgzol5yeai4rm64xiz85cx8gwsr6yvbsbkul04hhj3267logtul19b3wb4c59aerdkuxz2ef6bjd7p529htrokho0lcwjshuc9bjfbnh7i8xntucpcfk7z163ox5ecfar8qq93sn7thta5oktwzqc0t0bwjfpnt4zicuaodr0cnansg2juxs0s95mou6w3hynwcl0e9l0rabknra9lc22cw8ogsjsa1b4kn42qskgpebksj69wianwa11u8djz6w910uj7elpveijwiy1q3m1xmj9dx6cbcrrc8sv
+// VERSION_MARKER_JMIMMO_20260907_COORDONNEES_v40
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -383,7 +383,7 @@ function findKnownLocalityGeneric(text, extra) {
 }
 function extractFieldsGeneric(m, fields, config, extra) {
   const priceMin = config.price_min || 5e4;
-  const out = { price: null, rooms: null, surface: null, locality: null, type: null, url: null, title: null, description: null, image_url: null, address: null };
+  const out = { price: null, rooms: null, surface: null, locality: null, type: null, url: null, title: null, description: null, image_url: null, address: null, geo_lat: null, geo_lon: null };
   if (fields.price != null && m[fields.price]) out.price = parsePriceGeneric(m[fields.price]);
   if (fields.rooms != null && m[fields.rooms]) out.rooms = parseFloat(String(m[fields.rooms]).replace(",", "."));
   if (fields.surface != null && m[fields.surface]) out.surface = parseFloat(m[fields.surface]);
@@ -413,6 +413,8 @@ function extractFieldsGeneric(m, fields, config, extra) {
       else if (key === "description") out.description = decodeEntitiesGeneric(sm[1]).replace(/\s+/g, " ").trim();
       else if (key === "image_url") out.image_url = sm[1].trim();
       else if (key === "address") out.address = decodeEntitiesGeneric(sm[1]).replace(/\s+/g, " ").trim();
+      else if (key === "geo_lat") { const v = parseFloat(sm[1]); if (isFinite(v) && v > 45 && v < 48) out.geo_lat = v; }
+      else if (key === "geo_lon") { const v = parseFloat(sm[1]); if (isFinite(v) && v > 5 && v < 11) out.geo_lon = v; }
     }
   }
   if (!out.price || out.price < priceMin) return null;
