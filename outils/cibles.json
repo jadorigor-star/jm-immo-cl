@@ -1,18 +1,12 @@
 [
- {"id":6,"nom":"MPP Fiduciaria","url":"https://immobiliare.mpp.ch/immobile/"},
- {"id":27,"nom":"Fiduciaria Cheda SA","url":"https://www.immoscout24.ch/agency/p436/fiduciaria-cheda-sa"},
- {"id":37,"nom":"Colombo Fiduciaria SA","url":"https://www.immoscout24.ch/agency/p435/colombo-fiduciaria-sa"},
- {"id":40,"nom":"Livit SA","url":"https://www.immoscout24.ch/agency/livt/livit-sa"},
- {"id":46,"nom":"Immobiliare e Fiduciaria Caccia","url":"https://www.immoscout24.ch/agency/c019/immobiliare-e-fiduciaria-caccia-sa"},
- {"id":54,"nom":"Alloggi Ticino SA","url":"https://www.immoscout24.ch/agency/c303/alloggi-ticino-sa"},
- {"id":65,"nom":"Bulliard Immobilier SA","url":"https://www.immoscout24.ch/agency/bull/bulliard-immobilier-sa"},
- {"id":77,"nom":"PRIVERA AG","url":"https://www.immoscout24.ch/agency/asib18/privera-ag"},
- {"id":87,"nom":"Neuschwander Immobilier","url":"https://www.neu-immo.ch/acheter/"},
- {"id":88,"nom":"Gruyere Immo SA","url":"https://acheter.gruyere-immo.ch/fr/objects-sale"},
- {"id":90,"nom":"JPF Immobilier SA","url":"https://jpf-immobilier.ch/"},
- {"id":92,"nom":"HUH Immobilien AG","url":"https://www.huh-immobilien.ch/immobilien/?casawp_salestypes=buy"},
- {"id":93,"nom":"Casa Vera Immobilien GmbH","url":"https://casa-vera-immo.ch/immobilien/?casawp_salestypes=buy"},
- {"id":94,"nom":"PREMIUM HOMES AG","url":"https://premium-homes.ch/immobilien/"},
- {"id":95,"nom":"IMMOprima AG","url":"https://immoprima.ch/Aktuelle-Objekte/"},
- {"id":99,"nom":"immobilier.ch Jura","url":"https://www.immobilier.ch/fr/acheter/appartement-maison/jura/page-1"}
+ {"id":"L1","nom":"lookmove - Gruyere (Bulle)","url":"https://www.lookmove.ch/fr/acheter/bulle,200523"},
+ {"id":"L2","nom":"lookmove - recherche Fribourg","url":"https://www.lookmove.ch/fr/acheter/fribourg"},
+ {"id":"L3","nom":"lookmove - Neuchatel","url":"https://www.lookmove.ch/fr/acheter/neuchatel"},
+ {"id":"L4","nom":"lookmove - Lugano","url":"https://www.lookmove.ch/fr/acheter/lugano"},
+ {"id":"A1","nom":"Murith Immobilier (Bulle)","url":"https://murith-immobilier.ch/nos-biens/"},
+ {"id":"A2","nom":"Regie Bulle SA","url":"https://www.regiebulle.ch/vendre/"},
+ {"id":"A3","nom":"Bussard Immobilier","url":"https://www.bussard.ch/fr/vente/"},
+ {"id":"A4","nom":"Gruyere Immo - acheter","url":"https://www.gruyere-immo.ch/acheter"},
+ {"id":"A5","nom":"Coventi SA (Charmey)","url":"https://www.coventi.ch/"},
+ {"id":"A6","nom":"CF Immobilier","url":"https://www.cf-immobilier.ch/"}
 ]
