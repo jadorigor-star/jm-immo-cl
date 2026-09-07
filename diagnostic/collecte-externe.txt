@@ -1,12 +1,63 @@
 sources a traiter : 59
-  17 annonces |   1 pages | Bussard Immobilier
+   0 annonces |   1 pages | Bussard Immobilier
    0 annonces |   7 pages | Fidimmobil
    0 annonces |  13 pages | MPP Fiduciaria
-   2 annonces |   1 pages | L'Idea Immobiliare
-   3 annonces |   1 pages | Immobiliare Bandel
-   4 annonces |   1 pages | Assofide SA
-  16 annonces |   1 pages | Agenzia Immobiliare Ceresio
-   1 annonces |   1 pages | Consulca SA
+   0 annonces |   1 pages | L'Idea Immobiliare
+   0 annonces |   1 pages | Immobiliare Bandel
+   0 annonces |   1 pages | Assofide SA
+   0 annonces |   1 pages | Agenzia Immobiliare Ceresio
+   0 annonces |   1 pages | Consulca SA
+   3 annonces |   1 pages | Fideconto gestioni immobiliari SA
+   3 annonces |   1 pages | Galli Immobiliare SA
+   2 annonces |   1 pages | Immoprogramm SA
+   2 annonces |   1 pages | Multiconta SA
+   7 annonces |   1 pages | Fid SA
+   0 annonces |   1 pages | Fiduciaria Cheda SA
+   4 annonces |   1 pages | Fiduciaria Ferro SA
+   4 annonces |   1 pages | Immobiliare Marazza Sagl
+   2 annonces |   1 pages | Immobiliare Mazzoleni SA
+   5 annonces |   1 pages | Immobiliare Nodiroli & Co.
+   4 annonces |   1 pages | Multiresidenza SA
+   1 annonces |   1 pages | Wildi Immobiliare
+   0 annonces |   1 pages | Colombo Fiduciaria SA
+   3 annonces |   1 pages | Fontana Sotheby's International Realty
+   0 annonces |   1 pages | Livit SA
+   1 annonces |   1 pages | Arifida SA
+   2 annonces |   1 pages | Immostile SA
+   0 annonces |   1 pages | Immolife Ticino SA
+   0 annonces |   1 pages | Alloggi Ticino SA
+   5 annonces |   1 pages | Metropolis Immobiliare
+  16 annonces |   5 pages | Neho
+   6 annonces |   1 pages | Monopoly Real Estate sagl
+   2 annonces |   1 pages | Raiffeisen Immo AG
+   2 annonces |   1 pages | Area Immobiliare Ticino
+   1 annonces |   1 pages | ImmoSky AG
+   1 annonces |   1 pages | TERRIER SA
+   0 annonces |   1 pages | Bulliard Immobilier SA
+   2 annonces |   1 pages | SKF Fiduciaria Sagl
+   2 annonces |   1 pages | Ticino Real Estate Sagl
+   5 annonces |   1 pages | TICINO.RE SA
+   2 annonces |   1 pages | Interfida SA
+   5 annonces |   1 pages | Domusdea Immobiliare SA
+   0 annonces |   1 pages | PRIVERA AG
+   5 annonces |   1 pages | FIDIFIM Sagl
+   1 annonces |   9 pages | Neuschwander Immobilier (site propre)
+   0 annonces |   1 pages | Gruyère Immo SA (site propre)
+   0 annonces |   1 pages | BD Gerance SA
+   0 annonces |   1 pages | JPF Immobilier SA
+   0 annonces |   1 pages | HUH Immobilien AG (site propre)
+   0 annonces |   1 pages | PREMIUM HOMES AG (site propre)
+   0 annonces |   1 pages | IMMOprima AG (site propre)
+  10 annonces |  11 pages | immobilier.ch (portail romand)
+   5 annonces |  11 pages | immobilier.ch - Neuchatel
+   0 annonces |   4 pages | immobilier.ch - Saignelégier
+   1 annonces |  11 pages | immobilier.ch - Charmey/Gruyere
+   0 annonces |   1 pages | Fiduciaria Cheda SA (IS24)
+   4 annonces |   1 pages | SIT Immobiliare (IS24)
+   7 annonces |   1 pages | TICINO.RE SA (IS24)
+   0 annonces |  11 pages | immobilier.ch - Le Noirmont
+   0 annonces |  11 pages | immobilier.ch - Saint-Ursanne
+   0 annonces |   2 pages | immobilier.ch - Gruyères/Broc
 
-TOTAL : 43 annonces sur 26 pages telechargees
-recalcul : {"ingestion":[{"source":"immobilier.ch - Saignelégier","state":"productive","stored":0,"rafraichies":3,"contribution":3,"error":null},{"source":"immobilier.ch -
+TOTAL : 125 annonces sur 143 pages telechargees
+recalcul : {"ingestion":[{"source":"immobilier.ch (portail romand)","state":"productive","stored":2,"rafraichies":4,"contribution":10,"error":null},{"source":"immobilier.c
