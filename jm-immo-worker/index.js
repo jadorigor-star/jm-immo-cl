@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788751593 padding-3600: 67rjod3k445m7kseahsqnjr9ysf04vjpi9khy3jr5w0om3bqpm4278q0t6oxvfbbh3om7krzomte3bjoh1r692g6n97lvoss02smerozi7vyac5t41p9fokxoxa84mze4o7md85vpgzne8xwarp6b53sf3yfixt9bt99r3hvw709lvpqms29byc0qa0p86qpp4c9jig8khnm12huo0pryeivufeev548aglt8g9d9bxv42db9v5ga9lsd2hs6pnur0w6uem4zf4aulr1lcjajdv8c4ssp3lsjy9xkjrot94svwhb7pgkomdfsxgzx8qm9bew1dsfdt46e1umn6k4txoq2rlylq123vigiyyzvf0b6a3uj989mbpi6m8czseqcty4wnbqss4jyam86fctfs0jmut9e1r2kei591pequn16wb7t14ppzwk34mrcoxe6dtjyd1dyjf5notl826dst46syc49js2yzwvitqbf499ewjg9jqvlvp0fsafoog4lqeu19b5aid80i8oyzqdde1kdt04fgyo7bpqbw14l9yghbc7sco7ti75h8c5lmnft5bzmmbjq28dl7tsvwkt6yyhkleb8cghnys8gxdnk7hbsfjf7bg34owqpnh3x1tq18irzdwgl4i4hdn3frpo0t16yeyq8jfnnmm3zdolocvjw2ykjzt1ne1gcitrz5de739c7es5jdno931r49p3pw1uqu2omcr6gi36ntsbvxezg22ltjnpivjv6k0wlzjhb0ggdpgbekj5u54attx54aeb7kqhicx5rml2w5dctbvw98xcnem9rd1g1by64opzcz2n8vjxj847wxdldznxvqz07h0cpsslgru5821ce4hsphtal3yu3dsv2on8d92ednbvxz6abrz7tkftn23nbbdqinnl6hc2snlzm6w3sg07p4sqyqomgyby7g2d0b07tp9nuong3cf6z0mb2rip
-// VERSION_MARKER_JMIMMO_20260907_ENRICHISSEMENT_AUTO_v36
+// BUILD-MARKER 1788752339 padding-3700: f2n844yy0eszsmcw7elzu6gvhvis2sq98kx5q8x1thbn34wnrwq1a9ocsvkdo6es3clp0p626ydjmna2if0ce8c6pqe5dptj6mnavojbrm3vvtuig4cnrw1jdcrh06odq4l34229iu9feulte90bw4q14npshpx7wsnyfvdjf6lj9zaegsxzxzvzuspsqtjc0v62hso6q4188r5y3ynyghxm1qv1ag44saliyaw826pxarajm9yu6cvfh34gnlvw7fnkvchdrf55sznfxq9mwellfa971rzswt12amdixpzp4skcmde4thlovr7j8l9mw1xnllyi886asnx6z8s9xcxfxyrktfj5qmd0zao9h3k3ihvv2zhvubspgpwmkem4muioicrlie44gxu4ue3egdrr9qkj3l473vt24hwuh6uz9fy0x6yfwlu8z9nzkpios6frnugze7oc253n0ew85q22grao2ujqu5c9hcl1nqmtugswb9k5q6ziq4wwqxwcivtz8tctxt5qpxsyepkdqrh7yvfsoe2cxwg2hlfhenjsavgtqpxuvp7s5mpxnqdukxd09wp1iz79sa2n9bsznyd0fv6d97jsgayu6c73ror5qajvbhske8w4eepr0fcvqkryjb2lu5e9bfbpjv1qbcngfciyzpw8d17djgyjr4sswo9az068kej890oj5vdqka7ptkzhikn7r1iaruep8hwoq68opxhqlb0ued6hieqrjem1nbo0a24yk86xp4alw00mkbkujy1j5srwq6933z8rtinhntxbrvd58x7fancyhmfgdhh8bssqb7omeisu7vmo1o8p7jvz6y8wmj3bku1642n50d3h3zxi84cnxz2mt6e2pos0ebwxkoqc93pz4u61rdi4rlbf3wi1ne3kp3v5s7b3e2eyqa7zqbu0m42uv4rmvdasobqgtd0dss1cp6rf6uaei02dwjp0k5l1s3ptb2ldomh69elw6bv7
+// VERSION_MARKER_JMIMMO_20260907_PLAN_COLLECTE_v37
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -2415,6 +2415,24 @@ var index_default = {
       if (url.pathname === "/api/reanalyser-localites") {
         const r = await reanalyserLocalites(db, fetch.bind(globalThis), parseInt(url.searchParams.get("limit") || "120", 10));
         return json(r);
+      }
+      if (url.pathname === "/api/plan-collecte") {
+        const r = await db.prepare("SELECT id, name, config_json FROM sources WHERE enabled=1 ORDER BY id").all();
+        const plan = [];
+        for (const row of r.results) {
+          let c = {};
+          try { c = JSON.parse(row.config_json || "{}"); } catch (e) { continue; }
+          const pages = c.mode === "two_step" ? (c.list_url ? [c.list_url] : []) : (Array.isArray(c.urls) ? c.urls : (c.list_url ? [c.list_url] : []));
+          if (!pages.length) continue;
+          plan.push({ name: row.name, mode: c.mode || "single", pages, max_details: c.max_details || 20, link_base: c.link_base || null });
+        }
+        return json({ sources: plan });
+      }
+      if (url.pathname === "/api/marquer-source" && request.method === "POST") {
+        const b = await request.json();
+        await db.prepare("UPDATE sources SET last_checked=?, state=?, last_error=?, last_productive_count=?, consecutive_failures=? WHERE name=?")
+          .bind((/* @__PURE__ */ new Date()).toISOString(), b.state || "accessible", b.error || null, b.stored || 0, b.error ? 1 : 0, b.name).run();
+        return json({ ok: true });
       }
       if (url.pathname === "/api/search") {
         const q = url.searchParams;
