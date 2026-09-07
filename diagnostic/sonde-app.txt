@@ -1,7 +1,14 @@
-passe 1 : 4 annonces reecrites
-passe 2 : fetch failed
-passe 3 : 4 annonces reecrites
-passe 4 : fetch failed
-passe 5 : 4 annonces reecrites
-passe 6 : 4 annonces reecrites
-recalcul final : {"ingestion":[{"source":"immobilier.ch - Saignelégier","state":"productive","stored":0,"rafraichies":3,"contribution":3,"error":null},{"source":"immobilier.ch - Gruyères/Broc","state":"productive","st
+source : immobilier.ch - Le Noirmont
+page : https://www.immobilier.ch/fr/acheter/appartement-maison/jura/le-noirmont/page-1
+liste : 178529 octets
+liens extraits : 10
+   https://www.immobilier.ch/fr/acheter/appartement/jura/rossemaison/amp-immo-412/nouvelle-promotion-im
+   https://www.immobilier.ch/fr/acheter/maison/jura/boncourt/neuschwander-immobilier-sarl-635/boncourt-
+   https://www.immobilier.ch/fr/acheter/maison/jura/miecourt/betterhomes-schweiz-ag-611/prix-top-spacie
+
+page de detail : 23813 octets
+titre HTML : Appartement 3.5 pces 80 m2 &#xE0; acheter &#xE0; Rossemaison | CHF 435&#x27;000.-
+og:title   : Nouvelle promotion - Immeuble MinergieP
+canonical  : https://www.immobilier.ch/fr/acheter/appartement/jura/rossemaison/amp-immo-412/nouvelle-promotion-immeuble-min
+
+reponse du worker : {"ok":true,"stored":0,"hitLimit":false,"remaining":0,"source":"immobilier.ch - Le Noirmont"}
