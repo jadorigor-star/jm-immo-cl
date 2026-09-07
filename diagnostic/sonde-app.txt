@@ -1,13 +1,13 @@
-liens extraits par le worker : 25
-premier lien : https://www.gruyere-immo.ch/details-d-un-bien-immobilier/p-monseigneur-genoud-15-lessoc-p-p-p-p-span-au-coe_monseigneur-genoud-15-lessoc-6186269
+page : 24071 octets
 
-page de detail rendue : 670426 octets
-taille du head : 619924
-  <title>([^<]{4,140}) -> Maison villageoise au coeur de Lessoc !... - Gruyère Immo
-  og:title" content="([^"] -> Maison villageoise au coeur de Lessoc !... - Gruyère Immo
-  og:description" content= -> Monseigneur-Genoud 15 - Lessoc  Au cœur du charmant village de Lessoc se dévoile cette maison villageoise plei
-  og:image" content="([^"] -> https://www.immomigimg.ch/i/7126e/1920x1280/m-ww15725/1399/pictures/objects/1399_6a955d977796d0.34935072.jpg
-prix dans la page : ["CHF 400'000"]
-pieces : ["4.5 pièces","4.5 pièces","4.5 pièces"] | surface : []
+=== indices d'adresse ===
+  og:description    ["Appartement B - 2,5 pi&#xE8;ces, avec balcon - Cadre agr&#xE9;able &#xE0; Couvet situ&#xE9; &#xE0; Couvet. 74 m2, 2.5 pi&#xE8;ces, balcon. Disponibilit&#xE9; sur demande."]
+  meta description  ["Appartement B - 2,5 pi&#xE8;ces, avec balcon - Cadre agr&#xE9;able &#xE0; Couvet situ&#xE9; &#xE0; Couvet. 74 m2, 2.5 pi&#xE8;ces, balcon. Disponibilit&#xE9; sur demande."]
+  rue + numero      []
+  code postal + ville[]
+  adresse json      []
+  coordonnees       ["46.9218657"]
 
-reponse du worker : {"ok":true,"stored":1,"hitLimit":false,"remaining":0,"source":"Gruyère Immo SA (site propre)"}
+=== JSON-LD (2) ===
+   { "@context": "https://schema.org", "@type": "RealEstateListing", "@id": "https://www.immobilier.ch/fr/acheter/appartement/neuchatel/couvet/pro-conseils-1594/appartement-b-25-pieces-balcon-cadre-agreable-couvet-1564437", "url": "https://www.immobilier.ch/fr/acheter/appartement/neuchatel/couvet/pro-conseils-1594/appart
+   { "@context": "http://schema.org", "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "item": { "@id": "https://www.immobilier.ch/fr", "name": "Accueil" } } ,{ "@type": "ListItem", "position": 2, "item": { "@id": "https://www.immobilier.ch/fr/acheter", "name": "Acheter" } } ,{ "@type
