@@ -1,11 +1,13 @@
-HTTP 200 | HTML rendu : 1631700 octets
-prix visibles : ["CHF 15'000","CHF 15'000","CHF 15'000","CHF 15'000","CHF 15'000","CHF 15'000"]
-liens candidats : 32
-   acces-portails/portail-proprietaire
-   details-d-un-bien-immobilier/p-monseigneur-genoud-15-lessoc-p-p-p-p-span-au-coe_monseigneur-genoud-1
-   details-d-un-bien-immobilier/p-situee-a-la-route-d-allieres-105-a-montbovon-cet_allieres-105-montbov
-   details-d-un-bien-immobilier/p-strong-span-nestle-14-1636-broc-span-strong-p-p-_nestle-14-bulle-6182
-   details-d-un-bien-immobilier/p-span-situe-a-span-strong-span-surville-7-a-echar_surville-7-echarlens
-   details-d-un-bien-immobilier/p-strong-span-route-de-fruence-84-un-bien-de-carac_fruence-6122733
-   details-d-un-bien-immobilier/p-strong-route-de-russille-34-avry-devant-pont-str_russille-34-avry-dev
-   details-d-un-bien-immobilier/p-au-village-9-19-sorens-p-p-p-p-nouvelle-ppe-au-c_5561519-5561629-5561
+liens extraits par le worker : 25
+premier lien : https://www.gruyere-immo.ch/details-d-un-bien-immobilier/p-monseigneur-genoud-15-lessoc-p-p-p-p-span-au-coe_monseigneur-genoud-15-lessoc-6186269
+
+page de detail rendue : 670422 octets
+taille du head : 619924
+  <title>([^<]{4,140}) -> Maison villageoise au coeur de Lessoc !... - Gruyère Immo
+  og:title" content="([^"] -> Maison villageoise au coeur de Lessoc !... - Gruyère Immo
+  og:description" content= -> Monseigneur-Genoud 15 - Lessoc  Au cœur du charmant village de Lessoc se dévoile cette maison villageoise plei
+  og:image" content="([^"] -> https://www.immomigimg.ch/i/7126e/1920x1280/m-ww15725/1399/pictures/objects/1399_6a955d977796d0.34935072.jpg
+prix dans la page : ["CHF 400'000"]
+pieces : ["4.5 pièces","4.5 pièces","4.5 pièces"] | surface : []
+
+reponse du worker : {"ok":true,"stored":0,"hitLimit":false,"remaining":0,"source":"Gruyère Immo SA (site propre)"}
