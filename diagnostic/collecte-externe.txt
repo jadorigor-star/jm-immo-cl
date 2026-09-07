@@ -27,7 +27,7 @@ sources a traiter : 53
    0 annonces |   1 pages | Monopoly Real Estate sagl
    0 annonces |   1 pages | Raiffeisen Immo AG
    0 annonces |   1 pages | Area Immobiliare Ticino
-   1 annonces |   1 pages | ImmoSky AG
+   0 annonces |   1 pages | ImmoSky AG
    0 annonces |   1 pages | TERRIER SA
    0 annonces |   1 pages | SKF Fiduciaria Sagl
    0 annonces |   1 pages | Ticino Real Estate Sagl
@@ -44,16 +44,16 @@ navigateur demarre
    0 annonces |   1 pages | PREMIUM HOMES AG (site propre)
    0 annonces |   1 pages | IMMOprima AG (site propre)
    0 annonces |  25 pages | immobilier.ch (portail romand)
-   0 annonces |  25 pages | immobilier.ch - Neuchatel
+   1 annonces |  25 pages | immobilier.ch - Neuchatel
    0 annonces |   4 pages | immobilier.ch - Saignelégier
-   1 annonces |  25 pages | immobilier.ch - Charmey/Gruyere
+   0 annonces |  25 pages | immobilier.ch - Charmey/Gruyere
    0 annonces |   1 pages | SIT Immobiliare (IS24)
    0 annonces |   1 pages | TICINO.RE SA (IS24)
    0 annonces |   2 pages | immobilier.ch - Gruyères/Broc
    0 annonces |  25 pages | immobilier.ch - Jura (canton)
    1 annonces |  25 pages | immobilier.ch - Fribourg p2
-   2 annonces |  25 pages | immobilier.ch - Neuchatel p2
+   0 annonces |  25 pages | immobilier.ch - Neuchatel p2
 navigateur ferme
 
-TOTAL : 8 annonces sur 288 pages telechargees
-recalcul : {"ok":true,"biens":338,"rescues":0}
+TOTAL : 5 annonces sur 288 pages telechargees
+recalcul : {"ok":true,"biens":339,"rescues":0}
