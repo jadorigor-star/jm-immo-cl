@@ -11,6 +11,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - run: npm install --no-save puppeteer@23
       - run: |
           mkdir -p diagnostic
           node outils/sonde-app.js > diagnostic/sonde-app.txt 2>&1 || true
