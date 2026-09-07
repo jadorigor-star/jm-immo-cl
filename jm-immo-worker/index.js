@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788728046 padding-3500: 0z5jieubaztwfiplvuluo585jk2mfqczjy6k52qdlwfyqqf35kbwoh2dr9g6yiho8vu71qwtmmlyiqg2c1ex6tuegu3nk7yipp7hs2u9jeigrxr7yobel2g0flmi50e4ddaqrhhrv811mbpxlfybcgqflnj86iargu0i6ohgz41bxicn5g2svdkuhf5oh1rzp3ybgb03n3j6o4nsiumav0vk9b7abgq7nuogc3su514qtit3tynd5or6r2juxv0zmoiyty9wtlxslulrgwhv5r4uy7hnf5jyugno1sdgt9bals5newr4dp0fgfsf96b3d8qd9uld0t4165c0tlpcx9eilyhlsraukhfqp7ycmjxcr5jdkgyho56ef6ntpleamg8ljg4rf4bbsqulg06pzhfj7xie2is2a0rhb3077pg2icnazdx1ch7ieatr2vj3lc8qh4gx4ya1x3q6xid4rpc2xt87rtyavxnnn1qiubon5oxk9vijbsld82lx5pbxipyh0k29vjhuo03tu6c548a0a1sb6vlhm9tzb7oynzbtce6w0mm1k7p59q37cgh9wnbnjvaqaxcjj3ycye07mvba5tti15034oa4ijp90s080gf32sidfahzac5uftzs3vqetlhmdfe6kciexhky8z2j3yndk36ipmewg5kh1mjvl64lsnjxpt8folirc2gqplrxc2hhw0ornqv3ytx37dg32cs5iuot08eo39n26gjaoc1ax1tihe87x9yg3jh8y8fe55xhgzsra379blwzpc8v6j7rk7qdfu1cnlkcpjas8u16s8warlsthn4nlteob4186b5h6c3gxxmlxj93ndrmlbxteh8ic34cm0g2phjs4dh5dfcl0j0m3q9vvbld72t41q1xqinw3obutgkiklyihe0xrs1vl3uu5tojb38lcfvcvz7w6vvr669xklhi
-// VERSION_MARKER_JMIMMO_20260906_ORDRE_SOURCES_v35
+// BUILD-MARKER 1788751593 padding-3600: 67rjod3k445m7kseahsqnjr9ysf04vjpi9khy3jr5w0om3bqpm4278q0t6oxvfbbh3om7krzomte3bjoh1r692g6n97lvoss02smerozi7vyac5t41p9fokxoxa84mze4o7md85vpgzne8xwarp6b53sf3yfixt9bt99r3hvw709lvpqms29byc0qa0p86qpp4c9jig8khnm12huo0pryeivufeev548aglt8g9d9bxv42db9v5ga9lsd2hs6pnur0w6uem4zf4aulr1lcjajdv8c4ssp3lsjy9xkjrot94svwhb7pgkomdfsxgzx8qm9bew1dsfdt46e1umn6k4txoq2rlylq123vigiyyzvf0b6a3uj989mbpi6m8czseqcty4wnbqss4jyam86fctfs0jmut9e1r2kei591pequn16wb7t14ppzwk34mrcoxe6dtjyd1dyjf5notl826dst46syc49js2yzwvitqbf499ewjg9jqvlvp0fsafoog4lqeu19b5aid80i8oyzqdde1kdt04fgyo7bpqbw14l9yghbc7sco7ti75h8c5lmnft5bzmmbjq28dl7tsvwkt6yyhkleb8cghnys8gxdnk7hbsfjf7bg34owqpnh3x1tq18irzdwgl4i4hdn3frpo0t16yeyq8jfnnmm3zdolocvjw2ykjzt1ne1gcitrz5de739c7es5jdno931r49p3pw1uqu2omcr6gi36ntsbvxezg22ltjnpivjv6k0wlzjhb0ggdpgbekj5u54attx54aeb7kqhicx5rml2w5dctbvw98xcnem9rd1g1by64opzcz2n8vjxj847wxdldznxvqz07h0cpsslgru5821ce4hsphtal3yu3dsv2on8d92ednbvxz6abrz7tkftn23nbbdqinnl6hc2snlzm6w3sg07p4sqyqomgyby7g2d0b07tp9nuong3cf6z0mb2rip
+// VERSION_MARKER_JMIMMO_20260907_ENRICHISSEMENT_AUTO_v36
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -859,7 +859,7 @@ async function ingest(db, fetchFn, opts) {
     let knownUrls = null;
     if (srcRow.adapter !== "demo" && !o.forceDetails) {
       try {
-        const ku = await db.prepare("SELECT url FROM listings WHERE source_id=? AND status='active' AND url<>''").bind(srcRow.id).all();
+        const ku = await db.prepare("SELECT url FROM listings WHERE source_id=? AND status='active' AND url<>'' AND title NOT LIKE 'Bien %' AND (surface IS NOT NULL OR image_url IS NOT NULL)").bind(srcRow.id).all();
         knownUrls = new Set(ku.results.map((r) => r.url));
       } catch (e) {
         knownUrls = null;
