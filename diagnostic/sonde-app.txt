@@ -1,14 +1,39 @@
-source : immobilier.ch - Le Noirmont
-page : https://www.immobilier.ch/fr/acheter/appartement-maison/jura/le-noirmont/page-1
-liste : 178529 octets
-liens extraits : 10
-   https://www.immobilier.ch/fr/acheter/appartement/jura/rossemaison/amp-immo-412/nouvelle-promotion-im
-   https://www.immobilier.ch/fr/acheter/maison/jura/boncourt/neuschwander-immobilier-sarl-635/boncourt-
-   https://www.immobilier.ch/fr/acheter/maison/jura/miecourt/betterhomes-schweiz-ag-611/prix-top-spacie
+=== codes de cantons ===
+aargau-ag,100001
+appenzell-outer-rhodes-ar,100003
+appenzell-innerrhoden-ai,100002
+basel-landschaft-bl,100005
+basel-city-bs,100006
+bern-be,100004
+fribourg-fr,100007
+geneva-ge,100008
+glarus-gl,100009
+graubunden-gr,100010
+jura-ju,100011
+lucerne-lu,100012
+neuchatel-ne,100013
+nidwalden-nw,100014
+obwalden-ow,100015
+saint-gallen-sg,100016
+schaffhausen-sh,100017
+schwyz-sz,100019
+solothurn-so,100018
+thurgau-tg,100020
+ticino-ti,100021
+uri-ur,100022
+valais-vs,100024
+vaud-vd,100023
+zug-zg,100025
+zurich-zh,100026
+liechtenstein-li,100027
+zurich,203968
+geneva,201279
+basel,200237
 
-page de detail : 23813 octets
-titre HTML : Appartement 3.5 pces 80 m2 &#xE0; acheter &#xE0; Rossemaison | CHF 435&#x27;000.-
-og:title   : Nouvelle promotion - Immeuble MinergieP
-canonical  : https://www.immobilier.ch/fr/acheter/appartement/jura/rossemaison/amp-immo-412/nouvelle-promotion-immeuble-min
+=== page de resultats Fribourg ===
+HTTP 403 | 5827 octets
+NEXT_DATA : false | NUXT : false
+prix visibles : []
+liens d'annonce : 0
 
-reponse du worker : {"ok":true,"stored":0,"hitLimit":false,"remaining":0,"source":"immobilier.ch - Le Noirmont"}
+autres motifs de liens :
