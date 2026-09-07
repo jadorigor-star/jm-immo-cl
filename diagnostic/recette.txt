@@ -1,0 +1,40 @@
+=== 1. Points d'entree ===
+  OK   /                  HTTP 200
+  OK   /api/health        HTTP 200
+  OK   /api/stats         HTTP 200
+  OK   /api/sources       HTTP 200
+  OK   /api/preferences   HTTP 200
+  OK   /api/search        HTTP 200
+  OK   /api/ecartes       HTTP 200
+  OK   /api/vendus        HTTP 200
+  OK   /api/baisses       HTTP 200
+=== 2. Tris et filtres ===
+  OK   tri jmfit       (305 biens)
+  OK   tri price_asc   (305 biens)
+  OK   tri price_desc  (305 biens)
+  OK   tri recent      (305 biens)
+  OK   tri access      (305 biens)
+  OK   tri surface     (305 biens)
+  OK   filtres combines
+=== 3. Actions personnelles (espace de recette) ===
+  (reference espace principal : 5 favoris, 68 ecartes)
+  OK   un bien de reference existe
+  OK   ajout favori
+  OK   ecarter
+  OK   ecarter retire des favoris
+  OK   bien ecarte masque de la liste
+  OK   restaurer
+  OK   marquer vu (is_new passe a false)
+=== 4. Preferences par espace ===
+  OK   ecriture preferences
+  OK   relecture preferences
+  OK   espace principal intact
+=== 5. Non-regression de l'espace principal ===
+  OK   favoris principal inchanges (5 -> 5)
+  OK   ecartes principal inchanges (68 -> 68)
+  OK   preferences principal non polluees
+=== 6. Robustesse ===
+  OK   appel sans en-tete d'espace
+  OK   identifiant d'espace hostile neutralise
+
+=== RESULTAT : 31 OK, 0 ECHEC ===
