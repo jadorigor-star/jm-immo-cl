@@ -1,0 +1,41 @@
+name: Collecte externe
+
+"on":
+  schedule:
+    - cron: '25 */2 * * *'
+  workflow_dispatch:
+    inputs:
+      max_sources:
+        description: "Nombre de sources a traiter"
+        required: false
+        default: "999"
+
+concurrency:
+  group: collecte-externe
+  cancel-in-progress: false
+
+jobs:
+  collecter:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Collecter
+        env:
+          MAX_SOURCES: ${{ inputs.max_sources || '999' }}
+        run: |
+          mkdir -p diagnostic
+          node outils/collecteur.js 2>&1 | tee diagnostic/collecte-externe.txt
+      - name: Publier le journal
+        if: always()
+        run: |
+          git config user.name "JM Immo CI"; git config user.email "ci@jm-immo.local"
+          git pull --rebase -q || true
+          git add -f diagnostic/collecte-externe.txt
+          git commit -q -m "Journal de collecte externe [skip ci]" || true
+          git push || true
