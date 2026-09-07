@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788757166 padding-3800: 6shb7425gvx991lsw1mh7x9gtrhxhhgtm3lkhoc7wh80i0af0855cjs8huiu5x7yo8rjhpgd9c9t0z0ztlw1ztzse3w5yak3xbsaozi06vb2y5jwb1kcsbiarrz8sixb1yvczof3smcb67az07v8x8sqxmkd6ssliac0ahd8wa83v2vhy2qg4h8y4ad0tlak97r901x0nrkkv11mgxum8ik99zywhz3uzrg2bzy946nd1hjx8ol2pqx79gwui1f617chemj2x371v1y1row3ue5bj5c7xzsvyd2ey6b450z5m90m4a7k1tqcso1pgsr1qqjifffxk2pzwx0ze103i1a5uhuuovf43z8455gwez8nsrn78iapy3niju157ulqzolq1f2zv8ipexuuy61wt9ghqfjp0trubi9357t9w5t2ysjp2h9o0fau64hrr3oxo9xwyfr61ahqlmenfn7chmzp62nu9mhlo3p1rphu03y0dfc5o7j2n55cdnobvp5cjexmu8vfnr96xp1q1vsbend8mwk24neuggba2gcjlz8oqbn8ivu38sqfhc604z43j6pctjva2hmje06n0rtlo3bstg67l95vub2mlollrjeuod8dgda2ak3vwqj4f5aafv8y3dr9rc20fqohqd9wuqvh4rwwvottf7els9ng92neiexlnqwikd39ocr7ilcxcwp9y5jy6ylksn2doljr09umuvnm3oqlels6j59624k9b2o961kpv3rpzim4c4wcrv3tmhqsenlhmswpfawp5wgbf7kqtea3e3axhl1sjz2td6ujdj97c3570wvretzmdll9dx8ga499srhyhbtvit43nmgzpvjygle1ul8c8gnzim38m9eqgqcjfbr5onq3rc84is4en19bso9qmfv1anlnj98xg1m41cdvhf8zsaor2cl7rq7wps4839qw2zhwmngxbsllkseqrgmolulz9wqopr7sh1mi1oii4xjxwvjw10sk0zfmolintche
-// VERSION_MARKER_JMIMMO_20260907_RECALCUL_SEUL_v38
+// BUILD-MARKER 1788767126 padding-3900: 1goikszlx6a7gywa8w16q2fqrc2o2lq4xw1ioeyfj7hmkmvncof41lmr7movxeals416shhyr5emzpoageyrnkjlahohhesd47vtnloiwatymzz2olbf5d0x5qju2b699pelb44tg8olkxlrgcshq291ql3xiovjq0vetpcvv2r3x62cvophyquecn0evdhw0ecmnmn7j9nezv9l8sxyj2yshzfhum7vgmdxnpz54h8ozpu90vzir23nxsm1juzkiao4qqxbqz0vuupjevcc1p44fvjozmo08q3n3hx2kviiug4am8d7zlveb9v8r52gtlp23oca20p8lm3pv0cc2fc911ukdv8qihbi1vcumu9fxcgy33yhb0oi3xoe35j2esb3suxnnol5tfyuwu0nldngoyeqbxojteod9uoif2yvfv867p3z6i4diky6um6vupylnzeedclrozotvhebnmeql80app3jm1g1sedp2gpi9al1gx4it8abtb3l9x4yr1p4noze3v1cm0upua1a9rrs0sgnvcjiscnzx8dmjd3oia8ymg9o7uy2z65doo5pmtjqzkpyveowt9qvgn5meek2cucixdhdedi5h0dlpwzbv70f0z4zc55ez0wgyyula34699az91zx9tvl7qb40t06p7nuvjz4dt1t40yj7qbbx6wecjyuxj5q587j7be82dbbdjoaed9x2babn7ogh5meshydv14xeeh6clbetizvx2zujieukxzj1xke3cxnyug2ta11400gds938gior22jtd8a10334tyijt095n6mpxb57l4e32uvorcu206i41bjwkwio0g65lm7zmgvhuecgu2955qhbzdu5k38h40vb3r52hfgi2na9hodd9z661jwcawtop0ew8s49dj22c11tw4qhemon1qq7qhvku175uyg7x83zoccnqz5p4i7q5wrbu6p09ousskoi00hw9eq45wzd9d7nmjh3047xgrj1ki8xdxvhkbdiatcau0d1pjylez7xtcve5y5
+// VERSION_MARKER_JMIMMO_20260907_RENDU_JS_v39
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -2424,7 +2424,7 @@ var index_default = {
           try { c = JSON.parse(row.config_json || "{}"); } catch (e) { continue; }
           const pages = c.mode === "two_step" ? (c.list_url ? [c.list_url] : []) : (Array.isArray(c.urls) ? c.urls : (c.list_url ? [c.list_url] : []));
           if (!pages.length) continue;
-          plan.push({ name: row.name, mode: c.mode || "single", pages, max_details: c.max_details || 20, link_base: c.link_base || null });
+          plan.push({ name: row.name, mode: c.mode || "single", pages, max_details: c.max_details || 20, link_base: c.link_base || null, render: !!c.render, attente: c.render_wait || null });
         }
         return json({ sources: plan });
       }

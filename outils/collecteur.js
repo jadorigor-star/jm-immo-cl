@@ -7,6 +7,29 @@ const MAX_SOURCES = parseInt(process.env.MAX_SOURCES || "999", 10);
 
 const pause = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// Navigateur mutualise, demarre seulement si une source en a besoin
+let navigateur = null;
+async function obtenirNavigateur() {
+  if (navigateur) return navigateur;
+  const puppeteer = require("puppeteer");
+  navigateur = await puppeteer.launch({ args: ["--no-sandbox", "--disable-dev-shm-usage"] });
+  console.log("navigateur demarre");
+  return navigateur;
+}
+async function telechargerRendu(url, attente) {
+  const nav = await obtenirNavigateur();
+  const page = await nav.newPage();
+  try {
+    await page.setUserAgent(UA["User-Agent"]);
+    await page.setViewport({ width: 1280, height: 900 });
+    const rep = await page.goto(url, { waitUntil: "networkidle2", timeout: 45000 });
+    if (attente) { try { await page.waitForSelector(attente, { timeout: 12000 }); } catch (e) {} }
+    await pause(1200);
+    const html = await page.content();
+    return { status: rep ? rep.status() : 0, html };
+  } finally { await page.close(); }
+}
+
 async function telecharger(url) {
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), 25000);
@@ -34,7 +57,7 @@ async function versWorker(charge) {
     let stocke = 0, erreur = null, pages = 0;
     try {
       for (const page of src.pages) {
-        const rep = await telecharger(page);
+        const rep = src.render ? await telechargerRendu(page, src.attente) : await telecharger(page);
         pages++;
         if (rep.status !== 200) { erreur = "HTTP " + rep.status; continue; }
 
@@ -44,7 +67,7 @@ async function versWorker(charge) {
           for (const lien of liens) {
             const abs = /^https?:\/\//i.test(lien) ? lien : (src.link_base || "").replace(/\/$/, "") + "/" + lien.replace(/^\//, "");
             try {
-              const d = await telecharger(abs);
+              const d = src.render ? await telechargerRendu(abs, src.attente) : await telecharger(abs);
               pages++;
               if (d.status !== 200) continue;
               const res = await versWorker({ source_name: src.name, url: abs, html: d.html, is_detail: true });
@@ -68,6 +91,7 @@ async function versWorker(charge) {
     });
     console.log((stocke + "").padStart(4) + " annonces | " + (pages + "").padStart(3) + " pages | " + src.name.slice(0, 40) + (erreur ? "  [" + erreur + "]" : ""));
   }
+  if (navigateur) { await navigateur.close(); console.log("navigateur ferme"); }
   console.log("\nTOTAL : " + totalStocke + " annonces sur " + totalPages + " pages telechargees");
   const st = await (await fetch(BASE + "/api/recalculer")).text();
   console.log("recalcul : " + st.slice(0, 200));
