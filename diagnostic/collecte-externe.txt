@@ -42,16 +42,16 @@ sources a traiter : 53
    0 annonces |   1 pages | HUH Immobilien AG (site propre)
    0 annonces |   1 pages | PREMIUM HOMES AG (site propre)
    0 annonces |   1 pages | IMMOprima AG (site propre)
-  11 annonces |  25 pages | immobilier.ch (portail romand)
-   4 annonces |  25 pages | immobilier.ch - Neuchatel
+   1 annonces |  25 pages | immobilier.ch (portail romand)
+   8 annonces |  25 pages | immobilier.ch - Neuchatel
    0 annonces |   4 pages | immobilier.ch - Saignelégier
-   2 annonces |  25 pages | immobilier.ch - Charmey/Gruyere
+   1 annonces |  25 pages | immobilier.ch - Charmey/Gruyere
    0 annonces |   1 pages | SIT Immobiliare (IS24)
    0 annonces |   1 pages | TICINO.RE SA (IS24)
    0 annonces |   2 pages | immobilier.ch - Gruyères/Broc
    0 annonces |  25 pages | immobilier.ch - Jura (canton)
-   5 annonces |  25 pages | immobilier.ch - Fribourg p2
-  12 annonces |  25 pages | immobilier.ch - Neuchatel p2
+   2 annonces |  25 pages | immobilier.ch - Fribourg p2
+   4 annonces |  25 pages | immobilier.ch - Neuchatel p2
 
-TOTAL : 37 annonces sur 263 pages telechargees
-recalcul : {"ingestion":[{"source":"immobilier.ch - Neuchatel p2","state":"enregistrée","stored":0,"rafraichies":0,"contribution":0,"error":"Budget de requetes epuise pour
+TOTAL : 19 annonces sur 263 pages telechargees
+recalcul : {"ingestion":[{"source":"immobilier.ch - Neuchatel","state":"enregistrée","stored":0,"rafraichies":0,"contribution":0,"error":"Budget de requetes epuise pour ce
