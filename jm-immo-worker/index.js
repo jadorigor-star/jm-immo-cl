@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788752339 padding-3700: f2n844yy0eszsmcw7elzu6gvhvis2sq98kx5q8x1thbn34wnrwq1a9ocsvkdo6es3clp0p626ydjmna2if0ce8c6pqe5dptj6mnavojbrm3vvtuig4cnrw1jdcrh06odq4l34229iu9feulte90bw4q14npshpx7wsnyfvdjf6lj9zaegsxzxzvzuspsqtjc0v62hso6q4188r5y3ynyghxm1qv1ag44saliyaw826pxarajm9yu6cvfh34gnlvw7fnkvchdrf55sznfxq9mwellfa971rzswt12amdixpzp4skcmde4thlovr7j8l9mw1xnllyi886asnx6z8s9xcxfxyrktfj5qmd0zao9h3k3ihvv2zhvubspgpwmkem4muioicrlie44gxu4ue3egdrr9qkj3l473vt24hwuh6uz9fy0x6yfwlu8z9nzkpios6frnugze7oc253n0ew85q22grao2ujqu5c9hcl1nqmtugswb9k5q6ziq4wwqxwcivtz8tctxt5qpxsyepkdqrh7yvfsoe2cxwg2hlfhenjsavgtqpxuvp7s5mpxnqdukxd09wp1iz79sa2n9bsznyd0fv6d97jsgayu6c73ror5qajvbhske8w4eepr0fcvqkryjb2lu5e9bfbpjv1qbcngfciyzpw8d17djgyjr4sswo9az068kej890oj5vdqka7ptkzhikn7r1iaruep8hwoq68opxhqlb0ued6hieqrjem1nbo0a24yk86xp4alw00mkbkujy1j5srwq6933z8rtinhntxbrvd58x7fancyhmfgdhh8bssqb7omeisu7vmo1o8p7jvz6y8wmj3bku1642n50d3h3zxi84cnxz2mt6e2pos0ebwxkoqc93pz4u61rdi4rlbf3wi1ne3kp3v5s7b3e2eyqa7zqbu0m42uv4rmvdasobqgtd0dss1cp6rf6uaei02dwjp0k5l1s3ptb2ldomh69elw6bv7
-// VERSION_MARKER_JMIMMO_20260907_PLAN_COLLECTE_v37
+// BUILD-MARKER 1788757166 padding-3800: 6shb7425gvx991lsw1mh7x9gtrhxhhgtm3lkhoc7wh80i0af0855cjs8huiu5x7yo8rjhpgd9c9t0z0ztlw1ztzse3w5yak3xbsaozi06vb2y5jwb1kcsbiarrz8sixb1yvczof3smcb67az07v8x8sqxmkd6ssliac0ahd8wa83v2vhy2qg4h8y4ad0tlak97r901x0nrkkv11mgxum8ik99zywhz3uzrg2bzy946nd1hjx8ol2pqx79gwui1f617chemj2x371v1y1row3ue5bj5c7xzsvyd2ey6b450z5m90m4a7k1tqcso1pgsr1qqjifffxk2pzwx0ze103i1a5uhuuovf43z8455gwez8nsrn78iapy3niju157ulqzolq1f2zv8ipexuuy61wt9ghqfjp0trubi9357t9w5t2ysjp2h9o0fau64hrr3oxo9xwyfr61ahqlmenfn7chmzp62nu9mhlo3p1rphu03y0dfc5o7j2n55cdnobvp5cjexmu8vfnr96xp1q1vsbend8mwk24neuggba2gcjlz8oqbn8ivu38sqfhc604z43j6pctjva2hmje06n0rtlo3bstg67l95vub2mlollrjeuod8dgda2ak3vwqj4f5aafv8y3dr9rc20fqohqd9wuqvh4rwwvottf7els9ng92neiexlnqwikd39ocr7ilcxcwp9y5jy6ylksn2doljr09umuvnm3oqlels6j59624k9b2o961kpv3rpzim4c4wcrv3tmhqsenlhmswpfawp5wgbf7kqtea3e3axhl1sjz2td6ujdj97c3570wvretzmdll9dx8ga499srhyhbtvit43nmgzpvjygle1ul8c8gnzim38m9eqgqcjfbr5onq3rc84is4en19bso9qmfv1anlnj98xg1m41cdvhf8zsaor2cl7rq7wps4839qw2zhwmngxbsllkseqrgmolulz9wqopr7sh1mi1oii4xjxwvjw10sk0zfmolintche
+// VERSION_MARKER_JMIMMO_20260907_RECALCUL_SEUL_v38
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -2433,6 +2433,10 @@ var index_default = {
         await db.prepare("UPDATE sources SET last_checked=?, state=?, last_error=?, last_productive_count=?, consecutive_failures=? WHERE name=?")
           .bind((/* @__PURE__ */ new Date()).toISOString(), b.state || "accessible", b.error || null, b.stored || 0, b.error ? 1 : 0, b.name).run();
         return json({ ok: true });
+      }
+      if (url.pathname === "/api/recalculer") {
+        const stats = await recomputeFull(db, env);
+        return json(Object.assign({ ok: true }, stats));
       }
       if (url.pathname === "/api/search") {
         const q = url.searchParams;

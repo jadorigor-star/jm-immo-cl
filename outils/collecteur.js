@@ -69,6 +69,6 @@ async function versWorker(charge) {
     console.log((stocke + "").padStart(4) + " annonces | " + (pages + "").padStart(3) + " pages | " + src.name.slice(0, 40) + (erreur ? "  [" + erreur + "]" : ""));
   }
   console.log("\nTOTAL : " + totalStocke + " annonces sur " + totalPages + " pages telechargees");
-  const st = await (await fetch(BASE + "/api/refresh?recompute=1")).text();
-  console.log("recalcul : " + st.slice(0, 160));
+  const st = await (await fetch(BASE + "/api/recalculer")).text();
+  console.log("recalcul : " + st.slice(0, 200));
 })();
