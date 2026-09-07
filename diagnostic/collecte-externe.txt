@@ -1,0 +1,12 @@
+sources a traiter : 59
+  17 annonces |   1 pages | Bussard Immobilier
+   0 annonces |   7 pages | Fidimmobil
+   0 annonces |  13 pages | MPP Fiduciaria
+   2 annonces |   1 pages | L'Idea Immobiliare
+   3 annonces |   1 pages | Immobiliare Bandel
+   4 annonces |   1 pages | Assofide SA
+  16 annonces |   1 pages | Agenzia Immobiliare Ceresio
+   1 annonces |   1 pages | Consulca SA
+
+TOTAL : 43 annonces sur 26 pages telechargees
+recalcul : {"ingestion":[{"source":"immobilier.ch - Saignelégier","state":"productive","stored":0,"rafraichies":3,"contribution":3,"error":null},{"source":"immobilier.ch -
