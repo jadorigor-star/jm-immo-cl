@@ -1,39 +1,11 @@
-=== codes de cantons ===
-aargau-ag,100001
-appenzell-outer-rhodes-ar,100003
-appenzell-innerrhoden-ai,100002
-basel-landschaft-bl,100005
-basel-city-bs,100006
-bern-be,100004
-fribourg-fr,100007
-geneva-ge,100008
-glarus-gl,100009
-graubunden-gr,100010
-jura-ju,100011
-lucerne-lu,100012
-neuchatel-ne,100013
-nidwalden-nw,100014
-obwalden-ow,100015
-saint-gallen-sg,100016
-schaffhausen-sh,100017
-schwyz-sz,100019
-solothurn-so,100018
-thurgau-tg,100020
-ticino-ti,100021
-uri-ur,100022
-valais-vs,100024
-vaud-vd,100023
-zug-zg,100025
-zurich-zh,100026
-liechtenstein-li,100027
-zurich,203968
-geneva,201279
-basel,200237
-
-=== page de resultats Fribourg ===
-HTTP 403 | 5827 octets
-NEXT_DATA : false | NUXT : false
-prix visibles : []
-liens d'annonce : 0
-
-autres motifs de liens :
+HTTP 200 | HTML rendu : 1631700 octets
+prix visibles : ["CHF 15'000","CHF 15'000","CHF 15'000","CHF 15'000","CHF 15'000","CHF 15'000"]
+liens candidats : 32
+   acces-portails/portail-proprietaire
+   details-d-un-bien-immobilier/p-monseigneur-genoud-15-lessoc-p-p-p-p-span-au-coe_monseigneur-genoud-1
+   details-d-un-bien-immobilier/p-situee-a-la-route-d-allieres-105-a-montbovon-cet_allieres-105-montbov
+   details-d-un-bien-immobilier/p-strong-span-nestle-14-1636-broc-span-strong-p-p-_nestle-14-bulle-6182
+   details-d-un-bien-immobilier/p-span-situe-a-span-strong-span-surville-7-a-echar_surville-7-echarlens
+   details-d-un-bien-immobilier/p-strong-span-route-de-fruence-84-un-bien-de-carac_fruence-6122733
+   details-d-un-bien-immobilier/p-strong-route-de-russille-34-avry-devant-pont-str_russille-34-avry-dev
+   details-d-un-bien-immobilier/p-au-village-9-19-sorens-p-p-p-p-nouvelle-ppe-au-c_5561519-5561629-5561
