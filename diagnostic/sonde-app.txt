@@ -1,7 +1,7 @@
 liens extraits par le worker : 25
 premier lien : https://www.gruyere-immo.ch/details-d-un-bien-immobilier/p-monseigneur-genoud-15-lessoc-p-p-p-p-span-au-coe_monseigneur-genoud-15-lessoc-6186269
 
-page de detail rendue : 670422 octets
+page de detail rendue : 670423 octets
 taille du head : 619924
   <title>([^<]{4,140}) -> Maison villageoise au coeur de Lessoc !... - Gruyère Immo
   og:title" content="([^"] -> Maison villageoise au coeur de Lessoc !... - Gruyère Immo
