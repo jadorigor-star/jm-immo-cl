@@ -51,8 +51,8 @@ navigateur demarre
    0 annonces |   1 pages | TICINO.RE SA (IS24)
    0 annonces |   2 pages | immobilier.ch - Gruyères/Broc
    0 annonces |  25 pages | immobilier.ch - Jura (canton)
-   1 annonces |  25 pages | immobilier.ch - Fribourg p2
-   0 annonces |  25 pages | immobilier.ch - Neuchatel p2
+   0 annonces |  25 pages | immobilier.ch - Fribourg p2
+   1 annonces |  25 pages | immobilier.ch - Neuchatel p2
 navigateur ferme
 
 TOTAL : 1 annonces sur 288 pages telechargees
