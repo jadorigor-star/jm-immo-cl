@@ -35,7 +35,7 @@ sources a traiter : 53
    0 annonces |   1 pages | Interfida SA
    0 annonces |   1 pages | Domusdea Immobiliare SA
    0 annonces |   1 pages | FIDIFIM Sagl
-   0 annonces |   0 pages | Neuschwander Immobilier (site propre)  [fetch failed]
+   0 annonces |  41 pages | Neuschwander Immobilier (site propre)
 navigateur demarre
    0 annonces |  26 pages | Gruyère Immo SA (site propre)
    0 annonces |   1 pages | BD Gerance SA
@@ -51,9 +51,9 @@ navigateur demarre
    0 annonces |   1 pages | TICINO.RE SA (IS24)
    0 annonces |   2 pages | immobilier.ch - Gruyères/Broc
    0 annonces |  25 pages | immobilier.ch - Jura (canton)
-   1 annonces |  25 pages | immobilier.ch - Fribourg p2
-   0 annonces |  25 pages | immobilier.ch - Neuchatel p2
+   0 annonces |  25 pages | immobilier.ch - Fribourg p2
+   1 annonces |  25 pages | immobilier.ch - Neuchatel p2
 navigateur ferme
 
-TOTAL : 2 annonces sur 247 pages telechargees
+TOTAL : 2 annonces sur 288 pages telechargees
 recalcul : {"error":"D1_ERROR: Your account has exceeded D1's free tier daily row write limit. Upgrade to a paid plan or wait until tomorrow (midnight UTC) to continue. See https://developers.cloudflare.com/d1/p
