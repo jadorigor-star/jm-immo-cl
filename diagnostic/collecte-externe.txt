@@ -16,7 +16,7 @@ sources a traiter : 53
    0 annonces |   1 pages | Immobiliare Marazza Sagl
    0 annonces |   1 pages | Immobiliare Mazzoleni SA
    0 annonces |   1 pages | Immobiliare Nodiroli & Co.
-   2 annonces |   1 pages | Multiresidenza SA
+   0 annonces |   1 pages | Multiresidenza SA
    0 annonces |   1 pages | Wildi Immobiliare
    0 annonces |   1 pages | Fontana Sotheby's International Realty
    0 annonces |   1 pages | Arifida SA
@@ -46,14 +46,14 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch (portail romand)
    0 annonces |  25 pages | immobilier.ch - Neuchatel
    0 annonces |   4 pages | immobilier.ch - Saignelégier
-   3 annonces |  25 pages | immobilier.ch - Charmey/Gruyere
+   0 annonces |  25 pages | immobilier.ch - Charmey/Gruyere
    0 annonces |   1 pages | SIT Immobiliare (IS24)
    0 annonces |   1 pages | TICINO.RE SA (IS24)
    0 annonces |   2 pages | immobilier.ch - Gruyères/Broc
    0 annonces |  25 pages | immobilier.ch - Jura (canton)
-   4 annonces |  25 pages | immobilier.ch - Fribourg p2
+   3 annonces |  25 pages | immobilier.ch - Fribourg p2
    0 annonces |  25 pages | immobilier.ch - Neuchatel p2
 navigateur ferme
 
-TOTAL : 9 annonces sur 288 pages telechargees
-recalcul : {"ok":true,"biens":382,"rescues":0}
+TOTAL : 3 annonces sur 288 pages telechargees
+recalcul : {"error":"D1_ERROR: Your account has exceeded D1's free tier daily row write limit. Upgrade to a paid plan or wait until tomorrow (midnight UTC) to continue. See https://developers.cloudflare.com/d1/p
