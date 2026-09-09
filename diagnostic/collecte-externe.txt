@@ -1,5 +1,5 @@
 sources a traiter : 53
-   0 annonces |   1 pages | Bussard Immobilier
+   4 annonces |   1 pages | Bussard Immobilier
    0 annonces |   7 pages | Fidimmobil
    0 annonces |  13 pages | MPP Fiduciaria
    0 annonces |   1 pages | L'Idea Immobiliare
@@ -25,7 +25,7 @@ sources a traiter : 53
    0 annonces |   1 pages | Metropolis Immobiliare
    0 annonces |   5 pages | Neho
    0 annonces |   1 pages | Monopoly Real Estate sagl
-   0 annonces |   1 pages | Raiffeisen Immo AG
+   1 annonces |   1 pages | Raiffeisen Immo AG
    0 annonces |   1 pages | Area Immobiliare Ticino
    3 annonces |   1 pages | ImmoSky AG
    0 annonces |   1 pages | TERRIER SA
@@ -43,17 +43,17 @@ navigateur demarre
    0 annonces |   1 pages | HUH Immobilien AG (site propre)
    0 annonces |   1 pages | PREMIUM HOMES AG (site propre)
    0 annonces |   1 pages | IMMOprima AG (site propre)
-   1 annonces |  25 pages | immobilier.ch (portail romand)
-   4 annonces |  25 pages | immobilier.ch - Neuchatel
+   0 annonces |  25 pages | immobilier.ch (portail romand)
+   1 annonces |  25 pages | immobilier.ch - Neuchatel
    0 annonces |   4 pages | immobilier.ch - Saignelégier
-   3 annonces |  25 pages | immobilier.ch - Charmey/Gruyere
+   0 annonces |  25 pages | immobilier.ch - Charmey/Gruyere
    0 annonces |   1 pages | SIT Immobiliare (IS24)
    0 annonces |   1 pages | TICINO.RE SA (IS24)
    0 annonces |   2 pages | immobilier.ch - Gruyères/Broc
    0 annonces |  25 pages | immobilier.ch - Jura (canton)
-   7 annonces |  25 pages | immobilier.ch - Fribourg p2
-   3 annonces |  25 pages | immobilier.ch - Neuchatel p2
+   1 annonces |  25 pages | immobilier.ch - Fribourg p2
+   2 annonces |  25 pages | immobilier.ch - Neuchatel p2
 navigateur ferme
 
-TOTAL : 23 annonces sur 288 pages telechargees
-recalcul : {"ok":true,"biens":364,"rescues":0}
+TOTAL : 14 annonces sur 288 pages telechargees
+recalcul : {"ok":true,"biens":369,"rescues":0}
