@@ -23,37 +23,37 @@ sources a traiter : 53
    0 annonces |   1 pages | Immostile SA
    0 annonces |   1 pages | Immolife Ticino SA
    0 annonces |   1 pages | Metropolis Immobiliare
-   0 annonces |   5 pages | Neho
+   1 annonces |   5 pages | Neho
    0 annonces |   1 pages | Monopoly Real Estate sagl
    0 annonces |   1 pages | Raiffeisen Immo AG
    0 annonces |   1 pages | Area Immobiliare Ticino
-   2 annonces |   1 pages | ImmoSky AG
+   1 annonces |   1 pages | ImmoSky AG
    0 annonces |   1 pages | TERRIER SA
    0 annonces |   1 pages | SKF Fiduciaria Sagl
    0 annonces |   1 pages | Ticino Real Estate Sagl
-   1 annonces |   1 pages | TICINO.RE SA
-   1 annonces |   1 pages | Interfida SA
+   0 annonces |   1 pages | TICINO.RE SA
+   0 annonces |   1 pages | Interfida SA
    0 annonces |   1 pages | Domusdea Immobiliare SA
    0 annonces |   1 pages | FIDIFIM Sagl
-   1 annonces |  41 pages | Neuschwander Immobilier (site propre)
+   0 annonces |  41 pages | Neuschwander Immobilier (site propre)
 navigateur demarre
-   0 annonces |  26 pages | Gruyère Immo SA (site propre)
+   1 annonces |  26 pages | Gruyère Immo SA (site propre)
    0 annonces |   1 pages | BD Gerance SA
    0 annonces |   1 pages | JPF Immobilier SA
    0 annonces |   1 pages | HUH Immobilien AG (site propre)
    0 annonces |   1 pages | PREMIUM HOMES AG (site propre)
    0 annonces |   1 pages | IMMOprima AG (site propre)
-   1 annonces |  25 pages | immobilier.ch (portail romand)
-   1 annonces |  25 pages | immobilier.ch - Neuchatel
+   0 annonces |  25 pages | immobilier.ch (portail romand)
+   0 annonces |  25 pages | immobilier.ch - Neuchatel
    0 annonces |   4 pages | immobilier.ch - Saignelégier
    1 annonces |  25 pages | immobilier.ch - Charmey/Gruyere
    0 annonces |   1 pages | SIT Immobiliare (IS24)
    0 annonces |   1 pages | TICINO.RE SA (IS24)
    0 annonces |   2 pages | immobilier.ch - Gruyères/Broc
    0 annonces |  25 pages | immobilier.ch - Jura (canton)
-   5 annonces |  25 pages | immobilier.ch - Fribourg p2
+   2 annonces |  25 pages | immobilier.ch - Fribourg p2
    0 annonces |  25 pages | immobilier.ch - Neuchatel p2
 navigateur ferme
 
-TOTAL : 15 annonces sur 288 pages telechargees
-recalcul : {"ok":true,"biens":371,"rescues":0}
+TOTAL : 8 annonces sur 288 pages telechargees
+recalcul : {"ok":true,"biens":375,"rescues":0}
