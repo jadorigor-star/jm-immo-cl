@@ -1,22 +1,9 @@
+texte visible : 6494 caracteres
 
-=== it/ricerca-immobili === HTTP 200 | 76876 o
-  annonces : 5 -> immobili/cabe05-oc, immobili/cabe25, immobili/cabe10, immobili/cabe19, immobili/cabe15
-  og:title       ABSENT
-  og:description ABSENT
-  og:image       ABSENT
-  prix           ABSENT
-  locali         ABSENT
-  m2             50 m²
-  npa+ville      6600 Locarno
-  lat            ABSENT
+extrait :
+ CONTATTO DEUTSCH ITALIANO Vendere immobile Ricerca immobili Perché Case Bertolotti Blog Referenze << torna ai risultati della ricerca The Art of Living - ONDA CELESTE Numero di riferimento: CaBe05_OC 17 Immagini persona di riferimento Fabienne Daul-Bertolotti Fabienne parla tedesco, inglese, italiano +41 79 176 35 84 ciao@casebertolotti.ch Breve info sull'oggetto Ronco s/Ascona / Locarnese Luogo/regione 454 m² Area 10.5 Camera Auf Anfrage / Su richiesta Prezzo RICHIESTA SENZA IMPEGNO Descrizione Manche Gelegenheiten sind so selten, dass sie ein eigenes Kapitel am Lago Maggiore schreiben. In der renommierten Residenz ONDA VIVA in Ronco sopra Ascona steht nun die einmalige Möglichkeit offen, 
 
-=== immobili/cabe05-oc === HTTP 200 | 57834 o
-  annonces : 4 -> immobili/cabe05-oc#skipNavigation7, immobili/cabe05-oc#360-tour, immobili/cabe05-oc#skipNavigation11, immobili/cabe05-oc#skipNavigation14
-  og:title       ABSENT
-  og:description ABSENT
-  og:image       ABSENT
-  prix           ABSENT
-  locali         ABSENT
-  m2             454 m²
-  npa+ville      6600 Locarno
-  lat            ABSENT
+=== recherche de prix ===
+  nombre a 6-7 chiffres   ["41 79 176","35 84","299.73","331.9","122.15","91 791 92"]
+  mot prezzo/prix         ["Prezzo RICHIESTA SENZA IMPEGNO Descrizione Manche Gelegenheiten si","Prezzo Preis: Auf Anfrage Das hochwertige Interieur-Design sowie d","preises","preis erbringt"]
+  su richiesta            ["Auf Anfrage","Su richiesta","Auf Anfrage"]
