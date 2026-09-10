@@ -1,13 +1,12 @@
-page : 24071 octets
+liens a tester : 11
+  403               https://www.immoscout24.ch/buy/4003445853
+  403               https://www.immoscout24.ch/buy/4003458894
+  200 mais retiré   https://ticinore.ch/portale-immobiliare/nuovo-appartamento-in-costruzione-a-morbio-inferiore
+  ERR Failed to parse URL fr"><img src="typo3temp/pics/65441e5fd8.jpg" width="309" height="412" border="0" alt="" /></a>
+  403               https://www.homegate.ch/buy/4003110098
 
-=== indices d'adresse ===
-  og:description    ["Appartement B - 2,5 pi&#xE8;ces, avec balcon - Cadre agr&#xE9;able &#xE0; Couvet situ&#xE9; &#xE0; Couvet. 74 m2, 2.5 pi&#xE8;ces, balcon. Disponibilit&#xE9; sur demande."]
-  meta description  ["Appartement B - 2,5 pi&#xE8;ces, avec balcon - Cadre agr&#xE9;able &#xE0; Couvet situ&#xE9; &#xE0; Couvet. 74 m2, 2.5 pi&#xE8;ces, balcon. Disponibilit&#xE9; sur demande."]
-  rue + numero      []
-  code postal + ville[]
-  adresse json      []
-  coordonnees       ["46.9218657"]
-
-=== JSON-LD (2) ===
-   { "@context": "https://schema.org", "@type": "RealEstateListing", "@id": "https://www.immobilier.ch/fr/acheter/appartement/neuchatel/couvet/pro-conseils-1594/appartement-b-25-pieces-balcon-cadre-agreable-couvet-1564437", "url": "https://www.immobilier.ch/fr/acheter/appartement/neuchatel/couvet/pro-conseils-1594/appart
-   { "@context": "http://schema.org", "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "item": { "@id": "https://www.immobilier.ch/fr", "name": "Accueil" } } ,{ "@type": "ListItem", "position": 2, "item": { "@id": "https://www.immobilier.ch/fr/acheter", "name": "Acheter" } } ,{ "@type
+=== SYNTHESE ===
+  200                 6
+  200 mais retiré     1
+  403                 3
+  ERR Failed to parse URL fr1
