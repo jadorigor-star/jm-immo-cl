@@ -1,25 +1,6 @@
-it/ricerca-immobili                HTTP 200 | 61967 o | annonces : 5
-     immobili/cabe05-oc
-     immobili/cabe25
-     immobili/cabe10
-     immobili/cabe19
-     immobili/cabe15
-it/acquistare-immobile-ticino      HTTP 200 | 62097 o | annonces : 5
-     immobili/cabe05-oc
-     immobili/cabe25
-     immobili/cabe10
-     immobili/cabe19
-     immobili/cabe15
-
-=== PAGE DE DETAIL ===
-HTTP 404 | 817 octets
-  <title>         An Error Occurred: Not Found
-  og:title        ABSENT
-  og:description  ABSENT
-  og:image        ABSENT
-  prix            ABSENT
-  locali/pieces   ABSENT
-  m2              ABSENT
-  localite        ABSENT
-  coordonnees     ABSENT
-  JSON-LD : 0
+lien brut : immobili/cabe05-oc
+resolu par URL() : https://www.casebertolotti.ch/it/immobili/cabe05-oc
+404  it/immobili/cabe05-oc                           
+200  immobili/cabe05-oc                               | 35937 o | Immobilie suchen | Case Bertolotti | prix aucun prix
+404  it/ricerca-immobili/immobili/cabe05-oc          
+404  it/immobili/cabe05                              
