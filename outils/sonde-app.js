@@ -1,30 +1,33 @@
-const UA = { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36" };
-const BASE = "https://jm-immo-cl.jadorigor.workers.dev";
+const UA = { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36",
+             "Accept-Language": "it-CH,it;q=0.9,fr;q=0.8" };
+const candidats = [
+  "https://www.casebertolotti.ch/",
+  "https://www.casebertolotti.ch/vendita",
+  "https://www.casebertolotti.ch/it/vendita",
+  "https://casebertolotti.ch/"
+];
+async function get(u) {
+  try {
+    const r = await fetch(u, { headers: UA, redirect: "follow", signal: AbortSignal.timeout(25000) });
+    return { status: r.status, url: r.url, html: await r.text() };
+  } catch (e) { return { status: "ERR " + e.message.slice(0, 40), html: "" }; }
+}
 (async () => {
-  const r = await (await fetch(BASE + "/api/search?limit=1000", { headers: { "X-Espace": "principal" } })).json();
-  const vus = new Set(); const cibles = [];
-  for (const b of r.results) for (const s of (b.sources || [])) {
-    const d = (s.url || "").split("/")[2] || "";
-    const cle = d + "|" + ((vus.get ? 0 : 0));
-    if (!s.url) continue;
-    const n = cibles.filter((c) => c.d === d).length;
-    if (n < 2) cibles.push({ d, url: s.url, bien: b.locality });
+  let base = null;
+  for (const u of candidats) {
+    const r = await get(u);
+    console.log(u.padEnd(46) + " -> " + r.status + (r.html ? " | " + r.html.length + " o" : ""));
+    if (r.status === 200 && !base) base = r;
   }
-  console.log("liens a tester : " + cibles.length);
-  const res = {};
-  for (const c of cibles) {
-    let code = "ERR";
-    try {
-      const rep = await fetch(c.url, { headers: UA, redirect: "follow", signal: AbortSignal.timeout(20000) });
-      code = rep.status;
-      if (code === 200) {
-        const t = (await rep.text()).toLowerCase();
-        if (/listing is gone|n'existe plus|non piu disponibile|no longer available|objet vendu|page introuvable|404/.test(t.slice(0, 60000))) code = "200 mais retiré";
-      }
-    } catch (e) { code = "ERR " + String(e.message).slice(0, 22); }
-    res[code] = (res[code] || 0) + 1;
-    if (String(code) !== "200") console.log("  " + String(code).padEnd(18) + c.url.slice(0, 92));
-  }
-  console.log("\n=== SYNTHESE ===");
-  for (const k of Object.keys(res).sort()) console.log("  " + String(k).padEnd(20) + res[k]);
+  if (!base) return;
+  const html = base.html;
+  console.log("\nURL finale : " + base.url);
+  console.log("JSON-LD : " + (html.match(/ld\+json/g) || []).length + " | PINIA : " + html.includes("__PINIA_STATE__") + " | NEXT : " + html.includes("__NEXT_DATA__"));
+  const prix = [...html.matchAll(/CHF[\s'’]*[\d'’\s]{5,}/gi)].slice(0, 5).map((m) => m[0].trim());
+  console.log("prix visibles : " + JSON.stringify(prix));
+  const liens = [...new Set([...html.matchAll(/href="([^"]{4,150})"/g)].map((m) => m[1]))];
+  console.log("\nliens totaux : " + liens.length);
+  const interessants = liens.filter((u) => /vendit|vendre|immobil|oggett|propriet|object|detail|scheda|\/\d{3,}/i.test(u));
+  console.log("liens candidats : " + interessants.length);
+  interessants.slice(0, 14).forEach((l) => console.log("   " + l.slice(0, 110)));
 })();
