@@ -1,26 +1,25 @@
-const UA = { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36", "Accept-Language": "it-CH,it;q=0.9" };
-const get = async (u) => { try { const r = await fetch(u, { headers: UA, redirect: "follow", signal: AbortSignal.timeout(20000) }); return { s: r.status, u: r.url, h: await r.text() }; } catch (e) { return { s: "ERR", h: "" }; } };
+const puppeteer = require("puppeteer");
 (async () => {
-  const page = "https://www.casebertolotti.ch/it/ricerca-immobili";
-  const r = await get(page);
-  const brut = [...new Set([...r.h.matchAll(/href="([^"]*immobili\/[^"]{3,60})"/g)].map((m) => m[1]))];
-  console.log("lien brut : " + brut[0]);
-  console.log("resolu par URL() : " + new URL(brut[0], r.u).href);
-  const variantes = [
-    new URL(brut[0], r.u).href,
-    "https://www.casebertolotti.ch/it/immobili/cabe05-oc",
-    "https://www.casebertolotti.ch/immobili/cabe05-oc",
-    "https://www.casebertolotti.ch/it/ricerca-immobili/immobili/cabe05-oc",
-    "https://www.casebertolotti.ch/it/immobili/cabe05"
-  ];
-  for (const v of [...new Set(variantes)]) {
-    const d = await get(v);
-    let info = "";
-    if (d.s === 200) {
-      const t = (/<title>([^<]{4,120})/i.exec(d.h) || [])[1] || "";
-      const p = (/CHF[\s'’]*([\d'’\s]{5,})/i.exec(d.h) || [])[1] || "aucun prix";
-      info = " | " + d.h.length + " o | " + t.slice(0, 46) + " | prix " + String(p).trim();
-    }
-    console.log(String(d.s).padEnd(5) + v.slice(30).padEnd(48) + info);
+  const nav = await puppeteer.launch({ args: ["--no-sandbox", "--disable-dev-shm-usage"] });
+  const page = await nav.newPage();
+  await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36");
+  for (const u of ["https://www.casebertolotti.ch/it/ricerca-immobili", "https://www.casebertolotti.ch/immobili/cabe05-oc"]) {
+    const r = await page.goto(u, { waitUntil: "networkidle2", timeout: 45000 });
+    await new Promise((x) => setTimeout(x, 2500));
+    const h = await page.content();
+    console.log("\n=== " + u.slice(30) + " === HTTP " + r.status() + " | " + h.length + " o");
+    const liens = [...new Set([...h.matchAll(/href="([^"]*immobili\/[^"]{3,60})"/g)].map((m) => m[1]))];
+    if (liens.length) console.log("  annonces : " + liens.length + " -> " + liens.slice(0, 6).join(", "));
+    for (const [n, re] of [
+      ["og:title", /og:title"\s+content="([^"]{4,140})/i],
+      ["og:description", /og:description"\s+content="([^"]{10,260})/i],
+      ["og:image", /og:image"\s+content="([^"]{10,150})/i],
+      ["prix", /CHF[\s'’]*([\d'’\s]{5,})/i],
+      ["locali", /([\d.,]+)\s*locali/i],
+      ["m2", /([\d']{2,6})\s*m(?:2|²)/i],
+      ["npa+ville", /(6[0-9]{3})\s+([A-ZÀ-Ü][A-Za-zÀ-ÿ\-' ]{2,24})/],
+      ["lat", /"lat(?:itude)?"\s*:\s*"?(4[5-7]\.\d{3,})/i]
+    ]) { const m = re.exec(h); console.log("  " + n.padEnd(15) + (m ? String(m[0]).slice(0, 90) : "ABSENT")); }
   }
+  await nav.close();
 })();
