@@ -16,9 +16,9 @@ sources a traiter : 53
    0 annonces |   1 pages | Immobiliare Marazza Sagl
    0 annonces |   1 pages | Immobiliare Mazzoleni SA
    0 annonces |   1 pages | Immobiliare Nodiroli & Co.
-   2 annonces |   1 pages | Multiresidenza SA
+   0 annonces |   1 pages | Multiresidenza SA
    0 annonces |   1 pages | Wildi Immobiliare
-   1 annonces |   1 pages | Fontana Sotheby's International Realty
+   0 annonces |   1 pages | Fontana Sotheby's International Realty
    0 annonces |   1 pages | Arifida SA
    0 annonces |   1 pages | Immostile SA
    0 annonces |   1 pages | Immolife Ticino SA
@@ -40,11 +40,11 @@ navigateur demarre
    0 annonces |  26 pages | Gruyère Immo SA (site propre)
    0 annonces |   1 pages | BD Gerance SA
    0 annonces |   1 pages | JPF Immobilier SA
-   0 annonces |   1 pages | HUH Immobilien AG (site propre)
+   0 annonces |   0 pages | HUH Immobilien AG (site propre)  [fetch failed]
    0 annonces |   1 pages | PREMIUM HOMES AG (site propre)
    0 annonces |   1 pages | IMMOprima AG (site propre)
    0 annonces |  25 pages | immobilier.ch (portail romand)
-   0 annonces |  25 pages | immobilier.ch - Neuchatel
+   1 annonces |  25 pages | immobilier.ch - Neuchatel
    0 annonces |   4 pages | immobilier.ch - Saignelégier
    1 annonces |  25 pages | immobilier.ch - Charmey/Gruyere
    0 annonces |   1 pages | SIT Immobiliare (IS24)
@@ -52,8 +52,8 @@ navigateur demarre
    0 annonces |   2 pages | immobilier.ch - Gruyères/Broc
    0 annonces |  25 pages | immobilier.ch - Jura (canton)
    4 annonces |  25 pages | immobilier.ch - Fribourg p2
-   1 annonces |  25 pages | immobilier.ch - Neuchatel p2
+   0 annonces |  25 pages | immobilier.ch - Neuchatel p2
 navigateur ferme
 
-TOTAL : 9 annonces sur 288 pages telechargees
+TOTAL : 6 annonces sur 287 pages telechargees
 recalcul : {"ok":true,"biens":387,"rescues":0}
