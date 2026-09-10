@@ -1,5 +1,5 @@
-// BUILD-MARKER 1789034400 padding-4100: hcxbyzdye9asnu6glzpzm1xqsbkz0znc39rtemws8gorett7tigcs06rihv7nkny4l5y0t6fdiy6pqmdk9deldvln7eomwb3b8peq3bok94pkee5qag2droy1u8908uk3h5lahqndaknsia03ageb8l3nj3adwf0ghnc8dcigjkcednfk1h0k2yh5rl0k5ebwhb82x9afxieme03s1b6ah0yfa5g6u4913euqz96gbsrpz7m6ku8c69aq7qu77etdxf5me8rvkqrxpcx1l6f2hm4lm0aq7vm3etw0flc2cppxv1jie260ajr1f2z7xn57d7j9tgvd9dbvht7qy7h41r3gjovbovd1tvjytvs6tnn0t2fb7udihwdk8boaxdkaz1izsttp67aoc183ri021ir7ocn7z8xtopneud4x3clb82xc8oxubwjzn8sitk1vhvxlc8p0dq5f49o3mrlkzb9hp6jvwp3j6lv4fb92y2nhxlxalspotishluerxdrl2sn18pl9vvxbjexg5qzjpn2ssjq7ms5h423ej6m12qnlrefvvg0ooo8tx6yr5j7uz2l85twq2t4ve3r2idumgvrjhbp504s0o6fc5agjoeuwzltvnlomt353i2bu737wsprupsvehdzotpxok1gn5io8gh4sz8npgeq9hc13mdty9m77e70dzg6kcobl3t0h7a91vym057b5xoux5u01cwwbg30hg6i3t09dqaygtz2jlf1pcsg6owvvgfi1g3qgckurml5rtxxicqqp8j8wuztk7q84fbgol63p727w9hoaqx3iamddhnbt3r6a80zrwekzsq0gov0v370uncvzas9tzyzcftuwgr4sx1lgbjwffeo02wlxaubry0g8u3hwgwg87l8w7c6cpvdp5yd0np6rm8zmiz7qibij19lfcj9rpxp0wzt065jtog2p6xf7ept04i1whfn0en86i275ydx4nidijswrxrni49nezlctzhjc4kqj90dpuar96dib17nwrf79q8ubm3nw3o195g5jidf3ji0w98rpnnft7cq4eab6qfd0c3e
-// VERSION_MARKER_JMIMMO_20260910_TRI_FLUIDE_v41
+// BUILD-MARKER 1789035060 padding-4200: 8o7e0wdwc9uvkmpckh78niawd6v8ohkcyhgy7no0mhxbmjk0o40kmk9e8p32vd9rer7nswq2t53epml2kypezsbjgdsed0xc5pl2lsmihcecskxwywlzvv0ny2s49k10jvz0ghm4zq1eeq8gwdqhyq1wrvwlg867vyiqv6kges9pere2yxbe1gjg03ivdcs1wprfvlbywasncuyhiwgdpq3wsxs0i9nb0lrgxcy0vlapweucbwhfya2r4m0oc0njxgry39h1qppub384c3rl6m26isco2ukd91ywams7aql3byyoqfcpku1ek8mhkfjukqvobv1716h3qs300bvo27e9ipbjstd2bu259gq28evw37hqfsaoi8yng9drqtdmcyo67mff11p9dk4v50g1enasaqg7ry0b0kb1ztll2bhl2vijofc5nlog3oppop7tdsvmc8uezustlmyzeu76pfz5xzq5ityfls5g4ixnlf6da2j9ujpm4w6y4jhmh7gz94gj4i5gpxee9dbyc1un6mdfqwvjurm9f793ri5jifjuur77t789z3wg2y4eih5joqb5tgxbiclx7t6lizmqzmh0x1iissaj6f3nf3q1d0gr7d2acz6qf0b0234lzwii56bqxs45zmuv2cnmi1dcms34j7qdfv3cyygjpu33hg3d3kepefy12iw61wjorim4f9r8djmyg2r3mewjrwsw4rsoh52pto1ofhqz47zqyb5f8h7hv8nbzkzmfvex5n6i764ysa7ydisqtv5c066159n5evqa59wslhx78o9e5coxutvso2w293hcztpjfw87bxnpitag2yjnqt9dbu3mho2n8uian0nlv630bf0u5vajglxtn6v7t8im7u00w6lg5tclojpkignardzyguev9y5kzzbt2ikzwrzxd9k54ghbxb7ah4xhxd32c546l7647kbnvtmhhjd7g9951615jpkym978ryx84wwf2mfnr6or089otfpzsvuijhir1b0cdjbkvo6z2fk54glah4kwyumcv692mtg8xr4be1qbxqsl5rmxzm2roh5pp2jil0eyq7jfdsn1cvon
+// VERSION_MARKER_JMIMMO_20260910_NOUVEAUTES_v42
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -383,7 +383,7 @@ function findKnownLocalityGeneric(text, extra) {
 }
 function extractFieldsGeneric(m, fields, config, extra) {
   const priceMin = config.price_min || 5e4;
-  const out = { price: null, rooms: null, surface: null, locality: null, type: null, url: null, title: null, description: null, image_url: null, address: null, geo_lat: null, geo_lon: null };
+  const out = { price: null, rooms: null, surface: null, locality: null, type: null, url: null, title: null, description: null, image_url: null, address: null, geo_lat: null, geo_lon: null, date_publication: null };
   if (fields.price != null && m[fields.price]) out.price = parsePriceGeneric(m[fields.price]);
   if (fields.rooms != null && m[fields.rooms]) out.rooms = parseFloat(String(m[fields.rooms]).replace(",", "."));
   if (fields.surface != null && m[fields.surface]) out.surface = parseFloat(m[fields.surface]);
@@ -413,6 +413,7 @@ function extractFieldsGeneric(m, fields, config, extra) {
       else if (key === "description") out.description = decodeEntitiesGeneric(sm[1]).replace(/\s+/g, " ").trim();
       else if (key === "image_url") out.image_url = sm[1].trim();
       else if (key === "address") out.address = decodeEntitiesGeneric(sm[1]).replace(/\s+/g, " ").trim();
+      else if (key === "date_publication") out.date_publication = sm[1].trim().slice(0, 30);
       else if (key === "geo_lat") { const v = parseFloat(sm[1]); if (isFinite(v) && v > 45 && v < 48) out.geo_lat = v; }
       else if (key === "geo_lon") { const v = parseFloat(sm[1]); if (isFinite(v) && v > 5 && v < 11) out.geo_lon = v; }
     }
@@ -530,6 +531,7 @@ function extractStateJsonGeneric(html, config) {
     const title = f.title ? getByPath(item, f.title) : null;
     const description = f.description ? getByPath(item, f.description) : null;
     const image = f.image ? getByPath(item, f.image) : null;
+    const datePub = f.date_publication ? getByPath(item, f.date_publication) : null;
     const lat = f.geo_lat ? getByPath(item, f.geo_lat) : null;
     const lon = f.geo_lon ? getByPath(item, f.geo_lon) : null;
     out.push({
@@ -539,6 +541,7 @@ function extractStateJsonGeneric(html, config) {
       title: title ? String(title).trim() : null,
       description: description ? String(description).trim() : null,
       image_url: image ? String(image).trim() : null,
+      date_publication: datePub ? String(datePub).slice(0, 30) : null,
       geo_lat: lat != null && isFinite(Number(lat)) ? Number(lat) : null,
       geo_lon: lon != null && isFinite(Number(lon)) ? Number(lon) : null
     });
@@ -737,6 +740,7 @@ function genericAdapter(sourceRow, extra, knownUrls) {
               title: detail.title || (detail.type || "Bien") + " \u2014 " + detail.locality,
                 description: detail.description || null,
                 image_url: detail.image_url || null,
+                date_publication: detail.date_publication || null,
                 geo_lat: detail.geo_lat ?? null,
                 geo_lon: detail.geo_lon ?? null,
               locality: detail.locality,
@@ -763,6 +767,7 @@ function genericAdapter(sourceRow, extra, knownUrls) {
                 title: rec.title || (rec.type || "Bien") + " \u2014 " + rec.locality,
                 description: rec.description || null,
                 image_url: rec.image_url || null,
+                date_publication: rec.date_publication || null,
                 geo_lat: rec.geo_lat ?? null,
                 geo_lon: rec.geo_lon ?? null,
                 locality: rec.locality,
@@ -984,7 +989,7 @@ async function storeListing(db, srcRow, rl, extra) {
     && (anc.address || "") === (rl.address || "")) {
     return 0;
   }
-  await db.prepare("INSERT INTO listings (id, source_id, external_id, url, title, locality, region, type, rooms, surface, price, currency, is_rental, cachet, status, confidence, first_seen, last_seen, bien_id, address, description, image_url) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET title=excluded.title, price=excluded.price, status=excluded.status, confidence=excluded.confidence, last_seen=excluded.last_seen, region=excluded.region, address=excluded.address, description=excluded.description, image_url=COALESCE(excluded.image_url, listings.image_url)").bind(
+  await db.prepare("INSERT INTO listings (id, source_id, external_id, url, title, locality, region, type, rooms, surface, price, currency, is_rental, cachet, status, confidence, first_seen, last_seen, bien_id, address, description, image_url, date_publication) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET title=excluded.title, price=excluded.price, status=excluded.status, confidence=excluded.confidence, last_seen=excluded.last_seen, region=excluded.region, address=excluded.address, description=excluded.description, image_url=COALESCE(excluded.image_url, listings.image_url), date_publication=COALESCE(excluded.date_publication, listings.date_publication)").bind(
     listingId,
     srcRow.id,
     rl.external_id,
@@ -1006,7 +1011,8 @@ async function storeListing(db, srcRow, rl, extra) {
     bId,
     rl.address || null,
     rl.description || null,
-    rl.image_url || null
+    rl.image_url || null,
+    rl.date_publication || null
   ).run();
   const history = rl.history && rl.history.length ? rl.history : [[today, rl.price]];
   for (const pair of history) {
@@ -1356,6 +1362,7 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
     record: {
       id: bId,
       image_url: (listings.map((l) => l.image_url).find((u) => u) || null),
+      date_publication: (listings.map((l) => l.date_publication).filter((d) => d).sort()[0] || null),
       title: latest.title,
       locality: latest.locality,
       region: latest.region,
@@ -1421,11 +1428,11 @@ function signatureBien(r) {
   return [r.price, r.jm_fit, r.deal_score, r.retraite_score, r.locatif_score, r.cachet_score, r.risk_score,
     r.accessibilite_score, r.is_opportunity, r.title, r.image_url, r.surface, r.rooms, r.address,
     r.transit_duration_min, r.last_mile_duration_min, r.nearest_stop_name, r.geo_lat, r.geo_lon,
-    r.price_drop_json, r.residence_secondaire_statut, r.lrs_part, r.sources_count, r.last_seen].join("|");
+    r.price_drop_json, r.residence_secondaire_statut, r.lrs_part, r.date_publication, r.sources_count, r.last_seen].join("|");
 }
 async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienSourceDelete) {
   try {
-    const dejaLa = await db.prepare("SELECT id, price, jm_fit, deal_score, retraite_score, locatif_score, cachet_score, risk_score, accessibilite_score, is_opportunity, title, image_url, surface, rooms, address, transit_duration_min, last_mile_duration_min, nearest_stop_name, geo_lat, geo_lon, price_drop_json, residence_secondaire_statut, lrs_part, sources_count, last_seen FROM biens").all();
+    const dejaLa = await db.prepare("SELECT id, price, jm_fit, deal_score, retraite_score, locatif_score, cachet_score, risk_score, accessibilite_score, is_opportunity, title, image_url, surface, rooms, address, transit_duration_min, last_mile_duration_min, nearest_stop_name, geo_lat, geo_lon, price_drop_json, residence_secondaire_statut, lrs_part, date_publication, sources_count, last_seen FROM biens").all();
     const sig = new Map(dejaLa.results.map((r) => [r.id, signatureBien(r)]));
     const avant = allComputed.length;
     allComputed = allComputed.filter((c) => sig.get(c.record.id) !== signatureBien(c.record));
@@ -1436,12 +1443,13 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
   const BATCH_SIZE = 2;
   for (let i = 0; i < allComputed.length; i += BATCH_SIZE) {
     const batch = allComputed.slice(i, i + BATCH_SIZE);
-    const placeholders = batch.map(() => "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").join(",");
+    const placeholders = batch.map(() => "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").join(",");
     const values = [];
     for (const c of batch) {
       const r = c.record;
       values.push(
         r.id,
+        r.date_publication ?? null,
         r.lrs_part ?? null,
         r.image_url ?? null,
         r.title,
@@ -1481,9 +1489,9 @@ async function writeBiensInBatches(db, allComputed, sourceNamesMap, skipPerBienS
       );
     }
     if (values.length > 100) throw new Error("writeBiensInBatches : lot de " + values.length + " parametres depasse la limite D1 de 100 \u2014 reduire BATCH_SIZE");
-    await db.prepare(`INSERT INTO biens (id,lrs_part,image_url,title,locality,region,type,rooms,surface,price,cachet,confidence,first_seen,last_seen,deal_score,retraite_score,locatif_score,cachet_score,risk_score,accessibilite_score,nearest_stop_name,last_mile_distance_m,last_mile_duration_min,last_mile_elevation_m,last_mile_approx,is_village_center,geo_lat,geo_lon,transit_duration_min,transit_transfers,jm_fit,is_opportunity,explain,price_drop_json,address,residence_secondaire,residence_secondaire_statut)
+    await db.prepare(`INSERT INTO biens (id,date_publication,lrs_part,image_url,title,locality,region,type,rooms,surface,price,cachet,confidence,first_seen,last_seen,deal_score,retraite_score,locatif_score,cachet_score,risk_score,accessibilite_score,nearest_stop_name,last_mile_distance_m,last_mile_duration_min,last_mile_elevation_m,last_mile_approx,is_village_center,geo_lat,geo_lon,transit_duration_min,transit_transfers,jm_fit,is_opportunity,explain,price_drop_json,address,residence_secondaire,residence_secondaire_statut)
       VALUES ${placeholders}
-      ON CONFLICT(id) DO UPDATE SET lrs_part=excluded.lrs_part, image_url=COALESCE(excluded.image_url, biens.image_url), title=excluded.title, locality=excluded.locality, region=excluded.region, type=excluded.type,
+      ON CONFLICT(id) DO UPDATE SET date_publication=COALESCE(excluded.date_publication, biens.date_publication), lrs_part=excluded.lrs_part, image_url=COALESCE(excluded.image_url, biens.image_url), title=excluded.title, locality=excluded.locality, region=excluded.region, type=excluded.type,
         rooms=excluded.rooms, surface=excluded.surface, price=excluded.price, cachet=excluded.cachet, confidence=excluded.confidence,
         first_seen=excluded.first_seen, last_seen=excluded.last_seen, deal_score=excluded.deal_score, retraite_score=excluded.retraite_score,
         locatif_score=excluded.locatif_score, cachet_score=excluded.cachet_score, risk_score=excluded.risk_score,
@@ -1750,6 +1758,10 @@ async function search(db, opts) {
     recent: (a, b) => (b.first_seen || "").localeCompare(a.first_seen || ""),
     accessibilite: (a, b) => (b.accessibilite_score || 0) - (a.accessibilite_score || 0),
     surface_desc: (a, b) => (b.surface || 0) - (a.surface || 0),
+    nouveautes: (a, b) => {
+      const t = (x) => new Date(x.date_publication || x.first_seen || 0).getTime() || 0;
+      return t(b) - t(a);
+    },
     prix_m2_asc: (a, b) => {
       const m = (x) => (x.price && x.surface && x.surface >= 15) ? x.price / x.surface : Infinity;
       return m(a) - m(b);
@@ -1849,6 +1861,7 @@ main{padding:14px 16px;max-width:660px;margin:0 auto;}
 .replie summary::before{content:"▸ ";display:inline-block;transition:transform .15s}
 .replie[open] summary::before{content:"▾ "}
 .note-lrs{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.45}
+.tag.neuf{color:var(--teal);border-color:var(--teal)}
 </style>
 </head>
 <body>
@@ -1866,6 +1879,7 @@ main{padding:14px 16px;max-width:660px;margin:0 auto;}
     <select id="fType"><option value="">Tous types</option></select>
     <input id="fBudget" type="number" min="0" step="50000" value="500000" title="Budget maximum en CHF" style="width:150px">
     <select id="fSort">
+    <option value="nouveautes">Tri : nouveaut\u00e9s</option>
     <option value="prix_m2_asc">Tri : prix au m\u00b2 croissant</option>
     <option value="jmfit">Tri : JM Fit</option>
     <option value="recent">Tri : plus r\u00e9cents</option>
@@ -2004,6 +2018,17 @@ function bienCard(b){
   if (b.residence_secondaire_statut === "possible") signaux.push("<span class='tag' style='color:var(--teal)'>R\u00e9s. secondaire OK</span>");
   else if (b.residence_secondaire_statut === "non_possible") signaux.push("<span class='tag' style='color:var(--clay)'>R\u00e9s. secondaire non</span>");
   if (b.cachet) signaux.push("<span class='tag'>cachet</span>");
+  const ref = b.date_publication || b.first_seen;
+  let anciennete = "";
+  if (ref) {
+    const j = Math.floor((Date.now() - new Date(ref).getTime()) / 86400000);
+    if (isFinite(j) && j >= 0) {
+      const certaine = !!b.date_publication;
+      if (j <= 7) signaux.push("<span class='tag neuf'>" + (j <= 1 ? "Nouveau" : "Nouveau \u00b7 " + j + " j") + "</span>");
+      anciennete = "<span title='" + (certaine ? "date de publication de l\u2019annonce" : "date de decouverte par l\u2019app") + "'>"
+        + (certaine ? "en ligne depuis " : "vu depuis ") + (j < 1 ? "aujourd\u2019hui" : j + " j") + "</span>";
+    }
+  }
 
   const prixM2 = (b.price && b.surface && b.surface >= 15)
     ? "<span>" + fmtCHF(Math.round(b.price / b.surface)).replace("CHF ", "") + "/m\u00b2</span>" : "";
@@ -2024,7 +2049,7 @@ function bienCard(b){
         + "<div class='title'>" + titleHtml + "</div>"
         + "<div class='locality'>" + (b.locality||"") + " \u00b7 " + (b.region||"") + " \u00b7 <a href='" + mapUrl + "' target='_blank' rel='noopener'>Carte</a></div>"
         + "<div class='price'>" + fmtCHF(b.price) + "</div>"
-        + "<div class='meta-row'><span>" + (b.rooms||"?") + " p.</span><span>" + (b.surface||"?") + " m\u00b2</span>" + prixM2 + "</div>"
+        + "<div class='meta-row'><span>" + (b.rooms||"?") + " p.</span><span>" + (b.surface||"?") + " m\u00b2</span>" + prixM2 + anciennete + "</div>"
       + "</div>"
       + "<div class='fit-badge " + (b.is_opportunity?"hot":"") + "'>" + (b.jm_fit != null ? b.jm_fit : "") + "</div>"
     + "</div>"
@@ -2409,6 +2434,7 @@ var index_default = {
               title: rec.title || (rec.type || "Bien") + " \u2014 " + rec.locality,
                 description: rec.description || null,
                 image_url: rec.image_url || null,
+                date_publication: rec.date_publication || null,
                 geo_lat: rec.geo_lat ?? null,
                 geo_lon: rec.geo_lon ?? null,
               locality: rec.locality,
