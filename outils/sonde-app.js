@@ -1,21 +1,30 @@
 const UA = { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36" };
-const u = "https://www.immobilier.ch/fr/acheter/appartement/neuchatel/couvet/pro-conseils-1594/appartement-b-25-pieces-balcon-cadre-agreable-couvet-1564437";
+const BASE = "https://jm-immo-cl.jadorigor.workers.dev";
 (async () => {
-  const html = await (await fetch(u, { headers: UA })).text();
-  console.log("page : " + html.length + " octets");
-  console.log("\n=== indices d'adresse ===");
-  for (const [nom, re] of [
-    ["og:description", /og:description" content="([^"]{10,300})/i],
-    ["meta description", /name="description" content="([^"]{10,300})/i],
-    ["rue + numero", /((?:Rue|Route|Chemin|Avenue|Grand-Rue|Quartier|Place|Impasse|Ruelle)[^<>",]{3,40}\s\d{1,4}[a-z]?)/gi],
-    ["code postal + ville", /(\d{4})\s+(Couvet|Fleurier|Travers|M[oô]tiers)/gi],
-    ["adresse json", /"(?:streetAddress|address|adresse)"\s*:\s*"([^"]{4,60})"/gi],
-    ["coordonnees", /"(?:lat|latitude)"\s*:\s*(4[5-7]\.\d{3,})/gi]
-  ]) {
-    const t = [...html.matchAll(re instanceof RegExp && re.global ? re : new RegExp(re.source, "gi"))].slice(0, 4).map((m) => (m[1] || m[0]).trim());
-    console.log("  " + nom.padEnd(18) + JSON.stringify(t));
+  const r = await (await fetch(BASE + "/api/search?limit=1000", { headers: { "X-Espace": "principal" } })).json();
+  const vus = new Set(); const cibles = [];
+  for (const b of r.results) for (const s of (b.sources || [])) {
+    const d = (s.url || "").split("/")[2] || "";
+    const cle = d + "|" + ((vus.get ? 0 : 0));
+    if (!s.url) continue;
+    const n = cibles.filter((c) => c.d === d).length;
+    if (n < 2) cibles.push({ d, url: s.url, bien: b.locality });
   }
-  const ld = [...html.matchAll(/<script[^>]+ld\+json[^>]*>([\s\S]*?)<\/script>/gi)].map((m) => m[1].replace(/\s+/g, " ").slice(0, 320));
-  console.log("\n=== JSON-LD (" + ld.length + ") ===");
-  ld.slice(0, 2).forEach((x) => console.log("  " + x));
+  console.log("liens a tester : " + cibles.length);
+  const res = {};
+  for (const c of cibles) {
+    let code = "ERR";
+    try {
+      const rep = await fetch(c.url, { headers: UA, redirect: "follow", signal: AbortSignal.timeout(20000) });
+      code = rep.status;
+      if (code === 200) {
+        const t = (await rep.text()).toLowerCase();
+        if (/listing is gone|n'existe plus|non piu disponibile|no longer available|objet vendu|page introuvable|404/.test(t.slice(0, 60000))) code = "200 mais retiré";
+      }
+    } catch (e) { code = "ERR " + String(e.message).slice(0, 22); }
+    res[code] = (res[code] || 0) + 1;
+    if (String(code) !== "200") console.log("  " + String(code).padEnd(18) + c.url.slice(0, 92));
+  }
+  console.log("\n=== SYNTHESE ===");
+  for (const k of Object.keys(res).sort()) console.log("  " + String(k).padEnd(20) + res[k]);
 })();
