@@ -1,43 +1,43 @@
 sources a traiter : 53
-  18 annonces |   1 pages | Bussard Immobilier
+   0 annonces |   1 pages | Bussard Immobilier
    0 annonces |   7 pages | Fidimmobil
    0 annonces |  13 pages | MPP Fiduciaria
-   1 annonces |   1 pages | L'Idea Immobiliare
-   3 annonces |   1 pages | Immobiliare Bandel
-   4 annonces |   1 pages | Assofide SA
-  16 annonces |   1 pages | Agenzia Immobiliare Ceresio
-   2 annonces |   1 pages | Consulca SA
-   3 annonces |   1 pages | Fideconto gestioni immobiliari SA
-   3 annonces |   1 pages | Galli Immobiliare SA
-   2 annonces |   1 pages | Immoprogramm SA
-   2 annonces |   1 pages | Multiconta SA
-   7 annonces |   1 pages | Fid SA
-   4 annonces |   1 pages | Fiduciaria Ferro SA
-   4 annonces |   1 pages | Immobiliare Marazza Sagl
-   1 annonces |   1 pages | Immobiliare Mazzoleni SA
-   5 annonces |   1 pages | Immobiliare Nodiroli & Co.
-   3 annonces |   1 pages | Multiresidenza SA
-   1 annonces |   1 pages | Wildi Immobiliare
-   4 annonces |   1 pages | Fontana Sotheby's International Realty
-   1 annonces |   1 pages | Arifida SA
-   2 annonces |   1 pages | Immostile SA
+   0 annonces |   1 pages | L'Idea Immobiliare
+   0 annonces |   1 pages | Immobiliare Bandel
+   0 annonces |   1 pages | Assofide SA
+   0 annonces |   1 pages | Agenzia Immobiliare Ceresio
+   0 annonces |   1 pages | Consulca SA
+   0 annonces |   1 pages | Fideconto gestioni immobiliari SA
+   0 annonces |   1 pages | Galli Immobiliare SA
+   0 annonces |   1 pages | Immoprogramm SA
+   0 annonces |   1 pages | Multiconta SA
+   0 annonces |   1 pages | Fid SA
+   0 annonces |   1 pages | Fiduciaria Ferro SA
+   0 annonces |   1 pages | Immobiliare Marazza Sagl
+   0 annonces |   1 pages | Immobiliare Mazzoleni SA
+   0 annonces |   1 pages | Immobiliare Nodiroli & Co.
+   2 annonces |   1 pages | Multiresidenza SA
+   0 annonces |   1 pages | Wildi Immobiliare
+   0 annonces |   1 pages | Fontana Sotheby's International Realty
+   0 annonces |   1 pages | Arifida SA
+   0 annonces |   1 pages | Immostile SA
    0 annonces |   1 pages | Immolife Ticino SA
-   5 annonces |   1 pages | Metropolis Immobiliare
-  15 annonces |   5 pages | Neho
-   6 annonces |   1 pages | Monopoly Real Estate sagl
-   3 annonces |   1 pages | Raiffeisen Immo AG
-   1 annonces |   1 pages | Area Immobiliare Ticino
-   1 annonces |   1 pages | ImmoSky AG
-   1 annonces |   1 pages | TERRIER SA
-   2 annonces |   1 pages | SKF Fiduciaria Sagl
-   4 annonces |   1 pages | Ticino Real Estate Sagl
-   4 annonces |   1 pages | TICINO.RE SA
-   2 annonces |   1 pages | Interfida SA
-   4 annonces |   1 pages | Domusdea Immobiliare SA
-   5 annonces |   1 pages | FIDIFIM Sagl
-   1 annonces |  41 pages | Neuschwander Immobilier (site propre)
+   0 annonces |   1 pages | Metropolis Immobiliare
+   0 annonces |   5 pages | Neho
+   0 annonces |   1 pages | Monopoly Real Estate sagl
+   0 annonces |   1 pages | Raiffeisen Immo AG
+   0 annonces |   1 pages | Area Immobiliare Ticino
+   0 annonces |   1 pages | ImmoSky AG
+   0 annonces |   1 pages | TERRIER SA
+   0 annonces |   1 pages | SKF Fiduciaria Sagl
+   0 annonces |   1 pages | Ticino Real Estate Sagl
+   0 annonces |   1 pages | TICINO.RE SA
+   0 annonces |   1 pages | Interfida SA
+   0 annonces |   1 pages | Domusdea Immobiliare SA
+   0 annonces |   1 pages | FIDIFIM Sagl
+   0 annonces |  41 pages | Neuschwander Immobilier (site propre)
 navigateur demarre
-   8 annonces |  26 pages | Gruyère Immo SA (site propre)
+   0 annonces |  26 pages | Gruyère Immo SA (site propre)
    0 annonces |   1 pages | BD Gerance SA
    0 annonces |   1 pages | JPF Immobilier SA
    0 annonces |   1 pages | HUH Immobilien AG (site propre)
@@ -46,17 +46,14 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch (portail romand)
    5 annonces |  25 pages | immobilier.ch - Neuchatel
    0 annonces |   4 pages | immobilier.ch - Saignelégier
-   2 annonces |  25 pages | immobilier.ch - Charmey/Gruyere
+   1 annonces |  25 pages | immobilier.ch - Charmey/Gruyere
    0 annonces |   1 pages | SIT Immobiliare (IS24)
-   0 annonces |   1 pages | TICINO.RE SA (IS24)
+   4 annonces |   1 pages | TICINO.RE SA (IS24)
    0 annonces |   2 pages | immobilier.ch - Gruyères/Broc
    0 annonces |  25 pages | immobilier.ch - Jura (canton)
-   1 annonces |  25 pages | immobilier.ch - Fribourg p2
-   0 annonces |  25 pages | immobilier.ch - Neuchatel p2
+   6 annonces |  25 pages | immobilier.ch - Fribourg p2
+   6 annonces |  25 pages | immobilier.ch - Neuchatel p2
 navigateur ferme
 
-TOTAL : 156 annonces sur 288 pages telechargees
-recalcul : <!DOCTYPE html>
-<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en-US"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en-US"> <![endif]-->
-<!--[if IE 8]>    <html class="no-
+TOTAL : 24 annonces sur 288 pages telechargees
+recalcul : {"ok":true,"biens":383,"rescues":0}
