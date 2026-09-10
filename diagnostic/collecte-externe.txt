@@ -18,7 +18,7 @@ sources a traiter : 53
    0 annonces |   1 pages | Immobiliare Nodiroli & Co.
    2 annonces |   1 pages | Multiresidenza SA
    0 annonces |   1 pages | Wildi Immobiliare
-   0 annonces |   1 pages | Fontana Sotheby's International Realty
+   1 annonces |   1 pages | Fontana Sotheby's International Realty
    0 annonces |   1 pages | Arifida SA
    0 annonces |   1 pages | Immostile SA
    0 annonces |   1 pages | Immolife Ticino SA
@@ -44,16 +44,16 @@ navigateur demarre
    0 annonces |   1 pages | PREMIUM HOMES AG (site propre)
    0 annonces |   1 pages | IMMOprima AG (site propre)
    0 annonces |  25 pages | immobilier.ch (portail romand)
-   2 annonces |  25 pages | immobilier.ch - Neuchatel
+   0 annonces |  25 pages | immobilier.ch - Neuchatel
    0 annonces |   4 pages | immobilier.ch - Saignelégier
-   0 annonces |  25 pages | immobilier.ch - Charmey/Gruyere
+   1 annonces |  25 pages | immobilier.ch - Charmey/Gruyere
    0 annonces |   1 pages | SIT Immobiliare (IS24)
    0 annonces |   1 pages | TICINO.RE SA (IS24)
    0 annonces |   2 pages | immobilier.ch - Gruyères/Broc
    0 annonces |  25 pages | immobilier.ch - Jura (canton)
-   5 annonces |  25 pages | immobilier.ch - Fribourg p2
-   2 annonces |  25 pages | immobilier.ch - Neuchatel p2
+   4 annonces |  25 pages | immobilier.ch - Fribourg p2
+   1 annonces |  25 pages | immobilier.ch - Neuchatel p2
 navigateur ferme
 
-TOTAL : 11 annonces sur 288 pages telechargees
-recalcul : {"ok":true,"biens":383,"rescues":0}
+TOTAL : 9 annonces sur 288 pages telechargees
+recalcul : {"ok":true,"biens":387,"rescues":0}
