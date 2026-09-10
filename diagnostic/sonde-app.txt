@@ -1,12 +1,25 @@
-liens a tester : 11
-  403               https://www.immoscout24.ch/buy/4003445853
-  403               https://www.immoscout24.ch/buy/4003458894
-  200 mais retiré   https://ticinore.ch/portale-immobiliare/nuovo-appartamento-in-costruzione-a-morbio-inferiore
-  ERR Failed to parse URL fr"><img src="typo3temp/pics/65441e5fd8.jpg" width="309" height="412" border="0" alt="" /></a>
-  403               https://www.homegate.ch/buy/4003110098
+https://www.casebertolotti.ch/                 -> 200 | 61663 o
+https://www.casebertolotti.ch/vendita          -> 404 | 19617 o
+https://www.casebertolotti.ch/it/vendita       -> 200 | 61850 o
+https://casebertolotti.ch/                     -> 200 | 61663 o
 
-=== SYNTHESE ===
-  200                 6
-  200 mais retiré     1
-  403                 3
-  ERR Failed to parse URL fr1
+URL finale : https://www.casebertolotti.ch/it
+JSON-LD : 2 | PINIA : false | NEXT : false
+prix visibles : []
+
+liens totaux : 51
+liens candidats : 18
+   https://www.instagram.com/casebertolottiimmobiliare/
+   https://www.linkedin.com/company/case-bertolotti-immobiliare-sagl/
+   vendere-immobile
+   valutazione-immobile-online
+   processo-vendita-immobile
+   consigli-vendita-immobile
+   ricerca-immobili
+   acquistare-immobile-ticino
+   acquisto-immobile-spiegazione
+   acquisto-e-finanziamento/finanziamento-della-proprieta
+   compravendita/ristrutturazioni-immobili
+   perche-case-bertolotti/consulenti-immobiliari-locarno-showroom
+   blog-immobiliare-novita
+   immobili/cabe05-oc
