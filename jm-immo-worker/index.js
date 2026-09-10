@@ -1,5 +1,5 @@
-// BUILD-MARKER 1788778333 padding-4000: yxz9pie9sz2wpz6bi6wpquyt0avkubo6oe775p1f9w66f4md4ggpxm2cnuhstzlcj9n6hvejia6lc7u81lwnq3oe61jr2ylx0yb19hm98c8mscbv4tckhxs5hx3t266111bgmmwl3mjunoqo92nmr00t4zymgr7ba9o3o1ehh3ame91qf6k1fcbkx51a718iq25d7y9xqq7hj766th80hzc8ddo8rczlckn3w7qj6uzx8jt173jtdvbqsgrkgmul2mrjmqd7cob9m8f6j917t846jvwwuljlcrfa6knaqt3fwvmep46w93mhhzce7pun2sejq6uptx7w6p3eoot0d5frj95leu23s5pda9xyjcpi0sywjh39a271jjmnmsn90bfktxzh79blkvcrmb9er82jzxnfc625s88p61yhj4999g7h62mktxvwat3djl18f2snxc6x94eqk1vurazazlrhbc9bxx1xqtep6fg7bimk9qagfuxq9utwlzma402teg5jqw20qcvfjgwpaacmt2qe8lg4atvyadmfr6oxgsoerx2k79z2cd9f903tvoh3g3a8kvv27x4oksvixqwmwf5jcwayxb0apr5rstif0gv2b1mx37lxrylwfwh1glla9cbmju9krkybf2u9ix8zb81f39cq1h726m0tujywp9zscdiwpzz93v52b3hdmmy04hfya53xmgvrr434whjl48kiqs1apl24yhh1hrkzmo18zbtvr1yqxyvcdwiciw6rgzol5yeai4rm64xiz85cx8gwsr6yvbsbkul04hhj3267logtul19b3wb4c59aerdkuxz2ef6bjd7p529htrokho0lcwjshuc9bjfbnh7i8xntucpcfk7z163ox5ecfar8qq93sn7thta5oktwzqc0t0bwjfpnt4zicuaodr0cnansg2juxs0s95mou6w3hynwcl0e9l0rabknra9lc22cw8ogsjsa1b4kn42qskgpebksj69wianwa11u8djz6w910uj7elpveijwiy1q3m1xmj9dx6cbcrrc8sv
-// VERSION_MARKER_JMIMMO_20260907_COORDONNEES_v40
+// BUILD-MARKER 1789034400 padding-4100: hcxbyzdye9asnu6glzpzm1xqsbkz0znc39rtemws8gorett7tigcs06rihv7nkny4l5y0t6fdiy6pqmdk9deldvln7eomwb3b8peq3bok94pkee5qag2droy1u8908uk3h5lahqndaknsia03ageb8l3nj3adwf0ghnc8dcigjkcednfk1h0k2yh5rl0k5ebwhb82x9afxieme03s1b6ah0yfa5g6u4913euqz96gbsrpz7m6ku8c69aq7qu77etdxf5me8rvkqrxpcx1l6f2hm4lm0aq7vm3etw0flc2cppxv1jie260ajr1f2z7xn57d7j9tgvd9dbvht7qy7h41r3gjovbovd1tvjytvs6tnn0t2fb7udihwdk8boaxdkaz1izsttp67aoc183ri021ir7ocn7z8xtopneud4x3clb82xc8oxubwjzn8sitk1vhvxlc8p0dq5f49o3mrlkzb9hp6jvwp3j6lv4fb92y2nhxlxalspotishluerxdrl2sn18pl9vvxbjexg5qzjpn2ssjq7ms5h423ej6m12qnlrefvvg0ooo8tx6yr5j7uz2l85twq2t4ve3r2idumgvrjhbp504s0o6fc5agjoeuwzltvnlomt353i2bu737wsprupsvehdzotpxok1gn5io8gh4sz8npgeq9hc13mdty9m77e70dzg6kcobl3t0h7a91vym057b5xoux5u01cwwbg30hg6i3t09dqaygtz2jlf1pcsg6owvvgfi1g3qgckurml5rtxxicqqp8j8wuztk7q84fbgol63p727w9hoaqx3iamddhnbt3r6a80zrwekzsq0gov0v370uncvzas9tzyzcftuwgr4sx1lgbjwffeo02wlxaubry0g8u3hwgwg87l8w7c6cpvdp5yd0np6rm8zmiz7qibij19lfcj9rpxp0wzt065jtog2p6xf7ept04i1whfn0en86i275ydx4nidijswrxrni49nezlctzhjc4kqj90dpuar96dib17nwrf79q8ubm3nw3o195g5jidf3ji0w98rpnnft7cq4eab6qfd0c3e
+// VERSION_MARKER_JMIMMO_20260910_TRI_FLUIDE_v41
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -2046,12 +2046,44 @@ function venduCard(d){
     "<div class='sources-line'>Disparu de toutes les sources le " + (d.date_vendu||"").slice(0,10) + "</div></div>";
 }
 
-async function discard(id){ await api("/api/discard", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bien_id:id})}); load(); }
-async function restore(id){ await api("/api/restore", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bien_id:id})}); load(); }
+function retirerCarte(id){
+  const el = document.querySelector("[data-action][data-id='" + (window.CSS && CSS.escape ? CSS.escape(id) : id) + "']");
+  const carte = el ? el.closest(".card") : null;
+  if (!carte) return false;
+  carte.style.transition = "opacity .18s, transform .18s";
+  carte.style.opacity = "0";
+  carte.style.transform = "translateX(-14px)";
+  setTimeout(function(){
+    carte.remove();
+    const main = document.getElementById("main");
+    if (main && !main.querySelector(".card")) load();
+  }, 180);
+  return true;
+}
+async function discard(id){
+  if (!retirerCarte(id)) { await api("/api/discard", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bien_id:id})}); return load(); }
+  await api("/api/discard", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bien_id:id})});
+  loadStats();
+}
+async function restore(id){
+  const retire = retirerCarte(id);
+  await api("/api/restore", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bien_id:id})});
+  if (!retire) return load();
+  loadStats();
+}
 async function toggleFav(id, isOn){
+  const bouton = document.querySelector(".btn.fav[data-id='" + (window.CSS && CSS.escape ? CSS.escape(id) : id) + "']");
+  // dans la zone de tri et dans Favoris, la carte quitte la vue ; ailleurs on bascule l'etiquette
+  const quitte = (activeTab === "tous" && !isOn) || (activeTab === "favoris" && isOn);
+  if (quitte) retirerCarte(id);
+  else if (bouton) {
+    bouton.textContent = isOn ? "Favori" : "Favori (retirer)";
+    bouton.dataset.fav = isOn ? "false" : "true";
+    bouton.classList.toggle("on", !isOn);
+  }
   if (isOn) await api("/api/favori/"+id, {method:"DELETE"});
   else await api("/api/favori", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bien_id:id})});
-  load();
+  loadStats();
 }
 
 async function loadPrefs(){
