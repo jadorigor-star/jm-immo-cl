@@ -1,20 +1,157 @@
-/api/stats : {"a_trier":331,"favoris":5,"ecartes":68,"vendus":21,"biens":391,"annonces":528,"sources_actives":53,"sources_productives":40,"opportunites":77,"derniere_collecte":"2026-09-11T00:49:38.939Z"}
+fribourg page-1 : 48 liens | agences connues : 13
+fribourg page-2 : 48 liens | agences connues : 30
+fribourg page-3 : 48 liens | agences connues : 38
+fribourg page-4 : 48 liens | agences connues : 43
+fribourg page-5 : 48 liens | agences connues : 47
+fribourg page-6 : 48 liens | agences connues : 48
+fribourg page-7 : 48 liens | agences connues : 56
+fribourg page-8 : 48 liens | agences connues : 67
+neuchatel page-1 : 48 liens | agences connues : 78
+neuchatel page-2 : 48 liens | agences connues : 85
+neuchatel page-3 : 48 liens | agences connues : 89
+neuchatel page-4 : 48 liens | agences connues : 94
+neuchatel page-5 : 48 liens | agences connues : 99
+neuchatel page-6 : 48 liens | agences connues : 103
+neuchatel page-7 : 48 liens | agences connues : 107
+neuchatel page-8 : 48 liens | agences connues : 108
+jura page-1 : 48 liens | agences connues : 118
+jura page-2 : 48 liens | agences connues : 122
+jura page-3 : 48 liens | agences connues : 125
+jura page-4 : 48 liens | agences connues : 127
+jura page-5 : 48 liens | agences connues : 130
+jura page-6 : 48 liens | agences connues : 131
+jura page-7 : 48 liens | agences connues : 131
+jura page-8 : 48 liens | agences connues : 131
 
-/api/sources : HTTP 200 | 146339 octets
-lignes renvoyees : 110
-{
- "active/productive": 40,
- "active/accessible": 12,
- "active/enregistrée": 1,
- "off/productive": 1,
- "off/accessible": 10,
- "off/enregistrée": 45,
- "off/sondée": 1
-}
-
-5 premieres :
-   Bussard Immobilier                  productive | 18
-   Agenzia Immobiliare Ceresio         productive | 16
-   Neho                                productive | 15
-   immobilier.ch - Neuchatel           productive | 11
-   immobilier.ch - Neuchatel p2        productive | 10
+=== 131 AGENCES DISTINCTES ===
+   86  neuschwander-immobilier-sarl-635
+   62  betterhomes-schweiz-ag-611
+   48  pro-conseils-1594
+   42  avendrech-2686
+   34  switzerland-sothebys-neuchatel-1032
+   28  properti-ag-2229
+   26  lombard-immobilier-2490
+   24  lml-immobilier-1836
+   24  hypoimmo-950
+   24  immobilier-nech-sarl-2017
+   24  masini-immobilier-2645
+   24  comte-immobilier-1967
+   22  barnes-ventes-neuchatel-1719
+   22  jol-immo-1057
+   22  jurassic-home-immobilier-2390
+   20  compagnie-immobiliere-romande-sarl-932
+   20  pro-immob-119
+   20  instant-immo-2170
+   18  switzerland-sothebys-fribourg-434
+   18  ari-immobiliers-1589
+   16  gerama-immobilier-61
+   16  marbrick-2438
+   16  murith-immobilier-sarl-1890
+   16  maillard-immobilier-lausanne-596
+   14  remax-immobilier-bulle-1828
+   14  wayne-1953
+   14  les-forestiers-jura-1239
+   12  immosky-ag-1606
+   10  cnc-immobilier-91
+   10  naef-immobilier-fribourg-1725
+   10  coldwell-banker-swiss-riviera-742
+   10  transcrea-sarl-1173
+   10  naef-immobilier-neuchatel-115
+   10  omnia-immobilier-neuchatel-871
+   10  juracoolch-1339
+    8  stack-immobilier-suisse-2935
+    8  nc-invest-group-1285
+    8  vb-immobilier-733
+    8  viaterra-135
+    8  castoldi-immobilier-1135
+    8  buri-gestion-sarl-st-imier-956
+    8  switzerland-sothebys-bienne-2592
+    8  hl-theurillat-immobilier-courtemaiche-1424
+    8  immobilier-passion-2914
+    6  mdc-immobilier-sarl-1318
+    6  immo-r-2252
+    6  jrt-immobilier-2035
+    6  remax-immobilier-epalinges-766
+    6  kempter-immobilier-sarl-961
+    6  alliance-immo-881
+    6  switzerland-sothebys-estavayer-lac-2828
+    6  b-free-immobilier-1402
+    6  proximmo-agence-immobiliere-sarl-622
+    6  michel-wolf-1108
+    6  infra-immobilier-1208
+    6  jurimmobilier-1241
+    6  les-regisseurs-loeffel-1013
+    4  living-courtage-services-2767
+    4  naef-immobilier-bulle-2883
+    4  leduc-96
+    4  service-management-immobilier-smi-77
+    4  cf-immobilier-compagnie-fonciere-bulle-62
+    4  helvet-conseils-immobilier-1209
+    4  agence-immobiliere-ivac-90
+    4  bulliard-immobilier-65
+    4  froidevaux-immobilier-1453
+    4  gerance-hirt-sarl-1142
+    4  trendwerk-immobilien-ag-2619
+    4  gerances-giroud-53
+    4  immovalch-sion-1538
+    4  kaymo-sarl-980
+    4  immodefi-conseils-3068
+    4  lafidu-immobilier-sarl-1049
+    4  immo-v-3083
+    4  regie-immobiliere-jouval-113
+    4  swixim-neuchatel-3026
+    4  procite-1657
+    4  palombo-immobilier-1640
+    4  atelier-immobilier-sarl-2905
+    4  apache-immobilier-2783
+    4  comptoir-immobilier-lausanne-239
+    4  julius-baer-real-estate-2719
+    4  labels-affaires-sarl-2023
+    4  raiffeisen-agents-immobiliers-1456
+    4  magicimmo-1381
+    4  axic-1329
+    2  cozy-co-sarl-1997
+    2  gerance-c-villars-glane-831
+    2  accordia-immo-2989
+    2  brampton-trade-real-estate-809
+    2  riviera-properties-707
+    2  regie-immosol-1346
+    2  fff-immobilier-sarl-1788
+    2  pouly-renovations-services-sarl-2129
+    2  rxj-immo-sarl-2950
+    2  immo-partners-1194
+    2  switzerland-sothebys-bulle-2929
+    2  ack-immobilier-1907
+    2  signature-immo-2089
+    2  switzerland-sothebys-montreux-430
+    2  gruyere-immo-78
+    2  jpf-immobilier-2403
+    2  favre-naudeix-immobilier-1444
+    2  rb-immo-sarl-2532
+    2  barnes-ventes-yverdon-les-bains-505
+    2  home4me-906
+    2  helvet-immo-846
+    2  montoitch-952
+    2  savinter-1147
+    2  art-stone-developpement-2024
+    2  switzerland-sothebys-lausanne-429
+    2  regis-71
+    2  lb-immobilier-2745
+    2  bornand-immobilier-2910
+    2  seb-immo-1158
+    2  gestimmo-pro-3032
+    2  aja-immobilier-397
+    2  diatims-sarl-958
+    2  bolliger-immobilier-111
+    2  proxiservices-2131
+    2  cvaimmo-1362
+    2  rt-immo-712
+    2  roccabella-immo-2851
+    2  swiss-life-immopulse-762
+    2  regie-montagnes-2838
+    2  broggi-2786
+    2  grand-chasseral-immo-698
+    2  noobs-immo-1820
+    2  amp-immo-412
+    2  novimmob-gerance-sarl-1546
+    2  fb-bautechnik-gmbh-3063
