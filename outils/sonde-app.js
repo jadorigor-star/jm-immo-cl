@@ -1,21 +1,20 @@
-const puppeteer = require("puppeteer");
+const BASE = "https://jm-immo-cl.jadorigor.workers.dev";
 (async () => {
-  const nav = await puppeteer.launch({ args: ["--no-sandbox", "--disable-dev-shm-usage"] });
-  const page = await nav.newPage();
-  await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36");
-  await page.goto("https://www.casebertolotti.ch/immobili/cabe05-oc", { waitUntil: "networkidle2", timeout: 45000 });
-  await new Promise((x) => setTimeout(x, 3000));
-  const texte = await page.evaluate(() => document.body.innerText.replace(/\s+/g, " "));
-  console.log("texte visible : " + texte.length + " caracteres");
-  console.log("\nextrait :\n" + texte.slice(0, 700));
-  console.log("\n=== recherche de prix ===");
-  for (const [n, re] of [
-    ["nombre a 6-7 chiffres", /\b\d[\d'’. ]{5,10}\b/g],
-    ["mot prezzo/prix", /(prezzo|prix|preis|price)[^.]{0,60}/gi],
-    ["su richiesta", /(su richiesta|auf anfrage|sur demande|on request)/gi]
-  ]) {
-    const t = [...texte.matchAll(re)].slice(0, 6).map((m) => m[0].trim());
-    console.log("  " + n.padEnd(24) + JSON.stringify(t));
+  const st = await (await fetch(BASE + "/api/stats", { headers: { "X-Espace": "principal" } })).json();
+  console.log("/api/stats : " + JSON.stringify(st));
+  const r = await fetch(BASE + "/api/sources");
+  const t = await r.text();
+  console.log("\n/api/sources : HTTP " + r.status + " | " + t.length + " octets");
+  try {
+    const j = JSON.parse(t);
+    const res = j.results || [];
+    console.log("lignes renvoyees : " + res.length);
+    const parEtat = {};
+    for (const s of res) { const k = (s.enabled ? "active/" : "off/") + s.state; parEtat[k] = (parEtat[k] || 0) + 1; }
+    console.log(JSON.stringify(parEtat, null, 1));
+    console.log("\n5 premieres :");
+    res.slice(0, 5).forEach((s) => console.log("   " + String(s.name).slice(0, 34).padEnd(36) + s.state + " | " + (s.last_productive_count || 0)));
+  } catch (e) {
+    console.log("REPONSE NON JSON : " + t.slice(0, 400));
   }
-  await nav.close();
 })();
