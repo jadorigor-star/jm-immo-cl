@@ -44,27 +44,27 @@ navigateur demarre
    0 annonces |   1 pages | PREMIUM HOMES AG (site propre)
    0 annonces |   1 pages | IMMOprima AG (site propre)
    0 annonces |  25 pages | immobilier.ch (portail romand)
-   3 annonces |  25 pages | immobilier.ch - Neuchatel
+   0 annonces |  25 pages | immobilier.ch - Neuchatel
    0 annonces |   4 pages | immobilier.ch - Saignelégier
-   2 annonces |  25 pages | immobilier.ch - Charmey/Gruyere
+   0 annonces |  25 pages | immobilier.ch - Charmey/Gruyere
    0 annonces |   1 pages | SIT Immobiliare (IS24)
    0 annonces |   1 pages | TICINO.RE SA (IS24)
    0 annonces |   2 pages | immobilier.ch - Gruyères/Broc
    0 annonces |  25 pages | immobilier.ch - Jura (canton)
-   5 annonces |  25 pages | immobilier.ch - Fribourg p2
-   3 annonces |  25 pages | immobilier.ch - Neuchatel p2
-   5 annonces |  25 pages | immobilier.ch - Fribourg p3
-   5 annonces |  25 pages | immobilier.ch - Fribourg p4
-   8 annonces |  25 pages | immobilier.ch - Fribourg p5
-   3 annonces |  25 pages | immobilier.ch - Fribourg p6
-  11 annonces |  25 pages | immobilier.ch - Neuchatel p3
-   9 annonces |  25 pages | immobilier.ch - Neuchatel p4
-   9 annonces |  25 pages | immobilier.ch - Neuchatel p5
+   6 annonces |  25 pages | immobilier.ch - Fribourg p2
+   0 annonces |  25 pages | immobilier.ch - Neuchatel p2
+  10 annonces |  25 pages | immobilier.ch - Fribourg p3
+   3 annonces |  25 pages | immobilier.ch - Fribourg p4
+   5 annonces |  25 pages | immobilier.ch - Fribourg p5
+   2 annonces |  25 pages | immobilier.ch - Fribourg p6
+  10 annonces |  25 pages | immobilier.ch - Neuchatel p3
+  15 annonces |  25 pages | immobilier.ch - Neuchatel p4
+  15 annonces |  25 pages | immobilier.ch - Neuchatel p5
    0 annonces |  25 pages | immobilier.ch - Jura p2
    2 annonces |  25 pages | immobilier.ch - Jura p3
    0 annonces |   1 pages | acheter-louer.ch - Gruyère  [HTTP 403]
    0 annonces |   1 pages | Bussard Immobilier (site propre)
 navigateur ferme
 
-TOTAL : 65 annonces sur 515 pages telechargees
-recalcul : {"ok":true,"biens":454,"rescues":0}
+TOTAL : 68 annonces sur 515 pages telechargees
+recalcul : {"ok":true,"biens":473,"rescues":0}
