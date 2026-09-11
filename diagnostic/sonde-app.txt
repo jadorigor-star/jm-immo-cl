@@ -1,9 +1,20 @@
-texte visible : 6494 caracteres
+/api/stats : {"a_trier":331,"favoris":5,"ecartes":68,"vendus":21,"biens":391,"annonces":528,"sources_actives":53,"sources_productives":40,"opportunites":77,"derniere_collecte":"2026-09-11T00:49:38.939Z"}
 
-extrait :
- CONTATTO DEUTSCH ITALIANO Vendere immobile Ricerca immobili Perché Case Bertolotti Blog Referenze << torna ai risultati della ricerca The Art of Living - ONDA CELESTE Numero di riferimento: CaBe05_OC 17 Immagini persona di riferimento Fabienne Daul-Bertolotti Fabienne parla tedesco, inglese, italiano +41 79 176 35 84 ciao@casebertolotti.ch Breve info sull'oggetto Ronco s/Ascona / Locarnese Luogo/regione 454 m² Area 10.5 Camera Auf Anfrage / Su richiesta Prezzo RICHIESTA SENZA IMPEGNO Descrizione Manche Gelegenheiten sind so selten, dass sie ein eigenes Kapitel am Lago Maggiore schreiben. In der renommierten Residenz ONDA VIVA in Ronco sopra Ascona steht nun die einmalige Möglichkeit offen, 
+/api/sources : HTTP 200 | 146339 octets
+lignes renvoyees : 110
+{
+ "active/productive": 40,
+ "active/accessible": 12,
+ "active/enregistrée": 1,
+ "off/productive": 1,
+ "off/accessible": 10,
+ "off/enregistrée": 45,
+ "off/sondée": 1
+}
 
-=== recherche de prix ===
-  nombre a 6-7 chiffres   ["41 79 176","35 84","299.73","331.9","122.15","91 791 92"]
-  mot prezzo/prix         ["Prezzo RICHIESTA SENZA IMPEGNO Descrizione Manche Gelegenheiten si","Prezzo Preis: Auf Anfrage Das hochwertige Interieur-Design sowie d","preises","preis erbringt"]
-  su richiesta            ["Auf Anfrage","Su richiesta","Auf Anfrage"]
+5 premieres :
+   Bussard Immobilier                  productive | 18
+   Agenzia Immobiliare Ceresio         productive | 16
+   Neho                                productive | 15
+   immobilier.ch - Neuchatel           productive | 11
+   immobilier.ch - Neuchatel p2        productive | 10
