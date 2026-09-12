@@ -23,6 +23,8 @@ jobs:
 
       - name: Controle qualite avant deploiement
         run: |
+          mkdir -p diagnostic
+          echo "== etape 1 : controle qualite $(date -u +%H:%M:%S) ==" > diagnostic/deploiement.txt
           cd jm-immo-worker
           echo "Taille : $(wc -c < index.js) octets"
           RESIDUS=$(grep -c "__name" index.js || true)
@@ -37,7 +39,9 @@ jobs:
           node outils/verifier-frontend.js
 
       - name: Verifier la presence des secrets
+        if: always()
         run: |
+          echo "== etape 2 : secrets ==" >> diagnostic/deploiement.txt
           mkdir -p diagnostic
           {
             echo "== Diagnostic du $(date -u +'%Y-%m-%d %H:%M:%S UTC') =="
@@ -94,6 +98,7 @@ jobs:
           echo "$SANTE" | grep -q '"status":"ok"' || { echo "ECHEC : le worker ne repond pas."; exit 1; }
 
       - name: Publier le diagnostic dans le depot
+        if: always()
         if: always()
         run: |
           git config user.name "JM Immo CI"
