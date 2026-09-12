@@ -1,5 +1,5 @@
-// BUILD-MARKER 1789035060 padding-4200: 8o7e0wdwc9uvkmpckh78niawd6v8ohkcyhgy7no0mhxbmjk0o40kmk9e8p32vd9rer7nswq2t53epml2kypezsbjgdsed0xc5pl2lsmihcecskxwywlzvv0ny2s49k10jvz0ghm4zq1eeq8gwdqhyq1wrvwlg867vyiqv6kges9pere2yxbe1gjg03ivdcs1wprfvlbywasncuyhiwgdpq3wsxs0i9nb0lrgxcy0vlapweucbwhfya2r4m0oc0njxgry39h1qppub384c3rl6m26isco2ukd91ywams7aql3byyoqfcpku1ek8mhkfjukqvobv1716h3qs300bvo27e9ipbjstd2bu259gq28evw37hqfsaoi8yng9drqtdmcyo67mff11p9dk4v50g1enasaqg7ry0b0kb1ztll2bhl2vijofc5nlog3oppop7tdsvmc8uezustlmyzeu76pfz5xzq5ityfls5g4ixnlf6da2j9ujpm4w6y4jhmh7gz94gj4i5gpxee9dbyc1un6mdfqwvjurm9f793ri5jifjuur77t789z3wg2y4eih5joqb5tgxbiclx7t6lizmqzmh0x1iissaj6f3nf3q1d0gr7d2acz6qf0b0234lzwii56bqxs45zmuv2cnmi1dcms34j7qdfv3cyygjpu33hg3d3kepefy12iw61wjorim4f9r8djmyg2r3mewjrwsw4rsoh52pto1ofhqz47zqyb5f8h7hv8nbzkzmfvex5n6i764ysa7ydisqtv5c066159n5evqa59wslhx78o9e5coxutvso2w293hcztpjfw87bxnpitag2yjnqt9dbu3mho2n8uian0nlv630bf0u5vajglxtn6v7t8im7u00w6lg5tclojpkignardzyguev9y5kzzbt2ikzwrzxd9k54ghbxb7ah4xhxd32c546l7647kbnvtmhhjd7g9951615jpkym978ryx84wwf2mfnr6or089otfpzsvuijhir1b0cdjbkvo6z2fk54glah4kwyumcv692mtg8xr4be1qbxqsl5rmxzm2roh5pp2jil0eyq7jfdsn1cvon
-// VERSION_MARKER_JMIMMO_20260910_NOUVEAUTES_v42
+// BUILD-MARKER 1789193478 padding-4300: ll9ep0zagpr4xewsydl2tl7j0ra6f896z2vzipc6x1yl24034x6kpfr9k2ryukr6a5dh850g48f2w1dlyd2g1v79syjcbbmgkzqzjoijdox72lmikgq1wiyc8vtc1r46djxi7nripcc1o1ez6zlb28u4wucr5btz304f2tsmvl8ctu5j6qi8q0ykixk4usi85ffu2gguji72jptznd20l76zvlqve42d2zwqwi4vjv8mq0zagrw75x2968s280zaalttquaite4p1gm75ijpskf1n71oeq4pwuoyvszas2mgn5ciwc1iepiaydts5j4llyioppopgd8ptr3xuj903am7ucgeqnhclhj0ltfgloekyyzwhyfud4b64kjpvaxj5razn5fpumjjrx8vxoy292843o5eje9i5adrw9iiip9sv1al670ldyavnnpi7pwc27gra752i2uxfx4f2is2zl0dqr9f16beoh2x9f8m1udz0kmbk27sy5lk4whqa4a2bbmkvackhgymgssybminxg9br4esysoxihxhl30udqhq3hbhzuppjdi4utv587xevplt2twy8eu5uth9hys72gwl04u05lz2rv1sriv2e11avi74xh8j0f1kb41mml6pnm79gd70vnanp06yt6fqru0db6k3rrt1qz80p7hddv8l5o9svsf17lauwhvclk1ted7v01m1dn222uizickeogrg54a7tu1dy8g1b62s4kx5wqoho0zpaie8q8gbq5j2o6fbivgslsluhcsb90mxlhat0g0jwv6j7hryql38tu968azcm7thqv5fims033oy70wf2ymoe2lff2w755574t24f9iwm14dy6bjn7pzs4ye6vao3dnci2vxgk0il1bmx7t0kra6kwlzoam250c9kdf67f3507nq55t42o1ksf3yqvr9deeemrc9edotf3qpfnfzryj7vsozk4jem5osrdyewaqbzcd8oz80s6s38ew5lax7b5tr46xs99n6e1l92vgjhhi1g3nozuunh9c51nt3nej44yg7w7n56u65lkqb9ue4pzwka9hcqvla43kvrs14aftvltxgpiudbey49amudo5pp2yj
+// VERSION_MARKER_JMIMMO_20260911_ECONOMIE_QUOTA_v43
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -1404,6 +1404,24 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
   };
 }
 
+
+async function noterLectures(db, res) {
+  try {
+    const n = res && res.meta && res.meta.rows_read ? res.meta.rows_read : 0;
+    if (!n) return;
+    await db.prepare("INSERT INTO quota_jour (jour, lectures) VALUES (date('now'), ?) ON CONFLICT(jour) DO UPDATE SET lectures = lectures + ?").bind(n, n).run();
+  } catch (e) {
+  }
+}
+async function quotaLecturesDepasse(db, seuil) {
+  try {
+    const r = await db.prepare("SELECT lectures FROM quota_jour WHERE jour = date('now')").all();
+    const n = r.results.length ? r.results[0].lectures : 0;
+    return n > (seuil || 35e5);
+  } catch (e) {
+    return false;
+  }
+}
 async function loadRecomputeCaches(db) {
   const sourcesRes = await db.prepare("SELECT id, name FROM sources").all();
   const sourceNamesMap = new Map(sourcesRes.results.map((s) => [s.id, s.name]));
@@ -1532,11 +1550,13 @@ function isComparisOnly(listings, sourceNamesMap) {
   return names.size === 1 && names.has("Comparis");
 }
 async function recomputeFull(db, env, budgetSize) {
+  if (await quotaLecturesDepasse(db)) return { biens: 0, rescues: 0, ignore: "quota de lecture quotidien approche" };
   const prefsRes = await db.prepare("SELECT * FROM preferences WHERE espace_id=?").bind("principal").all();
   const weights = JSON.parse(prefsRes.results[0].weights_json);
   const opportunityThreshold = prefsRes.results[0].opportunity_threshold || 70;
   const originStopName = prefsRes.results[0].origine_trajet || "Fribourg";
   const activeRes = await db.prepare("SELECT l.*, COALESCE(s.enabled,1) AS src_enabled FROM listings l LEFT JOIN sources s ON s.id=l.source_id WHERE l.status='active'").all();
+  await noterLectures(db, activeRes);
   const groups = {};
   for (const l of activeRes.results) {
     if (!l.bien_id) continue;
@@ -1599,12 +1619,14 @@ async function recomputeFull(db, env, budgetSize) {
 }
 
 async function recomputeTargeted(db, bienIds, env) {
+  if (await quotaLecturesDepasse(db)) return { biens: 0, rescues: 0, ignore: "quota de lecture quotidien approche" };
   if (!bienIds || bienIds.length === 0) return { biens: 0, rescues: 0 };
   const prefsRes = await db.prepare("SELECT * FROM preferences WHERE espace_id=?").bind("principal").all();
   const weights = JSON.parse(prefsRes.results[0].weights_json);
   const opportunityThreshold = prefsRes.results[0].opportunity_threshold || 70;
   const originStopName = prefsRes.results[0].origine_trajet || "Fribourg";
   const activeRes = await db.prepare("SELECT l.*, COALESCE(s.enabled,1) AS src_enabled FROM listings l LEFT JOIN sources s ON s.id=l.source_id WHERE l.status='active'").all();
+  await noterLectures(db, activeRes);
   const groups = {};
   for (const l of activeRes.results) {
     if (!l.bien_id) continue;
@@ -2460,7 +2482,8 @@ var index_default = {
           await db.prepare("UPDATE sources SET state=?, last_checked=?, last_error=NULL, last_productive_count=last_productive_count+? WHERE id=?").bind(newState, (/* @__PURE__ */ new Date()).toISOString(), stored, srcRow.id).run();
         } catch (e) {
         }
-        if (dirtyBienIds.size > 0) {
+        const differe = body.defer === true || url.searchParams.get("defer") === "1";
+        if (dirtyBienIds.size > 0 && !differe) {
           try {
             await recomputeTargeted(db, [...dirtyBienIds], env);
           } catch (e) {

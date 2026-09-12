@@ -70,13 +70,13 @@ async function versWorker(charge) {
               const d = src.render ? await telechargerRendu(abs, src.attente) : await telecharger(abs);
               pages++;
               if (d.status !== 200) continue;
-              const res = await versWorker({ source_name: src.name, url: abs, html: d.html, is_detail: true });
+              const res = await versWorker({ source_name: src.name, url: abs, html: d.html, is_detail: true, defer: true });
               stocke += res.stored || 0;
             } catch (e) { /* une annonce en echec ne doit pas arreter la source */ }
             await pause(250);
           }
         } else {
-          const res = await versWorker({ source_name: src.name, url: page, html: rep.html });
+          const res = await versWorker({ source_name: src.name, url: page, html: rep.html, defer: true });
           stocke += res.stored || 0;
         }
         await pause(300);
