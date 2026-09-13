@@ -54,12 +54,12 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - Fribourg p2
    0 annonces |  25 pages | immobilier.ch - Neuchatel p2
    0 annonces |  25 pages | immobilier.ch - Fribourg p3
-   0 annonces |  25 pages | immobilier.ch - Fribourg p4
+   1 annonces |  25 pages | immobilier.ch - Fribourg p4
    0 annonces |  25 pages | immobilier.ch - Fribourg p5
    0 annonces |  25 pages | immobilier.ch - Fribourg p6
    0 annonces |  25 pages | immobilier.ch - Neuchatel p3
-   1 annonces |  25 pages | immobilier.ch - Neuchatel p4
-   0 annonces |  25 pages | immobilier.ch - Neuchatel p5
+   0 annonces |  25 pages | immobilier.ch - Neuchatel p4
+   1 annonces |  25 pages | immobilier.ch - Neuchatel p5
    0 annonces |  25 pages | immobilier.ch - Jura p2
    0 annonces |  25 pages | immobilier.ch - Jura p3
    0 annonces |   1 pages | acheter-louer.ch - Gruyère  [HTTP 403]
@@ -94,7 +94,7 @@ navigateur demarre
    0 annonces |  12 pages | immobilier.ch - fleurier
    0 annonces |  19 pages | immobilier.ch - couvet
    0 annonces |   1 pages | immobilier.ch - travers
-   1 annonces |  25 pages | immobilier.ch - motiers
+   0 annonces |  25 pages | immobilier.ch - motiers
    0 annonces |   2 pages | immobilier.ch - buttes
    0 annonces |   4 pages | immobilier.ch - noiraigue
    0 annonces |  25 pages | immobilier.ch - les-ponts-de-martel
