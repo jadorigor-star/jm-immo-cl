@@ -51,15 +51,15 @@ navigateur demarre
    0 annonces |   1 pages | TICINO.RE SA (IS24)
    0 annonces |   2 pages | immobilier.ch - Gruyères/Broc
    0 annonces |  25 pages | immobilier.ch - Jura (canton)
-   1 annonces |  25 pages | immobilier.ch - Fribourg p2
+   0 annonces |  25 pages | immobilier.ch - Fribourg p2
    0 annonces |  25 pages | immobilier.ch - Neuchatel p2
-   0 annonces |  25 pages | immobilier.ch - Fribourg p3
-   0 annonces |  25 pages | immobilier.ch - Fribourg p4
+   1 annonces |  25 pages | immobilier.ch - Fribourg p3
+   1 annonces |  25 pages | immobilier.ch - Fribourg p4
    0 annonces |  25 pages | immobilier.ch - Fribourg p5
    0 annonces |  25 pages | immobilier.ch - Fribourg p6
-   1 annonces |  25 pages | immobilier.ch - Neuchatel p3
-   1 annonces |  25 pages | immobilier.ch - Neuchatel p4
-   1 annonces |  25 pages | immobilier.ch - Neuchatel p5
+   0 annonces |  25 pages | immobilier.ch - Neuchatel p3
+   3 annonces |  25 pages | immobilier.ch - Neuchatel p4
+   0 annonces |  25 pages | immobilier.ch - Neuchatel p5
    0 annonces |  25 pages | immobilier.ch - Jura p2
    0 annonces |  25 pages | immobilier.ch - Jura p3
    0 annonces |   1 pages | acheter-louer.ch - Gruyère  [HTTP 403]
@@ -97,19 +97,19 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - motiers
    0 annonces |   2 pages | immobilier.ch - buttes
    0 annonces |   4 pages | immobilier.ch - noiraigue
-   1 annonces |  25 pages | immobilier.ch - les-ponts-de-martel
+   0 annonces |  25 pages | immobilier.ch - les-ponts-de-martel
    0 annonces |  25 pages | immobilier.ch - la-sagne
-   0 annonces |  25 pages | immobilier.ch - le-landeron
+   1 annonces |  25 pages | immobilier.ch - le-landeron
    0 annonces |  25 pages | immobilier.ch - cressier
    0 annonces |  25 pages | immobilier.ch - cornaux
-   0 annonces |  25 pages | immobilier.ch - saint-blaise
+   1 annonces |  25 pages | immobilier.ch - saint-blaise
    0 annonces |  25 pages | immobilier.ch - hauterive
-   2 annonces |  25 pages | immobilier.ch - colombier
+   0 annonces |  25 pages | immobilier.ch - colombier
    0 annonces |  13 pages | immobilier.ch - boudry
    0 annonces |  25 pages | immobilier.ch - cortaillod
    0 annonces |  25 pages | immobilier.ch - bevaix
    0 annonces |   2 pages | immobilier.ch - gorgier
-   1 annonces |  25 pages | immobilier.ch - saint-aubin
+   0 annonces |  25 pages | immobilier.ch - saint-aubin
    0 annonces |   9 pages | immobilier.ch - peseux
    0 annonces |  25 pages | immobilier.ch - corcelles
    0 annonces |  12 pages | immobilier.ch - auvernier
@@ -128,5 +128,5 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - lajoux
 navigateur ferme
 
-TOTAL : 8 annonces sur 1419 pages telechargees
+TOTAL : 7 annonces sur 1419 pages telechargees
 recalcul : {"error":"D1_ERROR: Your account has exceeded D1's free tier daily row write limit. Upgrade to a paid plan or wait until tomorrow (midnight UTC) to continue. See https://developers.cloudflare.com/d1/p
