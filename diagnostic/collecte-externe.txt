@@ -44,9 +44,9 @@ navigateur demarre
    0 annonces |   1 pages | PREMIUM HOMES AG (site propre)
    0 annonces |   1 pages | IMMOprima AG (site propre)
    0 annonces |  25 pages | immobilier.ch (portail romand)
-   1 annonces |  25 pages | immobilier.ch - Neuchatel
+   0 annonces |  25 pages | immobilier.ch - Neuchatel
    0 annonces |   4 pages | immobilier.ch - Saignelégier
-   0 annonces |  25 pages | immobilier.ch - Charmey/Gruyere
+   1 annonces |  25 pages | immobilier.ch - Charmey/Gruyere
    0 annonces |   1 pages | SIT Immobiliare (IS24)
    0 annonces |   1 pages | TICINO.RE SA (IS24)
    0 annonces |   2 pages | immobilier.ch - Gruyères/Broc
@@ -56,9 +56,9 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - Fribourg p3
    0 annonces |  25 pages | immobilier.ch - Fribourg p4
    0 annonces |  25 pages | immobilier.ch - Fribourg p5
-   1 annonces |  25 pages | immobilier.ch - Fribourg p6
+   0 annonces |  25 pages | immobilier.ch - Fribourg p6
    1 annonces |  25 pages | immobilier.ch - Neuchatel p3
-   0 annonces |  25 pages | immobilier.ch - Neuchatel p4
+   2 annonces |  25 pages | immobilier.ch - Neuchatel p4
    2 annonces |  25 pages | immobilier.ch - Neuchatel p5
    0 annonces |  25 pages | immobilier.ch - Jura p2
    0 annonces |  25 pages | immobilier.ch - Jura p3
@@ -67,7 +67,7 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - la-tour-de-treme
    0 annonces |  25 pages | immobilier.ch - riaz
    0 annonces |  19 pages | immobilier.ch - broc
-   0 annonces |   4 pages | immobilier.ch - vuadens
+   0 annonces |   3 pages | immobilier.ch - vuadens
    0 annonces |   2 pages | immobilier.ch - echarlens
    0 annonces |  25 pages | immobilier.ch - sorens
    0 annonces |   2 pages | immobilier.ch - corbieres
@@ -94,7 +94,7 @@ navigateur demarre
    0 annonces |  12 pages | immobilier.ch - fleurier
    0 annonces |  19 pages | immobilier.ch - couvet
    0 annonces |   1 pages | immobilier.ch - travers
-   1 annonces |  25 pages | immobilier.ch - motiers
+   0 annonces |  25 pages | immobilier.ch - motiers
    0 annonces |   2 pages | immobilier.ch - buttes
    0 annonces |   4 pages | immobilier.ch - noiraigue
    0 annonces |  25 pages | immobilier.ch - les-ponts-de-martel
@@ -111,7 +111,7 @@ navigateur demarre
    0 annonces |   2 pages | immobilier.ch - gorgier
    0 annonces |  25 pages | immobilier.ch - saint-aubin
    0 annonces |  10 pages | immobilier.ch - peseux
-   0 annonces |  25 pages | immobilier.ch - corcelles
+   1 annonces |  25 pages | immobilier.ch - corcelles
    0 annonces |  12 pages | immobilier.ch - auvernier
    0 annonces |   5 pages | immobilier.ch - rochefort
    0 annonces |   4 pages | immobilier.ch - saignelegier
@@ -128,5 +128,5 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - lajoux
 navigateur ferme
 
-TOTAL : 7 annonces sur 1422 pages telechargees
+TOTAL : 8 annonces sur 1421 pages telechargees
 recalcul : {"error":"D1_ERROR: Your account has exceeded D1's free tier daily row write limit. Upgrade to a paid plan or wait until tomorrow (midnight UTC) to continue. See https://developers.cloudflare.com/d1/p
