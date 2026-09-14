@@ -1,5 +1,5 @@
-// BUILD-MARKER 1789426592 padding-4400: 3r4nzlgqu9angan68kb1v8s6k37pvny539xh92g7amshgsw7msk0cnnx3puo6tkr15bnpo01635gn0gp9cfluibf41w4wuzzydoq6ft7b6te3jcpgw6p3wdi8h6d6mzabuxgzrhdejdk0f48hqnsgzmxmuktsoh77h2gprs3kd1sbhzg1940y1i1oxbmjbhp8vyvz4njqfnvczb623sfto1vmpkhbpder0ljk3w7udxx4rricic0uf4rud62e7smg6j372kibh2e39r0p7lh2ughm0l388fnt5qulm6nio20ajp8lqhnbjpn5d84dj1ttv1crsv5l28hxc2stivv4wk18hmcyf27p4n19paytkcs42fs0xcu11kzsidawdci7rtwj39h1btnrzhqgagdi5nfhjk1y10wcb0nwfmsg09bz5bux7lqufvwcze49wci7yrq1ghuvn38skajmefjujytgw7dny21xr6pqji7awna6p7s9p9wxi8qbf6803m3s9xn5b0stw7xr014jwbat93gisl0ejuugcpgfc1fr163dxy6dv8xii5uwladyjteaxv59ofo1o8w3pjvvbjh7yp55e9a39q287b8a8y7o7tforx1x7qo906yozhr14giiwer03ar60aloam4uw3eiertfpb5ieu5huaqey4fcc2lyj25wd9u38z5ci4mem107cauc6wt1xc1jjefw8sizdiq2oz77nr2a5671hiu7dcuku41nkvo2pjw6izrcef06denn3ht7a81eio7jn2f458pxoluzt5f4pp2xq1tm60gj62h8qkky5hvqh0v8wh2w9w4a60bsigcfzo3osqu3ah6lw9g0oevhtj4lmsucplbmj8nwe6718rgjqdwufwoeyncblkh5s7xz4ffk7idiq350itjwzd1py6p9eredrho1ulygdktmaglgab8j2x0y0bvydf5hw23rxqo49l2br8qfdoz9rf8vt2lf4yp1o3mvzk3hgps1rpxqyg4ru8zyb2g9cvb232drgzzyze9fnuzhspaw00j43t0wgjo5txtquk1wzm034k62tey57v5j0q5g0qxdazr65szjfcsdsuh8pez13nqjqjigpey8qb7rua7v9x1
-// VERSION_MARKER_JMIMMO_20260912_THEME_CLAIR_v44
+// BUILD-MARKER 1789426938 padding-4500: ri3uycl7x73eztlzlo325adgfu1vdpjkk9twtmt7jwrwwbkkgvhgnxluhni6ndushg6n6ghemm4sqcz93tfkt59usxftu6vga4ekrjlz80o69mzqoh821ludv9g5il4i5o2ecxv6stiq5wxb91v1odva7l9xpx239uws99qq0bqlj8vgz0xkcl78z9kabnjye7g0nldupivl241c108yfsjh7j1mou74zc37tmzhw4talbirqca3wou7rrtli4pem5er432u2rca3j188m9tiyelzpjjc3wnul4m9m4q2dmvl8zf3puaexnh83iu8v0hirwakjp505qiq1752faofl4bkfw9e4u5kfqvwtrhflmvxaia7g9j4fjp58bfl5qdw3m06ji1uo56az4n5yd0aevvc7i5tleuol0oec8cajfsucbnza2w4u3h4qopeb5ix6vhnxmsjjgeqtnryggbf6n1wpkrsk8796zibfhxcppk49vmaqv44ot2b9gdjqygkgtomxh3p38ttie52enpsij6ohxesr4gjcc90c0rtj5vlyo9w0ua7o9mggh8h30mw72r7zujahl649lnaw6ue46qom7ly86kgcyfgqf3r2itra1ejw27untcg1mi85e9c5h2hfv9pogcp1a6pz3ywax3g3feusrz5ovbhqr5if6ebedwdrwos5qhz6incs6ayutld4lxrfwprookr6h5x9dkzv2j0fmet39t9wojp6xzz7sb8fucqf287stdooqprap9rdo2n9dz4tr8g58t6puoh1kr8tpsd140pijx5kocggzo9o92xq6m8wn4xikopggr79cubguz7tg5uet9yvydi4ti9bukzq7y1ldc8lkxnan2866vrhqj09in1mjin5jdelfwjn4krpgs2mib1k2j97j8g9b2akvn3rpqieedysoxtfmv4engq8znjxzvrzb3p963kmbsmo6comue9xfb5e534l55n91qo7pqu9fb2d5q33qg0ajfpmke54gdb8t5zdr9d6jrgy2h76jh5z39366y32164jq774ml93znzy07199tlkn6qaxoinswtrtsiunwxcprl4ixwshuksieemwn2af31noac57v87gc8d9lg1t2pm94k1i47pjj8ao8w9ok
+// VERSION_MARKER_JMIMMO_20260915_PLAFOND_PRIX_v45
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -798,7 +798,16 @@ async function loadExtraLocalities(db) {
     for (const row of exRes.results) excluded.add(row.name.toLowerCase());
   } catch (e) {
   }
-  return { map, excluded };
+  let prixPlafond = null;
+  try {
+    const pf = await db.prepare("SELECT value FROM app_config WHERE key='prix_plafond'").all();
+    if (pf.results.length) {
+      const v = parseFloat(pf.results[0].value);
+      if (isFinite(v) && v > 0) prixPlafond = v;
+    }
+  } catch (e) {
+  }
+  return { map, excluded, prixPlafond };
 }
 async function getSourceOffset(db) {
   try {
@@ -967,6 +976,8 @@ function normalizeType(rawType) {
 async function storeListing(db, srcRow, rl, extra) {
   if (!rl.title || !rl.locality || !isPlausiblePrice(rl.price)) return 0;
   if (rl.is_rental) return 0;
+  // plafond de prix : inutile de stocker et d'indexer ce qui sera filtre a l'affichage
+  if (extra && extra.prixPlafond && rl.price && rl.price > extra.prixPlafond) return 0;
   const normalizedType = normalizeType(rl.type);
   if (!normalizedType) return 0;
   rl.type = normalizedType;
