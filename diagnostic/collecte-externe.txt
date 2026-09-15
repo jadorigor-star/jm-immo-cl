@@ -53,13 +53,13 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - Jura (canton)
    0 annonces |  25 pages | immobilier.ch - Fribourg p2
    0 annonces |  25 pages | immobilier.ch - Neuchatel p2
-   0 annonces |  24 pages | immobilier.ch - Fribourg p3
-   0 annonces |  24 pages | immobilier.ch - Fribourg p4
+   0 annonces |  25 pages | immobilier.ch - Fribourg p3
+   0 annonces |  25 pages | immobilier.ch - Fribourg p4
    0 annonces |  25 pages | immobilier.ch - Fribourg p5
    0 annonces |  25 pages | immobilier.ch - Fribourg p6
    0 annonces |  25 pages | immobilier.ch - Neuchatel p3
-   1 annonces |  25 pages | immobilier.ch - Neuchatel p4
-   1 annonces |  25 pages | immobilier.ch - Neuchatel p5
+   0 annonces |  25 pages | immobilier.ch - Neuchatel p4
+   0 annonces |  25 pages | immobilier.ch - Neuchatel p5
    0 annonces |  25 pages | immobilier.ch - Jura p2
    0 annonces |  25 pages | immobilier.ch - Jura p3
    0 annonces |   1 pages | acheter-louer.ch - Gruyère  [HTTP 403]
@@ -128,5 +128,5 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - lajoux
 navigateur ferme
 
-TOTAL : 2 annonces sur 1418 pages telechargees
+TOTAL : 0 annonces sur 1420 pages telechargees
 recalcul : {"error":"D1_ERROR: Your account has exceeded D1's free tier daily row write limit. Upgrade to a paid plan or wait until tomorrow (midnight UTC) to continue. See https://developers.cloudflare.com/d1/p
