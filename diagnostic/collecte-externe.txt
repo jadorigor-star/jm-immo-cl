@@ -25,7 +25,7 @@ sources a traiter : 126
    0 annonces |   1 pages | Metropolis Immobiliare
    0 annonces |   5 pages | Neho
    0 annonces |   1 pages | Monopoly Real Estate sagl
-   1 annonces |   1 pages | Raiffeisen Immo AG
+   0 annonces |   1 pages | Raiffeisen Immo AG
    0 annonces |   1 pages | Area Immobiliare Ticino
    0 annonces |   1 pages | ImmoSky AG
    0 annonces |   1 pages | TERRIER SA
@@ -53,14 +53,14 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - Jura (canton)
    0 annonces |  25 pages | immobilier.ch - Fribourg p2
    0 annonces |  25 pages | immobilier.ch - Neuchatel p2
-   0 annonces |  25 pages | immobilier.ch - Fribourg p3
-   0 annonces |  25 pages | immobilier.ch - Fribourg p4
+   0 annonces |  24 pages | immobilier.ch - Fribourg p3
+   0 annonces |  24 pages | immobilier.ch - Fribourg p4
    0 annonces |  25 pages | immobilier.ch - Fribourg p5
    0 annonces |  25 pages | immobilier.ch - Fribourg p6
-   1 annonces |  25 pages | immobilier.ch - Neuchatel p3
-   3 annonces |  25 pages | immobilier.ch - Neuchatel p4
-   2 annonces |  25 pages | immobilier.ch - Neuchatel p5
-   1 annonces |  25 pages | immobilier.ch - Jura p2
+   0 annonces |  25 pages | immobilier.ch - Neuchatel p3
+   1 annonces |  25 pages | immobilier.ch - Neuchatel p4
+   1 annonces |  25 pages | immobilier.ch - Neuchatel p5
+   0 annonces |  25 pages | immobilier.ch - Jura p2
    0 annonces |  25 pages | immobilier.ch - Jura p3
    0 annonces |   1 pages | acheter-louer.ch - Gruyère  [HTTP 403]
    0 annonces |  25 pages | immobilier.ch - bulle
@@ -89,7 +89,7 @@ navigateur demarre
    0 annonces |   5 pages | immobilier.ch - cresuz
    0 annonces |  25 pages | immobilier.ch - le-paquier
    0 annonces |  25 pages | immobilier.ch - le-locle
-   1 annonces |  25 pages | immobilier.ch - la-chaux-de-fonds
+   0 annonces |  25 pages | immobilier.ch - la-chaux-de-fonds
    0 annonces |   6 pages | immobilier.ch - les-brenets
    0 annonces |  12 pages | immobilier.ch - fleurier
    0 annonces |  19 pages | immobilier.ch - couvet
@@ -97,14 +97,14 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - motiers
    0 annonces |   2 pages | immobilier.ch - buttes
    0 annonces |   4 pages | immobilier.ch - noiraigue
-   1 annonces |  25 pages | immobilier.ch - les-ponts-de-martel
-   1 annonces |  25 pages | immobilier.ch - la-sagne
-   3 annonces |  25 pages | immobilier.ch - le-landeron
+   0 annonces |  25 pages | immobilier.ch - les-ponts-de-martel
+   0 annonces |  25 pages | immobilier.ch - la-sagne
+   0 annonces |  25 pages | immobilier.ch - le-landeron
    0 annonces |  25 pages | immobilier.ch - cressier
    0 annonces |  25 pages | immobilier.ch - cornaux
-   2 annonces |  25 pages | immobilier.ch - saint-blaise
+   0 annonces |  25 pages | immobilier.ch - saint-blaise
    0 annonces |  25 pages | immobilier.ch - hauterive
-   1 annonces |  25 pages | immobilier.ch - colombier
+   0 annonces |  25 pages | immobilier.ch - colombier
    0 annonces |  14 pages | immobilier.ch - boudry
    0 annonces |  25 pages | immobilier.ch - cortaillod
    0 annonces |  25 pages | immobilier.ch - bevaix
@@ -128,5 +128,5 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - lajoux
 navigateur ferme
 
-TOTAL : 17 annonces sur 1420 pages telechargees
-recalcul : {"ok":true,"biens":661,"rescues":0}
+TOTAL : 2 annonces sur 1418 pages telechargees
+recalcul : {"error":"D1_ERROR: Your account has exceeded D1's free tier daily row write limit. Upgrade to a paid plan or wait until tomorrow (midnight UTC) to continue. See https://developers.cloudflare.com/d1/p
