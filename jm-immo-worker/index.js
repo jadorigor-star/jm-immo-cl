@@ -1,5 +1,5 @@
-// BUILD-MARKER 1789426938 padding-4500: ri3uycl7x73eztlzlo325adgfu1vdpjkk9twtmt7jwrwwbkkgvhgnxluhni6ndushg6n6ghemm4sqcz93tfkt59usxftu6vga4ekrjlz80o69mzqoh821ludv9g5il4i5o2ecxv6stiq5wxb91v1odva7l9xpx239uws99qq0bqlj8vgz0xkcl78z9kabnjye7g0nldupivl241c108yfsjh7j1mou74zc37tmzhw4talbirqca3wou7rrtli4pem5er432u2rca3j188m9tiyelzpjjc3wnul4m9m4q2dmvl8zf3puaexnh83iu8v0hirwakjp505qiq1752faofl4bkfw9e4u5kfqvwtrhflmvxaia7g9j4fjp58bfl5qdw3m06ji1uo56az4n5yd0aevvc7i5tleuol0oec8cajfsucbnza2w4u3h4qopeb5ix6vhnxmsjjgeqtnryggbf6n1wpkrsk8796zibfhxcppk49vmaqv44ot2b9gdjqygkgtomxh3p38ttie52enpsij6ohxesr4gjcc90c0rtj5vlyo9w0ua7o9mggh8h30mw72r7zujahl649lnaw6ue46qom7ly86kgcyfgqf3r2itra1ejw27untcg1mi85e9c5h2hfv9pogcp1a6pz3ywax3g3feusrz5ovbhqr5if6ebedwdrwos5qhz6incs6ayutld4lxrfwprookr6h5x9dkzv2j0fmet39t9wojp6xzz7sb8fucqf287stdooqprap9rdo2n9dz4tr8g58t6puoh1kr8tpsd140pijx5kocggzo9o92xq6m8wn4xikopggr79cubguz7tg5uet9yvydi4ti9bukzq7y1ldc8lkxnan2866vrhqj09in1mjin5jdelfwjn4krpgs2mib1k2j97j8g9b2akvn3rpqieedysoxtfmv4engq8znjxzvrzb3p963kmbsmo6comue9xfb5e534l55n91qo7pqu9fb2d5q33qg0ajfpmke54gdb8t5zdr9d6jrgy2h76jh5z39366y32164jq774ml93znzy07199tlkn6qaxoinswtrtsiunwxcprl4ixwshuksieemwn2af31noac57v87gc8d9lg1t2pm94k1i47pjj8ao8w9ok
-// VERSION_MARKER_JMIMMO_20260915_PLAFOND_PRIX_v45
+// BUILD-MARKER 1789445702 padding-4600: llhuo73g4cv5hljfwzpoto7lnvhhy1c9pm2rpsz8lldycnl0k0zpei2z9pelty2kfqpn773sheq79qg0zi5w393u1cs9n8ui56zfie1q4vct5fdxze82duqmkx4byf5dnz6jjdk1uwh8dyq459i8xze7rd5qqa1vy2uhxnfngz3074feb9ljl1swjkl332duvxfe282j10g1raltzoi6kb4e7f1i68iji50kggzusiy32j2ex0z5hhj65vrh0ne97eaipy4shspjwbbsij3f6l3554xzx3o9d9zezqm56rrh3k2m30x8kk9a94sf4w4j4ip89msgvtbesk4orconzkrxdbna9x70xxp8lblbprqx48eeu6oxbxdbiic4miw75i1rb5bxj6fb1gle3b4pm2gr6a804lryvckw7ltyyfpdpbo8sb1gakz9xg0sh9xmorbljlvvfteiiygvkdq0rukkd985ov6feslzgkw0mxhh9msfo6ws8wsqfd5u57ax235y8g7m0elliiwc2ekjhwoza5jiuv3e8kmviw0b1n0gdtvjdcen35paxthtxv4gcgx6o1e3nywhk0l9jhnq57ucmu4vdrs3gbnqhohcekeaxmvs0f701vywilg5h84jct8vfhuny5guwqyd2mwemxyfslvxts8qmvy4dkj3keg7f0vkrbkh6737ogf1b4kfig73xcveib01c2t17sglfnzfbk9ysszdaddpvxgf0fzz2e0gzkyq2pik7k0cbmyew1k2nbqnyg0u3r0nu3wnwebx52xeydkztjhstfdnz7gvgezwbcpaco9up3mkal6rqhsw79kfxr6o5d3f4qgyuta87p6ebk1rbis42z5o9lixx7nk1s70wizxsxtc847i2upvvb8bx6yi8m69g2qs8c5cxcbghtdpyr9ih24y3penst0ag1lvvi7jtcucwk0vduup97y19k7ydsev6m9vy3dwo7y9sco3rvzvc5x7aekr7mvj5ba9mowhp31jhsw5bvy5vpel935r8s7uj7npplj4w0lfdkx89nvsbrp03bm1e3w5se8tkins71b4vbn37xzq5h4p44dmuzzdsfmqjwcckm8kajxptm3wqmq16y63ym60rmwm2nlo21uv677k0uvzbnj6yf9k6564fr2ytx6nj8zw
+// VERSION_MARKER_JMIMMO_20260915_RETENTION_v46
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -1032,6 +1032,41 @@ async function storeListing(db, srcRow, rl, extra) {
     if (!exists.results.length) await db.prepare("INSERT INTO price_history (bien_id, date, price) VALUES (?,?,?)").bind(bId, hDate, hPrice).run();
   }
   return 1;
+}
+
+async function menageRetention(db, lotMax) {
+  // Regle de retention : on garde les biens sous plafond, les favoris,
+  // et les exclusions de moins de 14 jours. Le reste est efface.
+  const rapport = { biens_effaces: 0, exclusions_effacees: 0, plafond: null };
+  const LOT = lotMax || 120;
+  try {
+    const pf = await db.prepare("SELECT value FROM app_config WHERE key='prix_plafond'").all();
+    if (!pf.results.length) return rapport;
+    const plafond = parseFloat(pf.results[0].value);
+    if (!isFinite(plafond) || plafond <= 0) return rapport;
+    rapport.plafond = plafond;
+
+    // 1. exclusions de plus de 14 jours : elles ne servent plus
+    const vieux = await db.prepare("DELETE FROM discarded WHERE date_exclusion < date('now','-14 days')").run();
+    rapport.exclusions_effacees = (vieux.meta && vieux.meta.changes) || 0;
+
+    // 2. biens au-dessus du plafond, sauf ceux que l'utilisateur a touches
+    const cibles = await db.prepare(
+      "SELECT id FROM biens WHERE price > ? AND id NOT IN (SELECT bien_id FROM favoris) AND id NOT IN (SELECT bien_id FROM discarded) LIMIT ?"
+    ).bind(plafond, LOT).all();
+    const ids = cibles.results.map((r) => r.id);
+    if (!ids.length) return rapport;
+    const ph = ids.map(() => "?").join(",");
+    for (const table of ["price_history", "bien_sources", "access_cache", "vus", "vendus"]) {
+      try { await db.prepare("DELETE FROM " + table + " WHERE bien_id IN (" + ph + ")").bind(...ids).run(); } catch (e) {}
+    }
+    await db.prepare("DELETE FROM listings WHERE bien_id IN (" + ph + ")").bind(...ids).run();
+    const sup = await db.prepare("DELETE FROM biens WHERE id IN (" + ph + ")").bind(...ids).run();
+    rapport.biens_effaces = (sup.meta && sup.meta.changes) || ids.length;
+  } catch (e) {
+    rapport.erreur = String(e && e.message ? e.message : e).slice(0, 120);
+  }
+  return rapport;
 }
 async function cleanupStaleListings(db, maxAgeDays) {
   const seuil = new Date(Date.now() - (maxAgeDays || 21) * 24 * 3600 * 1e3).toISOString();
@@ -2532,6 +2567,10 @@ var index_default = {
         const stats = await recomputeFull(db, env);
         return json(Object.assign({ ok: true }, stats));
       }
+      if (url.pathname === "/api/menage") {
+        const r = await menageRetention(db, parseInt(url.searchParams.get("lot") || "120", 10));
+        return json(r);
+      }
       if (url.pathname === "/api/search") {
         const q = url.searchParams;
         const results = await search(db, {
@@ -2671,7 +2710,11 @@ var index_default = {
     ctx.waitUntil((async () => {
       try {
         if (isMaintenance) {
-          await cleanupStaleListings(env.DB, 21);
+          await cleanupStaleListings(env.DB, 14);
+          for (let i = 0; i < 6; i++) {
+            const r = await menageRetention(env.DB, 120);
+            if (!r.biens_effaces) break;
+          }
           await recomputeFull(env.DB, env);
         } else {
           await ingest(env.DB, fetch.bind(globalThis), { budget: 45, maxSources: 6, maxPerSource: 6 });
