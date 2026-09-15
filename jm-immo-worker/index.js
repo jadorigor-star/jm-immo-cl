@@ -1,5 +1,5 @@
-// BUILD-MARKER 1789445702 padding-4600: llhuo73g4cv5hljfwzpoto7lnvhhy1c9pm2rpsz8lldycnl0k0zpei2z9pelty2kfqpn773sheq79qg0zi5w393u1cs9n8ui56zfie1q4vct5fdxze82duqmkx4byf5dnz6jjdk1uwh8dyq459i8xze7rd5qqa1vy2uhxnfngz3074feb9ljl1swjkl332duvxfe282j10g1raltzoi6kb4e7f1i68iji50kggzusiy32j2ex0z5hhj65vrh0ne97eaipy4shspjwbbsij3f6l3554xzx3o9d9zezqm56rrh3k2m30x8kk9a94sf4w4j4ip89msgvtbesk4orconzkrxdbna9x70xxp8lblbprqx48eeu6oxbxdbiic4miw75i1rb5bxj6fb1gle3b4pm2gr6a804lryvckw7ltyyfpdpbo8sb1gakz9xg0sh9xmorbljlvvfteiiygvkdq0rukkd985ov6feslzgkw0mxhh9msfo6ws8wsqfd5u57ax235y8g7m0elliiwc2ekjhwoza5jiuv3e8kmviw0b1n0gdtvjdcen35paxthtxv4gcgx6o1e3nywhk0l9jhnq57ucmu4vdrs3gbnqhohcekeaxmvs0f701vywilg5h84jct8vfhuny5guwqyd2mwemxyfslvxts8qmvy4dkj3keg7f0vkrbkh6737ogf1b4kfig73xcveib01c2t17sglfnzfbk9ysszdaddpvxgf0fzz2e0gzkyq2pik7k0cbmyew1k2nbqnyg0u3r0nu3wnwebx52xeydkztjhstfdnz7gvgezwbcpaco9up3mkal6rqhsw79kfxr6o5d3f4qgyuta87p6ebk1rbis42z5o9lixx7nk1s70wizxsxtc847i2upvvb8bx6yi8m69g2qs8c5cxcbghtdpyr9ih24y3penst0ag1lvvi7jtcucwk0vduup97y19k7ydsev6m9vy3dwo7y9sco3rvzvc5x7aekr7mvj5ba9mowhp31jhsw5bvy5vpel935r8s7uj7npplj4w0lfdkx89nvsbrp03bm1e3w5se8tkins71b4vbn37xzq5h4p44dmuzzdsfmqjwcckm8kajxptm3wqmq16y63ym60rmwm2nlo21uv677k0uvzbnj6yf9k6564fr2ytx6nj8zw
-// VERSION_MARKER_JMIMMO_20260915_RETENTION_v46
+// BUILD-MARKER 1789445962 padding-4700: m60pcg58w0tqlcancvbmtg9kdpo6h7jzyi4i95c3hgil1fxpk75gewaie8nvqk2w4urtqomopg4v9y31ea3rlco3cflbnyjq7gk28zaq1sj09ajog8fgpcydu5ithfveluxae5w2h6dznfniavzt1twk7toz4g643zpompommtw031r6rh57yq3yh5sqxo3lpu0n7qa761dmrci15koio5mhpijrmcbssz2z7m5eczoaj9o88g8lmitijgy8td81nekys75gqbcke4byscw4bpc2ez3ozorff2b17nry5hedaib6riuy7wx6rakz04x68zh9td1g4sqv58omvd0rg9pnu3ox680n9ppvsf9kiv2rkipytyx1js3prr2ds4dd4a43jx0k1vvtdlpcfgfmb2guotuuw6rdgph8th7cjdejny1xraqcrfabvwdayy8d0ntvuo94shn3wjn0id6arc1giuk2rl08r4hdcimxa08esrpxk3kzfz38vn86nmeatpx4gwxjj1jl6uph4hbm2lgfxg4eh0je8o5tdns0gmgx9yj5ie1y9qcwzzpyvpaaayqa88chj8y8kshvrlwm5cbzl2vgjf6vy9wtftalzehem94g701endra1fqczuvueryi7ru4sokqlei3agt01y0yb5q7ukf6obdolu7514hkvtvvos997na4fcbg8av2wfhjdc167t1newcxzcwcz9yq9ftangshr1xzg8pfbti1wlfdew6y4er6g5kqcvacapdejhdv4vdl5pm1vdowawrubgucyoj7tiemjpi0omullwdj10lkosn9im6w0f6alr1hyp89nymxujgglt7peqyvy71fo7ejanu66qq8tijgrkxzdszgn8y9u0jlcijfacfo7tkx128hl343h4yioacjva08jf8a1ue8fmhvepbt9ukei5rtzkqp96r6jsskam53a8x1wfcklhod30gwyv17evs94ldpvfc9pi7flpzt0pd4ak9gem5vedta3nxkjbxdtwb2m31kcqlimm3q5lwy22dj05g43von0uytndw50hzvh30f61v4vjftncawemmee59q1dl6dibca365f4d9loresye5rj905fzvro08pguoj8wlaxn0nn0z3iwku4dy0yuh1ouknc18nxeqnry354111ebg4f9lima56ev1xp8n
+// VERSION_MARKER_JMIMMO_20260915_EXCLUSIONS_DEFINITIVES_v47
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -1046,8 +1046,12 @@ async function menageRetention(db, lotMax) {
     if (!isFinite(plafond) || plafond <= 0) return rapport;
     rapport.plafond = plafond;
 
-    // 1. exclusions de plus de 14 jours : elles ne servent plus
-    const vieux = await db.prepare("DELETE FROM discarded WHERE date_exclusion < date('now','-14 days')").run();
+    // 1. exclusions : conservees tant que le bien existe, afin qu'un bien
+    //    ecarte ne revienne jamais dans la zone de tri. Seules les exclusions
+    //    orphelines, dont le bien a disparu de la base, sont effacees.
+    const vieux = await db.prepare(
+      "DELETE FROM discarded WHERE date_exclusion < date('now','-14 days') AND bien_id NOT IN (SELECT id FROM biens)"
+    ).run();
     rapport.exclusions_effacees = (vieux.meta && vieux.meta.changes) || 0;
 
     // 2. biens au-dessus du plafond, sauf ceux que l'utilisateur a touches
