@@ -35,11 +35,11 @@ sources a traiter : 126
    0 annonces |   1 pages | Interfida SA
    0 annonces |   1 pages | Domusdea Immobiliare SA
    0 annonces |   1 pages | FIDIFIM Sagl
-   0 annonces |  38 pages | Neuschwander Immobilier (site propre)
+   0 annonces |  41 pages | Neuschwander Immobilier (site propre)
 navigateur demarre
    0 annonces |  26 pages | Gruyère Immo SA (site propre)
    0 annonces |   1 pages | BD Gerance SA
-   0 annonces |   0 pages | JPF Immobilier SA  [fetch failed]
+   0 annonces |   1 pages | JPF Immobilier SA
    0 annonces |   1 pages | HUH Immobilien AG (site propre)
    0 annonces |   1 pages | PREMIUM HOMES AG (site propre)
    0 annonces |   1 pages | IMMOprima AG (site propre)
@@ -80,7 +80,7 @@ navigateur demarre
    0 annonces |   7 pages | immobilier.ch - grandvillard
    0 annonces |  10 pages | immobilier.ch - enney
    0 annonces |  11 pages | immobilier.ch - albeuve
-   0 annonces |   8 pages | immobilier.ch - montbovon
+   0 annonces |   7 pages | immobilier.ch - montbovon
    0 annonces |   2 pages | immobilier.ch - neirivue
    0 annonces |   2 pages | immobilier.ch - jaun
    0 annonces |   1 pages | immobilier.ch - morlon
@@ -88,7 +88,7 @@ navigateur demarre
    0 annonces |   2 pages | immobilier.ch - gruyeres
    0 annonces |   5 pages | immobilier.ch - cresuz
    0 annonces |  25 pages | immobilier.ch - le-paquier
-   1 annonces |  25 pages | immobilier.ch - le-locle
+   0 annonces |  25 pages | immobilier.ch - le-locle
    0 annonces |  25 pages | immobilier.ch - la-chaux-de-fonds
    0 annonces |   6 pages | immobilier.ch - les-brenets
    0 annonces |  12 pages | immobilier.ch - fleurier
@@ -103,7 +103,7 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - cressier
    0 annonces |  25 pages | immobilier.ch - cornaux
    0 annonces |  25 pages | immobilier.ch - saint-blaise
-   1 annonces |  25 pages | immobilier.ch - hauterive
+   0 annonces |  25 pages | immobilier.ch - hauterive
    0 annonces |  25 pages | immobilier.ch - colombier
    0 annonces |  14 pages | immobilier.ch - boudry
    0 annonces |  25 pages | immobilier.ch - cortaillod
@@ -128,5 +128,5 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - lajoux
 navigateur ferme
 
-TOTAL : 2 annonces sur 1414 pages telechargees
+TOTAL : 0 annonces sur 1417 pages telechargees
 recalcul : {"error":"D1_ERROR: Your account has exceeded D1's free tier daily row write limit. Upgrade to a paid plan or wait until tomorrow (midnight UTC) to continue. See https://developers.cloudflare.com/d1/p
