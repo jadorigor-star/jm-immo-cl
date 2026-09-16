@@ -37,7 +37,7 @@ sources a traiter : 126
    0 annonces |   1 pages | FIDIFIM Sagl
    0 annonces |  41 pages | Neuschwander Immobilier (site propre)
 navigateur demarre
-   0 annonces |  26 pages | Gruyère Immo SA (site propre)
+   0 annonces |   0 pages | Gruyère Immo SA (site propre)  [Navigation timeout of 45000 ms exceeded]
    0 annonces |   1 pages | BD Gerance SA
    0 annonces |   1 pages | JPF Immobilier SA
    0 annonces |   1 pages | HUH Immobilien AG (site propre)
@@ -59,7 +59,7 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - Fribourg p6
    0 annonces |  25 pages | immobilier.ch - Neuchatel p3
    0 annonces |  25 pages | immobilier.ch - Neuchatel p4
-   0 annonces |  25 pages | immobilier.ch - Neuchatel p5
+   1 annonces |  25 pages | immobilier.ch - Neuchatel p5
    0 annonces |  25 pages | immobilier.ch - Jura p2
    0 annonces |  25 pages | immobilier.ch - Jura p3
    0 annonces |   1 pages | acheter-louer.ch - Gruyère  [HTTP 403]
@@ -98,7 +98,7 @@ navigateur demarre
    0 annonces |   2 pages | immobilier.ch - buttes
    0 annonces |   4 pages | immobilier.ch - noiraigue
    0 annonces |  25 pages | immobilier.ch - les-ponts-de-martel
-   0 annonces |  25 pages | immobilier.ch - la-sagne
+   1 annonces |  25 pages | immobilier.ch - la-sagne
    0 annonces |  25 pages | immobilier.ch - le-landeron
    0 annonces |  25 pages | immobilier.ch - cressier
    0 annonces |  25 pages | immobilier.ch - cornaux
@@ -111,7 +111,7 @@ navigateur demarre
    0 annonces |   2 pages | immobilier.ch - gorgier
    0 annonces |  25 pages | immobilier.ch - saint-aubin
    0 annonces |  10 pages | immobilier.ch - peseux
-   1 annonces |  25 pages | immobilier.ch - corcelles
+   0 annonces |  25 pages | immobilier.ch - corcelles
    0 annonces |  12 pages | immobilier.ch - auvernier
    0 annonces |   5 pages | immobilier.ch - rochefort
    0 annonces |   4 pages | immobilier.ch - saignelegier
@@ -128,5 +128,5 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - lajoux
 navigateur ferme
 
-TOTAL : 1 annonces sur 1418 pages telechargees
+TOTAL : 2 annonces sur 1392 pages telechargees
 recalcul : {"error":"D1_ERROR: Your account has exceeded D1's free tier daily row write limit. Upgrade to a paid plan or wait until tomorrow (midnight UTC) to continue. See https://developers.cloudflare.com/d1/p
