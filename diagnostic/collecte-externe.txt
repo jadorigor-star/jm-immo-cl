@@ -58,7 +58,7 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - Fribourg p5
    0 annonces |  25 pages | immobilier.ch - Fribourg p6
    0 annonces |  25 pages | immobilier.ch - Neuchatel p3
-   0 annonces |  25 pages | immobilier.ch - Neuchatel p4
+   1 annonces |  25 pages | immobilier.ch - Neuchatel p4
    0 annonces |  25 pages | immobilier.ch - Neuchatel p5
    0 annonces |  25 pages | immobilier.ch - Jura p2
    0 annonces |  25 pages | immobilier.ch - Jura p3
@@ -112,7 +112,7 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - saint-aubin
    0 annonces |  10 pages | immobilier.ch - peseux
    0 annonces |  25 pages | immobilier.ch - corcelles
-   0 annonces |  11 pages | immobilier.ch - auvernier
+   0 annonces |  12 pages | immobilier.ch - auvernier
    0 annonces |   5 pages | immobilier.ch - rochefort
    0 annonces |   4 pages | immobilier.ch - saignelegier
    0 annonces |  25 pages | immobilier.ch - le-noirmont
@@ -128,5 +128,5 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - lajoux
 navigateur ferme
 
-TOTAL : 0 annonces sur 1417 pages telechargees
+TOTAL : 1 annonces sur 1418 pages telechargees
 recalcul : {"error":"D1_ERROR: Your account has exceeded D1's free tier daily row write limit. Upgrade to a paid plan or wait until tomorrow (midnight UTC) to continue. See https://developers.cloudflare.com/d1/p
