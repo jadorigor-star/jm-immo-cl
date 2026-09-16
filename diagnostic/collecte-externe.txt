@@ -58,7 +58,7 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - Fribourg p5
    0 annonces |  25 pages | immobilier.ch - Fribourg p6
    0 annonces |  25 pages | immobilier.ch - Neuchatel p3
-   1 annonces |  25 pages | immobilier.ch - Neuchatel p4
+   0 annonces |  25 pages | immobilier.ch - Neuchatel p4
    0 annonces |  25 pages | immobilier.ch - Neuchatel p5
    0 annonces |  25 pages | immobilier.ch - Jura p2
    0 annonces |  25 pages | immobilier.ch - Jura p3
@@ -111,7 +111,7 @@ navigateur demarre
    0 annonces |   2 pages | immobilier.ch - gorgier
    0 annonces |  25 pages | immobilier.ch - saint-aubin
    0 annonces |  10 pages | immobilier.ch - peseux
-   0 annonces |  25 pages | immobilier.ch - corcelles
+   1 annonces |  25 pages | immobilier.ch - corcelles
    0 annonces |  12 pages | immobilier.ch - auvernier
    0 annonces |   5 pages | immobilier.ch - rochefort
    0 annonces |   4 pages | immobilier.ch - saignelegier
