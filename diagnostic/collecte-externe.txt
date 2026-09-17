@@ -29,10 +29,10 @@ sources a traiter : 126
    0 annonces |   1 pages | Area Immobiliare Ticino
    0 annonces |   1 pages | ImmoSky AG
    0 annonces |   1 pages | TERRIER SA
-   0 annonces |   1 pages | SKF Fiduciaria Sagl
-   0 annonces |   1 pages | Ticino Real Estate Sagl
+   1 annonces |   1 pages | SKF Fiduciaria Sagl
+   2 annonces |   1 pages | Ticino Real Estate Sagl
    0 annonces |   1 pages | TICINO.RE SA
-   1 annonces |   1 pages | Interfida SA
+   0 annonces |   1 pages | Interfida SA
    0 annonces |   1 pages | Domusdea Immobiliare SA
    0 annonces |   1 pages | FIDIFIM Sagl
    0 annonces |  41 pages | Neuschwander Immobilier (site propre)
@@ -55,18 +55,18 @@ navigateur demarre
    1 annonces |  25 pages | immobilier.ch - Neuchatel p2
    0 annonces |  25 pages | immobilier.ch - Fribourg p3
    0 annonces |  25 pages | immobilier.ch - Fribourg p4
-   0 annonces |  25 pages | immobilier.ch - Fribourg p5
+   1 annonces |  25 pages | immobilier.ch - Fribourg p5
    0 annonces |  25 pages | immobilier.ch - Fribourg p6
-   2 annonces |  25 pages | immobilier.ch - Neuchatel p3
+   0 annonces |  25 pages | immobilier.ch - Neuchatel p3
    0 annonces |  25 pages | immobilier.ch - Neuchatel p4
-   2 annonces |  25 pages | immobilier.ch - Neuchatel p5
+   1 annonces |  25 pages | immobilier.ch - Neuchatel p5
    0 annonces |  25 pages | immobilier.ch - Jura p2
-   0 annonces |  25 pages | immobilier.ch - Jura p3
+   1 annonces |  25 pages | immobilier.ch - Jura p3
    0 annonces |   1 pages | acheter-louer.ch - Gruyère  [HTTP 403]
    0 annonces |  25 pages | immobilier.ch - bulle
    0 annonces |  25 pages | immobilier.ch - la-tour-de-treme
    0 annonces |  25 pages | immobilier.ch - riaz
-   1 annonces |  19 pages | immobilier.ch - broc
+   0 annonces |  18 pages | immobilier.ch - broc
    0 annonces |   3 pages | immobilier.ch - vuadens
    0 annonces |   2 pages | immobilier.ch - echarlens
    0 annonces |  25 pages | immobilier.ch - sorens
@@ -79,7 +79,7 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - la-roche
    0 annonces |   1 pages | immobilier.ch - grandvillard
    0 annonces |  10 pages | immobilier.ch - enney
-   1 annonces |  11 pages | immobilier.ch - albeuve
+   0 annonces |  11 pages | immobilier.ch - albeuve
    0 annonces |   7 pages | immobilier.ch - montbovon
    0 annonces |   2 pages | immobilier.ch - neirivue
    0 annonces |   2 pages | immobilier.ch - jaun
@@ -89,29 +89,29 @@ navigateur demarre
    0 annonces |   6 pages | immobilier.ch - cresuz
    0 annonces |  25 pages | immobilier.ch - le-paquier
    0 annonces |  25 pages | immobilier.ch - le-locle
-   1 annonces |  25 pages | immobilier.ch - la-chaux-de-fonds
+   0 annonces |  25 pages | immobilier.ch - la-chaux-de-fonds
    0 annonces |   6 pages | immobilier.ch - les-brenets
    0 annonces |  12 pages | immobilier.ch - fleurier
    0 annonces |  19 pages | immobilier.ch - couvet
    0 annonces |   1 pages | immobilier.ch - travers
-   1 annonces |  25 pages | immobilier.ch - motiers
+   0 annonces |  25 pages | immobilier.ch - motiers
    0 annonces |   2 pages | immobilier.ch - buttes
    0 annonces |   4 pages | immobilier.ch - noiraigue
-   1 annonces |  25 pages | immobilier.ch - les-ponts-de-martel
-   1 annonces |  25 pages | immobilier.ch - la-sagne
-   1 annonces |  25 pages | immobilier.ch - le-landeron
-   1 annonces |  25 pages | immobilier.ch - cressier
+   3 annonces |  25 pages | immobilier.ch - les-ponts-de-martel
+   0 annonces |  25 pages | immobilier.ch - la-sagne
+   2 annonces |  25 pages | immobilier.ch - le-landeron
+   0 annonces |  25 pages | immobilier.ch - cressier
    1 annonces |  25 pages | immobilier.ch - cornaux
-   1 annonces |  25 pages | immobilier.ch - saint-blaise
-   0 annonces |  25 pages | immobilier.ch - hauterive
-   2 annonces |  25 pages | immobilier.ch - colombier
+   0 annonces |  25 pages | immobilier.ch - saint-blaise
+   2 annonces |  25 pages | immobilier.ch - hauterive
+   1 annonces |  25 pages | immobilier.ch - colombier
    0 annonces |  14 pages | immobilier.ch - boudry
    0 annonces |  25 pages | immobilier.ch - cortaillod
    0 annonces |  25 pages | immobilier.ch - bevaix
    0 annonces |   2 pages | immobilier.ch - gorgier
-   1 annonces |  25 pages | immobilier.ch - saint-aubin
+   0 annonces |  25 pages | immobilier.ch - saint-aubin
    0 annonces |  10 pages | immobilier.ch - peseux
-   1 annonces |  25 pages | immobilier.ch - corcelles
+   0 annonces |  25 pages | immobilier.ch - corcelles
    0 annonces |  11 pages | immobilier.ch - auvernier
    0 annonces |   5 pages | immobilier.ch - rochefort
    0 annonces |   4 pages | immobilier.ch - saignelegier
@@ -128,5 +128,5 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - lajoux
 navigateur ferme
 
-TOTAL : 21 annonces sur 1413 pages telechargees
-recalcul : {"ok":true,"biens":670,"rescues":0}
+TOTAL : 17 annonces sur 1412 pages telechargees
+recalcul : {"ok":true,"biens":673,"rescues":0}
