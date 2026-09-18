@@ -23,14 +23,14 @@ sources a traiter : 126
    0 annonces |   1 pages | Immostile SA
    0 annonces |   1 pages | Immolife Ticino SA
    0 annonces |   1 pages | Metropolis Immobiliare
-   0 annonces |   5 pages | Neho  [HTTP 403]
+   0 annonces |   5 pages | Neho
    0 annonces |   1 pages | Monopoly Real Estate sagl
    0 annonces |   1 pages | Raiffeisen Immo AG
    0 annonces |   1 pages | Area Immobiliare Ticino
    0 annonces |   1 pages | ImmoSky AG
    0 annonces |   1 pages | TERRIER SA
    0 annonces |   1 pages | SKF Fiduciaria Sagl
-   2 annonces |   1 pages | Ticino Real Estate Sagl
+   0 annonces |   1 pages | Ticino Real Estate Sagl
    0 annonces |   1 pages | TICINO.RE SA
    0 annonces |   1 pages | Interfida SA
    0 annonces |   1 pages | Domusdea Immobiliare SA
@@ -43,90 +43,90 @@ navigateur demarre
    0 annonces |   1 pages | HUH Immobilien AG (site propre)
    0 annonces |   1 pages | PREMIUM HOMES AG (site propre)
    0 annonces |   1 pages | IMMOprima AG (site propre)
-   0 annonces |   1 pages | immobilier.ch (portail romand)  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - Neuchatel  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - Saignelégier  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - Charmey/Gruyere  [HTTP 403]
+   0 annonces |  25 pages | immobilier.ch (portail romand)
+   0 annonces |  25 pages | immobilier.ch - Neuchatel
+   0 annonces |   4 pages | immobilier.ch - Saignelégier
+   0 annonces |  25 pages | immobilier.ch - Charmey/Gruyere
    0 annonces |   1 pages | SIT Immobiliare (IS24)
    0 annonces |   1 pages | TICINO.RE SA (IS24)
-   0 annonces |   1 pages | immobilier.ch - Gruyères/Broc  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - Jura (canton)  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - Fribourg p2  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - Neuchatel p2  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - Fribourg p3  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - Fribourg p4  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - Fribourg p5  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - Fribourg p6  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - Neuchatel p3  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - Neuchatel p4  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - Neuchatel p5  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - Jura p2  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - Jura p3  [HTTP 403]
+   0 annonces |   2 pages | immobilier.ch - Gruyères/Broc
+   0 annonces |  25 pages | immobilier.ch - Jura (canton)
+   0 annonces |  25 pages | immobilier.ch - Fribourg p2
+   0 annonces |  25 pages | immobilier.ch - Neuchatel p2
+   0 annonces |  25 pages | immobilier.ch - Fribourg p3
+   0 annonces |  25 pages | immobilier.ch - Fribourg p4
+   1 annonces |  25 pages | immobilier.ch - Fribourg p5
+   0 annonces |  25 pages | immobilier.ch - Fribourg p6
+   1 annonces |  25 pages | immobilier.ch - Neuchatel p3
+   4 annonces |  25 pages | immobilier.ch - Neuchatel p4
+   2 annonces |  25 pages | immobilier.ch - Neuchatel p5
+   1 annonces |  25 pages | immobilier.ch - Jura p2
+   0 annonces |  25 pages | immobilier.ch - Jura p3
    0 annonces |   1 pages | acheter-louer.ch - Gruyère  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - bulle  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - la-tour-de-treme  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - riaz  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - broc  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - vuadens  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - echarlens  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - sorens  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - corbieres  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - hauteville  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - marsens  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - vaulruz  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - sales  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - pont-la-ville  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - la-roche  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - grandvillard  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - enney  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - albeuve  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - montbovon  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - neirivue  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - jaun  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - morlon  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - botterens  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - gruyeres  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - cresuz  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - le-paquier  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - le-locle  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - la-chaux-de-fonds  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - les-brenets  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - fleurier  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - couvet  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - travers  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - motiers  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - buttes  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - noiraigue  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - les-ponts-de-martel  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - la-sagne  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - le-landeron  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - cressier  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - cornaux  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - saint-blaise  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - hauterive  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - colombier  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - boudry  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - cortaillod  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - bevaix  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - gorgier  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - saint-aubin  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - peseux  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - corcelles  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - auvernier  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - rochefort  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - saignelegier  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - le-noirmont  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - les-bois  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - les-breuleux  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - montfaucon  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - saint-ursanne  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - soubey  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - le-bemont  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - muriaux  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - les-enfers  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - les-genevez  [HTTP 403]
-   0 annonces |   1 pages | immobilier.ch - lajoux  [HTTP 403]
+   0 annonces |  25 pages | immobilier.ch - bulle
+   0 annonces |  25 pages | immobilier.ch - la-tour-de-treme
+   0 annonces |  25 pages | immobilier.ch - riaz
+   0 annonces |  17 pages | immobilier.ch - broc
+   0 annonces |   3 pages | immobilier.ch - vuadens
+   0 annonces |   2 pages | immobilier.ch - echarlens
+   0 annonces |  25 pages | immobilier.ch - sorens
+   0 annonces |   3 pages | immobilier.ch - corbieres
+   0 annonces |   1 pages | immobilier.ch - hauteville
+   0 annonces |   3 pages | immobilier.ch - marsens
+   0 annonces |  14 pages | immobilier.ch - vaulruz
+   0 annonces |  25 pages | immobilier.ch - sales
+   0 annonces |  25 pages | immobilier.ch - pont-la-ville
+   0 annonces |  25 pages | immobilier.ch - la-roche
+   0 annonces |   1 pages | immobilier.ch - grandvillard
+   0 annonces |  10 pages | immobilier.ch - enney
+   0 annonces |  11 pages | immobilier.ch - albeuve
+   0 annonces |   7 pages | immobilier.ch - montbovon
+   0 annonces |   2 pages | immobilier.ch - neirivue
+   0 annonces |   2 pages | immobilier.ch - jaun
+   0 annonces |   1 pages | immobilier.ch - morlon
+   0 annonces |  10 pages | immobilier.ch - botterens
+   0 annonces |   2 pages | immobilier.ch - gruyeres
+   0 annonces |   6 pages | immobilier.ch - cresuz
+   0 annonces |  25 pages | immobilier.ch - le-paquier
+   0 annonces |  25 pages | immobilier.ch - le-locle
+   0 annonces |  25 pages | immobilier.ch - la-chaux-de-fonds
+   0 annonces |   6 pages | immobilier.ch - les-brenets
+   0 annonces |  12 pages | immobilier.ch - fleurier
+   0 annonces |  19 pages | immobilier.ch - couvet
+   0 annonces |   1 pages | immobilier.ch - travers
+   0 annonces |  25 pages | immobilier.ch - motiers
+   0 annonces |   2 pages | immobilier.ch - buttes
+   0 annonces |   4 pages | immobilier.ch - noiraigue
+   0 annonces |  25 pages | immobilier.ch - les-ponts-de-martel
+   0 annonces |  25 pages | immobilier.ch - la-sagne
+   0 annonces |  25 pages | immobilier.ch - le-landeron
+   0 annonces |  25 pages | immobilier.ch - cressier
+   0 annonces |  25 pages | immobilier.ch - cornaux
+   0 annonces |  25 pages | immobilier.ch - saint-blaise
+   0 annonces |  25 pages | immobilier.ch - hauterive
+   0 annonces |  25 pages | immobilier.ch - colombier
+   0 annonces |  15 pages | immobilier.ch - boudry
+   0 annonces |  25 pages | immobilier.ch - cortaillod
+   0 annonces |  25 pages | immobilier.ch - bevaix
+   0 annonces |   2 pages | immobilier.ch - gorgier
+   0 annonces |  25 pages | immobilier.ch - saint-aubin
+   0 annonces |  10 pages | immobilier.ch - peseux
+   0 annonces |  25 pages | immobilier.ch - corcelles
+   0 annonces |  11 pages | immobilier.ch - auvernier
+   0 annonces |   5 pages | immobilier.ch - rochefort
+   0 annonces |   4 pages | immobilier.ch - saignelegier
+   0 annonces |  25 pages | immobilier.ch - le-noirmont
+   0 annonces |   5 pages | immobilier.ch - les-bois
+   0 annonces |   1 pages | immobilier.ch - les-breuleux
+   0 annonces |   1 pages | immobilier.ch - montfaucon
+   0 annonces |  25 pages | immobilier.ch - saint-ursanne
+   0 annonces |   4 pages | immobilier.ch - soubey
+   0 annonces |  25 pages | immobilier.ch - le-bemont
+   0 annonces |   1 pages | immobilier.ch - muriaux
+   0 annonces |   1 pages | immobilier.ch - les-enfers
+   0 annonces |  25 pages | immobilier.ch - les-genevez
+   0 annonces |  25 pages | immobilier.ch - lajoux
 navigateur ferme
 
-TOTAL : 2 annonces sur 213 pages telechargees
-recalcul : {"ok":true,"biens":671,"rescues":0}
+TOTAL : 9 annonces sur 1413 pages telechargees
+recalcul : {"error":"D1_ERROR: Your account has exceeded D1's free tier daily row write limit. Upgrade to a paid plan or wait until tomorrow (midnight UTC) to continue. See https://developers.cloudflare.com/d1/p
