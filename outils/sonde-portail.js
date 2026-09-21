@@ -43,6 +43,25 @@ function trouverTableaux(o, chemin, out, prof) {
       }
       console.log("[json embarque] tableaux d'annonces (avec prix) : " + cand.length);
       cand.slice(0, 4).forEach((c) => console.log("  chemin=" + c.chemin + " n=" + c.n + "\n  exemple=" + JSON.stringify(c.ex).slice(0, 1300)));
+      // detail specifique Comparis (Next.js)
+      try {
+        const m = html.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
+        if (m) {
+          const j = JSON.parse(m[1]);
+          const d = j.props && j.props.pageProps && j.props.pageProps.initialResultData;
+          if (d) {
+            const scal = {};
+            for (const k of Object.keys(d)) if (d[k] == null || typeof d[k] !== "object") scal[k] = d[k];
+            console.log("[comparis] meta scalaires : " + JSON.stringify(scal).slice(0, 500));
+            const items = d.resultItems || [];
+            console.log("[comparis] cles d'une annonce : " + (items[0] ? Object.keys(items[0]).join(",") : "-"));
+            console.log("[comparis] types : " + [...new Set(items.map((x) => x.PropertyTypeText))].join(" | "));
+            items.slice(0, 8).forEach((x) => console.log("  " + x.AdId + " | " + x.Price + " | " + JSON.stringify(x.Address) + " | " + JSON.stringify(x.EssentialInformation) + " | " + (x.Date || "") + " | site " + x.SiteId));
+            const geo = items.filter((x) => x.Latitude || x.Lat || x.GeoLocation || x.Coordinates).length;
+            console.log("[comparis] annonces avec geo : " + geo + "/" + items.length);
+          } else console.log("[comparis] initialResultData absent, cles pageProps : " + Object.keys(j.props.pageProps || {}).join(","));
+        }
+      } catch (e) { console.log("[comparis] erreur " + e.message); }
       // liens
       const formes = {};
       for (const m of html.matchAll(/href="([^"#]+)"/g)) {
