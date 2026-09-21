@@ -1,93 +1,6 @@
-== Sonde portail 2026-09-21T01:11:12.311Z ==
+== Sonde portail 2026-09-21T01:13:08.035Z ==
 
-#### https://realadvisor.ch/fr/acheter/canton-fribourg
-[robots.txt] HTTP 200 | 2347 car.
-User-agent: facebookexternalhit
-Allow: /
-Disallow:
-User-agent: Facebot
-Allow: /
-Disallow:
-User-agent: *
-Allow: /agency-pages/_next/image
-Allow: /$
-Allow: /en/
-Allow: /fr/
-Allow: /de/
-Allow: /it/
-Allow: /es/
-Allow: /be/
-Allow: /nl/
-Allow: /cs/
-Allow: /at/
-Allow: /pl/
-Allow: /pt/
-Allow: /en$
-Allow: /fr$
-Allow: /de$
-Allow: /it$
-Allow: /es$
-Allow: /be$
-Allow: /nl$
-Allow: /cs$
-Allow: /at$
-Allow: /pl$
-Allow: /pt$
-Allow: /*.xml
-Allow: /*.css
-Allow: /*.js
-Allow: /*.png
-Allow: /*.svg
-Allow: /*.ico
-Allow: /*.webp
-Allow: /*.jpg
-Allow: /*.jpeg
-Allow: /*.gif
-Allow: /*.heic
-Allow: /*.heif
-Allow: /site.webmanifest$
-Allow: /wp-content/*
-Allow: /wp-includes/*
-Allow: /api/og/
-Allow: /fr/agents-immobiliers/*/partager/
-Allow: /de/immobilienmaklern/*/teilen/
-Allow: /en/real-estate-agents/*/share/
-Allow: /it/agenti-immobiliari/*/condividi/
-Disallow: /*/contract
-Disallow: /*/report
-Disallow: /*/claim
-Disallow: /*/takedown
-Disallow: /*?_rsc=
-Disallow: /*//$
-Disallow: */requalification/
-Disallow: /de/finanzierungsantrags/
-Disallow: /it/richiesta-di-finanziamento/
-Disallow: /fr/demande-de-financement/
-Disallow: /en/financing-request/
-Disallow: /fr/acheter/*?
-Disallow: /fr/louer/*?
-Disallow: /en/buy/*?
-Disallow: /en/rent/*?
-Disallow: /de/kaufen/*?
-Disallow: /de/mieten/*?
-Disallow: /it/comprare/*?
-Disallow: /it/affitto/*?
-[page] HTTP 200 | 1155477 car. | Bien immobilier à vendre dans le Canton de Fribourg - 1&#x27;986 annonces
-[json embarque] scripts application/json : aucun
-[json embarque] ld+json : 4 | window.__ : 
-[json embarque] tableaux d'annonces (avec prix) : 0
-[liens frequents] 
-[pagination] page= :  | pn= : 
-
-#### https://realadvisor.ch/fr/acheter/canton-fribourg?page=2
-[page] HTTP 200 | 1155477 car. | Bien immobilier à vendre dans le Canton de Fribourg - 1&#x27;986 annonces
-[json embarque] scripts application/json : aucun
-[json embarque] ld+json : 4 | window.__ : 
-[json embarque] tableaux d'annonces (avec prix) : 0
-[liens frequents] 
-[pagination] page= :  | pn= : 
-
-#### https://www.comparis.ch/immobilien/marktplatz/fribourg/kaufen
+#### https://www.comparis.ch/immobilien/marktplatz/kanton/freiburg/kaufen
 [robots.txt] HTTP 200 | 9557 car.
 User-agent: *
 Disallow: /*.asmx
@@ -159,14 +72,175 @@ Disallow: /carfinder/VehicleEvaluationService/
 Disallow: /carfinder/detailsservice/
 Disallow: /carfinder/searchservice/
 Disallow: /carfinder/SessionValueReader/
-[page] HTTP 200 | 387280 car. | 
+[page] HTTP 200 | 415186 car. | 
 [json embarque] scripts application/json : __NEXT_DATA__
 [json embarque] ld+json : 3 | window.__ : 
 [json embarque] tableaux d'annonces (avec prix) : 1
   chemin=props.pageProps.initialResultData.resultItems n=10
-  exemple={"AdId":38075924,"SiteId":228,"AdStatus":0,"Title":"DIVINE 10-ZIMMER-GRUNDSTÜCK MIT ATEMBERAUBENDER AUSSICHT","PropertyTypeText":"Villa","Address":["1700 Fribourg"],"EssentialInformation":["10 Zimmer"],"Price":"4'600'000","Currency":"CHF","Date":"2026-09-12T04:46:22","ImageUrl":"https://mapl-assets.b-cdn.net/immobilien/images/datacollect/47307138-a149-7bc7-9efa-23ee2126d48e.jpg","ImageUrls":["https://mapl-assets.b-cdn.net/immobilien/images/datacollect/47307138-a149-7bc7-9efa-23ee2126d48e.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/556d4032-8a87-6cbd-f50c-ee413a38e242.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/61334093-4f78-7846-00db-1555a4013792.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/cf27ec9c-87ab-35e5-2513-379d99a6eb58.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/d0c15be0-f5df-0337-0d06-d765faddb719.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/e3315112-2af0-ad31-b7ff-488359fb1b9c.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/5710f4bc-802c-a045-29f6-c3f723cfbf81.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/9fd091e3-a0cb-b3ef-887e-eda2119a399d.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/d45d0ba8-fba0-9224-4
+  exemple={"AdId":38077984,"SiteId":254,"AdStatus":0,"Title":"Grand 3.5  - www.loreedumoleson.ch -  102 m2 ","PropertyTypeText":"Wohnung","Address":["Grand Rue 3","1627 Vaulruz"],"EssentialInformation":["3.5 Zimmer","102 m²","1. Etage"],"Price":"755'000","Currency":"CHF","Date":"2026-09-20T19:34:06","ImageUrl":"https://mapl-assets.b-cdn.net/immobilien/images/datacollect/d6a481a2-33fa-fca9-e8ae-acb4579c222a.jpg","ImageUrls":["https://mapl-assets.b-cdn.net/immobilien/images/datacollect/d6a481a2-33fa-fca9-e8ae-acb4579c222a.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/26191807-160e-d9b4-c965-08f43398668b.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/a50c4913-c4d7-6f65-1572-87874c22d067.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/e275465b-67e8-0dfb-f922-7f5219e9f0e7.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/f1afac85-950a-42a3-6e8c-32d12789fc2f.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/c67a3f9d-7bea-94ca-8401-e9a4323f6230.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/2685b25d-6fea-1bf3-f575-07484aa8df4c.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/c948abc5-ec0c-c291-4800-9cf78cc7e797.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacolle
+[comparis] meta scalaires : {"page":0,"totalPages":100,"sort":11,"numberOfResults":2375,"searchParamsActivityGuid":"9b44e666-b54a-4710-919c-f4207a7d8cee"}
+[comparis] cles d'une annonce : AdId,SiteId,AdStatus,Title,PropertyTypeText,Address,EssentialInformation,Price,Currency,Date,ImageUrl,ImageUrls,Remarks,YearOfConstruction,RenovationYear,IsPremiumListed,ComparisPoints,Partners,PartnerLogoUrl,PartnerName,ContactInformation,PriceDevelopmentDirection,PriceValue,AreaValue,PropertyTypeId,DealType,UseInternalLinks,ShowComparisRating,MemberLogoUrl,ShowDefaultPersonalizationSegment,PriceTypeText,Facts,ViewTypes,PriceType,Coordinate,IsSwapping,Neighborhood
+[comparis] types : Wohnung | Haus | Doppeleinfamilienhaus | Villa
+  38077984 | 755'000 | ["Grand Rue 3","1627 Vaulruz"] | ["3.5 Zimmer","102 m²","1. Etage"] | 2026-09-20T19:34:06 | site 254
+  38077944 | 780'000 | ["Grand Rue 3","1627 Vaulruz"] | ["4.5 Zimmer","104 m²","EG"] | 2026-09-20T18:24:30 | site 254
+  38077863 | 1'030'000 | ["Champ Olivier","3280 Murten"] | ["4.5 Zimmer","130 m²","EG"] | 2026-09-19T05:36:50 | site 201
+  38077782 | 740'000 | ["1737 Plasselb"] | ["4.5 Zimmer","148 m²"] | 2026-09-09T05:26:42 | site 201
+  38077760 | 690'000 | ["Route De Fruence 103","1618 Châtel-St-Denis"] | ["4.5 Zimmer","132 m²","2. Etage"] | 2026-09-03T05:24:55 | site 201
+  38077639 | 990'000 | ["Champ Olivier","3280 Murten"] | ["4.5 Zimmer","130 m²","1. Etage"] | 2026-09-20T17:29:43 | site 201
+  38077625 | 1'100'000 | ["Route De La Parqueterie 12","1635 La Tour-de-Trême"] | ["5.5 Zimmer","140 m²"] | 2026-07-11T06:03:49 | site 201
+  38077577 | 1'357'000 | ["Haut De Scherwyl","1634 La Roche FR"] | ["5.5 Zimmer","180 m²"] | 2026-09-10T05:24:17 | site 201
+[comparis] annonces avec geo : 0/10
 [liens frequents] 10x /bff/login?returnUrl=/mycomparis-dashboard
   10x /immobilien/marktplatz/details/show/#
-  8x /immobilien/marktplatz/fribourg/kaufen?page=#
+  8x /immobilien/marktplatz/kanton/freiburg/kaufen?page=#
   7x /bff/login?prompt=create
 [pagination] page= : ?page=1 ?page=1 ?page=2 ?page=3 | pn= : 
+
+#### https://www.comparis.ch/immobilien/marktplatz/kanton/freiburg/haus/kaufen
+[page] HTTP 200 | 467719 car. | 
+[json embarque] scripts application/json : __NEXT_DATA__
+[json embarque] ld+json : 3 | window.__ : 
+[json embarque] tableaux d'annonces (avec prix) : 1
+  chemin=props.pageProps.initialResultData.resultItems n=10
+  exemple={"AdId":38077782,"SiteId":201,"AdStatus":0,"Title":"Aussergewöhnlich. Authentisch. Voller Geschichte.","PropertyTypeText":"Haus","Address":["1737 Plasselb"],"EssentialInformation":["4.5 Zimmer","148 m²"],"Price":"740'000","Currency":"CHF","Date":"2026-09-09T05:26:42","ImageUrl":"https://mapl-assets.b-cdn.net/immobilien/images/datacollect/8467266f-0a5d-3cb0-a3a5-c25c4cea14bb.avif","ImageUrls":["https://mapl-assets.b-cdn.net/immobilien/images/datacollect/8467266f-0a5d-3cb0-a3a5-c25c4cea14bb.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/75c65321-4942-a94e-73ca-b7c5f0f3d20b.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/bf1f20a3-a371-ee1c-bd14-3915a32f413d.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/a5b1155e-000e-82fa-d57f-862e994d8645.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/f8228db9-4439-d548-cf24-a44642e44357.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/1dfccf91-9cb6-1b41-1434-cfb39cc2968b.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/5cbf969c-5eb5-5ef5-7aca-056b356d36fb.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/d0f9d251-0057-19ef-fe91-091bb23d7ced.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/7067e1fb-02
+[comparis] meta scalaires : {"page":0,"totalPages":100,"sort":11,"numberOfResults":996,"searchParamsActivityGuid":"4ec37068-44e2-435d-9af1-b82bbe6290ee"}
+[comparis] cles d'une annonce : AdId,SiteId,AdStatus,Title,PropertyTypeText,Address,EssentialInformation,Price,Currency,Date,ImageUrl,ImageUrls,Remarks,YearOfConstruction,RenovationYear,IsPremiumListed,ComparisPoints,Partners,PartnerLogoUrl,PartnerName,ContactInformation,PriceDevelopmentDirection,PriceValue,AreaValue,PropertyTypeId,DealType,UseInternalLinks,ShowComparisRating,MemberLogoUrl,ShowDefaultPersonalizationSegment,PriceTypeText,Facts,ViewTypes,PriceType,Coordinate,IsSwapping,Neighborhood
+[comparis] types : Haus | Doppeleinfamilienhaus | Villa
+  38077782 | 740'000 | ["1737 Plasselb"] | ["4.5 Zimmer","148 m²"] | 2026-09-09T05:26:42 | site 201
+  38077625 | 1'100'000 | ["Route De La Parqueterie 12","1635 La Tour-de-Trême"] | ["5.5 Zimmer","140 m²"] | 2026-07-11T06:03:49 | site 201
+  38077577 | 1'357'000 | ["Haut De Scherwyl","1634 La Roche FR"] | ["5.5 Zimmer","180 m²"] | 2026-09-10T05:24:17 | site 201
+  38076405 | 895'000 | ["1776 Montagny-la-Ville"] | ["174 m²"] | 2026-05-30T18:30:37 | site 264
+  38076403 | 900'000 | ["1726 Farvagny-le-Grand"] | ["5.5 Zimmer","122 m²"] | 2026-06-22T19:10:09 | site 264
+  38076223 | 2'145'000 | ["Chemin des Violettes","1722 Bourguillon"] | [] | 2026-08-17T04:17:47 | site 228
+  38075924 | 4'600'000 | ["1700 Fribourg"] | ["10 Zimmer"] | 2026-09-12T04:46:22 | site 228
+  38073226 | 1'680'000 | ["Route du Serté 10","1724 Le Mouret"] | ["8 Zimmer","270 m²"] | 2026-09-19T20:24:04 | site 254
+[comparis] annonces avec geo : 0/10
+[liens frequents] 10x /bff/login?returnUrl=/mycomparis-dashboard
+  10x /immobilien/marktplatz/details/show/#
+  8x /immobilien/marktplatz/kanton/freiburg/haus/kaufen?page=#
+  7x /bff/login?prompt=create
+[pagination] page= : ?page=1 ?page=1 ?page=2 ?page=3 | pn= : 
+
+#### https://www.comparis.ch/immobilien/marktplatz/kanton/neuenburg/kaufen
+[page] HTTP 200 | 407780 car. | 
+[json embarque] scripts application/json : __NEXT_DATA__
+[json embarque] ld+json : 3 | window.__ : 
+[json embarque] tableaux d'annonces (avec prix) : 1
+  chemin=props.pageProps.initialResultData.resultItems n=10
+  exemple={"AdId":38077912,"SiteId":201,"AdStatus":0,"Title":"Deux maisons sur cette magnifique parcelle avec vue sur le lac!","PropertyTypeText":"Haus","Address":["2012 Auvernier"],"EssentialInformation":["9 Zimmer","449 m²"],"Price":"3'850'000","Currency":"CHF","Date":"2026-09-14T17:22:11","ImageUrl":"https://mapl-assets.b-cdn.net/immobilien/images/datacollect/96b85390-f791-50c9-9c8d-8f33c3d6c590.jpg","ImageUrls":["https://mapl-assets.b-cdn.net/immobilien/images/datacollect/96b85390-f791-50c9-9c8d-8f33c3d6c590.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/ce138b28-ce3e-d872-f27c-c597ae323f53.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/094eb7a0-bd95-b5a2-f438-54f67ad8b953.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/59360ae2-74dc-4e92-ca06-2c362849c7c1.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/9ece33c2-0745-d483-6239-98b2ca0ec516.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/98eb8ffe-55c0-b06a-c2fd-a57e79d5afd4.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/c03344cf-e711-0562-0335-e84bf23b2ea4.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/6ddb6342-7c5d-44d2-de10-99df592eb128.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect
+[comparis] meta scalaires : {"page":0,"totalPages":100,"sort":11,"numberOfResults":1160,"searchParamsActivityGuid":"f70607aa-00ae-47df-8ed6-5f1e678efc39"}
+[comparis] cles d'une annonce : AdId,SiteId,AdStatus,Title,PropertyTypeText,Address,EssentialInformation,Price,Currency,Date,ImageUrl,ImageUrls,Remarks,YearOfConstruction,RenovationYear,IsPremiumListed,ComparisPoints,Partners,PartnerLogoUrl,PartnerName,ContactInformation,PriceDevelopmentDirection,PriceValue,AreaValue,PropertyTypeId,DealType,UseInternalLinks,ShowComparisRating,MemberLogoUrl,ShowDefaultPersonalizationSegment,PriceTypeText,Facts,ViewTypes,PriceType,Coordinate,IsSwapping,Neighborhood
+[comparis] types : Haus | Villa | Mehrfamilienhaus | Wohnung | Bauland
+  38077912 | 3'850'000 | ["2012 Auvernier"] | ["9 Zimmer","449 m²"] | 2026-09-14T17:22:11 | site 201
+  38077641 | 400'000 | ["Vy-Creuse 24","2208 Les Hauts-Geneveys"] | ["4.5 Zimmer"] | 2026-09-17T05:27:13 | site 201
+  38076778 | 768'000 | ["Rue Du Premier-Mars 11","2300 La Chaux-de-Fonds"] | ["260 m²"] | 2026-08-09T05:13:50 | site 200
+  38075612 | 768'000 | ["Rue du Premier-Mars","2300 La Chaux-de-Fonds"] | [] | 2026-09-20T05:15:56 | site 228
+  38075085 | 510'000 | ["Route de Chasseral","2518 Nods"] | ["9 Zimmer"] | 2026-08-31T15:04:22 | site 228
+  38072152 | 405'000 | ["2300 La Chaux-de-Fonds"] | ["5 Zimmer","129 m²","5. Etage"] | 2026-08-22T14:19:29 | site 264
+  38072101 | 1'020'000 | ["2022 Région Littoral, Bevaix"] | ["7 Zimmer","165 m²","EG"] | 2026-09-18T20:35:07 | site 254
+  38068591 | 245'000 | ["2518 Nods"] | ["910 m²"] | 2026-03-10T16:36:26 | site 264
+[comparis] annonces avec geo : 0/10
+[liens frequents] 10x /bff/login?returnUrl=/mycomparis-dashboard
+  10x /immobilien/marktplatz/details/show/#
+  8x /immobilien/marktplatz/kanton/neuenburg/kaufen?page=#
+  7x /bff/login?prompt=create
+[pagination] page= : ?page=1 ?page=1 ?page=2 ?page=3 | pn= : 
+
+#### https://www.comparis.ch/immobilien/marktplatz/kanton/tessin/kaufen
+[page] HTTP 200 | 399673 car. | 
+[json embarque] scripts application/json : __NEXT_DATA__
+[json embarque] ld+json : 3 | window.__ : 
+[json embarque] tableaux d'annonces (avec prix) : 1
+  chemin=props.pageProps.initialResultData.resultItems n=10
+  exemple={"AdId":38078142,"SiteId":228,"AdStatus":0,"Title":"Rarität Jugendstilvilla am Wasser","PropertyTypeText":"Villa","Address":["6922 Morcote"],"EssentialInformation":["7.5 Zimmer"],"Price":"auf Anfrage","Currency":null,"Date":"2026-09-21T03:10:54","ImageUrl":"/immobilien/api/image/getdirect?guid=28c39769-d33c-4966-b34b-636570b8ca7b&w=458&h=344&rm=3&mw=1024&mh=1024","ImageUrls":["/immobilien/api/image/getdirect?guid=28c39769-d33c-4966-b34b-636570b8ca7b&w=458&h=344&rm=3&mw=1024&mh=1024"],"Remarks":null,"YearOfConstruction":0,"RenovationYear":0,"IsPremiumListed":false,"ComparisPoints":null,"Partners":[],"PartnerLogoUrl":null,"PartnerName":"UrbanHome.ch","ContactInformation":{"HasContactForm":false,"HasMissingAddressContactForm":false,"HasMissingFloorPlanContactForm":false,"ContactSiteId":null,"ContactSiteName":null,"ContactSiteLogoUrl":null,"ContactFormType":null,"DefaultContactMessage":null,"AdvertiserInformation":null,"VendorInformation":null,"VisitationContactInformation":null,"IsVendorContactForm":false,"OnlineApplicationUrl":null,"OnlineApplicationRemarks":null},"PriceDevelopmentDirection":null,"PriceValue":0,"AreaValue":null,"PropertyTypeId":21,"DealType":20,"UseInternalLinks":false,"ShowComparisRating":false,"MemberLogoUrl":null,"ShowDefaultPersonalizationSegment":false,"PriceT
+[comparis] meta scalaires : {"page":0,"totalPages":100,"sort":11,"numberOfResults":11629,"searchParamsActivityGuid":"9b09d9ae-5be6-4ade-86d5-4301edecfc93"}
+[comparis] cles d'une annonce : AdId,SiteId,AdStatus,Title,PropertyTypeText,Address,EssentialInformation,Price,Currency,Date,ImageUrl,ImageUrls,Remarks,YearOfConstruction,RenovationYear,IsPremiumListed,ComparisPoints,Partners,PartnerLogoUrl,PartnerName,ContactInformation,PriceDevelopmentDirection,PriceValue,AreaValue,PropertyTypeId,DealType,UseInternalLinks,ShowComparisRating,MemberLogoUrl,ShowDefaultPersonalizationSegment,PriceTypeText,Facts,ViewTypes,PriceType,Coordinate,IsSwapping,Neighborhood
+[comparis] types : Villa | Haus | Wohnung
+  38078142 | auf Anfrage | ["6922 Morcote"] | ["7.5 Zimmer"] | 2026-09-21T03:10:54 | site 228
+  38078136 | 1'080'000 | ["6596 Gordola"] | ["5.5 Zimmer"] | 2026-09-21T03:05:04 | site 228
+  38078130 | 500'000 | ["6749 Sobrio"] | ["2 Zimmer"] | 2026-09-21T02:46:05 | site 228
+  38078126 | 800'000 | ["6596 Gordola"] | ["4.5 Zimmer","121 m²","1. Etage"] | 2026-09-21T02:45:17 | site 228
+  38078123 | 590'000 | ["6648 Minusio"] | ["3 Zimmer"] | 2025-12-28T01:53:56 | site 228
+  38078115 | auf Anfrage | ["6922 Morcote"] | ["23 Zimmer"] | 2026-09-21T02:31:07 | site 228
+  38078110 | 875'000 | ["6600 Muralto"] | ["4.5 Zimmer","115 m²","2. Etage"] | 2026-09-21T02:15:46 | site 228
+  38078105 | 1'650'000 | ["6575 S. Nazzaro"] | ["4.5 Zimmer"] | 2026-09-21T02:15:28 | site 228
+[comparis] annonces avec geo : 0/10
+[liens frequents] 10x /bff/login?returnUrl=/mycomparis-dashboard
+  10x /immobilien/marktplatz/details/show/#
+  8x /immobilien/marktplatz/kanton/tessin/kaufen?page=#
+  7x /bff/login?prompt=create
+[pagination] page= : ?page=1 ?page=1 ?page=2 ?page=3 | pn= : 
+
+#### https://www.comparis.ch/immobilien/marktplatz/kanton/jura/kaufen
+[page] HTTP 200 | 410965 car. | 
+[json embarque] scripts application/json : __NEXT_DATA__
+[json embarque] ld+json : 3 | window.__ : 
+[json embarque] tableaux d'annonces (avec prix) : 1
+  chemin=props.pageProps.initialResultData.resultItems n=10
+  exemple={"AdId":38077834,"SiteId":201,"AdStatus":0,"Title":"*Maison indivuiduelle*","PropertyTypeText":"Haus","Address":["Wydackerweg 1","2813 Ederswiler"],"EssentialInformation":[],"Price":"600'000","Currency":"CHF","Date":"2026-08-29T05:24:11","ImageUrl":"https://mapl-assets.b-cdn.net/immobilien/images/datacollect/5436f585-c0e8-fd4d-bf1e-8b1e091ab493.avif","ImageUrls":["https://mapl-assets.b-cdn.net/immobilien/images/datacollect/5436f585-c0e8-fd4d-bf1e-8b1e091ab493.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/51d12849-120f-a74c-251e-5203552da52e.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/185b99e9-063f-a33c-9368-9135cd23a990.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/d9fc9c59-4d8d-6a84-bad6-bb061ffd650d.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/9400c5cd-e04b-0188-088f-fda283ebddad.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/f6d645e3-89d4-7140-159b-48f24603c0b8.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/b5d36ced-41bd-ba8a-a52a-12b3c0380266.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/546cb0b3-7f01-3af2-0949-55e470153725.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/26b1648e-191b-9369-1f2c-d8976936f3f1.avif
+[comparis] meta scalaires : {"page":0,"totalPages":100,"sort":11,"numberOfResults":1471,"searchParamsActivityGuid":"a5a3f23b-90ef-46dc-bbb1-fbbcf1c19e06"}
+[comparis] cles d'une annonce : AdId,SiteId,AdStatus,Title,PropertyTypeText,Address,EssentialInformation,Price,Currency,Date,ImageUrl,ImageUrls,Remarks,YearOfConstruction,RenovationYear,IsPremiumListed,ComparisPoints,Partners,PartnerLogoUrl,PartnerName,ContactInformation,PriceDevelopmentDirection,PriceValue,AreaValue,PropertyTypeId,DealType,UseInternalLinks,ShowComparisRating,MemberLogoUrl,ShowDefaultPersonalizationSegment,PriceTypeText,Facts,ViewTypes,PriceType,Coordinate,IsSwapping,Neighborhood
+[comparis] types : Haus | Dachwohnung | Mehrfamilienhaus | Loft | Gewerbeobjekt
+  38077834 | 600'000 | ["Wydackerweg 1","2813 Ederswiler"] | [] | 2026-08-29T05:24:11 | site 201
+  38077816 | auf Anfrage | ["Rue Du Temple 91","2800 Delémont"] | ["3.5 Zimmer","97 m²","3. Etage"] | 2026-07-09T05:20:19 | site 201
+  38077713 | 1'260'000 | ["Rue Auguste-Cuenin 5","2900 Porrentruy"] | ["1 Zimmer","377 m²"] | 2026-09-20T17:33:16 | site 201
+  38077603 | 600'000 | ["Rue Des Mayettes 6","2807 Pleigne"] | [] | 2026-08-29T05:37:00 | site 201
+  38075828 | auf Anfrage | ["Espa. industriel 25","2854 Bassecourt"] | ["5 Zimmer"] | 2026-09-20T05:17:12 | site 228
+  38075067 | 600'000 | ["Rue des Mayettes","2807 Pleigne"] | [] | 2026-08-27T04:43:34 | site 228
+  38075029 | 690'000 | ["Chemin Combe la Noire","2350 Saignelégier"] | [] | 2026-09-06T04:35:15 | site 228
+  38072173 | 1'290'000 | ["2800 Delémont"] | ["6 Zimmer","260 m²","5. Etage"] | 2026-08-12T13:09:09 | site 264
+[comparis] annonces avec geo : 0/10
+[liens frequents] 10x /bff/login?returnUrl=/mycomparis-dashboard
+  10x /immobilien/marktplatz/details/show/#
+  8x /immobilien/marktplatz/kanton/jura/kaufen?page=#
+  7x /bff/login?prompt=create
+[pagination] page= : ?page=1 ?page=1 ?page=2 ?page=3 | pn= : 
+
+#### https://www.comparis.ch/immobilien/marktplatz/bulle/kaufen
+[page] HTTP 200 | 399671 car. | 
+[json embarque] scripts application/json : __NEXT_DATA__
+[json embarque] ld+json : 3 | window.__ : 
+[json embarque] tableaux d'annonces (avec prix) : 1
+  chemin=props.pageProps.initialResultData.resultItems n=10
+  exemple={"AdId":38076218,"SiteId":228,"AdStatus":0,"Title":"*Einfamilienhaus*","PropertyTypeText":"Haus","Address":["Chemin de la Poya","1630 Bulle"],"EssentialInformation":[],"Price":"910'000","Currency":"CHF","Date":"2026-09-11T04:17:39","ImageUrl":"https://mapl-assets.b-cdn.net/immobilien/images/datacollect/f984d445-62a8-dfe8-c155-1782a1af3b5d.jpg","ImageUrls":["https://mapl-assets.b-cdn.net/immobilien/images/datacollect/f984d445-62a8-dfe8-c155-1782a1af3b5d.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/27fec44a-3b99-62a3-5efe-2cb78acbd739.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/92d0f0e5-53d5-5647-7ea5-2fb6a30a9310.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/a5bc4079-9146-808f-77c9-2f312c0bc0ee.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/bb00c77e-9514-2f61-11d1-73c60d586c3b.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/6e5bbe37-4392-3d85-ff69-acb285e82540.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/186c3bed-de76-cfc1-41fb-b6ca26582dfc.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/aadd173d-5ef3-f8d3-6fd6-1a67867b9f39.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/7dd5f198-0e4b-f419-065e-d0179b4bcbc9.jpg","https://mapl-
+[comparis] meta scalaires : {"page":0,"totalPages":8,"sort":11,"numberOfResults":77,"searchParamsActivityGuid":"14df0179-3271-457d-90ac-1af7e352c93f"}
+[comparis] cles d'une annonce : AdId,SiteId,AdStatus,Title,PropertyTypeText,Address,EssentialInformation,Price,Currency,Date,ImageUrl,ImageUrls,Remarks,YearOfConstruction,RenovationYear,IsPremiumListed,ComparisPoints,Partners,PartnerLogoUrl,PartnerName,ContactInformation,PriceDevelopmentDirection,PriceValue,AreaValue,PropertyTypeId,DealType,UseInternalLinks,ShowComparisRating,MemberLogoUrl,ShowDefaultPersonalizationSegment,PriceTypeText,Facts,ViewTypes,PriceType,Coordinate,IsSwapping,Neighborhood
+[comparis] types : Haus | Attika | Villa | Wohnung | Maisonette
+  38076218 | 910'000 | ["Chemin de la Poya","1630 Bulle"] | [] | 2026-09-11T04:17:39 | site 228
+  38075991 | 1'695'000 | ["Chemin de la Corna","1630 Bulle"] | [] | 2026-09-11T04:39:33 | site 228
+  38068311 | 2'350'000 | ["1630 Bulle"] | ["7.5 Zimmer","274 m²"] | 2026-09-18T19:34:41 | site 254
+  38065050 | auf Anfrage | ["Chemin de l'Aurore 50","1630 Bulle"] | ["10 Zimmer","190 m²"] | 2026-09-18T15:50:03 | site 251
+  38062440 | 1'695'000 | ["Chemin de la Corna","1630 Bulle"] | [] | 2026-09-08T09:46:33 | site 254
+  38048595 | 4'600'000 | ["1630 Bulle"] | ["10 Zimmer","500 m²"] | 2026-09-16T15:29:26 | site 251
+  38020289 | 930'000 | ["1630 Bulle"] | ["4.5 Zimmer","EG"] | 2026-09-12T04:36:09 | site 228
+  37996743 | 930'000 | ["1630 Bulle"] | ["4.5 Zimmer","149 m²"] | 2026-09-10T10:29:14 | site 251
+[comparis] annonces avec geo : 0/10
+[liens frequents] 10x /bff/login?returnUrl=/mycomparis-dashboard
+  10x /immobilien/marktplatz/details/show/#
+  8x /immobilien/marktplatz/bulle/kaufen?page=#
+  7x /bff/login?prompt=create
+[pagination] page= : ?page=1 ?page=1 ?page=2 ?page=3 | pn= : 
+
+#### https://www.comparis.ch/immobilien/marktplatz/zweisimmen/kaufen
+[page] HTTP 200 | 392197 car. | 
+[json embarque] scripts application/json : __NEXT_DATA__
+[json embarque] ld+json : 3 | window.__ : 
+[json embarque] tableaux d'annonces (avec prix) : 1
+  chemin=props.pageProps.initialResultData.resultItems n=10
+  exemple={"AdId":38070869,"SiteId":200,"AdStatus":0,"Title":"Ehrwürdige Liegenschaft mit viel Potential","PropertyTypeText":"Haus","Address":["3770 Zweisimmen"],"EssentialInformation":["8 Zimmer"],"Price":"920'000","Currency":"CHF","Date":"2026-09-19T05:31:56","ImageUrl":"https://mapl-assets.b-cdn.net/immobilien/images/datacollect/ff8f380d-3936-0a32-10a4-10b28122aef9.avif","ImageUrls":["https://mapl-assets.b-cdn.net/immobilien/images/datacollect/ff8f380d-3936-0a32-10a4-10b28122aef9.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/2e72849a-01b0-55ef-459e-62a4059cd0fe.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/4f1db665-b838-db34-d8a7-b379383c7936.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/43212251-637a-f820-4893-045b0ab47547.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/443d1cec-2421-46db-fbf0-7da29c4feaf6.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/6cb9e911-a12d-438e-54f4-fc2660b1f869.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/31faa1ad-0df1-e052-a5cd-8b02d3bb5cd7.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/3fd35f7b-cbc7-0624-b7f5-a51a0e47c666.avif","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/bc2a0653-c49b-acf8-300e-f3b
+[comparis] meta scalaires : {"page":0,"totalPages":3,"sort":11,"numberOfResults":22,"searchParamsActivityGuid":"969521d2-309c-497f-9e24-d0e6d82a655d"}
+[comparis] cles d'une annonce : AdId,SiteId,AdStatus,Title,PropertyTypeText,Address,EssentialInformation,Price,Currency,Date,ImageUrl,ImageUrls,Remarks,YearOfConstruction,RenovationYear,IsPremiumListed,ComparisPoints,Partners,PartnerLogoUrl,PartnerName,ContactInformation,PriceDevelopmentDirection,PriceValue,AreaValue,PropertyTypeId,DealType,UseInternalLinks,ShowComparisRating,MemberLogoUrl,ShowDefaultPersonalizationSegment,PriceTypeText,Facts,ViewTypes,PriceType,Coordinate,IsSwapping,Neighborhood
+[comparis] types : Haus | Wohnung | Bauland
+  38070869 | 920'000 | ["3770 Zweisimmen"] | ["8 Zimmer"] | 2026-09-19T05:31:56 | site 200
+  38067769 | auf Anfrage | ["3770 Zweisimmen"] | ["6.5 Zimmer","288 m²"] | 2026-09-18T17:37:01 | site 201
+  38055420 | auf Anfrage | ["3770 Zweisimmen"] | ["4.5 Zimmer","136 m²","1. Etage"] | 2025-09-22T17:47:10 | site 30158
+  37885978 | 349'500 | ["Thunstrasse 29c","3770 Zweisimmen"] | ["717 m²"] | 2026-08-25T15:30:08 | site 20592
+  37847805 | 725'000 | ["Bolgengasse 6","3770 Zweisimmen"] | ["4.5 Zimmer","82 m²","1. Etage"] | 2026-08-18T18:29:11 | site 251
+  37794384 | 1'295'000 | ["Eggetlistrasse","3770 Zweisimmen"] | ["6 Zimmer"] | 2026-08-07T18:25:15 | site 254
+  37523110 | 1'750'000 | ["Altenriedstrasse 8","3770 Zweisimmen"] | ["9 Zimmer","229 m²","EG"] | 2026-06-24T05:47:43 | site 200
+  36613143 | 1'120'000 | ["Dorfgasse 9","3770 Zweisimmen"] | ["5.5 Zimmer"] | 2025-01-17T04:37:20 | site 264
+[comparis] annonces avec geo : 0/10
+[liens frequents] 10x /bff/login?returnUrl=/mycomparis-dashboard
+  10x /immobilien/marktplatz/details/show/#
+  7x /bff/login?prompt=create
+[pagination] page= : ?page=1 ?page=1 ?page=2 ?page=1 | pn= : 
