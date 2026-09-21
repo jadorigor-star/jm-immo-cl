@@ -1,4 +1,4 @@
-== Sonde images RealAdvisor 2026-09-21T04:38:49.846Z ==
+== Sonde images RealAdvisor 2026-09-21T04:39:43.929Z ==
 https://realadvisor.ch/fr/acheter/commune-jaun
 HTTP 200 | html 659808 | flux 282265
 [image 0] {"id":"64dd71de-adef-11f1-841f-42010a647018","blurhash":"LGKT#qv|M_-o};E3s8Mc$cIqkDo|","file_name":"CH/64dd71de-adef-11f1-841f-42010a647018","image_hash":"0001011111111111000011111111111100000001111111110000011111111100100000011111000000000001110000000111000111110011011111000111001101111111111100110
@@ -7,11 +7,14 @@ HTTP 200 | html 659808 | flux 282265
 [html contexte 2] ,\"visit_contact_phone_number\":null,\"visit_contact_person\":\"Sven Joss\",\"computed_surface\":109,\"lat\":46.59964,\"lng\":7.23743,\"images\":[{\"id\":\"64dd71de-adef-11f1-841f-42010a647018\",\"blurhash\":\"LGKT#qv|M_-o};E3s8Mc$cIqkDo|\",\"file_name\":\"CH/64dd71de-adef-11f1-841f-42010a647018\",\"image_hash\":\"0001011111111111000011111111111100000001111111110000011111111100
 [flux contexte 1] Immobilien in Belp","agency_contact_address":"Hängelenweg 2, 3123, Belp","agency_contact_phone_number":"+41 31 333 19 19","visit_contact_phone_number":null,"visit_contact_person":"Sven Joss","computed_surface":109,"lat":46.59964,"lng":7.23743,"images":[{"id":"64dd71de-adef-11f1-841f-42010a647018","blurhash":"LGKT#qv|M_-o};E3s8Mc$cIqkDo|","file_name":"CH/64dd71de-adef-11f1-841f-
 [flux contexte 2] umber":"+41 31 333 19 19","visit_contact_phone_number":null,"visit_contact_person":"Sven Joss","computed_surface":109,"lat":46.59964,"lng":7.23743,"images":[{"id":"64dd71de-adef-11f1-841f-42010a647018","blurhash":"LGKT#qv|M_-o};E3s8Mc$cIqkDo|","file_name":"CH/64dd71de-adef-11f1-841f-42010a647018","image_hash":"00010111111111110000111111111111000000011111111100000111111111001000
-[domaines d'images dans le html] {"img.realadvisor.ch":461,"realadvisor.ch":4,"tiles.stadiamaps.com":20,"storage.googleapis.com":6}
-[balises img] <img alt="Jaun" fetchPriority="high" loading="eager" decoding="async" data-nimg="fill" class="object-cover" style="position:absolute;height:100%;width:100%;left:0;top:0;right:0;bottom:0;color:transparent" sizes="(max-width: 480px) 320px, (min-width: 1280px) 1248px, (min-width: 1024px) 992px, (min-width: 768px) 736px, c
-   <img alt="Afficher les biens sur la carte" loading="lazy" decoding="async" data-nimg="fill" class="object-cover" style="position:absolute;height:100%;width:100%;left:0;top:0;right:0;bottom:0;color:transparent" sizes="(max-width: 480px) 320px, (min-width: 1024px) 298px, (min-width: 820px) 736px, (min-width: 736px) 640px
-   <img alt="Afficher les biens sur la carte" loading="lazy" decoding="async" data-nimg="fill" class="object-cover" style="position:absolute;height:100%;width:100%;left:0;top:0;right:0;bottom:0;color:transparent" sizes="(max-width: 480px) 320px, (min-width: 1024px) 298px, (min-width: 820px) 736px, (min-width: 736px) 640px
-   <img alt="Maison individuelle à vendre - 1656 Im Fang" decoding="async" data-nimg="fill" class="h-full w-full rounded-t-sm object-cover lg:rounded-tl-sm lg:rounded-tr-none" style="position:absolute;height:100%;width:100%;left:0;top:0;right:0;bottom:0;color:transparent" sizes="(min-width: 1536px) 370px, (min-width: 1280
-[_next/image] 
-[aggregator-images dans flux] 79
-[indice CDN] aucun
+[img.realadvisor.ch] 342 URL distinctes
+[URL contenant le basename] 0
+   
+[exemples generaux]
+   https://img.realadvisor.ch/_/rs:fill:380:0:1:0/q:60/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2ltZy5yZWFsYWR2aXNvci5jaC9hZ2ctdjIvcGxhY2VzL2NhbnRvbi1mcmlib3VyZy5qcGc=.webp
+   https://img.realadvisor.ch/_/rs:fill:412:0:1:0/q:60/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2ltZy5yZWFsYWR2aXNvci5jaC9hZ2ctdjIvcGxhY2VzL2NhbnRvbi1mcmlib3VyZy5qcGc=.webp
+   https://img.realadvisor.ch/_/rs:fill:600:0:1:0/q:60/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2ltZy5yZWFsYWR2aXNvci5jaC9hZ2ctdjIvcGxhY2VzL2NhbnRvbi1mcmlib3VyZy5qcGc=.webp
+   https://img.realadvisor.ch/_/rs:fill:750:0:1:0/q:60/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2ltZy5yZWFsYWR2aXNvci5jaC9hZ2ctdjIvcGxhY2VzL2NhbnRvbi1mcmlib3VyZy5qcGc=.webp
+   https://img.realadvisor.ch/_/rs:fill:828:0:1:0/q:60/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2ltZy5yZWFsYWR2aXNvci5jaC9hZ2ctdjIvcGxhY2VzL2NhbnRvbi1mcmlib3VyZy5qcGc=.webp
+   https://img.realadvisor.ch/_/rs:fill:992:0:1:0/q:60/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2ltZy5yZWFsYWR2aXNvci5jaC9hZ2ctdjIvcGxhY2VzL2NhbnRvbi1mcmlib3VyZy5qcGc=.webp
+[balise img complete] <img alt="Jaun" fetchPriority="high" loading="eager" decoding="async" data-nimg="fill" class="object-cover" style="position:absolute;height:100%;width:100%;left:0;top:0;right:0;bottom:0;color:transparent" sizes="(max-width: 480px) 320px, (min-width: 1280px) 1248px, (min-width: 1024px) 992px, (min-width: 768px) 736px, calc(100vw - 32px)" srcSet="https://img.realadvisor.ch/_/rs:fill:380:0:1:0/q:60/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2ltZy5yZWFsYWR2aXNvci5jaC9hZ2ctdjIvcGxhY2VzL2NhbnRvbi1mcmlib3VyZy5qcGc=.webp 380w, https://img.realadvisor.ch/_/rs:fill:412:0:1:0/q:60/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2ltZy5yZWFsYWR2aXNvci5jaC9hZ2ctdjIvcGxhY2VzL2NhbnRvbi1mcmlib3VyZy5qcGc=.webp 412w, https://img.realadvisor.ch/_/rs:fill:600:0:1:0/q:60/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2ltZy5yZWFsYWR2aXNvci5jaC9hZ2ctdjIvcGxhY2VzL2NhbnRvbi1mcmlib3VyZy5qcGc=.webp 600w, https://img.realadvisor.c
