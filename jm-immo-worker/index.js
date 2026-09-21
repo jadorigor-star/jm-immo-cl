@@ -1,5 +1,5 @@
-// BUILD-MARKER 1789951660 padding-4700: be1vjutgokdb18pxhvdt4gjhtq5ftcyo6fkdlxauh5tctghnqe9c19hcb8cljj993pktwutoc08tak9sjn3c820v00u43ln23xveodytfb3ieshxxzbovjm8tye269feqrhl19lpy3qv5ov8vuz9n4j81fpkgccy7zjjj720ynhrvxjfcu3oyyyoi78x0y7ganj714prmxfvhbfu699nhdyqpedz6yfq32y5duburyih69vvtmxf1igndx5bvx31y0gfpb1zwseyttenmffvcle2ywjfiey28i3xzn891tvmffy8183ppp8ymvid9o3o3la7glivderv47r5bl4wltdrauxoc2qeyb4wbvc6hhhapjwjx7b1t3woxhbv96zpq7ix3gjs2u6r9k2wmihc6nynf5z09jdcu0ts75f2q92ybnr6mtis5t8pwsyy52uf4hnq5i3adm7dwz61myaitzbku10kq397wxkr0qlysd2pvwtf5nd9n5lkcum64v1kphyntfjwph0vzu6o4vx974qevwy16faoztyex5vep2ckt2xu9rgls6rd96nzd6a9k4o5dhrmsp24bxtn68xtogpv3lgozenac24kuj7i5b4jqbh06wrt4auibit47ubg5910un0ozg41j87vsft7r7fwcuoew17mn4myeqmbwcv942wyq8gwsqugjdvmd1yp9rushc7j3nl6dkw67o5z9a3h44i75ou5jls9fs0k5d01gxectn7g9k0v71tyg7w1wzz6lgvpao4drnklsbn9m4as0yus75pp55frmmeth8u30dgm4ldekidfnnw2bw9r5vrei11mjtn7etu6nikcs21anzp09zyo4dhngexzh10djxj3lrigziphebc2eb8uccnl14n774w7cukh9r7125ddopf7skekvy23x5b9uaup3hklyptvvhgrd8ynk226l1yaibbfuvrj5l7ktbbsoar4o61vq9popvaeqd7nyaxc0jtnfk34sqehaysrw4luz8rm7f8gh5hgt88wflp6picbox466un8nrbspnbdk18sai24quglt7apx0680ekklxmfucigr9pd9w0r0lxxvro2xv2vv2v1g57v8g8x7jrde5la4k2iz5pmug772o9nphjp9beigm6efqtdmlsmg0gokyb6znt5jn5nmq76lq1gt2f6
-// VERSION_MARKER_JMIMMO_20260921_PURGE_LOTS_90_v48
+// BUILD-MARKER 1789953584 padding-4700: fy2mfa4cp7zv6fcdcj1htudlrh46r6thr9jdqhn0z1khbj3zppikcx7aeshhnewigof3rwd4qubzmv831fv3lc7jplrnpxbsij4d6rrpblzy4xny0gkna2zcy12r5ian7xrhu5gy3gaigwz06axfvk9hlxode8ul5hjbms6ye2pd6tb8q4ixfpq7au02uh11lujcm840q66w404psnn36hd8ttu8mpovkc0b7vfsqk23yjgmffgffhwoynhjuy4xgmb1h04e5d6bglcosr7n3x1myq4uu8mv4bl4k7l0rc9aomntof1oxgi0u4a1xi6gz7lkdh9cocq3lr3za25te8ofje3zl3ozto88alpaej5a7fbl98jflek7evh37qa0mwtbm0asdf0w4c8ik5yh98zv4enb9k5z4l5euq7pcywh5l3v86xvqcvrdr0dl4n3p2zbq9ill4l61v9k9bjkuzm5ruj1k36rju8udbwdii2h2x7h012ru3ldp5xpk9n6jfm38q0579o6t0wzzhhlpqds8aktabw0s7itnc50gmty2j0zudl36l9p5bty7f5bwu3sh5fhhid4i9hm4pfxo1s6yqw32upfvhp8lpel0pk38f0xvo7h9pks6fy14mf11i235jmgrtsffx9ny8jfdcvslrbnbeqttewsbui4k9e8y9x8ikdgiwurxas13mt9jb15hr6la5wi2rvjc2rrlly6y14zpx7rcsvbe2zfxnc2g44ulmty1gwcstfirx3hzlo6cpvq7t6vqs7rgi5m0c5mvb38d6ghpp2telp2srq8romxrc87i1zshd7dj5cu9gcoklse5rddcsh5774z0mkaxpy0qvupbskobismam3lp3rkgiukzwumo8oaw68qtywddlobzbenn0101zv8clm7aw3x95dtxmztr6i4is4yrxqzv04tn8k0bsorogw1x3ob4wh9uipn77azvdy4aekfutzkdv25povnt7n9nuk9p88yjzc16587zueaex49ggnsc2oubgq4uo20qyy1vi052r1t3lyf64q8cn7zw77nxw66p5lkfk8d2bzk59lqlkr6zp6b1v1onds6fi8flpn9tj4hcitjoqp9xn963pzhgap5yizp2l5i5s4ijb68n53shfzh0imv9wbdiqkk01o7n36qpi85h2vz8dbkdcji73v7
+// VERSION_MARKER_JMIMMO_20260921_COMPARIS_EXTERNE_v49
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -595,7 +595,65 @@ function extractJsonLdGeneric(html) {
   }
   return out;
 }
+function extractComparisNextData(html) {
+  const m = html.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
+  if (!m) return [];
+  let items;
+  try {
+    const j = JSON.parse(m[1]);
+    items = j.props.pageProps.initialResultData.resultItems;
+  } catch (e) {
+    return [];
+  }
+  if (!Array.isArray(items)) return [];
+  const out = [];
+  for (const it of items) {
+    if (!it || !it.AdId) continue;
+    const price = parseFloat(String(it.Price == null ? "" : it.Price).replace(/[^0-9.]/g, ""));
+    if (!isFinite(price) || price <= 0) continue;
+    const typeTxt = String(it.PropertyTypeText || "").toLowerCase();
+    let type = null;
+    if (/wohnung|attika|maisonette|loft|studio|duplex/.test(typeTxt)) type = "Appartement";
+    else if (/haus|villa|chalet|rustico|bauernhof|landhaus|bungalow/.test(typeTxt)) type = "Maison";
+    if (!type) continue;
+    const adr = Array.isArray(it.Address) ? it.Address.filter(Boolean).map(String) : [];
+    if (!adr.length) continue;
+    const locality = adr[adr.length - 1].replace(/^\d{4}\s*/, "").trim();
+    if (!locality) continue;
+    let rooms = null, surface = null;
+    for (const e of Array.isArray(it.EssentialInformation) ? it.EssentialInformation : []) {
+      const t = String(e);
+      let mm = t.match(/^([\d.,]+)\s*Zimmer/i);
+      if (mm) rooms = parseFloat(mm[1].replace(",", "."));
+      mm = t.match(/^([\d'\u2019.]+)\s*m\u00B2/i);
+      if (mm) surface = parseFloat(mm[1].replace(/['\u2019]/g, ""));
+    }
+    let title = String(it.Title || "").trim();
+    if (title.length > 3 && title === title.toUpperCase()) title = title.charAt(0) + title.slice(1).toLowerCase();
+    const description = String(it.Remarks || "").replace(/<br\s*\/?>/gi, " ").replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim().slice(0, 1500);
+    out.push({
+      external_id: String(it.AdId),
+      price, locality, rooms, surface,
+      url: "https://www.comparis.ch/immobilien/marktplatz/details/show/" + it.AdId,
+      address: adr.length > 1 ? adr.join(", ") : null,
+      type,
+      title: title || null,
+      description: description || null,
+      image_url: it.ImageUrl ? String(it.ImageUrl) : null,
+      date_publication: it.Date ? String(it.Date).slice(0, 30) : null,
+      geo_lat: null, geo_lon: null
+    });
+  }
+  return out;
+}
 function extractSingleGeneric(html, config, extra) {
+  if (config.next_data === "comparis") {
+    return extractComparisNextData(html).filter((r) => {
+      if (!r.price || r.price < (config.price_min || 5e4)) return false;
+      if (config.locality_lookup && r.locality) r.locality = findKnownLocalityGeneric(r.locality, extra);
+      return !!r.locality;
+    });
+  }
   if (config.try_json_ld) {
     const ldResults = extractJsonLdGeneric(html).filter((r) => {
       if (!r.price || r.price < (config.price_min || 5e4)) return false;
@@ -831,7 +889,9 @@ async function ingest(db, fetchFn, opts) {
   const report = [];
   const extra = await loadExtraLocalities(db);
   const sourcesRes = await db.prepare("SELECT * FROM sources WHERE enabled=1 ORDER BY id ASC").all();
-  const allSources = sourcesRes.results;
+  const allSources = sourcesRes.results.filter((s0) => {
+    try { return !JSON.parse(s0.config_json || "{}").externe; } catch (e) { return true; }
+  });
   if (allSources.length === 0) return report;
   const offset = (await getSourceOffset(db)) % allSources.length;
   const rotated = allSources.slice(offset).concat(allSources.slice(0, offset));
@@ -2560,14 +2620,18 @@ var index_default = {
         return json(r);
       }
       if (url.pathname === "/api/plan-collecte") {
-        const r = await db.prepare("SELECT id, name, config_json FROM sources WHERE enabled=1 ORDER BY id").all();
+        const r = await db.prepare("SELECT id, name, config_json, last_checked FROM sources WHERE enabled=1 ORDER BY id").all();
         const plan = [];
         for (const row of r.results) {
           let c = {};
           try { c = JSON.parse(row.config_json || "{}"); } catch (e) { continue; }
           const pages = c.mode === "two_step" ? (c.list_url ? [c.list_url] : []) : (Array.isArray(c.urls) ? c.urls : (c.list_url ? [c.list_url] : []));
           if (!pages.length) continue;
-          plan.push({ name: row.name, mode: c.mode || "single", pages, max_details: c.max_details || 20, link_base: c.link_base || null, render: !!c.render, attente: c.render_wait || null });
+          if (c.pagination && !url.searchParams.get("force") && row.last_checked) {
+            const heures = c.min_interval_hours || 6;
+            if (Date.now() - Date.parse(row.last_checked) < heures * 36e5) continue;
+          }
+          plan.push({ name: row.name, mode: c.mode || "single", pages, max_details: c.max_details || 20, link_base: c.link_base || null, render: !!c.render, attente: c.render_wait || null, pagination: c.pagination || null });
         }
         return json({ sources: plan });
       }

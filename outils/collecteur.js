@@ -48,6 +48,53 @@ async function versWorker(charge) {
   try { return JSON.parse(t); } catch (e) { return { error: t.slice(0, 120) }; }
 }
 
+
+// --- Sources paginees avec tri par prix (Comparis) -----------------------------
+function lireComparis(html) {
+  const m = html.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
+  if (!m) return null;
+  try {
+    const d = JSON.parse(m[1]).props.pageProps.initialResultData;
+    return { liste: d.resultItems || [], totalPages: d.totalPages || 1 };
+  } catch (e) { return null; }
+}
+function nettoyer(txt, max) {
+  return String(txt || "").replace(/<br\s*\/?>/gi, " ").replace(/<[^>]+>/g, " ").replace(/&[a-z#0-9]+;/gi, " ").replace(/[<>&]/g, " ").replace(/\s+/g, " ").trim().slice(0, max);
+}
+function coquilleComparis(liste) {
+  // On n'envoie au worker que l'utile, sans entites ni balises : le HTML complet pese 400 Ko.
+  const items = liste.map((it) => ({
+    AdId: it.AdId, Title: nettoyer(it.Title, 200), PropertyTypeText: it.PropertyTypeText,
+    Address: (it.Address || []).map((a) => nettoyer(a, 120)), EssentialInformation: (it.EssentialInformation || []).map((a) => nettoyer(a, 40)),
+    Price: String(it.Price || "").replace(/[^0-9]/g, ""), Date: it.Date, ImageUrl: it.ImageUrl, Remarks: nettoyer(it.Remarks, 1200)
+  }));
+  return '<script id="__NEXT_DATA__" type="application/json">' + JSON.stringify({ props: { pageProps: { initialResultData: { resultItems: items } } } }) + "</script>";
+}
+async function collecterPaginee(src) {
+  const pg = src.pagination;
+  let stocke = 0, pages = 0, erreur = null;
+  for (const base of src.pages) {
+    for (let p = 0; p < (pg.max_pages || 100); p++) {
+      const url = p === 0 ? base : base + (base.includes("?") ? "&" : "?") + (pg.param || "page") + "=" + p;
+      let rep;
+      try { rep = await telecharger(url); } catch (e) { erreur = "reseau : " + String(e.message).slice(0, 80); break; }
+      pages++;
+      if (rep.status !== 200) { erreur = "HTTP " + rep.status; break; }
+      const lu = lireComparis(rep.html);
+      if (!lu) { erreur = "JSON de page absent"; break; }
+      if (!lu.liste.length) break;
+      const res = await versWorker({ source_name: src.name, url, html: coquilleComparis(lu.liste), defer: true });
+      stocke += res.stored || 0;
+      const prix = lu.liste.map((it) => parseInt(String(it.Price || "").replace(/[^0-9]/g, ""), 10)).filter((n) => n > 0);
+      // tri croissant : quand le plus bas prix de la page depasse le plafond, la suite aussi
+      if (prix.length && Math.min.apply(null, prix) > (pg.stop_above_price || 6e5)) break;
+      if (p >= lu.totalPages - 1) break;
+      await pause(pg.pause_ms || 900);
+    }
+  }
+  return { stocke, pages, erreur };
+}
+
 (async () => {
   const plan = (await (await fetch(BASE + "/api/plan-collecte")).json()).sources || [];
   console.log("sources a traiter : " + plan.length);
@@ -56,6 +103,10 @@ async function versWorker(charge) {
   for (const src of plan.slice(0, MAX_SOURCES)) {
     let stocke = 0, erreur = null, pages = 0;
     try {
+      if (src.pagination) {
+        const r = await collecterPaginee(src);
+        stocke = r.stocke; pages = r.pages; erreur = r.erreur;
+      } else
       for (const page of src.pages) {
         const rep = src.render ? await telechargerRendu(page, src.attente) : await telecharger(page);
         pages++;
