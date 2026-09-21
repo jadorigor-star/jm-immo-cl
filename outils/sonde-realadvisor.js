@@ -22,11 +22,11 @@ function objetApres(s, idx) {
     let n = 0, i = -1; while ((i = src.indexOf(base, i + 1)) >= 0 && n < 2) { n++; console.log("[" + nom + " contexte " + n + "] " + src.slice(Math.max(0, i - 260), i + 120).replace(/\s+/g, " ")); }
     if (n === 0) console.log("[" + nom + "] basename absent");
   }
-  // autres indices : domaines d'images, balises img, srcset
-  const doms = {}; for (const x of h.matchAll(/https?:\/\/([a-z0-9.-]+\.[a-z]{2,})\/[^"'\s)]*\.(?:jpg|jpeg|png|webp)/gi)) doms[x[1]] = (doms[x[1]] || 0) + 1;
-  console.log("[domaines d'images dans le html] " + JSON.stringify(doms));
-  const imgs = [...h.matchAll(/<img[^>]+>/g)].slice(0, 4).map((x) => x[0].slice(0, 320)); console.log("[balises img] " + imgs.join("\n   "));
-  const nx = [...h.matchAll(/\/_next\/image\?[^"'\s]+/g)].slice(0, 3).map((x) => x[0].slice(0, 260)); console.log("[_next/image] " + nx.join("\n   "));
-  const bk = [...f.matchAll(/aggregator-images/g)].length; console.log("[aggregator-images dans flux] " + bk);
-  const i2 = f.search(/(cdn|images?|media|assets)[.a-z-]*realadvisor|imgproxy|cloudfront|imagekit|cloudinary/i); console.log("[indice CDN] " + (i2 >= 0 ? f.slice(Math.max(0, i2 - 120), i2 + 200).replace(/\s+/g, " ") : "aucun"));
+  const urlsImg = [...new Set([...h.matchAll(/https:\/\/img\.realadvisor\.ch\/[^"'\s,)\\]+/g)].map((x) => x[0].replace(/&amp;/g, "&")))];
+  console.log("[img.realadvisor.ch] " + urlsImg.length + " URL distinctes");
+  const liees = urlsImg.filter((u) => u.includes(base));
+  console.log("[URL contenant le basename] " + liees.length + "\n   " + liees.slice(0, 4).join("\n   "));
+  console.log("[exemples generaux]\n   " + urlsImg.slice(0, 6).join("\n   "));
+  const tagOk = [...h.matchAll(/<img[^>]+img\.realadvisor\.ch[^>]*>/g)].slice(0, 1).map((x) => x[0].replace(/&amp;/g, "&").slice(0, 900));
+  console.log("[balise img complete] " + tagOk.join(""));
 })();
