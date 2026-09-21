@@ -70,6 +70,22 @@ function coquilleComparis(liste) {
   }));
   return '<script id="__NEXT_DATA__" type="application/json">' + JSON.stringify({ props: { pageProps: { initialResultData: { resultItems: items } } } }) + "</script>";
 }
+
+// Signature de navigateur complete et en-tetes usuels pour les sources paginees
+const ENTETES_COMPLETS = {
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+  "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+  "Accept-Language": "fr-CH,fr;q=0.9,de;q=0.8,it;q=0.7"
+};
+async function telechargerComplet(url) {
+  const ctrl = new AbortController();
+  const tmo = setTimeout(() => ctrl.abort(), 25000);
+  try {
+    const r = await fetch(url, { headers: ENTETES_COMPLETS, redirect: "follow", signal: ctrl.signal });
+    const html = await r.text();
+    return { status: r.status, html, server: r.headers.get("server") };
+  } finally { clearTimeout(tmo); }
+}
 async function collecterPaginee(src) {
   const pg = src.pagination;
   let stocke = 0, pages = 0, erreur = null;
@@ -77,9 +93,13 @@ async function collecterPaginee(src) {
     for (let p = 0; p < (pg.max_pages || 100); p++) {
       const url = p === 0 ? base : base + (base.includes("?") ? "&" : "?") + (pg.param || "page") + "=" + p;
       let rep;
-      try { rep = await telecharger(url); } catch (e) { erreur = "reseau : " + String(e.message).slice(0, 80); break; }
+      try { rep = await telechargerComplet(url); } catch (e) { erreur = "reseau : " + String(e.message).slice(0, 80); break; }
       pages++;
-      if (rep.status !== 200) { erreur = "HTTP " + rep.status; break; }
+      if (rep.status !== 200) {
+        erreur = "HTTP " + rep.status + " (" + (rep.server || "-") + ") " + String(rep.html || "").replace(/\s+/g, " ").slice(0, 90);
+        console.log("   refus " + url + " -> " + erreur);
+        break;
+      }
       const lu = lireComparis(rep.html);
       if (!lu) { erreur = "JSON de page absent"; break; }
       if (!lu.liste.length) break;
