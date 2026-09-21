@@ -1,5 +1,5 @@
-// BUILD-MARKER 1789445962 padding-4700: m60pcg58w0tqlcancvbmtg9kdpo6h7jzyi4i95c3hgil1fxpk75gewaie8nvqk2w4urtqomopg4v9y31ea3rlco3cflbnyjq7gk28zaq1sj09ajog8fgpcydu5ithfveluxae5w2h6dznfniavzt1twk7toz4g643zpompommtw031r6rh57yq3yh5sqxo3lpu0n7qa761dmrci15koio5mhpijrmcbssz2z7m5eczoaj9o88g8lmitijgy8td81nekys75gqbcke4byscw4bpc2ez3ozorff2b17nry5hedaib6riuy7wx6rakz04x68zh9td1g4sqv58omvd0rg9pnu3ox680n9ppvsf9kiv2rkipytyx1js3prr2ds4dd4a43jx0k1vvtdlpcfgfmb2guotuuw6rdgph8th7cjdejny1xraqcrfabvwdayy8d0ntvuo94shn3wjn0id6arc1giuk2rl08r4hdcimxa08esrpxk3kzfz38vn86nmeatpx4gwxjj1jl6uph4hbm2lgfxg4eh0je8o5tdns0gmgx9yj5ie1y9qcwzzpyvpaaayqa88chj8y8kshvrlwm5cbzl2vgjf6vy9wtftalzehem94g701endra1fqczuvueryi7ru4sokqlei3agt01y0yb5q7ukf6obdolu7514hkvtvvos997na4fcbg8av2wfhjdc167t1newcxzcwcz9yq9ftangshr1xzg8pfbti1wlfdew6y4er6g5kqcvacapdejhdv4vdl5pm1vdowawrubgucyoj7tiemjpi0omullwdj10lkosn9im6w0f6alr1hyp89nymxujgglt7peqyvy71fo7ejanu66qq8tijgrkxzdszgn8y9u0jlcijfacfo7tkx128hl343h4yioacjva08jf8a1ue8fmhvepbt9ukei5rtzkqp96r6jsskam53a8x1wfcklhod30gwyv17evs94ldpvfc9pi7flpzt0pd4ak9gem5vedta3nxkjbxdtwb2m31kcqlimm3q5lwy22dj05g43von0uytndw50hzvh30f61v4vjftncawemmee59q1dl6dibca365f4d9loresye5rj905fzvro08pguoj8wlaxn0nn0z3iwku4dy0yuh1ouknc18nxeqnry354111ebg4f9lima56ev1xp8n
-// VERSION_MARKER_JMIMMO_20260915_EXCLUSIONS_DEFINITIVES_v47
+// BUILD-MARKER 1789951660 padding-4700: be1vjutgokdb18pxhvdt4gjhtq5ftcyo6fkdlxauh5tctghnqe9c19hcb8cljj993pktwutoc08tak9sjn3c820v00u43ln23xveodytfb3ieshxxzbovjm8tye269feqrhl19lpy3qv5ov8vuz9n4j81fpkgccy7zjjj720ynhrvxjfcu3oyyyoi78x0y7ganj714prmxfvhbfu699nhdyqpedz6yfq32y5duburyih69vvtmxf1igndx5bvx31y0gfpb1zwseyttenmffvcle2ywjfiey28i3xzn891tvmffy8183ppp8ymvid9o3o3la7glivderv47r5bl4wltdrauxoc2qeyb4wbvc6hhhapjwjx7b1t3woxhbv96zpq7ix3gjs2u6r9k2wmihc6nynf5z09jdcu0ts75f2q92ybnr6mtis5t8pwsyy52uf4hnq5i3adm7dwz61myaitzbku10kq397wxkr0qlysd2pvwtf5nd9n5lkcum64v1kphyntfjwph0vzu6o4vx974qevwy16faoztyex5vep2ckt2xu9rgls6rd96nzd6a9k4o5dhrmsp24bxtn68xtogpv3lgozenac24kuj7i5b4jqbh06wrt4auibit47ubg5910un0ozg41j87vsft7r7fwcuoew17mn4myeqmbwcv942wyq8gwsqugjdvmd1yp9rushc7j3nl6dkw67o5z9a3h44i75ou5jls9fs0k5d01gxectn7g9k0v71tyg7w1wzz6lgvpao4drnklsbn9m4as0yus75pp55frmmeth8u30dgm4ldekidfnnw2bw9r5vrei11mjtn7etu6nikcs21anzp09zyo4dhngexzh10djxj3lrigziphebc2eb8uccnl14n774w7cukh9r7125ddopf7skekvy23x5b9uaup3hklyptvvhgrd8ynk226l1yaibbfuvrj5l7ktbbsoar4o61vq9popvaeqd7nyaxc0jtnfk34sqehaysrw4luz8rm7f8gh5hgt88wflp6picbox466un8nrbspnbdk18sai24quglt7apx0680ekklxmfucigr9pd9w0r0lxxvro2xv2vv2v1g57v8g8x7jrde5la4k2iz5pmug772o9nphjp9beigm6efqtdmlsmg0gokyb6znt5jn5nmq76lq1gt2f6
+// VERSION_MARKER_JMIMMO_20260921_PURGE_LOTS_90_v48
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -1035,10 +1035,20 @@ async function storeListing(db, srcRow, rl, extra) {
 }
 
 async function menageRetention(db, lotMax) {
+  const rapport = await menageRetentionLot(db, lotMax);
+  try {
+    if (rapport.erreur || rapport.biens_effaces || rapport.exclusions_effacees) {
+      await db.prepare("INSERT INTO app_config (key, value, updated_at) VALUES ('last_menage', ?, ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=excluded.updated_at").bind(JSON.stringify(rapport), new Date().toISOString()).run();
+    }
+  } catch (e) {
+  }
+  return rapport;
+}
+async function menageRetentionLot(db, lotMax) {
   // Regle de retention : on garde les biens sous plafond, les favoris,
   // et les exclusions de moins de 14 jours. Le reste est efface.
   const rapport = { biens_effaces: 0, exclusions_effacees: 0, plafond: null };
-  const LOT = lotMax || 120;
+  const LOT = Math.max(1, Math.min(parseInt(lotMax, 10) || 90, 90)); // D1 : 100 variables liees maximum par requete
   try {
     const pf = await db.prepare("SELECT value FROM app_config WHERE key='prix_plafond'").all();
     if (!pf.results.length) return rapport;
@@ -2572,7 +2582,7 @@ var index_default = {
         return json(Object.assign({ ok: true }, stats));
       }
       if (url.pathname === "/api/menage") {
-        const r = await menageRetention(db, parseInt(url.searchParams.get("lot") || "120", 10));
+        const r = await menageRetention(db, parseInt(url.searchParams.get("lot") || "90", 10));
         return json(r);
       }
       if (url.pathname === "/api/search") {
@@ -2715,17 +2725,18 @@ var index_default = {
       try {
         if (isMaintenance) {
           await cleanupStaleListings(env.DB, 14);
-          for (let i = 0; i < 6; i++) {
-            const r = await menageRetention(env.DB, 120);
+          for (let i = 0; i < 8; i++) {
+            const r = await menageRetention(env.DB, 90);
             if (!r.biens_effaces) break;
           }
           await recomputeFull(env.DB, env);
         } else {
           await ingest(env.DB, fetch.bind(globalThis), { budget: 45, maxSources: 6, maxPerSource: 6 });
         }
+        await env.DB.prepare("INSERT INTO app_config (key, value, updated_at) VALUES ('last_cron_ok', ?, ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=excluded.updated_at").bind(cron || "?", new Date().toISOString()).run();
       } catch (e) {
         try {
-          await env.DB.prepare("INSERT INTO app_config (key, value) VALUES ('last_cron_error', ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").bind(String(e && e.message ? e.message : e).slice(0, 300)).run();
+          await env.DB.prepare("INSERT INTO app_config (key, value) VALUES ('last_cron_error', ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").bind((new Date().toISOString() + " | " + (cron || "?") + " | " + String(e && e.message ? e.message : e)).slice(0, 300)).run();
         } catch (e2) {
         }
       }
