@@ -1,0 +1,21 @@
+== Diagnostic photos 2026-09-21T08:30:43.758Z ==
+https://realadvisor.ch/fr/acheter/commune-jaun -> HTTP 200 | annonces 9 | forme du champ images : {"tableau(file_name)":9}
+https://realadvisor.ch/fr/acheter/ville-bulle -> HTTP 200 | annonces 24 | forme du champ images : {"tableau(file_name)":24}
+
+[image] CH/64dd71de-adef-11f1-841f-42010a647018 (bucket aggregator-images)
+  imgproxy sans Referer : HTTP 200 | image/webp | 28844 octets | debut 52494646
+  imgproxy Referer app  : HTTP 200 | image/webp | 28844 octets | debut 52494646
+  imgproxy Referer site : HTTP 200 | image/webp | 28844 octets | debut 52494646
+  source GCS directe    : HTTP 200 | image/jpeg | 101838 octets | debut ffd8ffe0
+
+[image] CH/856cd2be-7ba9-11f1-bc1b-42010a647018 (bucket aggregator-images)
+  imgproxy sans Referer : HTTP 200 | image/webp | 42206 octets | debut 52494646
+  imgproxy Referer app  : HTTP 200 | image/webp | 42206 octets | debut 52494646
+  imgproxy Referer site : HTTP 200 | image/webp | 42206 octets | debut 52494646
+  source GCS directe    : HTTP 200 | image/avif | 197356 octets | debut 00000018
+
+[image] CH/7392731e-8a7c-11f1-a529-42010a647018 (bucket aggregator-images)
+  imgproxy sans Referer : HTTP 200 | image/webp | 29698 octets | debut 52494646
+  imgproxy Referer app  : HTTP 200 | image/webp | 29698 octets | debut 52494646
+  imgproxy Referer site : HTTP 200 | image/webp | 29698 octets | debut 52494646
+  source GCS directe    : HTTP 200 | image/avif | 76914 octets | debut 00000018
