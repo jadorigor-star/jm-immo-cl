@@ -1,0 +1,30 @@
+name: Decouverte RealAdvisor
+
+"on":
+  workflow_dispatch:
+
+jobs:
+  decouvrir:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Decouvrir
+        run: |
+          mkdir -p diagnostic
+          node outils/decouverte-realadvisor.js > diagnostic/decouverte-realadvisor.txt 2>&1 || true
+          head -c 2500 diagnostic/decouverte-realadvisor.txt
+      - name: Publier
+        if: always()
+        run: |
+          git config user.name "JM Immo CI"
+          git config user.email "ci@jm-immo.local"
+          git add -f diagnostic/decouverte-realadvisor.txt diagnostic/realadvisor-urls.json outils/decouverte-realadvisor.js || true
+          git commit -q -m "Decouverte RealAdvisor [skip ci]" || echo "rien a committer"
+          git pull --rebase -q || true
+          git push || true
