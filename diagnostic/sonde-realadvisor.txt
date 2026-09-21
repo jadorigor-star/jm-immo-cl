@@ -1,0 +1,21 @@
+== Sonde RealAdvisor 2026-09-21T01:25:58.344Z ==
+https://realadvisor.ch/fr/acheter/canton-fribourg
+HTTP 200 | 1155663 car.
+[ld+json 0] @type=BreadcrumbList | items=3 | {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https://realadvisor.ch/fr","name":"Home"}},{"@type":"ListItem","position":2,"item":{"@id":"https://realadvisor.ch/fr/acheter","name":"Acheter"}},{"@type":"ListItem","position":3,"item":{"@id":"https://realadvisor.ch/fr/achete
+   premier: {"@type":"ListItem","position":1,"item":{"@id":"https://realadvisor.ch/fr","name":"Home"}}
+[ld+json 1] @type=FAQPage | items=- | {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Où peut-on acheter un bien immobilier pour pas cher dans le Canton de Fribourg ?","acceptedAnswer":{"@type":"Answer","text":"La localité la moins chère pour acheter un bien immobilier dans le Canton de Fribourg est Plasselb avec un prix médian au m² de CHF 
+[rsc] self.__next_f.push : 157 | __NEXT_DATA__ : false
+[liens] 2x https://realadvisor.ch/fr/acheter/canton-fribourg
+  2x https://realadvisor.ch/en/buy/canton-fribourg
+  2x /fr/immobilier-a-vendre
+  2x /fr
+  2x /fr/acheter/#-plasselb
+  2x /fr/acheter/commune-plaffeien
+  2x /fr/acheter/commune-haut-intyamon
+  2x /fr/acheter/#-greng
+  2x /fr/acheter/#-muntelier
+  2x /fr/acheter/commune-mont-vully
+[contexte CHF] ;$RC("B:0","S:0")</script><div hidden id="S:1"><section class="mx-auto my-12 px-4 md:container xl:my-20 2xl:max-w-7xl"><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Où peut-on acheter un bien immobilier pour pas cher dans le Canton de Fribourg ?","acceptedAnswer":{"@type":"Answer","text":"La localité la moins chère pour acheter un bien immobilier dans le Canton de Fribourg est Plasselb avec un prix médian au m² de CHF 4'838 / m². D'autres localités comme Plaffeien à CHF 5'396 par m² et Haut-Intyamon à CHF 5'492 par m² offrent également des options abordables."}},{"@type":"Question","name":"Quelles sont les villes les plus chères pour acheter un bien immobilier dans le Canton de Fribourg ?","acceptedAnswer":{"
+[prix CHF visibles] 18
+[cles prix JSON] {}
+[tableau candidat] \"listings\":[\"$3b:0:props:children:2:props:children:1:props:children:1:props:children:0:props:children:0:props:listing\",\"$73:props:listing\",\"$74:props:listing\",\"$75:props:listing\",\"$76:props:listing\",\"$77:props:listing\",\"$78:props:listing\",\"$79:props:listing\",\"$7a:props:listing\",\"$7b:props:listing\",\"$7c:props:listing\",\"$7d:props:listing\",\"$7e:props:listing\",\"$7f:props:listing\",\"$80:props:listing\",\"$81:props:listing\",\"$82:props:listing\",\"$83:props:listing\",\"$84:props:listing\",\"$85:props:listing\",\"$86:props:listing\",\"$87:props:listing\",\"$88:props:listing\",\"$89:props:listing\"],\"locale\":\"fr\"}]}]\n"])</script><script>self.__next_f.push([1,"4d:[\"$\",\"section\",null,{\"className\":\"mx-auto my-12 px-4 md:container xl:my-20 2xl:max-w-7xl\",\"children\":[[\"$\",\"script\",null,{\"type\":\"application/ld+json\",\"children\":\"{\\\"@context\\\"
