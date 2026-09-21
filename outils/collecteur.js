@@ -184,7 +184,7 @@ function coquilleRa(liste, html, flux, chemin, base, photos) {
 }
 async function collecterRsc(src) {
   const base = "https://realadvisor.ch";
-  let stocke = 0, pages = 0, echecs = 0, dernier = null, tot = 0, img = 0, det = 0, geo = 0, photos = null;
+  let stocke = 0, pages = 0, echecs = 0, dernier = null, tot = 0, img = 0, det = 0, geo = 0, photos = null, errWorker = 0, errDefinitives = 0, premiereErr = null, envoyes = 0;
   for (const chemin of src.pages) {
     let rep;
     try { rep = await telechargerComplet(base + chemin); } catch (e) { echecs++; dernier = "reseau : " + String(e.message).slice(0, 60); await pause(src.pause_ms || 1500); continue; }
@@ -204,12 +204,21 @@ async function collecterRsc(src) {
         }
       }
       const co = coquilleRa(liste, rep.html, flux, chemin, base, photos === true);
-      const res = await versWorker({ source_name: src.name, url: base + chemin, html: co.html, defer: true });
-      stocke += res.stored || 0; tot += co.n; img += co.nImg; det += co.nDetail;
+      const charge = { source_name: src.name, url: base + chemin, html: co.html, defer: true };
+      let res = await versWorker(charge);
+      if (res.error || res.stored === undefined) {
+        // le worker a echoue (limite de CPU, ecriture refusee...) : on journalise la cause et on retente une fois
+        errWorker++; if (!premiereErr) premiereErr = chemin + " -> " + JSON.stringify(res).slice(0, 200);
+        await pause(3000);
+        res = await versWorker(charge);
+        if (res.error || res.stored === undefined) { errDefinitives++; console.log("   worker en echec sur " + chemin + " : " + JSON.stringify(res).slice(0, 160)); }
+      }
+      stocke += res.stored || 0; tot += co.n; img += co.nImg; det += co.nDetail; envoyes += co.n;
       geo += liste.filter((l) => l.lat != null && l.lng != null).length;
     }
     await pause(src.pause_ms || 1500);
   }
+  console.log("   worker : " + errWorker + " reponse(s) en erreur au premier essai, " + errDefinitives + " definitive(s)" + (premiereErr ? " | premiere : " + premiereErr : ""));
   console.log("   realadvisor : " + tot + " annonces lues, " + img + " photos, " + det + " liens de detail, " + geo + " avec coordonnees, " + echecs + " page(s) en echec");
   return { stocke, pages, erreur: (echecs > 0 && echecs >= pages) ? dernier : null };
 }

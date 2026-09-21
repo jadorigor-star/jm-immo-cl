@@ -1,5 +1,5 @@
-// BUILD-MARKER 1789964652 padding-4700: pq0pxqdkq3ibwiv294u78nfzuuquul6mx22td0gt2reyib2tdc0rnv7qd3vj6yugdni52yazysfmzm6odbogjywaq1vkkkit8yimciakfxjcr1yuu0zcrq5s6ey3jxcsnmy3w6bgqaxp5qfj4366xh7hxvbta5dgcbmtx3hj2gyt0wcuuxx6ac0fh8jyaxtgkhdb0rb7fi9msydpjf0og4deg8jqjc51qfk60al4gf34tp6um0ieqbh7mechuhn3kufxcpbag910lq6wxlwlqxfou38bow6uso82izoxc4sqdazflerwz8ht17lmq4nb06z3380w2uigclditiliowst38rtjxuw7i84zfjmcpp7mrvr6wroj52b0bzdwy3nj5v00fr3u8aet77x38iiwep8j8dtmdbkvysbt3rhle9kyxvsp9tyvc8c56pyfioo35onoedih385atretu1e3o1wtcejihf69vgpwvyptft2wvz7y9wq8actflb9skh7m4dj3cdpm2hz009vt1wetv0758i8wr7t8zi2ppx7504e1ws7a20k38w044pevtpx18l43xkd6ymtckgq6zeigfu9fyl4094yhwkc8v7rpdz67iq2z9w873thdqbkce6g1tojrlfnlb44bkvp8wesqykmrt2fqskscb03er60igkb4pb34p39sqkajf7a3qm2c9xyps21veegnhplzp588ltlt8quhqc9fjedfircfkpg0g2q1ojy58cjxm4ny5ufpm5o7dk5buh53m9arfds8xji4dxhi6pybmdjmozp4dleeukhpcfnkf54j0t4hk5xmf04u5z9x3yvznzgyuzejbz2foue5wt1pxeelu4s3lgqk7lawymxj38gvv3q1wt933oe5u18u7da8zvhpnghuauov65ksj770qvrb6uwobeq0fg7q395jyt2rhfgheqfw11e5n20637y745wxek7rluavj0qcemf0269gjl5bqwx25195guyl7t5jcu28tmv4byxhbwt249cp285gd2vzso3hsa7gz1q5vtte41ngu2inje1dvx4j3r6kpktznml6m6x7cl7ufluvavml2d2bf1u4610m4tdduetcfrmy00pkqhggz6xijd9ll3yg7qyonjr9z55y5h4c8cy3y7vcsawa851c8h2py4ln45egktm3byq
-// VERSION_MARKER_JMIMMO_20260921_REALADVISOR_GEO_v50
+// BUILD-MARKER 1789979640 padding-4700: fk6z8qsfp1gamk2qmk7xm3lshemvz87d06838kl0z4amv5c1txc4jxscef1x3k8g051rhqnuxa5tou02renwrtj4py1njp15aa1asik1ryg8bugkxh9ntuvz1188mrk1911tn0zmc9enexwisk2khbiqwginpsomr05jaazajcx9sstwlqnl8f717lpvhugsfimxr5vfnkfmaf6j06y14841itz0nh3d1l7dne3ojz89tnu9954no8gqvdj31fn4sss8xkmufbfngp22hgzyn9wrhwljku1xfib8kktk27irpc4h7r41gwo1is1hb3nlfkhq9vnmkv77vqy6gcbxypjxvsdaeot8r4frae7whisq9gq7545g1pzcomey9jpngg8w73h2hnwzf9b4vuf96k411lx9maf0e8whksi1q9bpmztgguao4x9lisn2v3czq276s8uu574bicynh2ysvlw3w3eu045f1bmtr7isfp29iwu9uy1ekhzlm5lu149104cvzirfxw4kkkxyn5bteeqxfkogqfkfsiiifftvfman1xbw5hg5h5hgdl2dpgtmdu7izhp3pw09j40iqt3az7yvwbhwfp1yzyj63s9dufd2kom6llfnu9ekee9j5zc2eharv5jjlrkqrxzi8q547qs35iuuwyuiossagv8w8sig862jxudbmwhxmuangb7l90mtnk3ioyevxwbgti26y4we87s5g7xbzn6vhntj2jmytpxifzvu08x6hajuemf9i9htnubirlpca2qhru00k41een47ly332ngpocineak61byzx9dw67mn01fcry0oz5wkuwhyz7qslt2v8xslh1lq1fkwjafqmvau9cgj09ilwp2d5mu1nneb64t1j76z69pfv9qbk6582mmcppv9mywdw2nkjauemukn7a05n7oqmpd8bcj9w9b29t9vwqoazw0m5gshpu072xed8w4bpy4472sunzx2i7pz9ttovdtymvzd1yoesa234dsw96v2xw8zi28vwhzsl5hddcrul1l31wzt6gzvxsrdbg8njz9479ny6gaxwvimw4o819iyv1uqx1f2xuiqaguslf76m6ue826t446ub1wwux43vl5axr9smznrqt3xprt3bcen088g7kzf9yzgy7f7nu9p453fyltdj1auw2j8fx79tnsocgrf
+// VERSION_MARKER_JMIMMO_20260921_REALADVISOR_MEMO_v51
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -690,12 +690,17 @@ function extractRealAdvisorData(html) {
 function extractSingleGeneric(html, config, extra) {
   if (config.rsc === "realadvisor") {
     const res = [];
+    const memoLieu = /* @__PURE__ */ new Map();
+    const lieuConnu = (c) => {
+      if (!memoLieu.has(c)) memoLieu.set(c, findKnownLocalityGeneric(c, extra));
+      return memoLieu.get(c);
+    };
     for (const r of extractRealAdvisorData(html)) {
       if (r.price < (config.price_min || 5e4)) continue;
       let loc = null;
       for (const c of r.candidats) {
         if (!c) continue;
-        loc = findKnownLocalityGeneric(c, extra);
+        loc = lieuConnu(c);
         if (loc) break;
       }
       if (!loc) continue;
