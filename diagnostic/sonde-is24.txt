@@ -1,0 +1,39 @@
+== Sonde IS24 2026-09-21T00:56:21.820Z ==
+
+#### https://www.immoscout24.ch/agency/p447/area-immobiliare-ticino
+[fetch simple] HTTP 403 | 5944 car. | pinia=false | server=cloudflare
+[navigateur] HTTP 200 | url finale https://www.immoscout24.ch/agency/p447/area-immobiliare-ticino
+[navigateur] titre : Area Immobiliare Ticino – Properties for rent and sale in CH | ImmoScout24 | 352646 car.
+[navigateur] marqueurs de blocage : captcha, datadome
+[navigateur] __PINIA_STATE__ : present, cles=agencyProfile,geo,splitFlagSets,searchBar
+[navigateur] etat de recherche : {}
+[navigateur] appels JSON vus : 
+  403 https://api.immoscout24.ch/search/listings
+  200 https://www.immoscout24.ch/manifest.json
+
+#### https://www.immoscout24.ch/fr/immobilier/acheter/region-gruyere
+[fetch simple] HTTP 403 | 2015 car. | pinia=false | server=cloudflare
+[navigateur] HTTP 403 | url finale https://www.immoscout24.ch/fr/immobilier/acheter/region-gruyere
+[navigateur] titre : immoscout24.ch | 2986 car.
+[navigateur] marqueurs de blocage : captcha, datadome
+[navigateur] __PINIA_STATE__ : absent
+[navigateur] debut du texte : 
+[navigateur] appels JSON vus : aucun
+
+#### https://www.immoscout24.ch/fr/immobilier/acheter/canton-fribourg?pt=600000
+[fetch simple] HTTP 403 | 2015 car. | pinia=false | server=cloudflare
+[navigateur] HTTP 403 | url finale https://www.immoscout24.ch/fr/immobilier/acheter/canton-fribourg?pt=600000
+[navigateur] titre : immoscout24.ch | 3001 car.
+[navigateur] marqueurs de blocage : captcha, datadome
+[navigateur] __PINIA_STATE__ : absent
+[navigateur] debut du texte : 
+[navigateur] appels JSON vus : aucun
+
+#### https://www.immoscout24.ch/fr/immobilier/acheter/canton-neuchatel
+[fetch simple] HTTP 403 | 2015 car. | pinia=false | server=cloudflare
+[navigateur] HTTP 403 | url finale https://www.immoscout24.ch/fr/immobilier/acheter/canton-neuchatel
+[navigateur] titre : immoscout24.ch | 2988 car.
+[navigateur] marqueurs de blocage : captcha, datadome
+[navigateur] __PINIA_STATE__ : absent
+[navigateur] debut du texte : 
+[navigateur] appels JSON vus : aucun
