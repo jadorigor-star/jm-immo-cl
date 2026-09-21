@@ -1,0 +1,37 @@
+name: Sonde portail
+
+"on":
+  workflow_dispatch:
+    inputs:
+      urls:
+        description: "URLs a sonder, separees par des espaces"
+        required: true
+        default: "https://realadvisor.ch/fr/acheter/canton-fribourg"
+
+jobs:
+  sonder:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Sonder
+        env:
+          URLS: ${{ inputs.urls }}
+        run: |
+          mkdir -p diagnostic
+          node outils/sonde-portail.js > diagnostic/sonde-portail.txt 2>&1 || true
+          head -c 3000 diagnostic/sonde-portail.txt
+      - name: Publier
+        if: always()
+        run: |
+          git config user.name "JM Immo CI"
+          git config user.email "ci@jm-immo.local"
+          git add -f diagnostic/sonde-portail.txt outils/sonde-portail.js || true
+          git commit -q -m "Sonde portail [skip ci]" || echo "rien a committer"
+          git pull --rebase -q || true
+          git push || true
