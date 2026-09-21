@@ -1,35 +1,24 @@
-== Decouverte RealAdvisor 2026-09-21T04:16:18.851Z ==
+== Decouverte RealAdvisor v2 2026-09-21T04:18:49.742Z ==
 
-[fribourg] HTTP 200 | Bien immobilier à vendre dans le Canton de Fribourg - 1'992 annonces | annonces 24
-[types] {"HOUSE/house_multiple_dwelling":1,"HOUSE/house_farmhouse":1,"HOUSE/house_detached":11,"HOUSE/house_attached_middle":1,"PROP/prop_building_land":2,"APPT/apartment_duplex":1,"APPT/apartment":4,"APPT/apartment_penthouse":3}
-[portal/state] realadvisor/Fribourg
-[ligne 0] avant : ops:filters"}],["$","div",null,{"children":[["$","div",null,{"className":"grid flex-1 gap-4 md:grid-cols-2 lg:grid-cols-1","children":[["$","$L71","500125088",{
-[ligne 0] apres : ,"imagePriority":true,"showFavoriteButton":false}],"$L73","$L74","$L75","$L76","$L77","$L78","$L79","$L7a","$L7b","$L7c","$L7d","$L7e","$L7f","$L80","$L81","$L82","$L83","$L84","$L85","$L86","$L87","$L88","$L89"]}],"$L8a"]}],false]}]]}]]}],"$L8b"] 9f:I[81712,["2249","static/chunks/26a4deb6-99cc9f2ac558f6d7.js?dpl=dpl-266022b","1740","static/chunks/1740-09a767cfff75238f.js?dpl=dpl-266022b","4347","static/chunks/4347-1
-[ligne 0] clickout=[object Object] | desc=$72 | rooms=null | surf=null | lat=46.7079576
-[ligne 1] avant : spaces complete the property.<br /><br />This is a favorite home for horse lovers.<br /><br />Contact us for additional information.73:["$","$L71","500244976",{
-[ligne 1] apres : ,"imagePriority":true,"showFavoriteButton":false}] 8d:T109d,Là où les idées prennent racine...<br/><br/>Il existe des maisons que l'on visite et d'autres que l'on imagine notre futur.<br/><br/>À Chapelle (Glâne), à quelques minutes d'Oron-la-Ville, cette propriété est de celles qui inspirent. Derrière ses murs se cache bien plus qu'une maison : un lieu où les projets prennent forme, où le passé rencontre l'avenir.<br
-[ligne 1] clickout=[object Object] | desc=$8c | rooms=18.5 | surf=null | lat=46.666667
-[ligne 2] avant : aiting for you to write your own.<br/><br/>Dove le idee mettono radici...<br/><br/>Ci sono case che si visitano e altre in cui si...74:["$","$L71","500250782",{
-[ligne 2] apres : ,"imagePriority":true,"showFavoriteButton":false}] 8e:T5a2,Située à Courtepin dans un quartier résidentiel, cette villa contiguë de 5.5pces profite de l'avantage d'être dans une extremité. Construite en 1992 avec un studio indépendant, cette maison a été transformée en une seule habitation. Le rez de chaussée offre une grande cuisine habitable avec un économat. Sur le même étage, le séjour avec son poêle suédois comp
-[ligne 2] clickout=[object Object] | desc=$8d | rooms=6 | surf=290 | lat=46.5857175
-[description 72]  72:T80c,Immeuble de rendement entièrement rénové - 5 appartements au coeur de Vuisternens-en-Ogoz<br/><br/>Une opportunité d'investissement rare, alliant charme historique, rénovation de qualité et potentiel locatif.<br/>Situé au coeur du charmant village de 
-[canton fribourg] liens : district=0 commune=55 npa=82
-[districts fribourg] 
-[/fr/acheter/ville-bulle] HTTP 200 | Bien immobilier à vendre à Bulle - 85 annonces | annonces 24
-[/fr/acheter/ville-bulle/appartement] HTTP 200 | Appartement à vendre à Bulle - 47 annonces | annonces 24
-[/fr/acheter/ville-bulle/maison] HTTP 200 | Maison à vendre à Bulle - 28 annonces | annonces 24
-[canton-neuchatel] HTTP 200 | Bien immobilier à vendre dans le Canton de Neuchâtel - 972 annonces | annonces 24 | districts 0
-[canton-jura] HTTP 200 | Bien immobilier à vendre dans le Canton du Jura - 1'233 annonces | annonces 24 | districts 0
-[canton-tessin] HTTP 200 | Bien immobilier à vendre dans le Canton du Tessin - 10'829 annonces | annonces 24 | districts 0
-[canton-ticino] HTTP 404 | RealAdvisor | annonces 0 | districts 0
-[canton-vaud] HTTP 200 | Bien immobilier à vendre dans le Canton de Vaud - 6'246 annonces | annonces 24 | districts 0
-[canton-berne] HTTP 200 | Bien immobilier à vendre dans le Canton de Berne - 3'076 annonces | annonces 24 | districts 0
-[canton-bern] HTTP 404 | RealAdvisor | annonces 0 | districts 0
-[districts canton-neuchatel] 
-[districts canton-jura] 
-[districts canton-tessin] 
-[districts canton-vaud] 
-[districts canton-berne] 
-[districts canton-fribourg] 
+[fribourg] HTTP 200 | annonces 24 | communes/localites liees 137
+[clickout brut 0] {"hostname":"realadvisor.ch","url":"22372d260fc95f265be243f644b9c2a4:a8739e812376264f8b75e80a53255c6c9a67d4f64f4ba41f705ea2cddbb45c2f78740027c9bd9e4213b58b8a7d8a208c6337de751675932169650c2c4a6da9849453def87880fa0750aded8d52e35805475664062e0bc34183954d7e84833e96"}
+[clickout domaines] {"(sans url)":24}
+[agences] Helvet-immo SA | Weibel & Loeb Real Estate | Attica Immobilier | Favre-Naudeix Immobilier | MDC Immobilier | CNC Immobilier SA
+[detail] liens de detail sur la page : 0 pour 24 annonces
+[rattachement type+NPA] unique=0 multiple=0 aucun=24
+[exemples] 500125088 1696 Vuisternens-en-Ogoz house_multiple_dwelling -> 
+   500244976 1679 Villaraboud house_farmhouse -> 
+   500250782 1608 Chapelle (Glâne) house_detached -> 
+   500242898 1784 Courtepin house_attached_middle -> 
 
-requetes : 11
+[neuchatel] HTTP 200 | annonces 24 | communes/localites liees 31
+
+[jura] HTTP 200 | annonces 24 | communes/localites liees 53
+
+[tessin] HTTP 200 | annonces 24 | communes/localites liees 117
+
+[vaud] HTTP 200 | annonces 24 | communes/localites liees 309
+
+[berne] HTTP 200 | annonces 24 | communes/localites liees 346
+
+fichier realadvisor-urls.json ecrit : fribourg=137 neuchatel=31 jura=53 tessin=117 vaud=309 berne=346
