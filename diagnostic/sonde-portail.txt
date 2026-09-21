@@ -1,0 +1,172 @@
+== Sonde portail 2026-09-21T01:11:12.311Z ==
+
+#### https://realadvisor.ch/fr/acheter/canton-fribourg
+[robots.txt] HTTP 200 | 2347 car.
+User-agent: facebookexternalhit
+Allow: /
+Disallow:
+User-agent: Facebot
+Allow: /
+Disallow:
+User-agent: *
+Allow: /agency-pages/_next/image
+Allow: /$
+Allow: /en/
+Allow: /fr/
+Allow: /de/
+Allow: /it/
+Allow: /es/
+Allow: /be/
+Allow: /nl/
+Allow: /cs/
+Allow: /at/
+Allow: /pl/
+Allow: /pt/
+Allow: /en$
+Allow: /fr$
+Allow: /de$
+Allow: /it$
+Allow: /es$
+Allow: /be$
+Allow: /nl$
+Allow: /cs$
+Allow: /at$
+Allow: /pl$
+Allow: /pt$
+Allow: /*.xml
+Allow: /*.css
+Allow: /*.js
+Allow: /*.png
+Allow: /*.svg
+Allow: /*.ico
+Allow: /*.webp
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.gif
+Allow: /*.heic
+Allow: /*.heif
+Allow: /site.webmanifest$
+Allow: /wp-content/*
+Allow: /wp-includes/*
+Allow: /api/og/
+Allow: /fr/agents-immobiliers/*/partager/
+Allow: /de/immobilienmaklern/*/teilen/
+Allow: /en/real-estate-agents/*/share/
+Allow: /it/agenti-immobiliari/*/condividi/
+Disallow: /*/contract
+Disallow: /*/report
+Disallow: /*/claim
+Disallow: /*/takedown
+Disallow: /*?_rsc=
+Disallow: /*//$
+Disallow: */requalification/
+Disallow: /de/finanzierungsantrags/
+Disallow: /it/richiesta-di-finanziamento/
+Disallow: /fr/demande-de-financement/
+Disallow: /en/financing-request/
+Disallow: /fr/acheter/*?
+Disallow: /fr/louer/*?
+Disallow: /en/buy/*?
+Disallow: /en/rent/*?
+Disallow: /de/kaufen/*?
+Disallow: /de/mieten/*?
+Disallow: /it/comprare/*?
+Disallow: /it/affitto/*?
+[page] HTTP 200 | 1155477 car. | Bien immobilier à vendre dans le Canton de Fribourg - 1&#x27;986 annonces
+[json embarque] scripts application/json : aucun
+[json embarque] ld+json : 4 | window.__ : 
+[json embarque] tableaux d'annonces (avec prix) : 0
+[liens frequents] 
+[pagination] page= :  | pn= : 
+
+#### https://realadvisor.ch/fr/acheter/canton-fribourg?page=2
+[page] HTTP 200 | 1155477 car. | Bien immobilier à vendre dans le Canton de Fribourg - 1&#x27;986 annonces
+[json embarque] scripts application/json : aucun
+[json embarque] ld+json : 4 | window.__ : 
+[json embarque] tableaux d'annonces (avec prix) : 0
+[liens frequents] 
+[pagination] page= :  | pn= : 
+
+#### https://www.comparis.ch/immobilien/marktplatz/fribourg/kaufen
+[robots.txt] HTTP 200 | 9557 car.
+User-agent: *
+Disallow: /*.asmx
+Disallow: /*.svc
+Disallow: /*.axd
+Disallow: /*.axd
+Disallow: *?successUrl
+Disallow: /CreateCheckpoint
+Disallow: /clicktracking/
+Disallow: /authentication/
+Disallow: */test-nfa/
+Disallow: /bff/
+Disallow: /comparis/api/log/
+Disallow: /comparis/usercontextinitialization
+Disallow: /authentication/
+Disallow: /authentication2/
+Disallow: */user/
+Disallow: /press/clippings/
+Disallow: /press/communique.aspx
+Disallow: */Highslide/*
+Disallow: */highslide/*
+Disallow: */satisfaction/
+Disallow: */Satisfaction/
+Disallow: */recommendation/
+Disallow: */redirect/*
+Disallow: */immobilien/pricedevelopment/*
+Disallow: */carfinder/pricedevelopment/*
+Disallow: */searchsubscription/
+Disallow: */MyComparis/
+Disallow: /video.aspx
+Disallow: /searchpage.aspx
+Disallow: /in.aspx
+Disallow: /ext.aspx
+Disallow: /nl.aspx
+Disallow: /ViewEmailContent.aspx
+Disallow: /WebResource.axd
+Disallow: /ChartImg.axd
+Disallow: /App_Browsers/
+Disallow: /extcomp/
+Disallow: /extclient/
+Disallow: /gmx/
+Disallow: /gpnavigation/
+Disallow: /home/
+Disallow: /http-errors/
+Disallow: /img/
+Allow: /img/logo/
+Disallow: /images/
+Disallow: /includes/
+Disallow: /infobase/user/
+Disallow: /listener/
+Disallow: /scripts/
+Disallow: /sqlupdate/
+Disallow: /templates/
+Disallow: /Master/
+Disallow: /mycomparis/
+Disallow: /marktplatz/details/show
+Disallow: /payment/
+Disallow: /werbung/
+Disallow: /webservices/
+Disallow: /WebServices/
+Disallow: /carfinder/details/showrandom
+Disallow: /carfinder/webservices/
+Disallow: /carfinder/WebServices/
+Disallow: /carfinder/search/SetCollapsibleSearchBoxState
+Disallow: /carfinder/Search/SetCollapsibleSearchBoxState
+Disallow: /carfinder/search/GetExtendedSearchCriteriaFancyString
+Disallow: /carfinder/search/GetDefaultSearchParams
+Disallow: /carfinder/VehicleEvaluationService/
+Disallow: /carfinder/detailsservice/
+Disallow: /carfinder/searchservice/
+Disallow: /carfinder/SessionValueReader/
+[page] HTTP 200 | 387280 car. | 
+[json embarque] scripts application/json : __NEXT_DATA__
+[json embarque] ld+json : 3 | window.__ : 
+[json embarque] tableaux d'annonces (avec prix) : 1
+  chemin=props.pageProps.initialResultData.resultItems n=10
+  exemple={"AdId":38075924,"SiteId":228,"AdStatus":0,"Title":"DIVINE 10-ZIMMER-GRUNDSTÜCK MIT ATEMBERAUBENDER AUSSICHT","PropertyTypeText":"Villa","Address":["1700 Fribourg"],"EssentialInformation":["10 Zimmer"],"Price":"4'600'000","Currency":"CHF","Date":"2026-09-12T04:46:22","ImageUrl":"https://mapl-assets.b-cdn.net/immobilien/images/datacollect/47307138-a149-7bc7-9efa-23ee2126d48e.jpg","ImageUrls":["https://mapl-assets.b-cdn.net/immobilien/images/datacollect/47307138-a149-7bc7-9efa-23ee2126d48e.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/556d4032-8a87-6cbd-f50c-ee413a38e242.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/61334093-4f78-7846-00db-1555a4013792.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/cf27ec9c-87ab-35e5-2513-379d99a6eb58.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/d0c15be0-f5df-0337-0d06-d765faddb719.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/e3315112-2af0-ad31-b7ff-488359fb1b9c.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/5710f4bc-802c-a045-29f6-c3f723cfbf81.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/9fd091e3-a0cb-b3ef-887e-eda2119a399d.jpg","https://mapl-assets.b-cdn.net/immobilien/images/datacollect/d45d0ba8-fba0-9224-4
+[liens frequents] 10x /bff/login?returnUrl=/mycomparis-dashboard
+  10x /immobilien/marktplatz/details/show/#
+  8x /immobilien/marktplatz/fribourg/kaufen?page=#
+  7x /bff/login?prompt=create
+[pagination] page= : ?page=1 ?page=1 ?page=2 ?page=3 | pn= : 
