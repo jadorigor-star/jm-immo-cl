@@ -149,16 +149,11 @@ function annoncesRsc(f) {
   }
   return out;
 }
-function imageRsc(html, flux, l) {
-  const fn = l.images && l.images[0] && l.images[0].file_name; if (!fn) return null;
-  const base = fn.split("/").pop();
-  for (const src of [html, flux]) {
-    const i = src.indexOf(base); if (i < 0) continue;
-    const deb = src.lastIndexOf("https://", i); if (deb < 0 || i - deb > 400) continue;
-    const fin = src.slice(deb).search(/["'\s)\\<]/);
-    return src.slice(deb, fin > 0 ? deb + fin : deb + 400).replace(/&amp;/g, "&");
-  }
-  return null;
+function imageRsc(l) {
+  // meme adressage que le site : source GCS encodee en base64 (URL-safe) dans une URL imgproxy
+  const im = l.images && l.images[0]; if (!im || !im.file_name) return null;
+  const src = "https://storage.googleapis.com/" + (im.bucket_name || "aggregator-images") + "/" + im.file_name;
+  return "https://img.realadvisor.ch/_/rs:fill:600:0:1:0/q:60/" + Buffer.from(src, "utf8").toString("base64").replace(/\+/g, "-").replace(/\//g, "_") + ".webp";
 }
 function lienDetail(html) {
   return [...new Set([...html.matchAll(/href="(\/fr\/acheter\/(?:maison|appartement|terrain|immeuble|commercial|hotellerie)\/[^"#?]+)"/g)].map((m) => m[1]))];
@@ -167,7 +162,7 @@ function typeHref(l) {
   if (/multiple_dwelling/.test(l.property_type || "")) return "immeuble";
   return { APPT: "appartement", HOUSE: "maison", PROP: "terrain" }[l.property_main_type] || "?";
 }
-function coquilleRa(liste, html, flux, chemin, base) {
+function coquilleRa(liste, html, flux, chemin, base, photos) {
   const textes = textesRsc(flux); const details = lienDetail(html); const pris = new Set();
   let nImg = 0, nDetail = 0;
   const items = liste.filter((l) => l.property_main_type === "APPT" || l.property_main_type === "HOUSE").map((l) => {
@@ -176,7 +171,7 @@ function coquilleRa(liste, html, flux, chemin, base) {
     const choix = cands.find((x) => x.startsWith("/fr/acheter/" + typeHref(l) + "/")) || cands[0] || null;
     if (choix) { pris.add(choix); nDetail++; }
     const desc = String(textes[l.description] || (typeof l.description === "string" && l.description[0] !== "$" ? l.description : "") || "");
-    const img = imageRsc(html, flux, l); if (img) nImg++;
+    const img = photos ? imageRsc(l) : null; if (img) nImg++;
     const titre = (l.translated_titles && l.translated_titles.fr) || l.title || "";
     return {
       id: l.id, main: l.property_main_type, pt: l.property_type, sale_price: l.sale_price, rooms: l.number_of_rooms, living: l.living_surface,
@@ -189,7 +184,7 @@ function coquilleRa(liste, html, flux, chemin, base) {
 }
 async function collecterRsc(src) {
   const base = "https://realadvisor.ch";
-  let stocke = 0, pages = 0, echecs = 0, dernier = null, tot = 0, img = 0, det = 0, geo = 0;
+  let stocke = 0, pages = 0, echecs = 0, dernier = null, tot = 0, img = 0, det = 0, geo = 0, photos = null;
   for (const chemin of src.pages) {
     let rep;
     try { rep = await telechargerComplet(base + chemin); } catch (e) { echecs++; dernier = "reseau : " + String(e.message).slice(0, 60); await pause(src.pause_ms || 1500); continue; }
@@ -202,7 +197,13 @@ async function collecterRsc(src) {
     }
     const flux = fluxRsc(rep.html); const liste = annoncesRsc(flux);
     if (liste.length) {
-      const co = coquilleRa(liste, rep.html, flux, chemin, base);
+      if (photos === null) {
+        const essai = liste.map(imageRsc).find(Boolean);
+        if (essai) {
+          try { const h = await fetch(essai, { method: "HEAD", headers: ENTETES_COMPLETS }); photos = h.status === 200; console.log("   test image : HTTP " + h.status + " " + (h.headers.get("content-type") || "")); } catch (e) { photos = false; console.log("   test image : echec reseau"); }
+        }
+      }
+      const co = coquilleRa(liste, rep.html, flux, chemin, base, photos === true);
       const res = await versWorker({ source_name: src.name, url: base + chemin, html: co.html, defer: true });
       stocke += res.stored || 0; tot += co.n; img += co.nImg; det += co.nDetail;
       geo += liste.filter((l) => l.lat != null && l.lng != null).length;
