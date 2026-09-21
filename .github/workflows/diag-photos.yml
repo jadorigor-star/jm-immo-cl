@@ -2,6 +2,11 @@ name: Diagnostic photos
 
 "on":
   workflow_dispatch:
+    inputs:
+      urls:
+        description: "Pages a diagnostiquer (separees par des espaces)"
+        required: false
+        default: "https://realadvisor.ch/fr/acheter/commune-jaun https://realadvisor.ch/fr/acheter/ville-bulle"
 
 jobs:
   diag:
@@ -15,6 +20,8 @@ jobs:
         with:
           node-version: '20'
       - name: Diagnostiquer
+        env:
+          URLS: ${{ inputs.urls }}
         run: |
           mkdir -p diagnostic
           node outils/diag-photos.js > diagnostic/diag-photos.txt 2>&1 || true
