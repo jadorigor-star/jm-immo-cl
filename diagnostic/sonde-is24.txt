@@ -1,39 +1,46 @@
-== Sonde IS24 2026-09-21T00:56:21.820Z ==
+== Sonde IS24 2026-09-21T01:08:54.003Z ==
 
-#### https://www.immoscout24.ch/agency/p447/area-immobiliare-ticino
-[fetch simple] HTTP 403 | 5944 car. | pinia=false | server=cloudflare
-[navigateur] HTTP 200 | url finale https://www.immoscout24.ch/agency/p447/area-immobiliare-ticino
-[navigateur] titre : Area Immobiliare Ticino – Properties for rent and sale in CH | ImmoScout24 | 352646 car.
-[navigateur] marqueurs de blocage : captcha, datadome
-[navigateur] __PINIA_STATE__ : present, cles=agencyProfile,geo,splitFlagSets,searchBar
-[navigateur] etat de recherche : {}
-[navigateur] appels JSON vus : 
-  403 https://api.immoscout24.ch/search/listings
-  200 https://www.immoscout24.ch/manifest.json
-
-#### https://www.immoscout24.ch/fr/immobilier/acheter/region-gruyere
-[fetch simple] HTTP 403 | 2015 car. | pinia=false | server=cloudflare
-[navigateur] HTTP 403 | url finale https://www.immoscout24.ch/fr/immobilier/acheter/region-gruyere
-[navigateur] titre : immoscout24.ch | 2986 car.
+#### https://www.homegate.ch/acheter/immobilier/canton-fribourg/liste
+[fetch simple] HTTP 403 | 2012 car. | pinia=false | server=cloudflare
+[navigateur] HTTP 403 | url finale https://www.homegate.ch/acheter/immobilier/canton-fribourg/liste
+[navigateur] titre : homegate.ch | 3002 car.
 [navigateur] marqueurs de blocage : captcha, datadome
 [navigateur] __PINIA_STATE__ : absent
 [navigateur] debut du texte : 
 [navigateur] appels JSON vus : aucun
 
-#### https://www.immoscout24.ch/fr/immobilier/acheter/canton-fribourg?pt=600000
-[fetch simple] HTTP 403 | 2015 car. | pinia=false | server=cloudflare
-[navigateur] HTTP 403 | url finale https://www.immoscout24.ch/fr/immobilier/acheter/canton-fribourg?pt=600000
-[navigateur] titre : immoscout24.ch | 3001 car.
+#### https://www.comparis.ch/immobilien/marktplatz/fribourg/kaufen
+[fetch simple] HTTP 200 | 379697 car. | pinia=false | server=-
+[navigateur] HTTP 200 | url finale https://www.comparis.ch/immobilien/marktplatz/fribourg/kaufen
+[navigateur] titre : 115 Immobilien kaufen in Fribourg | 612419 car.
 [navigateur] marqueurs de blocage : captcha, datadome
 [navigateur] __PINIA_STATE__ : absent
-[navigateur] debut du texte : 
+[navigateur] debut du texte : Comparis entdecken Versicherungen Finanzen Immobilien Mobilität Gesundheit Telecom Neu in der Schweiz Newsletter Login DE FR IT EN Startseite Wohnen Immobilien 115 Immobilien kaufen in Fribourg Favoriten (0) 115 Immobilien kaufen in Fribourg Filter (3) Sortieren nach: Nach Relevanz auf Anfrage Kaufpreis Bauland 1700 Fribourg Propriétés équestres off market auf Anfrage Kaufpreis Gewerbeobjekt 1700 Fribourg Centre équestre en activité auf Anfrage Kaufpreis Gewerbeobjekt 1700 Fribourg C
 [navigateur] appels JSON vus : aucun
 
-#### https://www.immoscout24.ch/fr/immobilier/acheter/canton-neuchatel
-[fetch simple] HTTP 403 | 2015 car. | pinia=false | server=cloudflare
-[navigateur] HTTP 403 | url finale https://www.immoscout24.ch/fr/immobilier/acheter/canton-neuchatel
-[navigateur] titre : immoscout24.ch | 2988 car.
-[navigateur] marqueurs de blocage : captcha, datadome
+#### https://www.newhome.ch/fr/acheter/proprietes/canton-fribourg/liste
+[fetch simple] HTTP 403 | 5875 car. | pinia=false | server=cloudflare
+[navigateur] HTTP 200 | url finale https://www.newhome.ch/cf-challenge
+[navigateur] titre : Un instant… | 28514 car.
+[navigateur] marqueurs de blocage : vérification
 [navigateur] __PINIA_STATE__ : absent
-[navigateur] debut du texte : 
+[navigateur] debut du texte : www.newhome.ch Vérification de sécurité en cours Ce site utilise un service de sécurité pour se protéger contre les bots malveillants. Cette page s’affiche pendant que le site vérifie que vous n’êtes pas un bot. Ray ID: a3e52f04ab18bd64 Performances et sécurité par Cloudflare Confidentialité
+[navigateur] appels JSON vus : aucun
+
+#### https://realadvisor.ch/fr/acheter/canton-fribourg
+[fetch simple] HTTP 200 | 1155477 car. | pinia=false | server=cloudflare
+[navigateur] HTTP 200 | url finale https://realadvisor.ch/fr/acheter/canton-fribourg
+[navigateur] titre : Bien immobilier à vendre dans le Canton de Fribourg - 1'986 annonces | 1074344 car.
+[navigateur] marqueurs de blocage : aucun
+[navigateur] __PINIA_STATE__ : absent
+[navigateur] debut du texte : Estimer Acheter Louer Vendre Agences immobilières Déposer une annonce Se connecter Bien immobilier à vendre dans le Canton de Fribourg Acheter Canton de Fribourg Canton de Fribourg - 1'986 biens immobiliers à vendre Parcourez toutes les annonces immobilières en vente dans le Canton de Fribourg, et affinez votre recherche parmi 1'986 offres. Afficher les biens sur la carte Afficher les biens sur la carte Prix Jusqu'à CHF 800’000 CHF 800’000 - CHF 1’200’000 CHF 1’200’000 - CHF 1’600’000 CHF 1’60
+[navigateur] appels JSON vus : aucun
+
+#### https://www.properstar.ch/switzerland/fribourg/buy/apartment-house
+[fetch simple] HTTP 403 | 7905 car. | pinia=false | server=-
+[navigateur] HTTP 200 | url finale https://www.properstar.ch/switzerland/fribourg/buy/apartment-house
+[navigateur] titre : 116 Apartments and Houses for Sale in Fribourg | Properstar | 732906 car.
+[navigateur] marqueurs de blocage : captcha
+[navigateur] __PINIA_STATE__ : absent
+[navigateur] debut du texte : Fribourg CTRL+K Search Favorites Messages Estimate Profile EN Filters Buy Price Rooms Apartments & Houses Area Balcony Parking Garage Outstanding view Garden view Mountain view Save search Switzerland Fribourg (canton) Sarine District Fribourg Apartments and houses for sale in Fribourg 116 results Includes nearby homes Just for you Frau Hasler 3 days ago CHF 2,145,000 *Single-family dwelling* Fribourg, Chemin des Violettes House Add to favorites Send a message Herr Stefan Pichonnaz 3 days ago 
 [navigateur] appels JSON vus : aucun
