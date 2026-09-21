@@ -115,15 +115,117 @@ async function collecterPaginee(src) {
   return { stocke, pages, erreur };
 }
 
+
+// --- RealAdvisor : flux Next.js (RSC), une page de commune = jusqu'a 24 annonces -----------------
+function fluxRsc(html) {
+  let o = "";
+  for (const m of html.matchAll(/self\.__next_f\.push\(\[1,("(?:[^"\\]|\\.)*")\]\)/g)) { try { o += JSON.parse(m[1]); } catch (e) {} }
+  return o;
+}
+function objetApres(s, idx) {
+  const i = s.indexOf("{", idx); let d = 0, str = false, esc = false;
+  for (let j = i; j < s.length; j++) {
+    const c = s[j];
+    if (str) { if (esc) esc = false; else if (c === "\\") esc = true; else if (c === '"') str = false; continue; }
+    if (c === '"') str = true; else if (c === "{") d++; else if (c === "}") { d--; if (d === 0) return s.slice(i, j + 1); }
+  }
+  return null;
+}
+function textesRsc(f) {
+  // lignes "72:T80c,<texte>" : la longueur (hexadecimale) est en octets UTF-8
+  const map = {}; const re = /([0-9a-f]{1,4}):T([0-9a-f]+),/g; let m;
+  while ((m = re.exec(f)) !== null) {
+    const L = parseInt(m[2], 16); const debut = m.index + m[0].length;
+    const txt = Buffer.from(f.slice(debut, debut + L), "utf8").subarray(0, L).toString("utf8");
+    map["$" + m[1]] = txt; re.lastIndex = debut + txt.length;
+  }
+  return map;
+}
+function annoncesRsc(f) {
+  const vus = new Set(), out = [];
+  for (const m of f.matchAll(/"listing":\{/g)) {
+    const o = objetApres(f, m.index); if (!o) continue;
+    try { const l = JSON.parse(o); if (l && l.id && !vus.has(l.id)) { vus.add(l.id); out.push(l); } } catch (e) {}
+  }
+  return out;
+}
+function imageRsc(html, flux, l) {
+  const fn = l.images && l.images[0] && l.images[0].file_name; if (!fn) return null;
+  const base = fn.split("/").pop();
+  for (const src of [html, flux]) {
+    const i = src.indexOf(base); if (i < 0) continue;
+    const deb = src.lastIndexOf("https://", i); if (deb < 0 || i - deb > 400) continue;
+    const fin = src.slice(deb).search(/["'\s)\\<]/);
+    return src.slice(deb, fin > 0 ? deb + fin : deb + 400).replace(/&amp;/g, "&");
+  }
+  return null;
+}
+function lienDetail(html) {
+  return [...new Set([...html.matchAll(/href="(\/fr\/acheter\/(?:maison|appartement|terrain|immeuble|commercial|hotellerie)\/[^"#?]+)"/g)].map((m) => m[1]))];
+}
+function typeHref(l) {
+  if (/multiple_dwelling/.test(l.property_type || "")) return "immeuble";
+  return { APPT: "appartement", HOUSE: "maison", PROP: "terrain" }[l.property_main_type] || "?";
+}
+function coquilleRa(liste, html, flux, chemin, base) {
+  const textes = textesRsc(flux); const details = lienDetail(html); const pris = new Set();
+  let nImg = 0, nDetail = 0;
+  const items = liste.filter((l) => l.property_main_type === "APPT" || l.property_main_type === "HOUSE").map((l) => {
+    const pc = String(l.postcode || "");
+    const cands = details.filter((x) => !pris.has(x) && (x.includes("/" + pc + "-") || x.includes("-" + pc + "-")));
+    const choix = cands.find((x) => x.startsWith("/fr/acheter/" + typeHref(l) + "/")) || cands[0] || null;
+    if (choix) { pris.add(choix); nDetail++; }
+    const desc = String(textes[l.description] || (typeof l.description === "string" && l.description[0] !== "$" ? l.description : "") || "");
+    const img = imageRsc(html, flux, l); if (img) nImg++;
+    const titre = (l.translated_titles && l.translated_titles.fr) || l.title || "";
+    return {
+      id: l.id, main: l.property_main_type, pt: l.property_type, sale_price: l.sale_price, rooms: l.number_of_rooms, living: l.living_surface,
+      route: nettoyer(l.route, 120), street_number: nettoyer(l.street_number, 12), postcode: l.postcode, sub_locality: nettoyer(l.sub_locality, 80), locality: nettoyer(l.locality, 80),
+      lat: l.lat, lng: l.lng, title: nettoyer(titre, 200), desc: nettoyer(desc, 1200), img, date: l.created_at,
+      url: choix ? base + choix : base + chemin + "#annonce-" + l.id
+    };
+  });
+  return { html: '<script id="__RA_DATA__" type="application/json">' + JSON.stringify({ items }).replace(/&/g, "\\u0026").replace(/</g, "\\u003c") + "</script>", n: items.length, nImg, nDetail };
+}
+async function collecterRsc(src) {
+  const base = "https://realadvisor.ch";
+  let stocke = 0, pages = 0, echecs = 0, dernier = null, tot = 0, img = 0, det = 0, geo = 0;
+  for (const chemin of src.pages) {
+    let rep;
+    try { rep = await telechargerComplet(base + chemin); } catch (e) { echecs++; dernier = "reseau : " + String(e.message).slice(0, 60); await pause(src.pause_ms || 1500); continue; }
+    pages++;
+    if (rep.status !== 200) {
+      echecs++; dernier = "HTTP " + rep.status + " " + chemin;
+      console.log("   refus " + chemin + " -> HTTP " + rep.status + " (" + (rep.server || "-") + ")");
+      if (rep.status === 403 || rep.status === 429) break; // blocage : on s'arrete, on n'insiste pas
+      await pause(src.pause_ms || 1500); continue;
+    }
+    const flux = fluxRsc(rep.html); const liste = annoncesRsc(flux);
+    if (liste.length) {
+      const co = coquilleRa(liste, rep.html, flux, chemin, base);
+      const res = await versWorker({ source_name: src.name, url: base + chemin, html: co.html, defer: true });
+      stocke += res.stored || 0; tot += co.n; img += co.nImg; det += co.nDetail;
+      geo += liste.filter((l) => l.lat != null && l.lng != null).length;
+    }
+    await pause(src.pause_ms || 1500);
+  }
+  console.log("   realadvisor : " + tot + " annonces lues, " + img + " photos, " + det + " liens de detail, " + geo + " avec coordonnees, " + echecs + " page(s) en echec");
+  return { stocke, pages, erreur: (echecs > 0 && echecs >= pages) ? dernier : null };
+}
+
 (async () => {
-  const plan = (await (await fetch(BASE + "/api/plan-collecte")).json()).sources || [];
+  let plan = (await (await fetch(BASE + "/api/plan-collecte" + (process.env.ONLY_SOURCE ? "?force=1" : ""))).json()).sources || [];
+  if (process.env.ONLY_SOURCE) plan = plan.filter((x) => x.name === process.env.ONLY_SOURCE);
   console.log("sources a traiter : " + plan.length);
   let totalStocke = 0, totalPages = 0;
 
   for (const src of plan.slice(0, MAX_SOURCES)) {
     let stocke = 0, erreur = null, pages = 0;
     try {
-      if (src.pagination) {
+      if (src.rsc) {
+        const r = await collecterRsc(src);
+        stocke = r.stocke; pages = r.pages; erreur = r.erreur;
+      } else if (src.pagination) {
         const r = await collecterPaginee(src);
         stocke = r.stocke; pages = r.pages; erreur = r.erreur;
       } else

@@ -9,6 +9,10 @@ name: Collecte externe
         description: "Nombre de sources a traiter"
         required: false
         default: "999"
+      source:
+        description: "Nom exact d'une seule source a traiter (vide = toutes)"
+        required: false
+        default: ""
 
 concurrency:
   group: collecte-externe
@@ -31,6 +35,7 @@ jobs:
       - name: Collecter
         env:
           MAX_SOURCES: ${{ inputs.max_sources || '999' }}
+          ONLY_SOURCE: ${{ inputs.source }}
         run: |
           mkdir -p diagnostic
           node outils/collecteur.js 2>&1 | tee diagnostic/collecte-externe.txt

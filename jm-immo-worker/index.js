@@ -1,5 +1,5 @@
-// BUILD-MARKER 1789953584 padding-4700: fy2mfa4cp7zv6fcdcj1htudlrh46r6thr9jdqhn0z1khbj3zppikcx7aeshhnewigof3rwd4qubzmv831fv3lc7jplrnpxbsij4d6rrpblzy4xny0gkna2zcy12r5ian7xrhu5gy3gaigwz06axfvk9hlxode8ul5hjbms6ye2pd6tb8q4ixfpq7au02uh11lujcm840q66w404psnn36hd8ttu8mpovkc0b7vfsqk23yjgmffgffhwoynhjuy4xgmb1h04e5d6bglcosr7n3x1myq4uu8mv4bl4k7l0rc9aomntof1oxgi0u4a1xi6gz7lkdh9cocq3lr3za25te8ofje3zl3ozto88alpaej5a7fbl98jflek7evh37qa0mwtbm0asdf0w4c8ik5yh98zv4enb9k5z4l5euq7pcywh5l3v86xvqcvrdr0dl4n3p2zbq9ill4l61v9k9bjkuzm5ruj1k36rju8udbwdii2h2x7h012ru3ldp5xpk9n6jfm38q0579o6t0wzzhhlpqds8aktabw0s7itnc50gmty2j0zudl36l9p5bty7f5bwu3sh5fhhid4i9hm4pfxo1s6yqw32upfvhp8lpel0pk38f0xvo7h9pks6fy14mf11i235jmgrtsffx9ny8jfdcvslrbnbeqttewsbui4k9e8y9x8ikdgiwurxas13mt9jb15hr6la5wi2rvjc2rrlly6y14zpx7rcsvbe2zfxnc2g44ulmty1gwcstfirx3hzlo6cpvq7t6vqs7rgi5m0c5mvb38d6ghpp2telp2srq8romxrc87i1zshd7dj5cu9gcoklse5rddcsh5774z0mkaxpy0qvupbskobismam3lp3rkgiukzwumo8oaw68qtywddlobzbenn0101zv8clm7aw3x95dtxmztr6i4is4yrxqzv04tn8k0bsorogw1x3ob4wh9uipn77azvdy4aekfutzkdv25povnt7n9nuk9p88yjzc16587zueaex49ggnsc2oubgq4uo20qyy1vi052r1t3lyf64q8cn7zw77nxw66p5lkfk8d2bzk59lqlkr6zp6b1v1onds6fi8flpn9tj4hcitjoqp9xn963pzhgap5yizp2l5i5s4ijb68n53shfzh0imv9wbdiqkk01o7n36qpi85h2vz8dbkdcji73v7
-// VERSION_MARKER_JMIMMO_20260921_COMPARIS_EXTERNE_v49
+// BUILD-MARKER 1789964652 padding-4700: pq0pxqdkq3ibwiv294u78nfzuuquul6mx22td0gt2reyib2tdc0rnv7qd3vj6yugdni52yazysfmzm6odbogjywaq1vkkkit8yimciakfxjcr1yuu0zcrq5s6ey3jxcsnmy3w6bgqaxp5qfj4366xh7hxvbta5dgcbmtx3hj2gyt0wcuuxx6ac0fh8jyaxtgkhdb0rb7fi9msydpjf0og4deg8jqjc51qfk60al4gf34tp6um0ieqbh7mechuhn3kufxcpbag910lq6wxlwlqxfou38bow6uso82izoxc4sqdazflerwz8ht17lmq4nb06z3380w2uigclditiliowst38rtjxuw7i84zfjmcpp7mrvr6wroj52b0bzdwy3nj5v00fr3u8aet77x38iiwep8j8dtmdbkvysbt3rhle9kyxvsp9tyvc8c56pyfioo35onoedih385atretu1e3o1wtcejihf69vgpwvyptft2wvz7y9wq8actflb9skh7m4dj3cdpm2hz009vt1wetv0758i8wr7t8zi2ppx7504e1ws7a20k38w044pevtpx18l43xkd6ymtckgq6zeigfu9fyl4094yhwkc8v7rpdz67iq2z9w873thdqbkce6g1tojrlfnlb44bkvp8wesqykmrt2fqskscb03er60igkb4pb34p39sqkajf7a3qm2c9xyps21veegnhplzp588ltlt8quhqc9fjedfircfkpg0g2q1ojy58cjxm4ny5ufpm5o7dk5buh53m9arfds8xji4dxhi6pybmdjmozp4dleeukhpcfnkf54j0t4hk5xmf04u5z9x3yvznzgyuzejbz2foue5wt1pxeelu4s3lgqk7lawymxj38gvv3q1wt933oe5u18u7da8zvhpnghuauov65ksj770qvrb6uwobeq0fg7q395jyt2rhfgheqfw11e5n20637y745wxek7rluavj0qcemf0269gjl5bqwx25195guyl7t5jcu28tmv4byxhbwt249cp285gd2vzso3hsa7gz1q5vtte41ngu2inje1dvx4j3r6kpktznml6m6x7cl7ufluvavml2d2bf1u4610m4tdduetcfrmy00pkqhggz6xijd9ll3yg7qyonjr9z55y5h4c8cy3y7vcsawa851c8h2py4ln45egktm3byq
+// VERSION_MARKER_JMIMMO_20260921_REALADVISOR_GEO_v50
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -646,7 +646,65 @@ function extractComparisNextData(html) {
   }
   return out;
 }
+function extractRealAdvisorData(html) {
+  const m = html.match(/<script id="__RA_DATA__"[^>]*>([\s\S]*?)<\/script>/);
+  if (!m) return [];
+  let items;
+  try {
+    items = JSON.parse(m[1]).items;
+  } catch (e) {
+    return [];
+  }
+  if (!Array.isArray(items)) return [];
+  const out = [];
+  for (const it of items) {
+    if (!it || !it.id) continue;
+    const price = Number(it.sale_price);
+    if (!isFinite(price) || price <= 0) continue;
+    const type = it.main === "APPT" ? "Appartement" : it.main === "HOUSE" ? "Maison" : null;
+    if (!type) continue;
+    const lieuAff = it.sub_locality || it.locality || "";
+    const rue = it.route ? String(it.route) + (it.street_number ? " " + it.street_number : "") : null;
+    const lat = Number(it.lat), lon = Number(it.lng);
+    const geoOk = isFinite(lat) && isFinite(lon) && lat > 45 && lat < 48.5 && lon > 5.5 && lon < 11;
+    out.push({
+      external_id: String(it.id),
+      price,
+      candidats: [it.sub_locality, it.locality],
+      rooms: it.rooms != null && isFinite(Number(it.rooms)) ? Number(it.rooms) : null,
+      surface: it.living != null && isFinite(Number(it.living)) && Number(it.living) > 0 ? Number(it.living) : null,
+      url: it.url || null,
+      address: rue ? rue + (it.postcode ? ", " + it.postcode + " " + lieuAff : "") : null,
+      type,
+      title: it.title ? String(it.title).trim() : null,
+      description: it.desc ? String(it.desc).trim() : null,
+      image_url: it.img ? String(it.img) : null,
+      date_publication: it.date ? String(it.date).slice(0, 30) : null,
+      geo_lat: geoOk ? lat : null,
+      geo_lon: geoOk ? lon : null,
+      geo_precis: geoOk
+    });
+  }
+  return out;
+}
 function extractSingleGeneric(html, config, extra) {
+  if (config.rsc === "realadvisor") {
+    const res = [];
+    for (const r of extractRealAdvisorData(html)) {
+      if (r.price < (config.price_min || 5e4)) continue;
+      let loc = null;
+      for (const c of r.candidats) {
+        if (!c) continue;
+        loc = findKnownLocalityGeneric(c, extra);
+        if (loc) break;
+      }
+      if (!loc) continue;
+      r.locality = loc;
+      delete r.candidats;
+      res.push(r);
+    }
+    return res;
+  }
   if (config.next_data === "comparis") {
     return extractComparisNextData(html).filter((r) => {
       if (!r.price || r.price < (config.price_min || 5e4)) return false;
@@ -1060,7 +1118,7 @@ async function storeListing(db, srcRow, rl, extra) {
     && (anc.address || "") === (rl.address || "")) {
     return 0;
   }
-  await db.prepare("INSERT INTO listings (id, source_id, external_id, url, title, locality, region, type, rooms, surface, price, currency, is_rental, cachet, status, confidence, first_seen, last_seen, bien_id, address, description, image_url, date_publication) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET title=excluded.title, price=excluded.price, status=excluded.status, confidence=excluded.confidence, last_seen=excluded.last_seen, region=excluded.region, address=excluded.address, description=excluded.description, image_url=COALESCE(excluded.image_url, listings.image_url), date_publication=COALESCE(excluded.date_publication, listings.date_publication)").bind(
+  await db.prepare("INSERT INTO listings (id, source_id, external_id, url, title, locality, region, type, rooms, surface, price, currency, is_rental, cachet, status, confidence, first_seen, last_seen, bien_id, address, description, image_url, date_publication, geo_lat, geo_lon) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET title=excluded.title, price=excluded.price, status=excluded.status, confidence=excluded.confidence, last_seen=excluded.last_seen, region=excluded.region, address=excluded.address, description=excluded.description, image_url=COALESCE(excluded.image_url, listings.image_url), date_publication=COALESCE(excluded.date_publication, listings.date_publication), geo_lat=COALESCE(excluded.geo_lat, listings.geo_lat), geo_lon=COALESCE(excluded.geo_lon, listings.geo_lon)").bind(
     listingId,
     srcRow.id,
     rl.external_id,
@@ -1083,7 +1141,9 @@ async function storeListing(db, srcRow, rl, extra) {
     rl.address || null,
     rl.description || null,
     rl.image_url || null,
-    rl.date_publication || null
+    rl.date_publication || null,
+    rl.geo_precis === true && rl.geo_lat != null ? rl.geo_lat : null,
+    rl.geo_precis === true && rl.geo_lon != null ? rl.geo_lon : null
   ).run();
   const history = rl.history && rl.history.length ? rl.history : [[today, rl.price]];
   for (const pair of history) {
@@ -2571,7 +2631,8 @@ var index_default = {
         for (const rec of records) {
           try {
             const rl = {
-              external_id: (rec.url || body.url || rec.locality + rec.price).split("/").filter(Boolean).pop(),
+              external_id: ((config.next_data || config.rsc) && rec.external_id) ? String(rec.external_id) : (rec.url || body.url || rec.locality + rec.price).split("/").filter(Boolean).pop(),
+              geo_precis: rec.geo_precis === true,
               url: rec.url || body.url,
               title: rec.title || (rec.type || "Bien") + " \u2014 " + rec.locality,
                 description: rec.description || null,
@@ -2627,11 +2688,11 @@ var index_default = {
           try { c = JSON.parse(row.config_json || "{}"); } catch (e) { continue; }
           const pages = c.mode === "two_step" ? (c.list_url ? [c.list_url] : []) : (Array.isArray(c.urls) ? c.urls : (c.list_url ? [c.list_url] : []));
           if (!pages.length) continue;
-          if (c.pagination && !url.searchParams.get("force") && row.last_checked) {
+          if ((c.pagination || c.rsc) && !url.searchParams.get("force") && row.last_checked) {
             const heures = c.min_interval_hours || 6;
             if (Date.now() - Date.parse(row.last_checked) < heures * 36e5) continue;
           }
-          plan.push({ name: row.name, mode: c.mode || "single", pages, max_details: c.max_details || 20, link_base: c.link_base || null, render: !!c.render, attente: c.render_wait || null, pagination: c.pagination || null });
+          plan.push({ name: row.name, mode: c.mode || "single", pages, max_details: c.max_details || 20, link_base: c.link_base || null, render: !!c.render, attente: c.render_wait || null, pagination: c.pagination || null, rsc: c.rsc || null, pause_ms: c.pause_ms || null });
         }
         return json({ sources: plan });
       }
