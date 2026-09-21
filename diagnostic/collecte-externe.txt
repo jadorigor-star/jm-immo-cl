@@ -1,6 +1,10 @@
 sources a traiter : 1
-   realadvisor : 4464 annonces lues, 0 photos, 4225 liens de detail, 5047 avec coordonnees, 0 page(s) en echec
- 572 annonces | 231 pages | RealAdvisor
+   test image : HTTP 200 text/html
+   realadvisor : 4464 annonces lues, 4446 photos, 4225 liens de detail, 5047 avec coordonnees, 0 page(s) en echec
+ 220 annonces | 231 pages | RealAdvisor
 
-TOTAL : 572 annonces sur 231 pages telechargees
-recalcul : {"ok":true,"biens":602,"rescues":1}
+TOTAL : 220 annonces sur 231 pages telechargees
+recalcul : <!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en-US"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en-US"> <![endif]-->
+<!--[if IE 8]>    <html class="no-
