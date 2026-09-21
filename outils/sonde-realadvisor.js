@@ -24,9 +24,13 @@ function objetApres(s, idx) {
   }
   const urlsImg = [...new Set([...h.matchAll(/https:\/\/img\.realadvisor\.ch\/[^"'\s,)\\]+/g)].map((x) => x[0].replace(/&amp;/g, "&")))];
   console.log("[img.realadvisor.ch] " + urlsImg.length + " URL distinctes");
-  const liees = urlsImg.filter((u) => u.includes(base));
-  console.log("[URL contenant le basename] " + liees.length + "\n   " + liees.slice(0, 4).join("\n   "));
-  console.log("[exemples generaux]\n   " + urlsImg.slice(0, 6).join("\n   "));
-  const tagOk = [...h.matchAll(/<img[^>]+img\.realadvisor\.ch[^>]*>/g)].slice(0, 1).map((x) => x[0].replace(/&amp;/g, "&").slice(0, 900));
-  console.log("[balise img complete] " + tagOk.join(""));
+  const dec = (u) => { const m = u.match(/\/q:\d+\/([A-Za-z0-9_-]+=*)\.(?:webp|jpg|png)/); if (!m) return null; try { return Buffer.from(m[1].replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf8"); } catch (e) { return null; } };
+  const sources = [...new Set(urlsImg.map(dec).filter(Boolean))];
+  console.log("[sources decodees] " + sources.length);
+  const motifs = {}; sources.forEach((x) => { const k = x.replace(/[0-9a-f]{8}-[0-9a-f-]{27}/g, "<uuid>").replace(/[A-Z0-9]{20,}/g, "<H>").slice(0, 110); motifs[k] = (motifs[k] || 0) + 1; });
+  console.log("[motifs de chemin] " + JSON.stringify(motifs, null, 1).slice(0, 1200));
+  const trouve = sources.filter((x) => x.includes(base));
+  console.log("[sources contenant le basename] " + trouve.length + "\n   " + trouve.slice(0, 3).join("\n   "));
+  const exemple = urlsImg.find((u) => (dec(u) || "").includes(base));
+  console.log("[URL imgproxy complete pour l'image 0] " + exemple);
 })();
