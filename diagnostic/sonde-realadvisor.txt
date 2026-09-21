@@ -1,4 +1,4 @@
-== Sonde images RealAdvisor 2026-09-21T04:39:43.929Z ==
+== Sonde images RealAdvisor 2026-09-21T04:40:46.007Z ==
 https://realadvisor.ch/fr/acheter/commune-jaun
 HTTP 200 | html 659808 | flux 282265
 [image 0] {"id":"64dd71de-adef-11f1-841f-42010a647018","blurhash":"LGKT#qv|M_-o};E3s8Mc$cIqkDo|","file_name":"CH/64dd71de-adef-11f1-841f-42010a647018","image_hash":"0001011111111111000011111111111100000001111111110000011111111100100000011111000000000001110000000111000111110011011111000111001101111111111100110
@@ -8,13 +8,16 @@ HTTP 200 | html 659808 | flux 282265
 [flux contexte 1] Immobilien in Belp","agency_contact_address":"Hängelenweg 2, 3123, Belp","agency_contact_phone_number":"+41 31 333 19 19","visit_contact_phone_number":null,"visit_contact_person":"Sven Joss","computed_surface":109,"lat":46.59964,"lng":7.23743,"images":[{"id":"64dd71de-adef-11f1-841f-42010a647018","blurhash":"LGKT#qv|M_-o};E3s8Mc$cIqkDo|","file_name":"CH/64dd71de-adef-11f1-841f-
 [flux contexte 2] umber":"+41 31 333 19 19","visit_contact_phone_number":null,"visit_contact_person":"Sven Joss","computed_surface":109,"lat":46.59964,"lng":7.23743,"images":[{"id":"64dd71de-adef-11f1-841f-42010a647018","blurhash":"LGKT#qv|M_-o};E3s8Mc$cIqkDo|","file_name":"CH/64dd71de-adef-11f1-841f-42010a647018","image_hash":"00010111111111110000111111111111000000011111111100000111111111001000
 [img.realadvisor.ch] 342 URL distinctes
-[URL contenant le basename] 0
-   
-[exemples generaux]
-   https://img.realadvisor.ch/_/rs:fill:380:0:1:0/q:60/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2ltZy5yZWFsYWR2aXNvci5jaC9hZ2ctdjIvcGxhY2VzL2NhbnRvbi1mcmlib3VyZy5qcGc=.webp
-   https://img.realadvisor.ch/_/rs:fill:412:0:1:0/q:60/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2ltZy5yZWFsYWR2aXNvci5jaC9hZ2ctdjIvcGxhY2VzL2NhbnRvbi1mcmlib3VyZy5qcGc=.webp
-   https://img.realadvisor.ch/_/rs:fill:600:0:1:0/q:60/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2ltZy5yZWFsYWR2aXNvci5jaC9hZ2ctdjIvcGxhY2VzL2NhbnRvbi1mcmlib3VyZy5qcGc=.webp
-   https://img.realadvisor.ch/_/rs:fill:750:0:1:0/q:60/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2ltZy5yZWFsYWR2aXNvci5jaC9hZ2ctdjIvcGxhY2VzL2NhbnRvbi1mcmlib3VyZy5qcGc=.webp
-   https://img.realadvisor.ch/_/rs:fill:828:0:1:0/q:60/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2ltZy5yZWFsYWR2aXNvci5jaC9hZ2ctdjIvcGxhY2VzL2NhbnRvbi1mcmlib3VyZy5qcGc=.webp
-   https://img.realadvisor.ch/_/rs:fill:992:0:1:0/q:60/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2ltZy5yZWFsYWR2aXNvci5jaC9hZ2ctdjIvcGxhY2VzL2NhbnRvbi1mcmlib3VyZy5qcGc=.webp
-[balise img complete] <img alt="Jaun" fetchPriority="high" loading="eager" decoding="async" data-nimg="fill" class="object-cover" style="position:absolute;height:100%;width:100%;left:0;top:0;right:0;bottom:0;color:transparent" sizes="(max-width: 480px) 320px, (min-width: 1280px) 1248px, (min-width: 1024px) 992px, (min-width: 768px) 736px, calc(100vw - 32px)" srcSet="https://img.realadvisor.ch/_/rs:fill:380:0:1:0/q:60/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2ltZy5yZWFsYWR2aXNvci5jaC9hZ2ctdjIvcGxhY2VzL2NhbnRvbi1mcmlib3VyZy5qcGc=.webp 380w, https://img.realadvisor.ch/_/rs:fill:412:0:1:0/q:60/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2ltZy5yZWFsYWR2aXNvci5jaC9hZ2ctdjIvcGxhY2VzL2NhbnRvbi1mcmlib3VyZy5qcGc=.webp 412w, https://img.realadvisor.ch/_/rs:fill:600:0:1:0/q:60/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2ltZy5yZWFsYWR2aXNvci5jaC9hZ2ctdjIvcGxhY2VzL2NhbnRvbi1mcmlib3VyZy5qcGc=.webp 600w, https://img.realadvisor.c
+[sources decodees] 37
+[motifs de chemin] {
+ "https://storage.googleapis.com/img.realadvisor.ch/agg-v2/places/canton-fribourg.jpg": 1,
+ "https://storage.googleapis.com/aggregator-images/CH/<uuid>": 28,
+ "https://storage.googleapis.com/aggregator-images/IDX/progingrangier/images/6a5f73a599507.jpg": 1,
+ "https://storage.googleapis.com/aggregator-images/IDX/premiumhomes/images/<H>.jpeg": 4,
+ "https://storage.googleapis.com/aggregator-images/IDX/progingrangier/images/6a5f7343b4dda.jpg": 1,
+ "https://storage.googleapis.com/aggregator-images/IDX/progingrangier/images/6a5f73656e13d.png": 1,
+ "https://storage.googleapis.com/aggregator-images/IDX/progingrangier/images/6a5f730dc840e-0.jpg": 1
+}
+[sources contenant le basename] 1
+   https://storage.googleapis.com/aggregator-images/CH/64dd71de-adef-11f1-841f-42010a647018
+[URL imgproxy complete pour l'image 0] https://img.realadvisor.ch/_/rs:fill:380:214:1:0/q:60/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2FnZ3JlZ2F0b3ItaW1hZ2VzL0NILzY0ZGQ3MWRlLWFkZWYtMTFmMS04NDFmLTQyMDEwYTY0NzAxOA==.webp
