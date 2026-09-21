@@ -1,0 +1,9 @@
+== Menage du 2026-09-21 00:51:19 UTC ==
+passe 1 : HTTP 200 {"biens_effaces":90,"exclusions_effacees":7,"plafond":600000}
+passe 2 : HTTP 200 {"biens_effaces":90,"exclusions_effacees":0,"plafond":600000}
+passe 3 : HTTP 200 {"biens_effaces":90,"exclusions_effacees":0,"plafond":600000}
+passe 4 : HTTP 200 {"biens_effaces":90,"exclusions_effacees":0,"plafond":600000}
+passe 5 : HTTP 200 {"biens_effaces":90,"exclusions_effacees":0,"plafond":600000}
+passe 6 : HTTP 200 {"biens_effaces":47,"exclusions_effacees":0,"plafond":600000}
+passe 7 : HTTP 200 {"biens_effaces":0,"exclusions_effacees":0,"plafond":600000}
+stats={"a_trier":112,"favoris":5,"ecartes":21,"vendus":122,"biens":136,"annonces":562,"sources_actives":126,"sources_productives":9,"opportunites":54,"derniere_collecte":"2026-09-20T19:30:12.416Z"}
