@@ -1,0 +1,30 @@
+name: Diagnostic photos
+
+"on":
+  workflow_dispatch:
+
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Diagnostiquer
+        run: |
+          mkdir -p diagnostic
+          node outils/diag-photos.js > diagnostic/diag-photos.txt 2>&1 || true
+          head -c 3000 diagnostic/diag-photos.txt
+      - name: Publier
+        if: always()
+        run: |
+          git config user.name "JM Immo CI"
+          git config user.email "ci@jm-immo.local"
+          git add -f diagnostic/diag-photos.txt outils/diag-photos.js || true
+          git commit -q -m "Diagnostic photos [skip ci]" || echo "rien a committer"
+          git pull --rebase -q || true
+          git push || true
