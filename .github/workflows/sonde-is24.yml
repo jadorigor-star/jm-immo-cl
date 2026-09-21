@@ -1,0 +1,39 @@
+name: Sonde ImmoScout24
+
+"on":
+  workflow_dispatch:
+    inputs:
+      urls:
+        description: "URLs a sonder, separees par des espaces"
+        required: true
+        default: "https://www.immoscout24.ch/agency/p447/area-immobiliare-ticino https://www.immoscout24.ch/fr/immobilier/acheter/region-gruyere https://www.immoscout24.ch/fr/immobilier/acheter/canton-fribourg?pt=600000 https://www.immoscout24.ch/fr/immobilier/acheter/canton-neuchatel"
+
+jobs:
+  sonder:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Installer le navigateur
+        run: npm install --no-save puppeteer@23
+      - name: Sonder
+        env:
+          URLS: ${{ inputs.urls }}
+        run: |
+          mkdir -p diagnostic
+          node outils/sonde-is24.js > diagnostic/sonde-is24.txt 2>&1 || true
+          head -c 6000 diagnostic/sonde-is24.txt
+      - name: Publier
+        if: always()
+        run: |
+          git config user.name "JM Immo CI"
+          git config user.email "ci@jm-immo.local"
+          git add -f diagnostic/sonde-is24.txt outils/sonde-is24.js || true
+          git commit -q -m "Sonde IS24 [skip ci]" || echo "rien a committer"
+          git pull --rebase -q || true
+          git push || true
