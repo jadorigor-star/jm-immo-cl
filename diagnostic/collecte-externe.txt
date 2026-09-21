@@ -1,14 +1,6 @@
-sources a traiter : 127
-   refus https://www.comparis.ch/immobilien/marktplatz/kanton/freiburg/wohnung/kaufen?sort=1 -> HTTP 403 (-) <html lang="fr"><head><title>comparis.ch</title><style>#cmsg{animation: A 1.5s;}@keyframes
-   refus https://www.comparis.ch/immobilien/marktplatz/kanton/freiburg/haus/kaufen?sort=1 -> HTTP 403 (-) <html lang="fr"><head><title>comparis.ch</title><style>#cmsg{animation: A 1.5s;}@keyframes
-   refus https://www.comparis.ch/immobilien/marktplatz/kanton/neuenburg/wohnung/kaufen?sort=1 -> HTTP 403 (-) <html lang="fr"><head><title>comparis.ch</title><style>#cmsg{animation: A 1.5s;}@keyframes
-   refus https://www.comparis.ch/immobilien/marktplatz/kanton/neuenburg/haus/kaufen?sort=1 -> HTTP 403 (-) <html lang="fr"><head><title>comparis.ch</title><style>#cmsg{animation: A 1.5s;}@keyframes
-   refus https://www.comparis.ch/immobilien/marktplatz/kanton/jura/wohnung/kaufen?sort=1 -> HTTP 403 (-) <html lang="fr"><head><title>comparis.ch</title><style>#cmsg{animation: A 1.5s;}@keyframes
-   refus https://www.comparis.ch/immobilien/marktplatz/kanton/jura/haus/kaufen?sort=1 -> HTTP 403 (-) <html lang="fr"><head><title>comparis.ch</title><style>#cmsg{animation: A 1.5s;}@keyframes
-   refus https://www.comparis.ch/immobilien/marktplatz/zweisimmen/kaufen?sort=1 -> HTTP 403 (-) <html lang="fr"><head><title>comparis.ch</title><style>#cmsg{animation: A 1.5s;}@keyframes
-   refus https://www.comparis.ch/immobilien/marktplatz/kanton/tessin/wohnung/kaufen?sort=1 -> HTTP 403 (-) <html lang="fr"><head><title>comparis.ch</title><style>#cmsg{animation: A 1.5s;}@keyframes
-   refus https://www.comparis.ch/immobilien/marktplatz/kanton/tessin/haus/kaufen?sort=1 -> HTTP 403 (-) <html lang="fr"><head><title>comparis.ch</title><style>#cmsg{animation: A 1.5s;}@keyframes
-   0 annonces |   9 pages | Comparis  [HTTP 403 (-) <html lang="fr"><head><title>comparis.ch</title><style>#cmsg{animation: A 1.5s;}@keyframes]
+sources a traiter : 1
+   realadvisor : 4464 annonces lues, 0 photos, 4225 liens de detail, 5047 avec coordonnees, 0 page(s) en echec
+ 572 annonces | 231 pages | RealAdvisor
 
-TOTAL : 0 annonces sur 9 pages telechargees
-recalcul : {"ok":true,"biens":136,"rescues":0}
+TOTAL : 572 annonces sur 231 pages telechargees
+recalcul : {"ok":true,"biens":602,"rescues":1}
