@@ -1,21 +1,25 @@
-== Diagnostic photos 2026-09-21T08:30:43.758Z ==
-https://realadvisor.ch/fr/acheter/commune-jaun -> HTTP 200 | annonces 9 | forme du champ images : {"tableau(file_name)":9}
-https://realadvisor.ch/fr/acheter/ville-bulle -> HTTP 200 | annonces 24 | forme du champ images : {"tableau(file_name)":24}
+== Diagnostic photos 2026-09-21T08:32:44.582Z ==
+https://realadvisor.ch/fr/acheter/ville-lugano -> HTTP 200 | annonces 24 | forme du champ images : {"tableau(file_name)":24}
+https://realadvisor.ch/fr/acheter/6612-ascona -> HTTP 200 | annonces 24 | forme du champ images : {"tableau(file_name)":24}
+https://realadvisor.ch/fr/acheter/commune-quinto -> HTTP 200 | annonces 24 | forme du champ images : {"tableau(file_name)":24}
+https://realadvisor.ch/fr/acheter/commune-zweisimmen -> HTTP 200 | annonces 24 | forme du champ images : {"tableau(file_name)":23,"tableau vide":1}
+https://realadvisor.ch/fr/acheter/commune-chateau-d-oex -> HTTP 200 | annonces 24 | forme du champ images : {"tableau(file_name)":24}
+https://realadvisor.ch/fr/acheter/ville-neuchatel -> HTTP 200 | annonces 24 | forme du champ images : {"tableau(file_name)":24}
 
-[image] CH/64dd71de-adef-11f1-841f-42010a647018 (bucket aggregator-images)
-  imgproxy sans Referer : HTTP 200 | image/webp | 28844 octets | debut 52494646
-  imgproxy Referer app  : HTTP 200 | image/webp | 28844 octets | debut 52494646
-  imgproxy Referer site : HTTP 200 | image/webp | 28844 octets | debut 52494646
-  source GCS directe    : HTTP 200 | image/jpeg | 101838 octets | debut ffd8ffe0
+[image] IDX/realadvisorfsbo/images/IMG_8152.jpeg (bucket aggregator-images)
+  imgproxy sans Referer : HTTP 200 | image/webp | 32362 octets | debut 52494646
+  imgproxy Referer app  : HTTP 200 | image/webp | 32362 octets | debut 52494646
+  imgproxy Referer site : HTTP 200 | image/webp | 32362 octets | debut 52494646
+  source GCS directe    : HTTP 200 | image/jpeg | 180639 octets | debut ffd8ffe1
 
-[image] CH/856cd2be-7ba9-11f1-bc1b-42010a647018 (bucket aggregator-images)
-  imgproxy sans Referer : HTTP 200 | image/webp | 42206 octets | debut 52494646
-  imgproxy Referer app  : HTTP 200 | image/webp | 42206 octets | debut 52494646
-  imgproxy Referer site : HTTP 200 | image/webp | 42206 octets | debut 52494646
-  source GCS directe    : HTTP 200 | image/avif | 197356 octets | debut 00000018
+[image] CH/753de26e-b508-11f1-be32-42010a647018 (bucket aggregator-images)
+  imgproxy sans Referer : HTTP 200 | image/webp | 13448 octets | debut 52494646
+  imgproxy Referer app  : HTTP 200 | image/webp | 13448 octets | debut 52494646
+  imgproxy Referer site : HTTP 200 | image/webp | 13448 octets | debut 52494646
+  source GCS directe    : HTTP 200 | image/avif | 40225 octets | debut 00000018
 
-[image] CH/7392731e-8a7c-11f1-a529-42010a647018 (bucket aggregator-images)
-  imgproxy sans Referer : HTTP 200 | image/webp | 29698 octets | debut 52494646
-  imgproxy Referer app  : HTTP 200 | image/webp | 29698 octets | debut 52494646
-  imgproxy Referer site : HTTP 200 | image/webp | 29698 octets | debut 52494646
-  source GCS directe    : HTTP 200 | image/avif | 76914 octets | debut 00000018
+[image] IDX/immomig/images/6ef19bbf87fbf754091526a88b9ec563ba53563c_1280x1280_ (bucket aggregator-images)
+  imgproxy sans Referer : HTTP 200 | image/webp | 44944 octets | debut 52494646
+  imgproxy Referer app  : HTTP 200 | image/webp | 44944 octets | debut 52494646
+  imgproxy Referer site : HTTP 200 | image/webp | 44944 octets | debut 52494646
+  source GCS directe    : HTTP 200 | image/jpeg | 299150 octets | debut ffd8ffe0
