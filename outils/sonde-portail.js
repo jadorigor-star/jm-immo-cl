@@ -53,7 +53,11 @@ function trouverTableaux(o, chemin, out, prof) {
             const scal = {};
             for (const k of Object.keys(d)) if (d[k] == null || typeof d[k] !== "object") scal[k] = d[k];
             console.log("[comparis] meta scalaires : " + JSON.stringify(scal).slice(0, 500));
+            const pp = j.props.pageProps;
+            console.log("[comparis] cles pageProps : " + Object.keys(pp).join(","));
+            for (const k of Object.keys(pp)) if (/search|filter|param|query|criteria/i.test(k)) console.log("[comparis] " + k + " = " + JSON.stringify(pp[k]).slice(0, 700));
             const items = d.resultItems || [];
+            if (items[0]) console.log("[comparis] AreaValue/PriceValue/PropertyTyp* du 1er : " + JSON.stringify(Object.fromEntries(Object.entries(items[0]).filter(([k]) => /^(AreaValue|PriceValue|PropertyTyp|Remarks|Partners|ContactInformation)/.test(k)))).slice(0, 700));
             console.log("[comparis] cles d'une annonce : " + (items[0] ? Object.keys(items[0]).join(",") : "-"));
             console.log("[comparis] types : " + [...new Set(items.map((x) => x.PropertyTypeText))].join(" | "));
             items.slice(0, 8).forEach((x) => console.log("  " + x.AdId + " | " + x.Price + " | " + JSON.stringify(x.Address) + " | " + JSON.stringify(x.EssentialInformation) + " | " + (x.Date || "") + " | site " + x.SiteId));
