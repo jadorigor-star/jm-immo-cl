@@ -1,0 +1,41 @@
+name: Menage de retention
+
+"on":
+  workflow_dispatch:
+
+concurrency:
+  group: menage
+  cancel-in-progress: false
+
+jobs:
+  menage:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Appliquer la retention par lots de 90
+        run: |
+          mkdir -p diagnostic
+          {
+            echo "== Menage du $(date -u +'%Y-%m-%d %H:%M:%S UTC') =="
+            for i in $(seq 1 12); do
+              CODE=$(curl -s -o /tmp/m.json -w "%{http_code}" --max-time 120 "https://jm-immo-cl.jadorigor.workers.dev/api/menage?lot=90")
+              echo "passe $i : HTTP $CODE $(head -c 300 /tmp/m.json)"
+              grep -q '"erreur"' /tmp/m.json && break
+              grep -q '"biens_effaces":0' /tmp/m.json && break
+              [ "$CODE" = "200" ] || break
+            done
+            echo "stats=$(curl -s --max-time 60 https://jm-immo-cl.jadorigor.workers.dev/api/stats)"
+          } | tee diagnostic/menage.txt
+
+      - name: Publier le diagnostic dans le depot
+        if: always()
+        run: |
+          git config user.name "JM Immo CI"
+          git config user.email "ci@jm-immo.local"
+          git add -f diagnostic/menage.txt || true
+          git commit -q -m "CI: diagnostic du menage [skip ci]" || echo "rien a committer"
+          git pull --rebase -q || true
+          git push || true
