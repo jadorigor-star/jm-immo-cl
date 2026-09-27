@@ -1,4 +1,4 @@
-sources a traiter : 127
+sources a traiter : 128
    refus https://www.comparis.ch/immobilien/marktplatz/kanton/freiburg/wohnung/kaufen?sort=1 -> HTTP 403 (-) <html lang="fr"><head><title>comparis.ch</title><style>#cmsg{animation: A 1.5s;}@keyframes
    refus https://www.comparis.ch/immobilien/marktplatz/kanton/freiburg/haus/kaufen?sort=1 -> HTTP 403 (-) <html lang="fr"><head><title>comparis.ch</title><style>#cmsg{animation: A 1.5s;}@keyframes
    refus https://www.comparis.ch/immobilien/marktplatz/kanton/neuenburg/wohnung/kaufen?sort=1 -> HTTP 403 (-) <html lang="fr"><head><title>comparis.ch</title><style>#cmsg{animation: A 1.5s;}@keyframes
@@ -69,7 +69,7 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - Fribourg p6
    1 annonces |  25 pages | immobilier.ch - Neuchatel p3
    2 annonces |  25 pages | immobilier.ch - Neuchatel p4
-   2 annonces |  25 pages | immobilier.ch - Neuchatel p5
+   3 annonces |  25 pages | immobilier.ch - Neuchatel p5
    0 annonces |  25 pages | immobilier.ch - Jura p2
    0 annonces |  25 pages | immobilier.ch - Jura p3
    0 annonces |   1 pages | acheter-louer.ch - Gruyère  [HTTP 403]
@@ -98,7 +98,7 @@ navigateur demarre
    0 annonces |   3 pages | immobilier.ch - gruyeres
    0 annonces |   6 pages | immobilier.ch - cresuz
    0 annonces |  25 pages | immobilier.ch - le-paquier
-   3 annonces |  25 pages | immobilier.ch - le-locle
+   1 annonces |  25 pages | immobilier.ch - le-locle
    0 annonces |  25 pages | immobilier.ch - la-chaux-de-fonds
    0 annonces |   8 pages | immobilier.ch - les-brenets
    0 annonces |  12 pages | immobilier.ch - fleurier
@@ -108,20 +108,20 @@ navigateur demarre
    0 annonces |   2 pages | immobilier.ch - buttes
    0 annonces |   4 pages | immobilier.ch - noiraigue
    0 annonces |  25 pages | immobilier.ch - les-ponts-de-martel
-   1 annonces |  25 pages | immobilier.ch - la-sagne
+   0 annonces |  25 pages | immobilier.ch - la-sagne
    0 annonces |  25 pages | immobilier.ch - le-landeron
-   0 annonces |  25 pages | immobilier.ch - cressier
+   1 annonces |  25 pages | immobilier.ch - cressier
    1 annonces |  25 pages | immobilier.ch - cornaux
    2 annonces |  25 pages | immobilier.ch - saint-blaise
    0 annonces |  25 pages | immobilier.ch - hauterive
-   2 annonces |  25 pages | immobilier.ch - colombier
-   0 annonces |  14 pages | immobilier.ch - boudry
+   1 annonces |  25 pages | immobilier.ch - colombier
+   0 annonces |  15 pages | immobilier.ch - boudry
    0 annonces |  23 pages | immobilier.ch - cortaillod
    0 annonces |  25 pages | immobilier.ch - bevaix
    0 annonces |   2 pages | immobilier.ch - gorgier
-   0 annonces |  25 pages | immobilier.ch - saint-aubin
+   1 annonces |  25 pages | immobilier.ch - saint-aubin
    0 annonces |  10 pages | immobilier.ch - peseux
-   2 annonces |  25 pages | immobilier.ch - corcelles
+   0 annonces |  25 pages | immobilier.ch - corcelles
    0 annonces |  11 pages | immobilier.ch - auvernier
    0 annonces |   5 pages | immobilier.ch - rochefort
    0 annonces |   4 pages | immobilier.ch - saignelegier
@@ -129,14 +129,11 @@ navigateur demarre
    0 annonces |   5 pages | immobilier.ch - les-bois
    0 annonces |   1 pages | immobilier.ch - les-breuleux
    0 annonces |   1 pages | immobilier.ch - montfaucon
-   1 annonces |  25 pages | immobilier.ch - saint-ursanne
+   0 annonces |  25 pages | immobilier.ch - saint-ursanne
    0 annonces |   4 pages | immobilier.ch - soubey
    0 annonces |  25 pages | immobilier.ch - le-bemont
    0 annonces |   1 pages | immobilier.ch - muriaux
    0 annonces |   1 pages | immobilier.ch - les-enfers
-   0 annonces |  25 pages | immobilier.ch - les-genevez
+   1 annonces |  25 pages | immobilier.ch - les-genevez
    0 annonces |  25 pages | immobilier.ch - lajoux
-navigateur ferme
-
-TOTAL : 25 annonces sur 1420 pages telechargees
-recalcul : {"ok":true,"biens":687,"rescues":0}
+   test image : HTTP 200 text/html
