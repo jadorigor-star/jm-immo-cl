@@ -1,5 +1,5 @@
-// BUILD-MARKER 1078607587 padding-4700: cmix9oaitkb3y622hvri3c6pxotpng84kn70ttzl8d6lx6ciiwffpm2zmyowajwp3j3q1tnszapp415ky3wss384tmzdrs5alpzxyj97mlakjzgboaruovwhy2tud7sculzfybzybr423dqgmimn6rla8z3z93hxta8vhf5n5dkr0ek7rrx4ng68gugzkgxmopquz4pfgga6ol9rvgw6x8m537c5ps7dwtd9nkm1nv0nmsdqqfvvx7sc8eo0pe4b1muuroh08i0gul3azszny2036udy2wtmqpishf8olx1hwqhe49kvy9ds1zrfdh3cal0vqu8phhfvsrk3ohzq09s2uedgikquy37okfgbtjefb2uitm8veclkbtb77ab0h69h8mn74dwqh2usnp4mmbk7u7xsjio5yg4k8zdh7qp59nqd5f9q6rt1eso6cp8h08rr1cb4hpuak9u5753caoka0m088nl9jeapfgi7yh2j0jofwmcdkw3b6wbghnjwq3rvzvkbff1kf6fiz4nji8b5ea5pwsth716614griaafmyx3j1neakyhhtz6e65tzp7z3lunhfqugk3wky49mdjcc2ndkm2qvnudn52f7fow1b4prbv34xzeo0aqcf16xqe2eu3n6344daz1pw7rqxqmo98f4l1d2sfv292eo86tku1xv51znzmtwcfc8ysyz9ecn6fpztozudus9ru20jpyme9r6kwfl5vphjpxtqjalrvjaaalbzl56f66giu17qpc7lw3iulbhmf2jx4fjocahmnz91a7yx8g46agh0y1tz0angt24fwiz4llgtduy7f5o49w0vs07crcs7wj5uxao72oniieawgtzsaqtpztl840i5op0fq0ypxdylqelwnsyxsk0841ucoqzqzj2fw1si3op43ejkhceruzogz0vtpwkizop52hsd0vnqx6rwyvp9jsd9xj2633i2u5mfvxlf1k1ri2kzwng2wa8txas60cotwhtyvt3p52kddzf0js7vaz24sk8op8k9nbiiggvszddlfymxyqrk6d48a0zvga4plo4vcsf30sc26mawx2vhvrqj3e72guyom4q74ttncv8g50d7ugrib6ia7jd8xrbidkd3grvxg5c1q9l56cfy3fl88e0psswumoqfj51jdni1wg58c9vwq9rgegnrvjge8z7zca6surt0csraehyj9jb699vatabh7t68m7fthb4rvcojdvfoagi4i3vk534xsuv0b0ccqxo00fbvto8cd176a63bohu7l7oq1z0q67mndzbf3v6bc0xhpjiwjx14sk8ewy0kxuwnbruycsexe7jh8hf2ut4d9n664qw8ebula837kqdpebkxqedxp0dwsksokopztfjf187ziis1tbpnto5p411kez62z9xwp5rtkigytjzi6rqkablalb9p8b2dt1z019gpianv1u41dw4uliudp4wioo9wx1z2m8uoflc8jgnam35h1jf9swfbgfyrfh9yz1meq39s0exsz8heucay4mwkkbejkj43n6pltxnxl5y8hfcrkk1ps1jyy5iv47dbzmifescr8e64nxtt533kwfjdbu63jfov4hhfg4qvnwnu2tr3v3g6dnv4h5eiyh1yfporqbuj3a0ozyr9ecdy35p4rt6htco33obx68pm32orwe1mjpjqojdv03k13b2ppw8umlfzucyqksf52t63xi1bampxox4tt32dtdw552jxz007xknsz0xuzhur2nxwyydzg5en1hnswrjax770m5jdf2lhx6lnr9ceabr3u1l3yokbmxttf6yx8hs1qhqvflvg3vgkpkk02scy6j5forrugof4c2nsiz4701iznpp1frkkhwfq8f6wvdgugnz17jqsru9m97h4yxzb3n11q92ciy9cueqxgzbayylg22ch05v1s6yn6fzh34qhp1w2duoqa0dzxufe1ggq8aml58vu1ip96opy2cqdanfci26xexaj0btqx3tmyoa9jmtxyvyhun3gn7a8uhriaiqpp9vj7qwltynxj8caih8chl93gj70si42oms8428uibc43xtesnooqna9b054jvr94vikxl6fec1j0ir0lvawnrth2hkxqt8f9mq5a2ucv0qkm24m0zk81abnp5ao5z69yz5kcya4y0mzguctjinjd0w5w8o3iyfazau4q63nbxib34y29tv0daua0l3wrfw4xqoty7fh7fctcl6bs9l3vrczqy9ck4pd4r3ibvjpbp2x113mug5gpw9n4bardic0j86xxncfpv9cx8wi06wl3fuqwter5mq9avc910of58g1pelpj5guy2x8us9c1aflh31cs2g82vmgwjskzwfryintmnnvgzrz0ntg4uf07xzh8dwy8f37nm1narymwn9804vcoo20ix3l8bssjda7j19w1xoegtph7jbar43239mtzkiredh4jievtf8w2swjcbqi2gr74hwhgjcr6o9jx3bwh0r1g3ssq3wzhnnat8vd7c2s84379rp48eucsqb7sutapqe6pr8whwdjb9k8mye71trgq1nqx9fqpbqsqg1n0zpnp1rob5u1tyb412itv2qmo1b5v3lnmxei7zqj9d6ccg86ailr0zvdj9ie7fm8hudzwl3addbdq6o3imon5f696wmvi5aticcu3qknjtfah2nt5ol3tp5eazj5xz8o4x3t6fpqrewaovjieksx978w3b9wnav7mh40131iidavrc2xrnnqdu1at4c9jv523qan8tgbxn39emi7wl2ituaqwkqqwl33tor9cig1e1r43zft67nd6fowpd2b20g9hz122f7r7cgfj8mvh23vv5h1fqrn295549bfrowqy4mao2nzy481dxfh1gedw9y4rsddxjrvy3csvq9j5xggzlh1rfe8owbr3mikq9ib5szhoibfb7dujsxpllwjqw1i0vkz90996yxeaxj5vjih56wfmhtue5xedyf4g11j5shg8gi8fgwhl1tgprh19aius9fq4cu90mnir94i11yptsnfbdkwcnlcz6qvox15hpmo2vc209af9ov0vvvzyr2mver07nmxxe9l79s4qjq1on1pnz9x8zhw19ax5b7qwqxol4hoxs9h660y7umuryql3b7q0rxt407wwym7x1egktwhwwzacrxlr9rnmg4ioxz6up5oubrjr1et4k12hqotbrs4x7dcuxgfwtk2hbwgd2q2ulgtgd78d9yjzs6qiur5439xt6spbc1qr294avxjts4nvkhww5bg2g8vn0up386txsss319or2lo7k74pjxm96gdn6ue417yuele4hmhmcdz783bgbi57rhgmaq3yqfqbd7yhnuig4aitrxnaltxj23m76tozt2q3el0okysi3o17iqx3tf1l15adqarw2cqv59pxduwfx1cfce7citda7w8u42qxqierm43fmgimupoh3ei0m8xhtqih58lqzva65bsg88qoz2bjommvpn3gpwbttet5ewsjv6f16r2uhwuqoqoycr2xe4u1hvcgwmkbr04nhv7omspd200x0okl1dtn463exsh02nmzjm8t7524bfkf118pjdj83c4q33pt0tszu4a68k48fp75hxevmh3wr97kur1hcr7agcjkf0e1wip5c1cceec9q2oxr24l8389lgcq9ulj6upfm1cmumw1tbv54ygwvg1tkukoxvl1nththdxy7xb73nadb7lw8zjpeswlbpmkqpciytfztr7qlr68485vhtg4csamm598mhujawkk6hhqv8yc1th4sjixsspj44905tj9yizembquqhk4dc2hlgokxju9m9ehv9d5a9w4inqdzd6z6ov7szgrbwmdm9v7kwe89v7mwoo5v5smipscn7va7na6gc71j62yz7u575xpofvzs42nseln9vww08utkoowdz1bzus6ftb5iwg7pcvwsftcm1kijtnmse0lvm41csik3p95n371356z7u1a4a266cytt1z6vblr08wt6hu12xyw5i7bv6zk5zxog9fjh9rpnfgwgpinpd63e3j967nanqynyrvymo384z4ywayfhhp1m6vk9uj0wbjv1dpcmiyon5ng514mitdh4tdot0oe3bq6wy8vcn3ijiah3ea4ckm20py25jhh3rra8ub77mic5ktis3lzfiv29g8zjdjr7aj7wjovtlegrzzw8tdm80e9kpmzdvu28izx96fuavw87onx7yshc8c5i05igtaif6ejau6q23bnyo0yc36we4apjjzh7yupsptnuhk202lmtj2uqoan4rc9qltt7r6n6mgnib515ychd1rfhr29jx7kkds10rcclnxvb9ws5iuvjh8ibrdlkx6o7mbodid41s5z14rtbuehtayw7cv5tzurv1eljoyzvqvcra6jczl2nfh4j87wd0cuiq493d6vseh1jsyyl127nqbfleslnnfh98fd4ahr46ec7nf5d4us84msyaualu9d5lfpjo2evsuos0jr9sx89yxdce73zcrd2v3c32wg0pivdzaaehakpapjxoza8t1eswspjlj8k7uo7zmcok604hsxhrn0c0pwp5ah611pke280s838hpqz2vjf94zfxtv0
-// VERSION_MARKER_JMIMMO_20261004_FIX_DEBUGCAPTURES_v52
+// BUILD-MARKER 1409965331 padding-4700: s9lc5217ksodxbackok5xe61g5726w11pov2dyyr8en2yn8vpvx3jmlu8uf9atd7qp99f9n7s03tib7jhbeykpdqgexw64dtowa98jyrdbrt5hrzem42dfuvkcjb6fg9h1fjymt6ti6eby7gp9dqm6cipt6wlvwp3ami78zfu2t6mjuarvcbkksrkg9ub7al0a3n3o8ia1ocvvjzssltjx5e0s89ob3yszcstww2b4582uuv0rrqipk16kp04ebfzt4czhusa6grsrjbfw20zw1tkcymx90tmja40i8q16ksibervjnccs5o9waqbt78di28bfzqj1d8c6p74qylov5q2su8nn3k0psnstxzwbmrdw1cifqtdfs372s2yr2d7zal0k87bhkcsvgqsy77pe3hvmhajaq0j6g473bgb2613p4s21bfhdimsdw9e9yttpjk8qicbbn8mo5w7uj5l40cv4mp6jzaqanvpwkevwf2w32p5whht2oobi675di7p04cj9r8vruonr6evbwy9c6ctfnkjl6tjzgguo9b94ew7ea2m9b2indpy1o1eo0tqw1qmkeuhmab228sadzsvxy51d4u3clahfkceeb2sxc8wj6thlt2zhupcofuta639jh5jvad9baxcoxz0144xxxmvh4hg7kif4zbp0s0ssijymftdxjvhz2n4yqxq84saohnt9ylv6gsjwfwg07rs04cpdf92e6bqxz3470fbr9q1bj3npggy9tjvr94wpw1kyxvqps3z90hwng5gt2knvwt2zsxp8om6at572493g91npqjjl29x3paanydcjsbkmuiy4dtsezjmctrz1y1v5gxbjkc3rco7djm79i78c9stomnjgrpeuszht2zu3tqu33o7i8y45lrsv6fv5x3js79zb0wcvyxve7etv1v3hxtsajyldtku428htw8h34umc8jybbhwcjmm3eiwwabt1h88m6fy7wvkudzjh60tezfc6iqz1fyre9pmwso9fqyt47ylz21a9gdjixielyz1xcutb0hkwbbxadefr1xy9ngd89q61kll6u30r1x15tbl3ivayu05br904rw0s27dxhn5v5a45xok58bu4bel941fphq0qcddktfh2t7ujbqv445vj5hg88qqgknefguerxfo77kljt3ln6tk2zpfzy1i6qlvc4fclbuw0zne152d8zf0mr6cwzo11ds7p1cr06mhbg6gnqog14aunghrvlou8ybadpohst54elkb14z32rgntz54upvv5rxctx9ehjss3bc78uta7c8cevjij5zvj25a1krpwr3fibtmcaf3m607nzb6s5x8gxqvw1751yfczb00kp4y3mczx2ii3m7yjk836zdmxovu6tbirpuan1gpmyckm5c1omjq0b0sacjsmexvxthquxyc4rj1gnpzorwo1l7l239beu8u7aec6fyu2xvovccrp43kfbai6llhue3x0qawidgfpbmfhen3pxbr50kf2prv4tx9gomimswfdtv999999rx0o8665k18zubfb4b1rrnvuf4nfcl2ylb6hfvfhjp8hwyacikinv35f4xziqcsgl5k2r5zun7kow9xecrn4gnq94vuc1qx1h35fd9u1zbqto8v5dxp0emvh0yzcw0pdx6h9alxzufws8tgkosudr404wf3t932f04c2x07biqij1ov5ci0mbdcmpvsnds73mzgel7oe35lohmxk2dqmqmm710wyd2rb40g2p5e8tuocv7ua4coco48hdflbuz358bvopfuo1s5cn8fs7weud8pxzf5yxodptmq6jrb7z79esnwmpjin745vwzrz8bcwk6fd7bkxrrubwrkqef9yxnnt3j787g3xs8x4n5b6dp1cl14sgz0te2ckverj38z2sym7nr8yezilfzmn8qj9fnmneq8k89das0958yhxvrfjtatucpgjuwzjazxzstb7y8dyzm0551g0q3218afdxe6q9ut6zigorqx4pi4x9ibcgy4ak8607m8v86wvgl7hszzwq4yn9zqfh6wwvcp91scn3wtf6o9hnpq887tul1j9bfolfyiw6ufi1he6i0odulynzoclyot8b08xfg72wcr8n4ff4gtczluicizepiixkk27fd7mha34r51wmn6mt49r1bx87z0czeflp7duwmom8kfe12tzvab8yv0j79d7cjfwrhgwkl0vzh41jpew751ox6qfn3qv5vi61b25runk5zcjxonuheokb0pvkrf1qw37ihxau0dphcuzdwnt2e8r1wtty35hk4ix64k0ts209nzvuckuzejkae9ziq4uqgbrf967u2iu30tvrskpzjedzrp5cnudm4yf9xmwjieqg8qv9biyoibxdivkfryveud0ejh3tvpty7wdacvlnmqchl8jmymlt4d7j9op133bkd086gf5ngj3iztsvrzljw79i6aeb5dgs0a0w9k8kpf8bed7ygx06m6969u5yw2onelwa2j2g5kjioblvmypbso3r2b2rdc4ius65585t6w43lcnwdfspx9cw530o0umi1gmtb40dkuon2ljaoipisxannzlvcg17i48sob6vjykxlahlpmw0cn9os1hkao6b2dad7gd4m2g29hloau6b7w9gbferztcdj79dpsbf4vyfyo21zuavdhrnj5frxw65t8smyueuj6mo9lwx7b8niv1fjbpu8gfvttrucxdkgq4ndio6sx4q3vc4aeyoc52ekrldeyknvlwwbea65vbk9hswxknyngiwe7dpx27gwldql374reyc80tqx6d84z18b44ns1zm28w6is7wbpeen78f9ea60jearnhpavj5l4im81d469xdov9ya50prss8ynn2872rvsvz8wkq6qz16uwphx7gplor5odjf2kvxa3qngab3vv36mxcfi00agtstes9m0nhoqkc47yrpgzocmh06f4yvn0y5d496hgl9yrrz2o4spe28h04cver7ljwnnjur9k8nr4s39kf05ddxmhmocgtgxp4ncdom9roj7v6wf8a17vzf8rchu5sx2wbjvxn2s266339hrav9hubat9lnchkmyigmf1b73c4jac63xwm4rxbtujunt4beixfvcs4qadt3lmchitunk7pw2n2qtd38lnv96sv7pb7cy7svhowlinkinhrit8759h4s6mgrbe2cghqmszu84omybz9xt8ntqlcsn9gy4z3vcaboq47vfe2tb59i3i1l4a1amj4x6cunxtnqxhi65i4wfcr7juib7t1fusg0bo1ikbaf1e3bn0q3hl6luqk4ixz9saeen4lkowp3pe8jjp8vbxhsivzo5szw86x3ak7dq01nlznn9ej4f62s4ra4lfpf5sc21ysopwtxhtgapovr2fdlzx78yy5uhms1yffio25q2342s0uqbvni9eyefp32mbfeqyj1jhun4dgq7b1pd1i5v4pixnj8k1k860epv03ao5gyjhusbt13jw8dpr2cyyeawf61bn0i9x74fw716736ul2yx69ab8v0jdl56c2ljotcjdc8o737luusasxbsinwvo2covwbns8fdlpi99trnwslztihkhgzkmzkwl1p9nnon6fb6ymxtfurbz2awm43g4vg42rwbj403tgfap6k0jjyjw00ltdh7qtt1tytxo0df4m4d7sqpw7f604vpqthya84kg9vkim1qb8xs6emlm3r47k06u64wbi2xim6tr1ezbwaihss7kiph2nz7gbn62uepp9qupo37fuxf0a9o3ctb70d3dp0yt1431wmsb7fikiorkr9i77pdhmmuq8tm32bvdzmmn1cyrhw90qzeesu7tboi04ab58uw6lyui3vdsppm22fsojugukjjrthhsoh28wqf7309fwevo72aorx438wei6z3jk2u3du2rqhmcuj6386g96bk2a3h670v3h25d09q96ygnwjoxi15pnkhm8odf5rfu3bllzog9m3evksfkalxyekt9cdyyx14oso2bram796l47pnexldyit4wqebyf8imifrblnttn4lh7yhvdmudlmysv13nhhn9qgyvasl0l6akwgwh2j2qsnivol5ak145krs6af9g9bf9okibabdst0web3ptb0lxd6ix1lgxn9vqy05y49xyr1s2cbhr6adx4j03zsbgl5m7ipf0rathhci2gi0i6q8xfk70kr22dxjglmedk4ds18vmblo5fj3qhp1kjmy8em9zeh35vonmgxrfd9w1ciswd087u16xtnrwt5g3f9k8otusc0bpmol45x51yvyt07mrus299gjkbxfzvv76e0d604gnzvomqnh4gm8p5f7kgvplpevtjnqrf1ad0rickv9cte6arx60e8y6q978iw6isjs2jsmc381gpdfey7ol1l6dpekpaaqw40gxu4j9zaqobyidqbxohb1cmpa97u5ytk4zd1yocxktyc3shciid4f43kfvsga7nqo7agovd0wi3ocqad1y9wwv3mojsrlpcqp2kpmt2akxod5jdzjj4og9jxzge2josyji4x23z9uss677unuvkev380v14dryyg4kb60rpm5fvy7j72qa0sapai38j7tva5w9i2vk8svjn1
+// VERSION_MARKER_JMIMMO_20261004_FIX_ECRITURES_TRACKING_v53
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -1598,6 +1598,44 @@ async function noterLectures(db, res) {
   } catch (e) {
   }
 }
+async function noterEcritures(db, n) {
+  try {
+    if (!n) return;
+    await db.prepare("INSERT INTO quota_jour (jour, ecritures) VALUES (date('now'), ?) ON CONFLICT(jour) DO UPDATE SET ecritures = ecritures + ?").bind(n, n).run();
+  } catch (e) {
+  }
+}
+function statementAvecCompteur(stmt, compteur) {
+  return new Proxy(stmt, {
+    get(target, prop) {
+      if (prop === "bind") {
+        return (...args) => statementAvecCompteur(target.bind(...args), compteur);
+      }
+      if (prop === "run" || prop === "all") {
+        return async (...args) => {
+          const res = await target[prop](...args);
+          try {
+            const chg = res && res.meta && res.meta.changes ? res.meta.changes : 0;
+            if (chg) compteur.ecritures += chg;
+          } catch (e) {
+          }
+          return res;
+        };
+      }
+      return target[prop];
+    }
+  });
+}
+function dbAvecCompteurEcritures(db, compteur) {
+  return new Proxy(db, {
+    get(target, prop) {
+      if (prop === "prepare") {
+        return (sql) => statementAvecCompteur(target.prepare(sql), compteur);
+      }
+      return target[prop];
+    }
+  });
+}
 async function quotaLecturesDepasse(db, seuil) {
   try {
     const r = await db.prepare("SELECT lectures FROM quota_jour WHERE jour = date('now')").all();
@@ -2508,7 +2546,8 @@ var index_default = {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const espace = espaceDe(request, url);
-    const db = env.DB;
+    const compteurEcritures = { ecritures: 0 };
+    const db = dbAvecCompteurEcritures(env.DB, compteurEcritures);
     try {
       if (request.method === "OPTIONS") {
         return new Response(null, { status: 204, headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS", "Access-Control-Allow-Headers": "Content-Type" } });
@@ -2851,22 +2890,26 @@ var index_default = {
       return json({ error: "route inconnue" }, 404);
     } catch (e) {
       return json({ error: String(e && e.message ? e.message : e) }, 500);
+    } finally {
+      ctx.waitUntil(noterEcritures(env.DB, compteurEcritures.ecritures));
     }
   },
   async scheduled(event, env, ctx) {
     const cron = event && event.cron ? event.cron : "";
     const isMaintenance = cron.indexOf("*/") !== 0;
     ctx.waitUntil((async () => {
+      const compteurEcritures = { ecritures: 0 };
+      const dbc = dbAvecCompteurEcritures(env.DB, compteurEcritures);
       try {
         if (isMaintenance) {
-          await cleanupStaleListings(env.DB, 14);
+          await cleanupStaleListings(dbc, 14);
           for (let i = 0; i < 8; i++) {
-            const r = await menageRetention(env.DB, 90);
+            const r = await menageRetention(dbc, 90);
             if (!r.biens_effaces) break;
           }
-          await recomputeFull(env.DB, env);
+          await recomputeFull(dbc, env);
         } else {
-          await ingest(env.DB, fetch.bind(globalThis), { budget: 45, maxSources: 6, maxPerSource: 6 });
+          await ingest(dbc, fetch.bind(globalThis), { budget: 45, maxSources: 6, maxPerSource: 6 });
         }
         await env.DB.prepare("INSERT INTO app_config (key, value, updated_at) VALUES ('last_cron_ok', ?, ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=excluded.updated_at").bind(cron || "?", new Date().toISOString()).run();
       } catch (e) {
@@ -2874,6 +2917,8 @@ var index_default = {
           await env.DB.prepare("INSERT INTO app_config (key, value) VALUES ('last_cron_error', ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").bind((new Date().toISOString() + " | " + (cron || "?") + " | " + String(e && e.message ? e.message : e)).slice(0, 300)).run();
         } catch (e2) {
         }
+      } finally {
+        await noterEcritures(env.DB, compteurEcritures.ecritures);
       }
     })());
   }
