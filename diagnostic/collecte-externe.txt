@@ -1,4 +1,4 @@
-sources a traiter : 128
+sources a traiter : 127
    refus https://www.comparis.ch/immobilien/marktplatz/kanton/freiburg/wohnung/kaufen?sort=1 -> HTTP 403 (-) <html lang="fr"><head><title>comparis.ch</title><style>#cmsg{animation: A 1.5s;}@keyframes
    refus https://www.comparis.ch/immobilien/marktplatz/kanton/freiburg/haus/kaufen?sort=1 -> HTTP 403 (-) <html lang="fr"><head><title>comparis.ch</title><style>#cmsg{animation: A 1.5s;}@keyframes
    refus https://www.comparis.ch/immobilien/marktplatz/kanton/neuenburg/wohnung/kaufen?sort=1 -> HTTP 403 (-) <html lang="fr"><head><title>comparis.ch</title><style>#cmsg{animation: A 1.5s;}@keyframes
@@ -9,7 +9,7 @@ sources a traiter : 128
    refus https://www.comparis.ch/immobilien/marktplatz/kanton/tessin/wohnung/kaufen?sort=1 -> HTTP 403 (-) <html lang="fr"><head><title>comparis.ch</title><style>#cmsg{animation: A 1.5s;}@keyframes
    refus https://www.comparis.ch/immobilien/marktplatz/kanton/tessin/haus/kaufen?sort=1 -> HTTP 403 (-) <html lang="fr"><head><title>comparis.ch</title><style>#cmsg{animation: A 1.5s;}@keyframes
    0 annonces |   9 pages | Comparis  [HTTP 403 (-) <html lang="fr"><head><title>comparis.ch</title><style>#cmsg{animation: A 1.5s;}@keyframes]
-   3 annonces |   1 pages | Bussard Immobilier
+   0 annonces |   1 pages | Bussard Immobilier
    0 annonces |   7 pages | Fidimmobil
    0 annonces |  13 pages | MPP Fiduciaria
    0 annonces |   1 pages | L'Idea Immobiliare
@@ -36,8 +36,8 @@ sources a traiter : 128
    0 annonces |   5 pages | Neho
    0 annonces |   1 pages | Monopoly Real Estate sagl
    0 annonces |   1 pages | Raiffeisen Immo AG
-   1 annonces |   1 pages | Area Immobiliare Ticino
-   1 annonces |   1 pages | ImmoSky AG
+   0 annonces |   1 pages | Area Immobiliare Ticino
+   2 annonces |   1 pages | ImmoSky AG
    0 annonces |   1 pages | TERRIER SA
    0 annonces |   1 pages | SKF Fiduciaria Sagl
    2 annonces |   1 pages | Ticino Real Estate Sagl
@@ -54,7 +54,7 @@ navigateur demarre
    0 annonces |   1 pages | PREMIUM HOMES AG (site propre)
    0 annonces |   1 pages | IMMOprima AG (site propre)
    1 annonces |  25 pages | immobilier.ch (portail romand)
-   3 annonces |  25 pages | immobilier.ch - Neuchatel
+   2 annonces |  25 pages | immobilier.ch - Neuchatel
    0 annonces |   3 pages | immobilier.ch - Saignelégier
    0 annonces |  25 pages | immobilier.ch - Charmey/Gruyere
    0 annonces |   1 pages | SIT Immobiliare (IS24)
@@ -62,20 +62,20 @@ navigateur demarre
    0 annonces |   3 pages | immobilier.ch - Gruyères/Broc
    0 annonces |  25 pages | immobilier.ch - Jura (canton)
    0 annonces |  25 pages | immobilier.ch - Fribourg p2
-   3 annonces |  25 pages | immobilier.ch - Neuchatel p2
+   0 annonces |  25 pages | immobilier.ch - Neuchatel p2
    0 annonces |  25 pages | immobilier.ch - Fribourg p3
    0 annonces |  25 pages | immobilier.ch - Fribourg p4
    0 annonces |  25 pages | immobilier.ch - Fribourg p5
    0 annonces |  25 pages | immobilier.ch - Fribourg p6
-   3 annonces |  25 pages | immobilier.ch - Neuchatel p3
-   4 annonces |  25 pages | immobilier.ch - Neuchatel p4
-   0 annonces |  25 pages | immobilier.ch - Neuchatel p5
+   0 annonces |  25 pages | immobilier.ch - Neuchatel p3
+   1 annonces |  25 pages | immobilier.ch - Neuchatel p4
+   2 annonces |  25 pages | immobilier.ch - Neuchatel p5
    0 annonces |  25 pages | immobilier.ch - Jura p2
    0 annonces |  25 pages | immobilier.ch - Jura p3
    0 annonces |   1 pages | acheter-louer.ch - Gruyère  [HTTP 403]
    0 annonces |  25 pages | immobilier.ch - bulle
    0 annonces |  25 pages | immobilier.ch - la-tour-de-treme
-   1 annonces |  25 pages | immobilier.ch - riaz
+   0 annonces |  25 pages | immobilier.ch - riaz
    0 annonces |  17 pages | immobilier.ch - broc
    0 annonces |   3 pages | immobilier.ch - vuadens
    0 annonces |   2 pages | immobilier.ch - echarlens
@@ -98,8 +98,8 @@ navigateur demarre
    0 annonces |   3 pages | immobilier.ch - gruyeres
    0 annonces |   5 pages | immobilier.ch - cresuz
    0 annonces |  25 pages | immobilier.ch - le-paquier
-   2 annonces |  25 pages | immobilier.ch - le-locle
-   1 annonces |  25 pages | immobilier.ch - la-chaux-de-fonds
+   1 annonces |  25 pages | immobilier.ch - le-locle
+   0 annonces |  25 pages | immobilier.ch - la-chaux-de-fonds
    0 annonces |   8 pages | immobilier.ch - les-brenets
    0 annonces |  12 pages | immobilier.ch - fleurier
    0 annonces |  20 pages | immobilier.ch - couvet
@@ -107,18 +107,18 @@ navigateur demarre
    1 annonces |  25 pages | immobilier.ch - motiers
    0 annonces |   2 pages | immobilier.ch - buttes
    0 annonces |   4 pages | immobilier.ch - noiraigue
-   0 annonces |  25 pages | immobilier.ch - les-ponts-de-martel
-   2 annonces |  25 pages | immobilier.ch - la-sagne
-   0 annonces |  25 pages | immobilier.ch - le-landeron
-   1 annonces |  25 pages | immobilier.ch - cressier
-   1 annonces |  25 pages | immobilier.ch - cornaux
-   2 annonces |  25 pages | immobilier.ch - saint-blaise
-   0 annonces |  25 pages | immobilier.ch - hauterive
-   1 annonces |  25 pages | immobilier.ch - colombier
+   2 annonces |  25 pages | immobilier.ch - les-ponts-de-martel
+   1 annonces |  25 pages | immobilier.ch - la-sagne
+   2 annonces |  25 pages | immobilier.ch - le-landeron
+   0 annonces |  25 pages | immobilier.ch - cressier
+   0 annonces |  25 pages | immobilier.ch - cornaux
+   0 annonces |  25 pages | immobilier.ch - saint-blaise
+   1 annonces |  25 pages | immobilier.ch - hauterive
+   0 annonces |  25 pages | immobilier.ch - colombier
    0 annonces |  14 pages | immobilier.ch - boudry
    0 annonces |  23 pages | immobilier.ch - cortaillod
    0 annonces |  25 pages | immobilier.ch - bevaix
-   0 annonces |   2 pages | immobilier.ch - gorgier
+   0 annonces |   3 pages | immobilier.ch - gorgier
    1 annonces |  25 pages | immobilier.ch - saint-aubin
    0 annonces |  10 pages | immobilier.ch - peseux
    1 annonces |  25 pages | immobilier.ch - corcelles
@@ -136,11 +136,7 @@ navigateur demarre
    0 annonces |   1 pages | immobilier.ch - les-enfers
    0 annonces |  25 pages | immobilier.ch - les-genevez
    0 annonces |  25 pages | immobilier.ch - lajoux
-   test image : HTTP 200 text/html
-   worker : 0 reponse(s) en erreur au premier essai, 0 definitive(s)
-   realadvisor : 4448 annonces lues, 4425 photos, 4032 liens de detail, 5054 avec coordonnees, 0 page(s) en echec
- 578 annonces | 231 pages | RealAdvisor
 navigateur ferme
 
-TOTAL : 613 annonces sur 1653 pages telechargees
+TOTAL : 20 annonces sur 1423 pages telechargees
 recalcul : {"ok":true,"biens":882,"rescues":0}
