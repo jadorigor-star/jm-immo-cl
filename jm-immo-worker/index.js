@@ -1017,9 +1017,14 @@ async function ingest(db, fetchFn, opts) {
         stored += await storeListing(db, srcRow, rl, extra);
       }
       const touched = rawListings.touchedUrls || [];
-      if (touched.length) {
-        const ph = touched.map(() => "?").join(",");
-        await db.prepare("UPDATE listings SET last_seen=?, status='active' WHERE source_id=? AND url IN (" + ph + ")").bind(todayISO(), srcRow.id, ...touched).run();
+      // Par paquets de 90 : D1 refuse plus de 100 parametres par requete.
+      for (let i = 0; i < touched.length; i += 90) {
+        const paquet = touched.slice(i, i + 90);
+        const ph = paquet.map(() => "?").join(",");
+        // Seulement les annonces pas encore marquees vues aujourd'hui : sans cette
+        // condition, chaque collecte reecrivait toutes les annonces vues (meme
+        // valeur), soit l'essentiel des ~45 000 ecritures D1 quotidiennes.
+        await db.prepare("UPDATE listings SET last_seen=?, status='active' WHERE source_id=? AND url IN (" + ph + ") AND (last_seen IS NOT ? OR status IS NOT 'active')").bind(todayISO(), srcRow.id, ...paquet, todayISO()).run();
       }
       rafraichies = touched.length;
       // une annonce que la source ne publie plus disparait apres deux absences

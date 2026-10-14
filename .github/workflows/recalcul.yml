@@ -2,7 +2,8 @@ name: Recalcul periodique
 
 "on":
   schedule:
-    - cron: '17 */3 * * *'
+    # 2 fois par jour (etait toutes les 3 h), apres les collectes du matin et de l'apres-midi
+    - cron: '17 6,16 * * *'
   workflow_dispatch:
 
 concurrency:
