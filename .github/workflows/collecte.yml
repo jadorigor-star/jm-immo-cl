@@ -2,8 +2,8 @@ name: Collecte planifiee (filet de securite)
 
 "on":
   schedule:
-    # 4 fois par jour (etait toutes les 2 h) : quota D1 d'ecritures partage avec yuh-invest-ai
-    - cron: '0 5,10,15,19 * * *'
+    # 1 fois par jour (etait 4x/j), apres la collecte externe + sur demande (workflow_dispatch)
+    - cron: '0 6 * * *'
   workflow_dispatch:
 
 concurrency:
