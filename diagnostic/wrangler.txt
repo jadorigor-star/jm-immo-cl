@@ -1,15 +1,15 @@
 
- ⛅️ wrangler 4.151.2
+ ⛅️ wrangler 4.151.3
 ────────────────────
-Total Upload: 162.51 KiB / gzip: 42.10 KiB
+Total Upload: 163.06 KiB / gzip: 42.19 KiB
 Your Worker has access to the following bindings:
 Binding                  Resource         
 env.DB (jm-immo-db)      D1 Database      
 
-Uploaded jm-immo-cl (2.56 sec)
-Deployed jm-immo-cl triggers (0.77 sec)
+Uploaded jm-immo-cl (3.26 sec)
+Deployed jm-immo-cl triggers (1.10 sec)
   https://jm-immo-cl.jadorigor.workers.dev
   schedule: 0 3 * * *
-Current Version ID: 441a216a-c8fd-439b-9755-5aedc878972f
+Current Version ID: d2c8e29f-6c24-489c-bdb4-ce0eb9dd0430
 
 Cloudflare collects anonymous telemetry about your usage of Wrangler. Learn more at https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler/telemetry.md
