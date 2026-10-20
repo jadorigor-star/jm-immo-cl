@@ -1,5 +1,5 @@
-// BUILD-MARKER 1583858290 padding-4700: u5z106bsizyr7hizjvbwio9bl5vfs1oy1wfmzjc6j9q2ecpa86jvrh9flgb3eyndx0uih51mfvdwvf5xwwz6sug1y39t8okuzv43se42pfcjky6589jsq928w707e7ojix47d8sjvswpqwbvekzoxj7duasz7snffvx4bmpp6u11miyeoi5yreb9xsu5ntk4u6qa2tft6hbmtvmy6tkx7tidbko1q8wlvdwe4st6mdx8i939rv9syj7h81sx5j7x0qo3ksyra2o2brq5euz86nxw59bzduaotshpmbn8sv1mgcnnemajnpmv7tz77geayo4axn1i9f6ha938rc18nbh97xs3vj8we670ujknd7lcxufxycz5gmyiur3hiiecss0j45gjujh1j3k1ajqyqffkp6o213yobk90uhv7h8afq13t29esi74sbqwxwmews9dsm8l95aqg0cfn9icxhqb5m7eid0obp9pa8goy2cenkkzt67ccrj2hku2ng5y02ssg6pxuqn574g88jlj8n68zp94tox958mtxskctro7fbfh1nyh4028mtx9cs7v1czewx8pwnfmfdyb4xqlhd01iyzhpbdrorqsb31io3kyoefwqyu2r4ensa9xmvn8r9tfnpno5x4qfklaxdnw8q2ggznrpj68t95upwxkjpbliwldce0g2lc3gxjdy8izkj7u3wn5bleul2ml8qsmncaqrf5whd806ih0khz6slgyilodwrvl16p5o123xwnx7xmkshmuk3o4olzi0urw1utzy6z111mjglhpa36sicu1n07xschafsgwupuhwynb7n0n0agjtjce4tv3i1z3y9u8zvkvebnrbxqutsxyz9wlu6u2j0tr6hwsxu7to70zfaw5421esb8gyrpk9ym5o97q8j6j7w2ap8tfr0pcavlg0mz8lgastz0cvczwxev6jmkjvmsqxfs1zelt4nfwjgqj2hq6vyemtji0ep85zbuyyb1zbhjyv3mp2yue3si7lm1nwghsv3ezkkjbc1ld5dr3ssitgticg62t9oeplb3tsmo0aehozvusf5zmusi98kplv2q27i5fehcny30go5f5lqinr3fowrwxftydlucle3wchjet2jtpta27dxrvjp4ic8ue0c8qxu2ybjxjczdk79ru5lfibcioj3ngjvaxu1tunwraxhzpw4qu092jsa8nh3tj8b5b165ahrftylk454yjtmo1na55zslrypvtluiw1wk91xutrw788dgqcfu2zq5x5rxhscitaybpgmv5bfce1ttz1s4qnvreq1bdm3wk9jdfstgkck21rrf5fs1ixe9tzm00jmbw00r4ncixdwvlusy2okflrr7cprkic7x9u27w2c2v8t9i0t30nqd5bjrwr98xnlwjwo2cnjngh0hgkzofn8nkwe2200eex6jqd6pw9bj2f00h2o49c93p5b35ohaawdpei8qg0lebdnzgh0w9o4ctryh2npidq61ss0dwjt6daioigtankg6cu26tnnqkvb7mj8na4gcgg7v5cyqmcq2cs0bpy9ygc7wyjqzdwuv29xehakts4it2vbdd9dk7xdfgrxak3vx6aqv55mjf0mya8oafa9xq2hiz2l5puq9ck0wcmmv82zl5173w9zoeqla5gbkb91g3q8jna2u1zd4jsdhj3l29cedrmbrs19a1pzj6cl4kj7jx5r3xecd53lpzwkwt3b1uwf6vnhuvql7zjjqx0qr5od4xewcww3e8mm0ad551j5c8j1ybo49y17gnvyn94e3a64dlcf14x43ch29aaj0inb91rmca0jzr16exz2ndcdns2wr5q8y4sbyzhb8o7c7hlv22dld4w1ebfviue5n6f1sj0t1z58j4my6770swijlir6yv1mbgh0iekit8rx0nsne7rfmc76me5d5bcieh5m7rtv7haeaet5rashp4k5wtf00e8a1ut85g8s02px6dlwezo6z78dsssnfkyvppnczm9kcaxzkge4wqnlh5jhlzxsuz07df5nm8320rp9tv8tbbtbddnklc8xigfvb9c5klojhpubxlfc22palb9i7574kcc3yyr0rvr0a3roa0y0xxo9nsc8rlaqlpcdm76wxbu7b2t2qmt6gi3tu4hpaprjtgvbzuisliz0lqwqay8iv4qgm905rd03909eh97pkdwcq5mx78u6yoyll2mdv4er6repabsegf6fkh0gco7mv5tugd7up8x5rpmlwo2jtccb55m2dpm0wrokfs3t2hque3vmua1ifrtwm2tksgkca10nlem5d4mk12l9bqbusosgmhzvjegtxg3lghsb4711i1a61qd75pln6cyfi5lysk29938svmgt5gj1650c3c7u4a02u24a1zny4edyfl9e7k8yugcut763cs52gvp5kvh2tgk527ddy1wei3u3p14hdwa81xj4usmtjhfvsi4dyuhyzs80g8p3k5l4k8pu62vb5p37gluwt3falychb1rpilbsdqb4u66u949x6tcxp8nf8m2ogov2yas9tzfs3wrikx4gscq7q8wmeeimkkmfmeur8d3vgg67zezpxrip90fzvoaucd3p1pp009m8vfywurxkbppictfkklc5soie0df7m0dzfi3to4tfblthlh5gd9j74ttr72hhwjztjrcjdb9zhwzx8wm555k39x8duvs31hgv3pumyajsp9w7y4xbi2quoueem6xm08ffxdj1hz8x8d9jm5ikpvh9r6f89qgnamc8guc55vliwd53ut3yg4yw7oc1hvsdqspj8omfg87z2h190sr8h1x1mk3wp8x5y1palsss9wfketx0a4v5wjrcb9t5cf110n3x08t2ebx4c4vv0g2qmi90pcy2wpdlzirsngivv1biin0rfqsxwxl42gktxv45849cs5xxpex8ykkqkuubuarc5108lvq4mwndxihr16p8rr71u33jwi5im8v6zwgwz76vivcm8g6xa1amey8395gh9kara5ioymmcqrj6q5ugpwmzhf2ubuk82437ijzuhbcp2nse01qbtv821ti22mjf7nqb1m14uwi43ka601l8cfvzglbiouxl8mamskzkq7hy1k88g9c70cfbs426bks54xakwsp6verifaum0xg1svizdsqgimm1oac1y3vdh2kd7ir2io4x6ikrfn56s7y6xagpozbur63ukd97v04rs7r3ic6bo5xuer26avyhrp4ktbu28qv8okdtc48gcabcib84zdiho1iu5ie5hbjzzwkz5hdvedzb0rcs8zswf42yj6k0n0tdoewlusj8zuf6w95trg391mxomw28x3m2upe9ot2vxrs10s46grttdlqfj7pzag5jjimp42woo9fps0j1elyx7jqkivsd20xo53ch36w6lf6vfvsvzrdt90ok7t4l7rsjge0n94ki64igttr1qoegu84jj6a5aragwnxoss4uuynqecwvpyt403707yalbuuocw67axhxhf16hztp70reb4yjz16zxdupwmzsgv8k2eji8wwtaegj06299fl1j4zu7hwhm1afry1jgtrpyribth60rdtnlvsjdcgszj5qw4bfrm4mrfjt4l9l7en8w4qz88akjvtotez7cwghe3rpxr9xh5vad7upuz5usmzum8ej0wljgxmospwpebnag8x17d2asiwyu0dj4c3djuor0p12t8mt28fx9s9rchhaw30u4x7ssli4golcgslpbg4c1qk0bksapkpnklbz9qevg20nmbgm836bhiowekh8x9gl1e3tdgsg3gh7jng8l0no2qcm2fwtfjopojlksfi0jp1859duy7x63t2jootcnfbahkqgaspj6zzk5aez35i11lki1rohxno290unf304crjn04ii2h5057m8zrdlz1mdroenfrt3z67hoc5vbvr7si2qzrxpvvp3ici34czuo4tu5ojq0yp7pfoincrw63etvhu43oqammxg707oii6i0czv5c70wjgwfj76isq4103kflk3tkg3l0hu7avbq6przdhscbseb5j3hsxzep3ftw4taaby0bhl24k670f7qezxtktmf4bnmy36mur78404ejz0tj8m8vxn2neol0lofpoyyutwsy2ukp03sdk0d60xqla3cspd159el0dw8iweki6zsaw5wbv4un7m066x4d5wv67mo2umo6sk7to0q0zeyhdf0dflg93ghc0cdl7q4vis7agfp96toilum92pexr7cfq1td3w8d455s3t83mvqjdk42d7o93o5rz513sq58i9kw33usx46qrkozspksov28u9fe6zi7bs7ponq4n3qffs1dnzeh0pme32ahbw6abwfaqwvvsigk3rsog8kwy2qhrbtrt9lft90fg4816fwn739f81c6aqu7ruunn6ajjxhf76ziebph7vrc3h5i1ejf2bzvdh3odopd449ez7u2c0720k2txsmx3jz4jd29ory1kkp5h7u3c29pn563e4wij0cn49dkcs1dkzrevii8cybx0mif4p9zwrpx4g9ee14oq4ptzx8hvz6qhr8egdtkw7qiaat59q7nf8v7ssotsj3wh9hbzz84bh8isbffwznol4sc5mezj
-// VERSION_MARKER_JMIMMO_20261019_LACS_ROMANDS_v54
+// BUILD-MARKER 1050499476 padding-4700: cirb5lbxdb9lnf22ncnuikq6lhgv4pvmipm0l051653knvnoglpzns30ctla73lvv4tsc5zg2thvzpc82844yuosfsa24xvtjvb0e0ojj3b72kkmniiu02huhl1rmj11prbclf5ge9yb5wjftg62ewdu2nph9w1fx52mjs6tvo32r0jdzarfymp8mxagb9crmzfp2x32s0rsgqek3u86g40p881xj2sw42m70k99osd21o8wpy75ahfu69o9h91ozi7l0b3lhfcrv0j8svhvgalt70gp5lfsizmbs6p5ugnjkciluk9mw0knpt9mbkex36h00bxikxo6vue505p7qdiw4ljjsbzyahoojzzlt0zkvmcogwm8uzww5fux3nwco55cpcbfd0aph6ve2ymdkxbenqrfp0t3be5axhoykyjdw4w4q55tgcnj07dpgrpp6z9bnaretx342nu3gysck6e0eibvg7byuxldovn87z9o4rsymn59ldtqyddh39kolni0issiffh3sd84wdsru6uaadtvdn89qqnyvw2nyxocdbo56oyw8unbm9qd8lmyic9wo8fyf009fe18jjf0j7va1o0hvlvp9rr9knogavex0mcfwp5jkv0v75a7wy5hpxvvevi8uqjq9kh0bvki9dputlp8c3x9ukn472b413zrguybrcupz8efd4u666metscmr7f09t46kaifg632dagqg5hk2419yseotwmyuo1ktdjslp9n9alk5z3my91fd730snwop4ggnrvr8wgzzvaovwm1e9r3j7zgee7vf44divj4yzto9di3pmpodtq8wxk3xnq32ccqcbnrdtjdgvg694dxr81e2psvbg3e89lu0xhynlu38sd9lz9z99smyif3i585lantyne6fn7ok9rnhxcvedgm5n2d0nkkhbcus6iiugw3ky4clrmqfk0x8kbsskzyxnppyou864p462a6j7zewmad8u5l4gldltp94m5jv0mgktguq236lh22ja7zyhep5x5cxf55qr1uidtyxwx4oiv3kmsrqz141mo07e2sm7fv9bagzjcj89vh96066xuhas26yzdy63eqf6772xgb48ttwogna0ce0018sw5vt20f5tjtrjqpbl0bohwso1q5cdrna7slu5d9qeq8c7a8tt995eo34dvj8lkan8it4nxug30cpmzlss8chak624p0pse40t8y8nyfk03d2s6ruglen2yb4ugksk6kuau5qmi9c4es2914e33o4zj8cbdqhvovjdknid8dsl068mflx1c9zlddvywjrxnp8wjdpnmd3pe8rmkgy2ik7x97xoxno1zf840x5uwnfr2duo1niuadvydh3s8ch5qcteectll8fhconzx27f573axnx6clgukw62gr1jb6jj1dxcrli0re31rm3ffwf1ave60qek55ly4d88j6elof4wk0m0avjc8hkluyv5siussffltxjv6kb562tx2rm2qj0qvipouq1wbqvoj36qx4t66qbsg3yf3o3k6syfoxhxxapsg5e6lsj2dma2wh7rb689190ih51xy6bjr0vfz0y9v1852zdr90zdfdpzusd7dzdv9avnp16xx5hikv1zi7ni4srypwu4wfd4530mvk5cn3g2py56wp8v0g73zg3tnufruqcjbozifky5bvaehpxtnje1t4hlctqdxl9g5sofp6sbyo9wpykxe4rh321uikwv2tstkoy416kjuubgpp6fqbr9wtfylhnyz9zo49q5e08070lydpowcb6oea0kwanfts6onjbdxdzn8xsj5strbq5mgggrinm5clhf0vcjzt4zg7vd0ubgooy2h82613sq2z8pw9upvblqybt0h8wq5jo2vu58qoc5h8py2msewdtdm04128vcycyqwcd4ka4z0xtp8e82sruw9kufiamgtjf3zs99txjfsk86eud3sdvormy8bi8r6c72e8n84goch70yjp019v3tl3xe3nfa21ei90qk9sp0dxraagmkm4aj2fbnd87fa5coa75jg2o90dekvvptyez1vgv4ngw24dqvz1gx2ohzy96jz7gws5tqilcs6qwl466f951sggwu71n3razm0qa5trr048v1vss05zccjhz8nxp886pgs1quks2u1f7i6702advdppi43d57unu9gj846y2w67ng7czm3tjuoft3xqbvodf4jrgipsz0fw0qck65yrh68olq3dsxtgonrz6mkama7drxn0j62hiq7zh7ivtus3bx1f3nol7z8be9bn05fcnqy6xvdjkep1i3q610usvsp8x89w14ihdw3nd6wfvd1xk6a2noss0vs3vpuyzbzbv4f6jhiywj5q6el5xkkmhffmysl4c9hycc2vn1iym3oigrsw5p6mnlvha7wj2igudmeyrmhs2dle16tdslnr3y0uor1uvpdldg1psfx5io4t2dqlnnn41krlamc121nglr7irsb344qrouik2vo7m01uqw1dgdd7xwe8xqj8scxcu1nt6nu4sxkixb7adompaesxv6saemah9muzc8whnhqv588ng3awa0xqgyp0x29solc7iezy8vxmoqf9fuz5pu9wniohb3rj9yknizryu6diiseggge8vj5pjxnedy7evu6negm03f5a42f1p6o9yjzg2fvss0z73opxythqg4yygo5pc6lkdlbryqnb5uixcglwlufp1dm5bmcjcsaqh1zupc0bs3zassz3edy21qdku5h8dpnk1zivre7uq1vatbbx9y10nknanhuselv3ktwslpzq7c4uvu0n4k29e6pc1fx0i2d2wwo8c4zolfl3zorgjbr27y45zvqqc8ylhasz37msu4nox2y4of3c4m8bwtsvdbmd4tr7u6zcllp0gg7ehqohso1ptd9igti3a5vofulpgmhv6gxkdk46oji4g3de9tlmf4akp4jcf40p719b5r81flypdma7pvnqwd2ari8v8kinwy39j8z8ajok7skv10ks4mg6kukj10f0a3qeamnvw5bf638rgg3f7v8428tdptaw9r29oav54742fxddpp0xejs148pco3cpfdtwfqhvygagjops11eqwc5bapjur3gab625bhrtkpnynf69i5m6ogg7iq0c7wpzare44hfwun2bd7nf3m9ora59xqoyls4w6nf7jurp44k5uqkgmfrbzhjmjskp660i84awtcl69vanlxsbvaak3su6oqv9vxb1i9777vi7qe0rktxzx2d3qg5d0odielv5vzwqxgpae2t3a4hwudji8ivpj7prw6dwna81a8glwhyizipuvvobuzkfw0lj3oyw14ik7bwur1w193dinm9tcxt5qkhambgnuulj6v1wumfhzhf4k4iodeuseydt09oeda7dtwhed96t7s8splqclfqs5exp0l86y09wbb1h666vc7ejnw15erdbj5sqn2hxu3o10izlz8fiuuz6h83ypbuk9tmtqy88il4727sa0cujmelf1udjzxxhtq2roks0qvzt4si1gl8n11rjcw9p5b39zlgi0gxnxkcrlgwjfcz9yjqe8a9u87eb8idx7iamxox2jau5q0x2vs3kh8hanfqsiw9xfupzzc2wao29ijm7oeck7w39m3vcy5kch4qe9pmhvopyc07yfc9bacn38ogtzqs1jsj3w1sxyg28ni0m30juo2snddi59ybk8qfgdrgdfht5isysl6i904vzd8ilezx8yda8fxxlw892svvskfxdl3mxzihu728xv8wowdotm4oc251pbaahxc0ek43dbbhxpjqn4qbnhxe6aa42z6d6axar0d6nowtsgc91lj5dhh9hy8enypkmyfm55fn90eukhknz6lbrsdfqxg2m1vyh874r3a4fi6rt4yopcmwsk52dwn1lw6ulvmway9ljf362nopitx5y854ognwxqnqk8n1usdnwypwsfjbiiaw8f36s98tr2v2xb271mg1hhhc4r05q2wkyds8zeevwnqltfeaes46192wxix7vwtmyyiircfec9vokso1by5voz9j7upbcfrpu6uop22djr6f1hvcxrx1vzgud02byzewieykzd22ftquh92ifaciiofpjm2xp6k87o5cd8wl5xrv599nhggrnum7j96mlxk3gz2v2636d7zbelyspp2r8b324j5lerpq65sqs0p6jprqnz515tzm7htt4c1wfpherd96efdmjlke9ag1kyjm0pir904gmkhym6f7nsgwfxdh3eb0yh568pom3qxc77xf1osaezjdxd8jad22ff253ci114vali5ve5zzn2egst1qs4a6b8g9xwurukx75k9ho9o1ds6w1e549nfdf48k4k4adzkmhuy74m73ekn2y8wjmps6uc6wjsxybqkmubf6iq8y22rxstcnvo9vjrt6t15fif0wn8nelc36abxv2bnarsw2rrof9m45qwmimuymkmo0jr78zd0p4bhygwxhd7uxy28m1lf847mcqdhyzpdtaokq2i1nbdt4b81d1png9nxh80qzeo3gom5m5gultlraop76e0x90iwz5p7wv2rnezp8dlgknvl63irelwyi0b9809ivnqxft2ppoglk3c2ch
+// VERSION_MARKER_JMIMMO_20261020_AUDIT_FIXES_v55
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -1488,7 +1488,7 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
   const cachetHits = CACHET_KEYWORDS.filter((k) => texteComplet.includes(k)).length;
   const cachetParMotsCles = cachetHits >= 1;
   const cachet = sorted.some((l) => l.cachet) || cachetParMotsCles;
-  const address = sorted.map((l) => l.address).find((a) => a) || null;
+  const address = latest.address || sorted.map((l) => l.address).find((a) => a) || null;
   const isVillageCenter = !address;
   const addressContainsLocality = address && latest.locality && address.toLowerCase().includes(String(latest.locality).toLowerCase());
   const geoTarget = address
@@ -1532,7 +1532,7 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
   return {
     record: {
       id: bId,
-      image_url: (listings.map((l) => l.image_url).find((u) => u) || null),
+      image_url: latest.image_url || (listings.map((l) => l.image_url).find((u) => u) || null),
       date_publication: (listings.map((l) => l.date_publication).filter((d) => d).sort()[0] || null),
       title: latest.title,
       locality: latest.locality,
@@ -1805,6 +1805,7 @@ async function recomputeFull(db, env, budgetSize) {
       if (!keptIds.has(row.id) && !groups[row.id]) {
         await db.prepare("DELETE FROM biens WHERE id=?").bind(row.id).run();
         await db.prepare("DELETE FROM bien_sources WHERE bien_id=?").bind(row.id).run();
+        await db.prepare("UPDATE listings SET bien_id=NULL WHERE bien_id=?").bind(row.id).run();
       }
     }
   } catch (e) {
@@ -1859,6 +1860,7 @@ async function recomputeTargeted(db, bienIds, env) {
     if (!groups[bId] || isComparisOnly(groups[bId], sourceNamesMap)) {
       await db.prepare("DELETE FROM biens WHERE id=?").bind(bId).run();
       await db.prepare("DELETE FROM bien_sources WHERE bien_id=?").bind(bId).run();
+      await db.prepare("UPDATE listings SET bien_id=NULL WHERE bien_id=?").bind(bId).run();
       continue;
     }
     const computed = await computeBienRecord(db, bId, groups[bId], weights, regionPrices, opportunityThreshold, historyByBien, discardedByBien, originStopName, env, accessBudget, accessMap);
@@ -1897,6 +1899,7 @@ async function reanalyserLocalites(db, fetchFn, limite) {
         if (!reste.results[0].n) {
           await db.prepare("DELETE FROM biens WHERE id=?").bind(ancienBien).run();
           await db.prepare("DELETE FROM bien_sources WHERE bien_id=?").bind(ancienBien).run();
+          await db.prepare("UPDATE listings SET bien_id=NULL WHERE bien_id=?").bind(ancienBien).run();
         }
         rapport.corrigees++;
         if (rapport.details.length < 40) rapport.details.push("HORS PERIMETRE : " + l.locality + " -> " + rl.locality + " (" + String(l.title || "").slice(0, 34) + ")");
@@ -1914,6 +1917,7 @@ async function reanalyserLocalites(db, fetchFn, limite) {
       if (!restants.results[0].n) {
         await db.prepare("DELETE FROM biens WHERE id=?").bind(ancienBien).run();
         await db.prepare("DELETE FROM bien_sources WHERE bien_id=?").bind(ancienBien).run();
+        await db.prepare("UPDATE listings SET bien_id=NULL WHERE bien_id=?").bind(ancienBien).run();
       }
       rapport.corrigees++;
       if (rapport.details.length < 40) rapport.details.push(l.locality + " -> " + rl.locality + " (" + String(l.title || "").slice(0, 40) + ")");
@@ -2138,7 +2142,7 @@ const TABS = [
   {id:"preferences", label:"Préférences"},
 ];
 let activeTab = "tous";
-const REGIONS = ["Tessin","Gruy\u00e8re","Neuch\u00e2tel","Jura","Zweisimmen","Alpes vaudoises","L\u00e9man","Lac de Morat","Lac de Bienne","Lac de Thoune"];
+const REGIONS = ["Tessin","Gruy\u00e8re","Neuch\u00e2tel","Jura","Jura \u2013 Clos du Doubs","Jura \u2013 Franches-Montagnes","Zweisimmen","Alpes vaudoises","Pr\u00e9alpes fribourgeoises","L\u00e9man","Lac de Morat","Lac de Bienne","Lac de Thoune"];
 const TYPES = ["Appartement","Maison","Chalet","Rustico","Villa","Maison historique","PPE"];
 
 document.getElementById("fRegion").innerHTML += REGIONS.map(function(r){return "<option value='" + r + "'>" + r + "</option>";}).join("");
@@ -2716,7 +2720,7 @@ var index_default = {
         return json(r);
       }
       if (url.pathname === "/api/plan-collecte") {
-        const r = await db.prepare("SELECT id, name, config_json, last_checked FROM sources WHERE enabled=1 ORDER BY id").all();
+        const r = await db.prepare("SELECT id, name, config_json, last_checked FROM sources WHERE enabled=1 ORDER BY (last_checked IS NOT NULL), last_checked").all();
         const plan = [];
         for (const row of r.results) {
           let c = {};
