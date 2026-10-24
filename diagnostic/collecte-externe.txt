@@ -28,30 +28,29 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - Charmey/Gruyere
    1 annonces |   3 pages | immobilier.ch - Gruyères/Broc
    0 annonces |  25 pages | immobilier.ch - Jura (canton)
-   1 annonces |  25 pages | immobilier.ch - Fribourg p2
-   2 annonces |  25 pages | immobilier.ch - Neuchatel p2
-   1 annonces |  25 pages | immobilier.ch - Fribourg p3
-   0 annonces |  25 pages | immobilier.ch - Fribourg p4
-   2 annonces |  25 pages | immobilier.ch - Fribourg p5
-   0 annonces |  25 pages | immobilier.ch - Fribourg p6
-   1 annonces |  25 pages | immobilier.ch - Neuchatel p3
-   3 annonces |  25 pages | immobilier.ch - Neuchatel p4
-   6 annonces |  25 pages | immobilier.ch - Neuchatel p5
+   0 annonces |  25 pages | immobilier.ch - Fribourg p2
+   4 annonces |  25 pages | immobilier.ch - Neuchatel p2
+   0 annonces |  25 pages | immobilier.ch - Fribourg p3
+   1 annonces |  25 pages | immobilier.ch - Fribourg p4
+   0 annonces |  25 pages | immobilier.ch - Fribourg p5
+   1 annonces |  25 pages | immobilier.ch - Fribourg p6
+   2 annonces |  25 pages | immobilier.ch - Neuchatel p3
+   0 annonces |  25 pages | immobilier.ch - Neuchatel p4
    0 annonces |  25 pages | immobilier.ch - Jura p2
    0 annonces |  25 pages | immobilier.ch - Jura p3
    0 annonces |   1 pages | acheter-louer.ch - Gruyère  [HTTP 403]
-   1 annonces |  25 pages | immobilier.ch - la-tour-de-treme
-   2 annonces |  25 pages | immobilier.ch - riaz
+   0 annonces |  25 pages | immobilier.ch - la-tour-de-treme
+   3 annonces |  25 pages | immobilier.ch - riaz
    3 annonces |  17 pages | immobilier.ch - broc
    0 annonces |   4 pages | immobilier.ch - vuadens
    0 annonces |   2 pages | immobilier.ch - echarlens
    0 annonces |  19 pages | immobilier.ch - sorens
    0 annonces |   3 pages | immobilier.ch - corbieres
    0 annonces |   1 pages | immobilier.ch - hauteville
-   0 annonces |   4 pages | immobilier.ch - marsens
+   0 annonces |   3 pages | immobilier.ch - marsens
    1 annonces |  13 pages | immobilier.ch - vaulruz
    0 annonces |  25 pages | immobilier.ch - sales
-   1 annonces |  25 pages | immobilier.ch - pont-la-ville
+   0 annonces |  25 pages | immobilier.ch - pont-la-ville
    0 annonces |  25 pages | immobilier.ch - la-roche
    0 annonces |   1 pages | immobilier.ch - grandvillard
    1 annonces |   9 pages | immobilier.ch - enney
@@ -68,7 +67,6 @@ navigateur demarre
    1 annonces |   5 pages | immobilier.ch - travers
    0 annonces |   2 pages | immobilier.ch - buttes
    0 annonces |   4 pages | immobilier.ch - noiraigue
-   5 annonces |  25 pages | immobilier.ch - cornaux
    4 annonces |  14 pages | immobilier.ch - boudry
    4 annonces |  23 pages | immobilier.ch - cortaillod
    1 annonces |  25 pages | immobilier.ch - bevaix
@@ -89,27 +87,29 @@ navigateur demarre
    0 annonces |   1 pages | immobilier.ch - les-enfers
    0 annonces |  25 pages | immobilier.ch - les-genevez
    0 annonces |  25 pages | immobilier.ch - lajoux
-   6 annonces |  25 pages | immobilier.ch - saint-blaise
+   6 annonces |  25 pages | immobilier.ch - corcelles
+   2 annonces |  25 pages | immobilier.ch - bulle
+   2 annonces |  25 pages | immobilier.ch - Neuchatel p5
+   4 annonces |  25 pages | immobilier.ch - la-sagne
+   5 annonces |  25 pages | immobilier.ch - saint-blaise
    5 annonces |  25 pages | immobilier.ch - le-locle
-   4 annonces |  25 pages | immobilier.ch - corcelles
-   4 annonces |  25 pages | immobilier.ch - bulle
-   5 annonces |  25 pages | immobilier.ch - la-chaux-de-fonds
-   6 annonces |  25 pages | immobilier.ch - la-sagne
+   6 annonces |  25 pages | immobilier.ch - la-chaux-de-fonds
+   4 annonces |  25 pages | immobilier.ch - cornaux
    test image : HTTP 200 text/html
    worker : 0 reponse(s) en erreur au premier essai, 0 definitive(s)
-   realadvisor : 4473 annonces lues, 4452 photos, 4134 liens de detail, 5098 avec coordonnees, 0 page(s) en echec
- 205 annonces | 231 pages | RealAdvisor
+   realadvisor : 4511 annonces lues, 4497 photos, 4221 liens de detail, 5121 avec coordonnees, 0 page(s) en echec
+ 207 annonces | 231 pages | RealAdvisor
    3 annonces |  25 pages | immobilier.ch (portail romand)
    4 annonces |  12 pages | immobilier.ch - fleurier
-  14 annonces |  20 pages | immobilier.ch - couvet
    5 annonces |  25 pages | immobilier.ch - colombier
+   4 annonces |  25 pages | immobilier.ch - cressier
+  14 annonces |  20 pages | immobilier.ch - couvet
+   6 annonces |  25 pages | immobilier.ch - le-landeron
+   5 annonces |  25 pages | immobilier.ch - saint-aubin
+   5 annonces |  25 pages | immobilier.ch - motiers
+   5 annonces |  25 pages | immobilier.ch - Neuchatel
    5 annonces |  25 pages | immobilier.ch - les-ponts-de-martel
-   7 annonces |  25 pages | immobilier.ch - le-landeron
-   5 annonces |  25 pages | immobilier.ch - cressier
-   7 annonces |  25 pages | immobilier.ch - saint-aubin
-   6 annonces |  25 pages | immobilier.ch - Neuchatel
-   6 annonces |  25 pages | immobilier.ch - motiers
 navigateur ferme
 
-TOTAL : 353 annonces sur 1595 pages telechargees
-recalcul : {"ok":true,"biens":242,"rescues":0}
+TOTAL : 339 annonces sur 1594 pages telechargees
+recalcul : {"ok":true,"biens":250,"rescues":0}
