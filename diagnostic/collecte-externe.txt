@@ -31,11 +31,11 @@ navigateur demarre
    0 annonces |  25 pages | immobilier.ch - Fribourg p2
    4 annonces |  25 pages | immobilier.ch - Neuchatel p2
    0 annonces |  25 pages | immobilier.ch - Fribourg p3
-   1 annonces |  25 pages | immobilier.ch - Fribourg p4
+   0 annonces |  25 pages | immobilier.ch - Fribourg p4
    0 annonces |  25 pages | immobilier.ch - Fribourg p5
    1 annonces |  25 pages | immobilier.ch - Fribourg p6
-   2 annonces |  25 pages | immobilier.ch - Neuchatel p3
-   0 annonces |  25 pages | immobilier.ch - Neuchatel p4
+   4 annonces |  25 pages | immobilier.ch - Neuchatel p3
+   3 annonces |  25 pages | immobilier.ch - Neuchatel p4
    0 annonces |  25 pages | immobilier.ch - Jura p2
    0 annonces |  25 pages | immobilier.ch - Jura p3
    0 annonces |   1 pages | acheter-louer.ch - Gruyère  [HTTP 403]
@@ -62,16 +62,14 @@ navigateur demarre
    0 annonces |   6 pages | immobilier.ch - botterens
    1 annonces |   3 pages | immobilier.ch - gruyeres
    0 annonces |   4 pages | immobilier.ch - cresuz
-   0 annonces |  25 pages | immobilier.ch - le-paquier
-   0 annonces |   8 pages | immobilier.ch - les-brenets
+   1 annonces |  25 pages | immobilier.ch - le-paquier
+   0 annonces |   7 pages | immobilier.ch - les-brenets
    1 annonces |   5 pages | immobilier.ch - travers
    0 annonces |   2 pages | immobilier.ch - buttes
    0 annonces |   4 pages | immobilier.ch - noiraigue
-   4 annonces |  14 pages | immobilier.ch - boudry
-   4 annonces |  23 pages | immobilier.ch - cortaillod
+   4 annonces |  22 pages | immobilier.ch - cortaillod
    1 annonces |  25 pages | immobilier.ch - bevaix
    0 annonces |   2 pages | immobilier.ch - gorgier
-   4 annonces |  25 pages | immobilier.ch - hauterive
    2 annonces |   9 pages | immobilier.ch - peseux
    0 annonces |  10 pages | immobilier.ch - auvernier
    3 annonces |   4 pages | immobilier.ch - rochefort
@@ -84,32 +82,34 @@ navigateur demarre
    1 annonces |   3 pages | immobilier.ch - soubey
    0 annonces |  25 pages | immobilier.ch - le-bemont
    0 annonces |   1 pages | immobilier.ch - muriaux
+   4 annonces |  25 pages | immobilier.ch - hauterive
+   4 annonces |  14 pages | immobilier.ch - boudry
    0 annonces |   1 pages | immobilier.ch - les-enfers
    0 annonces |  25 pages | immobilier.ch - les-genevez
    0 annonces |  25 pages | immobilier.ch - lajoux
-   6 annonces |  25 pages | immobilier.ch - corcelles
-   2 annonces |  25 pages | immobilier.ch - bulle
+   4 annonces |  25 pages | immobilier.ch - bulle
    2 annonces |  25 pages | immobilier.ch - Neuchatel p5
-   4 annonces |  25 pages | immobilier.ch - la-sagne
+   6 annonces |  25 pages | immobilier.ch - la-sagne
    5 annonces |  25 pages | immobilier.ch - saint-blaise
-   5 annonces |  25 pages | immobilier.ch - le-locle
-   6 annonces |  25 pages | immobilier.ch - la-chaux-de-fonds
    4 annonces |  25 pages | immobilier.ch - cornaux
    test image : HTTP 200 text/html
    worker : 0 reponse(s) en erreur au premier essai, 0 definitive(s)
-   realadvisor : 4511 annonces lues, 4497 photos, 4221 liens de detail, 5121 avec coordonnees, 0 page(s) en echec
- 207 annonces | 231 pages | RealAdvisor
-   3 annonces |  25 pages | immobilier.ch (portail romand)
+   realadvisor : 4513 annonces lues, 4498 photos, 4197 liens de detail, 5117 avec coordonnees, 0 page(s) en echec
+ 205 annonces | 231 pages | RealAdvisor
+   4 annonces |  25 pages | immobilier.ch (portail romand)
    4 annonces |  12 pages | immobilier.ch - fleurier
    5 annonces |  25 pages | immobilier.ch - colombier
-   4 annonces |  25 pages | immobilier.ch - cressier
-  14 annonces |  20 pages | immobilier.ch - couvet
-   6 annonces |  25 pages | immobilier.ch - le-landeron
+   5 annonces |  25 pages | immobilier.ch - cressier
    5 annonces |  25 pages | immobilier.ch - saint-aubin
+   7 annonces |  25 pages | immobilier.ch - Neuchatel
+   7 annonces |  25 pages | immobilier.ch - les-ponts-de-martel
+   0 annonces |  20 pages | immobilier.ch - couvet
+   5 annonces |  25 pages | immobilier.ch - la-chaux-de-fonds
+   7 annonces |  25 pages | immobilier.ch - le-landeron
+   8 annonces |  25 pages | immobilier.ch - corcelles
+   5 annonces |  25 pages | immobilier.ch - le-locle
    5 annonces |  25 pages | immobilier.ch - motiers
-   5 annonces |  25 pages | immobilier.ch - Neuchatel
-   5 annonces |  25 pages | immobilier.ch - les-ponts-de-martel
 navigateur ferme
 
-TOTAL : 339 annonces sur 1594 pages telechargees
-recalcul : {"ok":true,"biens":250,"rescues":0}
+TOTAL : 340 annonces sur 1592 pages telechargees
+recalcul : {"ok":true,"biens":249,"rescues":0}
