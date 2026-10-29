@@ -229,8 +229,9 @@ async function collecterRsc(src) {
   console.log("sources a traiter : " + plan.length);
   let totalStocke = 0, totalPages = 0;
 
+  const debut = Date.now();
   for (const src of plan.slice(0, MAX_SOURCES)) {
-    let stocke = 0, erreur = null, pages = 0;
+    let stocke = 0, erreur = null, pages = 0, ecartes = 0;
     try {
       if (src.rsc) {
         const r = await collecterRsc(src);
@@ -247,6 +248,7 @@ async function collecterRsc(src) {
         if (src.mode === "two_step") {
           const liste = await versWorker({ source_name: src.name, url: page, html: rep.html, is_list: true });
           const liens = (liste.links || []).slice(0, src.max_details);
+          ecartes += liste.ecartes || 0;
           for (const lien of liens) {
             const abs = /^https?:\/\//i.test(lien) ? lien : (src.link_base || "").replace(/\/$/, "") + "/" + lien.replace(/^\//, "");
             try {
@@ -272,10 +274,10 @@ async function collecterRsc(src) {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: src.name, stored: stocke, error: erreur, state: erreur ? "en échec" : (stocke > 0 ? "productive" : "accessible") })
     });
-    console.log((stocke + "").padStart(4) + " annonces | " + (pages + "").padStart(3) + " pages | " + src.name.slice(0, 40) + (erreur ? "  [" + erreur + "]" : ""));
+    console.log((stocke + "").padStart(4) + " annonces | " + (pages + "").padStart(3) + " pages | " + src.name.slice(0, 40) + (ecartes ? "  (" + ecartes + " hors regions non telechargees)" : "") + (erreur ? "  [" + erreur + "]" : ""));
   }
   if (navigateur) { await navigateur.close(); console.log("navigateur ferme"); }
-  console.log("\nTOTAL : " + totalStocke + " annonces sur " + totalPages + " pages telechargees");
+  console.log("\nTOTAL : " + totalStocke + " annonces sur " + totalPages + " pages telechargees en " + Math.round((Date.now() - debut) / 60000) + " min");
   const st = await (await fetch(BASE + "/api/recalculer")).text();
   console.log("recalcul : " + st.slice(0, 200));
 })();

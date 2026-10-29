@@ -22,7 +22,8 @@ concurrency:
 jobs:
   collecter:
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    # depot public : minutes Actions gratuites ; 50 min tronquait la fin de liste (RealAdvisor)
+    timeout-minutes: 90
     permissions:
       contents: write
     steps:
