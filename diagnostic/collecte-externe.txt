@@ -1,7 +1,43 @@
-sources a traiter : 100
-   1 annonces |  25 pages | immobilier.ch - Vaud (canton)
-   0 annonces |  25 pages | immobilier.ch - Genève (canton)
-   0 annonces |  25 pages | immobilier.ch - Berne (canton)
+sources a traiter : 136
+   0 annonces |  25 pages | immobilier.ch - nyon
+   1 annonces |  15 pages | immobilier.ch - prangins
+   1 annonces |  25 pages | immobilier.ch - gland
+   0 annonces |  25 pages | immobilier.ch - coppet
+   0 annonces |  25 pages | immobilier.ch - founex
+   0 annonces |  25 pages | immobilier.ch - rolle
+   0 annonces |  25 pages | immobilier.ch - morges
+   0 annonces |  16 pages | immobilier.ch - preverenges
+   0 annonces |  25 pages | immobilier.ch - lutry
+   0 annonces |  25 pages | immobilier.ch - pully
+   3 annonces |  25 pages | immobilier.ch - vevey
+   1 annonces |  12 pages | immobilier.ch - la-tour-de-peilz  (13 hors regions non telechargees)
+   0 annonces |  25 pages | immobilier.ch - montreux
+   1 annonces |  25 pages | immobilier.ch - chexbres
+   0 annonces |  20 pages | immobilier.ch - corseaux
+   0 annonces |  25 pages | immobilier.ch - versoix
+   0 annonces |  25 pages | immobilier.ch - cologny
+   0 annonces |  25 pages | immobilier.ch - collonge-bellerive
+   0 annonces |   7 pages | immobilier.ch - hermance
+   0 annonces |  25 pages | immobilier.ch - anieres
+   0 annonces |   3 pages | immobilier.ch - morat
+   0 annonces |   2 pages | immobilier.ch - meyriez
+   0 annonces |   1 pages | immobilier.ch - muntelier
+   0 annonces |   4 pages | immobilier.ch - faoug
+   1 annonces |  13 pages | immobilier.ch - vully-les-lacs  (12 hors regions non telechargees)
+   4 annonces |  16 pages | immobilier.ch - biel-bienne
+   0 annonces |   1 pages | immobilier.ch - nidau
+   0 annonces |   5 pages | immobilier.ch - la-neuveville  (20 hors regions non telechargees)
+   0 annonces |   2 pages | immobilier.ch - erlach
+   0 annonces |   4 pages | immobilier.ch - thoune  (21 hors regions non telechargees)
+   0 annonces |   2 pages | immobilier.ch - spiez
+   0 annonces |   1 pages | immobilier.ch - hilterfingen
+   0 annonces |   1 pages | immobilier.ch - oberhofen-am-thunersee
+   0 annonces |   1 pages | immobilier.ch - sigriswil
+   0 annonces |   2 pages | immobilier.ch - interlaken
+   0 annonces |   1 pages | immobilier.ch - unterseen
+   1 annonces |  12 pages | immobilier.ch - Vaud (canton)  (13 hors regions non telechargees)
+   0 annonces |   8 pages | immobilier.ch - Genève (canton)  (17 hors regions non telechargees)
+   0 annonces |   4 pages | immobilier.ch - Berne (canton)  (21 hors regions non telechargees)
    refus https://www.comparis.ch/immobilien/marktplatz/kanton/freiburg/wohnung/kaufen?sort=1 -> HTTP 403 (-) <html lang="fr"><head><title>comparis.ch</title><style>#cmsg{animation: A 1.5s;}@keyframes
    refus https://www.comparis.ch/immobilien/marktplatz/kanton/freiburg/haus/kaufen?sort=1 -> HTTP 403 (-) <html lang="fr"><head><title>comparis.ch</title><style>#cmsg{animation: A 1.5s;}@keyframes
    refus https://www.comparis.ch/immobilien/marktplatz/kanton/neuenburg/wohnung/kaufen?sort=1 -> HTTP 403 (-) <html lang="fr"><head><title>comparis.ch</title><style>#cmsg{animation: A 1.5s;}@keyframes
@@ -24,30 +60,28 @@ sources a traiter : 100
    0 annonces |   1 pages | PREMIUM HOMES AG (site propre)
    0 annonces |   1 pages | IMMOprima AG (site propre)
    0 annonces |   3 pages | immobilier.ch - Saignelégier
-   0 annonces |  25 pages | immobilier.ch - Charmey/Gruyere
+   0 annonces |   2 pages | immobilier.ch - Charmey/Gruyere  (23 hors regions non telechargees)
    1 annonces |   3 pages | immobilier.ch - Gruyères/Broc
-   0 annonces |  25 pages | immobilier.ch - Jura (canton)
-   0 annonces |  25 pages | immobilier.ch - Fribourg p2
-   6 annonces |  25 pages | immobilier.ch - Neuchatel p2
-   0 annonces |  25 pages | immobilier.ch - Fribourg p3
-   0 annonces |  25 pages | immobilier.ch - Fribourg p4
-   0 annonces |  25 pages | immobilier.ch - Fribourg p5
-   0 annonces |  25 pages | immobilier.ch - Fribourg p6
-   7 annonces |  25 pages | immobilier.ch - Neuchatel p3
-   0 annonces |  25 pages | immobilier.ch - Jura p2
-   0 annonces |  25 pages | immobilier.ch - Jura p3
+   0 annonces |   2 pages | immobilier.ch - Jura (canton)  (23 hors regions non telechargees)
+   0 annonces |   6 pages | immobilier.ch - Fribourg p2  (19 hors regions non telechargees)
+   0 annonces |   6 pages | immobilier.ch - Fribourg p3  (19 hors regions non telechargees)
+   0 annonces |   6 pages | immobilier.ch - Fribourg p4  (19 hors regions non telechargees)
+   0 annonces |   5 pages | immobilier.ch - Fribourg p5  (20 hors regions non telechargees)
+   0 annonces |   7 pages | immobilier.ch - Fribourg p6  (18 hors regions non telechargees)
+   0 annonces |   2 pages | immobilier.ch - Jura p2  (23 hors regions non telechargees)
+   0 annonces |   1 pages | immobilier.ch - Jura p3  (24 hors regions non telechargees)
    0 annonces |   1 pages | acheter-louer.ch - Gruyère  [HTTP 403]
-   0 annonces |  25 pages | immobilier.ch - la-tour-de-treme
+   0 annonces |   2 pages | immobilier.ch - la-tour-de-treme  (23 hors regions non telechargees)
    0 annonces |   6 pages | immobilier.ch - vuadens
    0 annonces |   2 pages | immobilier.ch - echarlens
-   0 annonces |  19 pages | immobilier.ch - sorens
+   0 annonces |  18 pages | immobilier.ch - sorens
    0 annonces |   3 pages | immobilier.ch - corbieres
    0 annonces |   1 pages | immobilier.ch - hauteville
    0 annonces |   3 pages | immobilier.ch - marsens
    1 annonces |  13 pages | immobilier.ch - vaulruz
-   0 annonces |  25 pages | immobilier.ch - sales
-   0 annonces |  25 pages | immobilier.ch - pont-la-ville
-   0 annonces |  25 pages | immobilier.ch - la-roche
+   0 annonces |   2 pages | immobilier.ch - sales  (23 hors regions non telechargees)
+   0 annonces |   2 pages | immobilier.ch - pont-la-ville  (23 hors regions non telechargees)
+   0 annonces |   2 pages | immobilier.ch - la-roche  (23 hors regions non telechargees)
    0 annonces |   1 pages | immobilier.ch - grandvillard
    1 annonces |   9 pages | immobilier.ch - enney
    0 annonces |  10 pages | immobilier.ch - albeuve
@@ -58,61 +92,63 @@ sources a traiter : 100
    0 annonces |   6 pages | immobilier.ch - botterens
    1 annonces |   3 pages | immobilier.ch - gruyeres
    0 annonces |   5 pages | immobilier.ch - cresuz
-   0 annonces |  25 pages | immobilier.ch - le-paquier
-   0 annonces |   7 pages | immobilier.ch - les-brenets
+   0 annonces |   2 pages | immobilier.ch - le-paquier  (23 hors regions non telechargees)
+   2 annonces |   7 pages | immobilier.ch - les-brenets
    1 annonces |   5 pages | immobilier.ch - travers
    1 annonces |  25 pages | immobilier.ch - bevaix
    0 annonces |   2 pages | immobilier.ch - gorgier
    2 annonces |  10 pages | immobilier.ch - peseux
    0 annonces |  10 pages | immobilier.ch - auvernier
    0 annonces |   3 pages | immobilier.ch - saignelegier
-   0 annonces |  25 pages | immobilier.ch - le-noirmont
+   0 annonces |   2 pages | immobilier.ch - le-noirmont  (23 hors regions non telechargees)
    0 annonces |   5 pages | immobilier.ch - les-bois
    0 annonces |   1 pages | immobilier.ch - les-breuleux
    0 annonces |   1 pages | immobilier.ch - montfaucon
-   0 annonces |  25 pages | immobilier.ch - saint-ursanne
+   0 annonces |   2 pages | immobilier.ch - saint-ursanne  (23 hors regions non telechargees)
    1 annonces |   2 pages | immobilier.ch - soubey
-   0 annonces |  25 pages | immobilier.ch - le-bemont
+   1 annonces |   3 pages | immobilier.ch - le-bemont  (22 hors regions non telechargees)
    0 annonces |   1 pages | immobilier.ch - muriaux
    0 annonces |   1 pages | immobilier.ch - les-enfers
-   0 annonces |  25 pages | immobilier.ch - les-genevez
-   0 annonces |  25 pages | immobilier.ch - lajoux
-   0 annonces |  25 pages | immobilier.ch - Neuchatel p5
-   3 annonces |  19 pages | immobilier.ch - cortaillod
+   1 annonces |   2 pages | immobilier.ch - les-genevez  (23 hors regions non telechargees)
+   0 annonces |   2 pages | immobilier.ch - lajoux  (23 hors regions non telechargees)
+   0 annonces |  11 pages | immobilier.ch - Neuchatel p5  (14 hors regions non telechargees)
+   3 annonces |  18 pages | immobilier.ch - cortaillod
    3 annonces |   4 pages | immobilier.ch - rochefort
-   3 annonces |  25 pages | immobilier.ch - Neuchatel p4
-   5 annonces |  25 pages | immobilier.ch - cornaux
-   0 annonces |  25 pages | immobilier.ch - bulle
-   2 annonces |  25 pages | immobilier.ch - riaz
+   2 annonces |  17 pages | immobilier.ch - Neuchatel p4  (8 hors regions non telechargees)
+   1 annonces |  25 pages | immobilier.ch - bulle
+   3 annonces |  25 pages | immobilier.ch - riaz
    3 annonces |  15 pages | immobilier.ch - broc
+   4 annonces |  17 pages | immobilier.ch - Neuchatel p3  (8 hors regions non telechargees)
+   5 annonces |  15 pages | immobilier.ch - Neuchatel p2  (10 hors regions non telechargees)
+   6 annonces |  20 pages | immobilier.ch - cornaux  (5 hors regions non telechargees)
    test image : HTTP 200 image/webp
    worker : 0 reponse(s) en erreur au premier essai, 0 definitive(s)
-   realadvisor : 4534 annonces lues, 4519 photos, 4231 liens de detail, 5133 avec coordonnees, 0 page(s) en echec
- 216 annonces | 231 pages | RealAdvisor
-   4 annonces |  25 pages | immobilier.ch (portail romand)
+   realadvisor : 4543 annonces lues, 4532 photos, 4225 liens de detail, 5138 avec coordonnees, 0 page(s) en echec
+ 215 annonces | 231 pages | RealAdvisor
+   2 annonces |  25 pages | immobilier.ch (portail romand)
    4 annonces |  12 pages | immobilier.ch - fleurier
-   6 annonces |  25 pages | immobilier.ch - saint-aubin
-   4 annonces |  25 pages | immobilier.ch - corcelles
-   5 annonces |  25 pages | immobilier.ch - le-landeron
-   5 annonces |  25 pages | immobilier.ch - Neuchatel
+   5 annonces |  18 pages | immobilier.ch - corcelles  (7 hors regions non telechargees)
+   6 annonces |  19 pages | immobilier.ch - le-landeron  (6 hors regions non telechargees)
    0 annonces |  41 pages | Neuschwander Immobilier (site propre)
-   4 annonces |  25 pages | immobilier.ch - la-sagne
+   5 annonces |  18 pages | immobilier.ch - la-sagne  (7 hors regions non telechargees)
 navigateur demarre
    1 annonces |  26 pages | Gruyère Immo SA (site propre)
    0 annonces |   7 pages | Fidimmobil
    0 annonces |   2 pages | immobilier.ch - buttes
    0 annonces |   4 pages | immobilier.ch - noiraigue
    4 annonces |  15 pages | immobilier.ch - boudry
-  14 annonces |  20 pages | immobilier.ch - couvet
-   5 annonces |  25 pages | immobilier.ch - saint-blaise
-   5 annonces |  25 pages | immobilier.ch - les-ponts-de-martel
-   4 annonces |  25 pages | immobilier.ch - hauterive
-   5 annonces |  25 pages | immobilier.ch - colombier
-   5 annonces |  25 pages | immobilier.ch - le-locle
-   5 annonces |  25 pages | immobilier.ch - cressier
-   6 annonces |  25 pages | immobilier.ch - la-chaux-de-fonds
-   4 annonces |  25 pages | immobilier.ch - motiers
+   6 annonces |  18 pages | immobilier.ch - saint-blaise  (7 hors regions non telechargees)
+   7 annonces |  19 pages | immobilier.ch - hauterive  (6 hors regions non telechargees)
+   6 annonces |  17 pages | immobilier.ch - colombier  (8 hors regions non telechargees)
+   6 annonces |  19 pages | immobilier.ch - cressier  (6 hors regions non telechargees)
+   6 annonces |  18 pages | immobilier.ch - motiers  (7 hors regions non telechargees)
+   0 annonces |  20 pages | immobilier.ch - couvet
+   6 annonces |  19 pages | immobilier.ch - la-chaux-de-fonds  (6 hors regions non telechargees)
+   6 annonces |  20 pages | immobilier.ch - saint-aubin  (5 hors regions non telechargees)
+   8 annonces |  21 pages | immobilier.ch - Neuchatel  (4 hors regions non telechargees)
+   7 annonces |  20 pages | immobilier.ch - le-locle  (5 hors regions non telechargees)
+   5 annonces |  21 pages | immobilier.ch - les-ponts-de-martel  (4 hors regions non telechargees)
 navigateur ferme
 
-TOTAL : 351 annonces sur 1666 pages telechargees
-recalcul : {"ok":true,"biens":255,"rescues":0}
+TOTAL : 364 annonces sur 1577 pages telechargees en 33 min
+recalcul : {"ok":true,"biens":275,"rescues":0}
