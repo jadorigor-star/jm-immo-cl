@@ -1,5 +1,5 @@
-// BUILD-MARKER 2604752965 padding-4700: cirb5lbxdb9lnf22ncnuikq6lhgv4pvmipm0l051653knvnoglpzns30ctla73lvv4tsc5zg2thvzpc82844yuosfsa24xvtjvb0e0ojj3b72kkmniiu02huhl1rmj11prbclf5ge9yb5wjftg62ewdu2nph9w1fx52mjs6tvo32r0jdzarfymp8mxagb9crmzfp2x32s0rsgqek3u86g40p881xj2sw42m70k99osd21o8wpy75ahfu69o9h91ozi7l0b3lhfcrv0j8svhvgalt70gp5lfsizmbs6p5ugnjkciluk9mw0knpt9mbkex36h00bxikxo6vue505p7qdiw4ljjsbzyahoojzzlt0zkvmcogwm8uzww5fux3nwco55cpcbfd0aph6ve2ymdkxbenqrfp0t3be5axhoykyjdw4w4q55tgcnj07dpgrpp6z9bnaretx342nu3gysck6e0eibvg7byuxldovn87z9o4rsymn59ldtqyddh39kolni0issiffh3sd84wdsru6uaadtvdn89qqnyvw2nyxocdbo56oyw8unbm9qd8lmyic9wo8fyf009fe18jjf0j7va1o0hvlvp9rr9knogavex0mcfwp5jkv0v75a7wy5hpxvvevi8uqjq9kh0bvki9dputlp8c3x9ukn472b413zrguybrcupz8efd4u666metscmr7f09t46kaifg632dagqg5hk2419yseotwmyuo1ktdjslp9n9alk5z3my91fd730snwop4ggnrvr8wgzzvaovwm1e9r3j7zgee7vf44divj4yzto9di3pmpodtq8wxk3xnq32ccqcbnrdtjdgvg694dxr81e2psvbg3e89lu0xhynlu38sd9lz9z99smyif3i585lantyne6fn7ok9rnhxcvedgm5n2d0nkkhbcus6iiugw3ky4clrmqfk0x8kbsskzyxnppyou864p462a6j7zewmad8u5l4gldltp94m5jv0mgktguq236lh22ja7zyhep5x5cxf55qr1uidtyxwx4oiv3kmsrqz141mo07e2sm7fv9bagzjcj89vh96066xuhas26yzdy63eqf6772xgb48ttwogna0ce0018sw5vt20f5tjtrjqpbl0bohwso1q5cdrna7slu5d9qeq8c7a8tt995eo34dvj8lkan8it4nxug30cpmzlss8chak624p0pse40t8y8nyfk03d2s6ruglen2yb4ugksk6kuau5qmi9c4es2914e33o4zj8cbdqhvovjdknid8dsl068mflx1c9zlddvywjrxnp8wjdpnmd3pe8rmkgy2ik7x97xoxno1zf840x5uwnfr2duo1niuadvydh3s8ch5qcteectll8fhconzx27f573axnx6clgukw62gr1jb6jj1dxcrli0re31rm3ffwf1ave60qek55ly4d88j6elof4wk0m0avjc8hkluyv5siussffltxjv6kb562tx2rm2qj0qvipouq1wbqvoj36qx4t66qbsg3yf3o3k6syfoxhxxapsg5e6lsj2dma2wh7rb689190ih51xy6bjr0vfz0y9v1852zdr90zdfdpzusd7dzdv9avnp16xx5hikv1zi7ni4srypwu4wfd4530mvk5cn3g2py56wp8v0g73zg3tnufruqcjbozifky5bvaehpxtnje1t4hlctqdxl9g5sofp6sbyo9wpykxe4rh321uikwv2tstkoy416kjuubgpp6fqbr9wtfylhnyz9zo49q5e08070lydpowcb6oea0kwanfts6onjbdxdzn8xsj5strbq5mgggrinm5clhf0vcjzt4zg7vd0ubgooy2h82613sq2z8pw9upvblqybt0h8wq5jo2vu58qoc5h8py2msewdtdm04128vcycyqwcd4ka4z0xtp8e82sruw9kufiamgtjf3zs99txjfsk86eud3sdvormy8bi8r6c72e8n84goch70yjp019v3tl3xe3nfa21ei90qk9sp0dxraagmkm4aj2fbnd87fa5coa75jg2o90dekvvptyez1vgv4ngw24dqvz1gx2ohzy96jz7gws5tqilcs6qwl466f951sggwu71n3razm0qa5trr048v1vss05zccjhz8nxp886pgs1quks2u1f7i6702advdppi43d57unu9gj846y2w67ng7czm3tjuoft3xqbvodf4jrgipsz0fw0qck65yrh68olq3dsxtgonrz6mkama7drxn0j62hiq7zh7ivtus3bx1f3nol7z8be9bn05fcnqy6xvdjkep1i3q610usvsp8x89w14ihdw3nd6wfvd1xk6a2noss0vs3vpuyzbzbv4f6jhiywj5q6el5xkkmhffmysl4c9hycc2vn1iym3oigrsw5p6mnlvha7wj2igudmeyrmhs2dle16tdslnr3y0uor1uvpdldg1psfx5io4t2dqlnnn41krlamc121nglr7irsb344qrouik2vo7m01uqw1dgdd7xwe8xqj8scxcu1nt6nu4sxkixb7adompaesxv6saemah9muzc8whnhqv588ng3awa0xqgyp0x29solc7iezy8vxmoqf9fuz5pu9wniohb3rj9yknizryu6diiseggge8vj5pjxnedy7evu6negm03f5a42f1p6o9yjzg2fvss0z73opxythqg4yygo5pc6lkdlbryqnb5uixcglwlufp1dm5bmcjcsaqh1zupc0bs3zassz3edy21qdku5h8dpnk1zivre7uq1vatbbx9y10nknanhuselv3ktwslpzq7c4uvu0n4k29e6pc1fx0i2d2wwo8c4zolfl3zorgjbr27y45zvqqc8ylhasz37msu4nox2y4of3c4m8bwtsvdbmd4tr7u6zcllp0gg7ehqohso1ptd9igti3a5vofulpgmhv6gxkdk46oji4g3de9tlmf4akp4jcf40p719b5r81flypdma7pvnqwd2ari8v8kinwy39j8z8ajok7skv10ks4mg6kukj10f0a3qeamnvw5bf638rgg3f7v8428tdptaw9r29oav54742fxddpp0xejs148pco3cpfdtwfqhvygagjops11eqwc5bapjur3gab625bhrtkpnynf69i5m6ogg7iq0c7wpzare44hfwun2bd7nf3m9ora59xqoyls4w6nf7jurp44k5uqkgmfrbzhjmjskp660i84awtcl69vanlxsbvaak3su6oqv9vxb1i9777vi7qe0rktxzx2d3qg5d0odielv5vzwqxgpae2t3a4hwudji8ivpj7prw6dwna81a8glwhyizipuvvobuzkfw0lj3oyw14ik7bwur1w193dinm9tcxt5qkhambgnuulj6v1wumfhzhf4k4iodeuseydt09oeda7dtwhed96t7s8splqclfqs5exp0l86y09wbb1h666vc7ejnw15erdbj5sqn2hxu3o10izlz8fiuuz6h83ypbuk9tmtqy88il4727sa0cujmelf1udjzxxhtq2roks0qvzt4si1gl8n11rjcw9p5b39zlgi0gxnxkcrlgwjfcz9yjqe8a9u87eb8idx7iamxox2jau5q0x2vs3kh8hanfqsiw9xfupzzc2wao29ijm7oeck7w39m3vcy5kch4qe9pmhvopyc07yfc9bacn38ogtzqs1jsj3w1sxyg28ni0m30juo2snddi59ybk8qfgdrgdfht5isysl6i904vzd8ilezx8yda8fxxlw892svvskfxdl3mxzihu728xv8wowdotm4oc251pbaahxc0ek43dbbhxpjqn4qbnhxe6aa42z6d6axar0d6nowtsgc91lj5dhh9hy8enypkmyfm55fn90eukhknz6lbrsdfqxg2m1vyh874r3a4fi6rt4yopcmwsk52dwn1lw6ulvmway9ljf362nopitx5y854ognwxqnqk8n1usdnwypwsfjbiiaw8f36s98tr2v2xb271mg1hhhc4r05q2wkyds8zeevwnqltfeaes46192wxix7vwtmyyiircfec9vokso1by5voz9j7upbcfrpu6uop22djr6f1hvcxrx1vzgud02byzewieykzd22ftquh92ifaciiofpjm2xp6k87o5cd8wl5xrv599nhggrnum7j96mlxk3gz2v2636d7zbelyspp2r8b324j5lerpq65sqs0p6jprqnz515tzm7htt4c1wfpherd96efdmjlke9ag1kyjm0pir904gmkhym6f7nsgwfxdh3eb0yh568pom3qxc77xf1osaezjdxd8jad22ff253ci114vali5ve5zzn2egst1qs4a6b8g9xwurukx75k9ho9o1ds6w1e549nfdf48k4k4adzkmhuy74m73ekn2y8wjmps6uc6wjsxybqkmubf6iq8y22rxstcnvo9vjrt6t15fif0wn8nelc36abxv2bnarsw2rrof9m45qwmimuymkmo0jr78zd0p4bhygwxhd7uxy28m1lf847mcqdhyzpdtaokq2i1nbdt4b81d1png9nxh80qzeo3gom5m5gultlraop76e0x90iwz5p7wv2rnezp8dlgknvl63irelwyi0b9809ivnqxft2ppoglk3c2ch
-// VERSION_MARKER_JMIMMO_20261029_PREFILTRE_REGION_v56
+// BUILD-MARKER 5339975563 padding-4700: tsa7mjv2mz6c4bpu6a6atxjv7c8b2vh5xtyb9zd7v6850dxbeptvd1vn2r3p9buhrij0q2xbwfitz9gzvq8e1tyscrt2ghbi2zqw8qd7kp99091vggadm8mk
+// VERSION_MARKER_JMIMMO_20261102_SUPPRIMER_TERRAINS_v57
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -232,6 +232,7 @@ function espaceDe(request, url) {
 }
 function bienKey(locality, type, rooms, surface, fallbackId) {
   const loc = (locality || "").trim().toLowerCase();
+  if (type === "Terrain" && fallbackId) return loc + "|" + type + "|u" + String(fallbackId).trim().toLowerCase();
   const roomsR = Math.round((rooms || 0) * 2) / 2;
   const surfR = Math.round((surface || 0) / 5) * 5;
   if (!roomsR && !surfR) {
@@ -1076,9 +1077,16 @@ var TYPE_ALIASES = {
   "rustico": "Rustico",
   "rustici": "Rustico",
   "stalla": "Rustico",
-  "grange": "Rustico"
+  "grange": "Rustico",
+  "terrain": "Terrain",
+  "terreno": "Terrain",
+  "bauland": "Terrain",
+  "parcelle": "Terrain",
+  "grundst\xFCck": "Terrain"
 };
-var TYPES_EXCLUS = ["terrain", "terreno", "bauland", "parcelle", "grundst\xFCck", "place de parc", "posteggio", "garage", "box", "commerce", "bureau", "ufficio", "capannone", "d\xE9p\xF4t", "deposito"];
+var TERRAIN_DEBUT_RE = /^\s*(terrain|terreno|bauland|parcelle|grundst\xFCck|parzelle)/i;
+var TERRAIN_NON_CONSTRUCTIBLE_RE = /non[\s-]*constructible|inconstructible|nicht\s+bebaubar|zone\s+(agricole|foresti\xE8re|viticole|prot\xE9g\xE9e|de\s+verdure)|landwirtschaftszone|waldzone/i;
+var TYPES_EXCLUS = ["place de parc", "posteggio", "garage", "box", "commerce", "bureau", "ufficio", "capannone", "d\xE9p\xF4t", "deposito"];
 function normalizeType(rawType) {
   const t = String(rawType || "").trim().toLowerCase();
   if (!t) return "Appartement";
@@ -1089,20 +1097,32 @@ function normalizeType(rawType) {
   }
   return rawType.charAt(0).toUpperCase() + rawType.slice(1);
 }
+async function estSupprime(db, cles) {
+  // liste noire : un bien supprime definitivement ne doit jamais revenir (meme si sa cle change ou si un autre site le republie)
+  try {
+    const c = cles.filter(Boolean);
+    if (!c.length) return false;
+    const r = await db.prepare("SELECT 1 FROM supprimes WHERE cle IN (" + c.map(() => "?").join(",") + ") LIMIT 1").bind(...c).all();
+    return r.results.length > 0;
+  } catch (e) { return false; }
+}
 async function storeListing(db, srcRow, rl, extra) {
   if (!rl.title || !rl.locality || !isPlausiblePrice(rl.price)) return 0;
   if (rl.is_rental) return 0;
   // plafond de prix : inutile de stocker et d'indexer ce qui sera filtre a l'affichage
   if (extra && extra.prixPlafond && rl.price && rl.price > extra.prixPlafond) return 0;
-  const normalizedType = normalizeType(rl.type);
+  let normalizedType = normalizeType(rl.type);
   if (!normalizedType) return 0;
+  if (TERRAIN_DEBUT_RE.test(rl.title || "")) normalizedType = "Terrain";
   rl.type = normalizedType;
+  if (normalizedType === "Terrain" && TERRAIN_NON_CONSTRUCTIBLE_RE.test((rl.title || "") + " " + (rl.description || ""))) return 0;
   const titreEtDesc = ((rl.title || "") + " " + (rl.description || "")).toLowerCase();
   if (TYPES_EXCLUS.some((x) => titreEtDesc.startsWith(x) || titreEtDesc.includes("vendesi " + x) || titreEtDesc.includes("vente " + x))) return 0;
   const region = computeRegion(rl.locality, extra);
   if (!region) return 0;
   const listingId = srcRow.id + ":" + rl.external_id;
   const bId = bienKey(rl.locality, rl.type, rl.rooms, rl.surface, listingId);
+  if (await estSupprime(db, [listingId, rl.url ? "url:" + String(rl.url).split("?")[0] : null])) return 0;
   const today = todayISO();
   const existing = await db.prepare("SELECT first_seen, last_seen, price, status, title, image_url, description, address, region, confidence FROM listings WHERE id=?").bind(listingId).all();
   const anc = existing.results[0] || null;
@@ -1527,7 +1547,7 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
   const coordSource = listings.map((l) => (l.geo_lat != null && l.geo_lon != null ? { lat: Number(l.geo_lat), lon: Number(l.geo_lon) } : null)).find((c) => c) || null;
   const access = await getOrComputeAccess(db, bId, geoTarget, originStopName, env, budget, isVillageCenter, accessMap, coordSource);
   const scores = {
-    deal: estimateDealScore(cheapestPrice, latest.surface, regionPrices[latest.region]),
+    deal: latest.type === "Terrain" ? 50 : estimateDealScore(cheapestPrice, latest.surface, regionPrices[latest.region]),
     retraite: estimateRetraiteScore(latest.rooms, latest.surface, latest.region),
     locatif: estimateLocatifScore(latest.region, latest.rooms),
     cachet: estimateCachetScore(cachet, cachetHits),
@@ -1782,6 +1802,7 @@ async function recomputeFull(db, env, budgetSize) {
   for (const bId in groups) {
     const latest = groups[bId][groups[bId].length - 1];
     if (groups[bId].every((l) => l.src_enabled === 0)) continue;
+    if (latest.type === "Terrain") continue;
     const b = brut[latest.region] = brut[latest.region] || { prix: [], m2: [] };
     b.prix.push(latest.price);
     if (latest.surface && latest.surface >= 15) b.m2.push(latest.price / latest.surface);
@@ -1853,6 +1874,7 @@ async function recomputeTargeted(db, bienIds, env) {
   for (const bId in groups) {
     const latest = groups[bId][groups[bId].length - 1];
     if (groups[bId].every((l) => l.src_enabled === 0)) continue;
+    if (latest.type === "Terrain") continue;
     const b = brut[latest.region] = brut[latest.region] || { prix: [], m2: [] };
     b.prix.push(latest.price);
     if (latest.surface && latest.surface >= 15) b.m2.push(latest.price / latest.surface);
@@ -2150,7 +2172,7 @@ const TABS = [
 ];
 let activeTab = "tous";
 const REGIONS = ["Tessin","Gruy\u00e8re","Neuch\u00e2tel","Jura","Jura \u2013 Clos du Doubs","Jura \u2013 Franches-Montagnes","Zweisimmen","Alpes vaudoises","Pr\u00e9alpes fribourgeoises","L\u00e9man","Lac de Morat","Lac de Bienne","Lac de Thoune"];
-const TYPES = ["Appartement","Maison","Chalet","Rustico","Villa","Maison historique","PPE"];
+const TYPES = ["Appartement","Maison","Chalet","Rustico","Villa","Maison historique","PPE","Terrain"];
 
 document.getElementById("fRegion").innerHTML += REGIONS.map(function(r){return "<option value='" + r + "'>" + r + "</option>";}).join("");
 document.getElementById("fType").innerHTML += TYPES.map(function(t){return "<option value='" + t + "'>" + t + "</option>";}).join("");
@@ -2298,13 +2320,15 @@ function bienCard(b){
     + (signaux.length ? "<div class='tags'>" + signaux.join("") + "</div>" : "")
     + "<details class='replie'><summary>D\u00e9tails</summary>" + det.join("") + "</details>"
     + "<div class='actions'><button class='btn discard' data-action='discard' data-id='" + b.id + "'>\u00c9carter</button>"
+    + "<button class='btn discard' data-action='purge' data-id='" + b.id + "' title='Supprimer d\u00e9finitivement : ne reviendra plus'>Supprimer</button>"
     + "<button class='btn fav " + (b.is_favori?"on":"") + "' data-action='togglefav' data-id='" + b.id + "' data-fav='" + (!!b.is_favori) + "'>" + (b.is_favori?"Favori (retirer)":"Favori") + "</button></div>"
     + "</div>";
 }
 function ecarteCard(d){
   return "<div class='card'><div class='card-top'><div><div class='title'>" + d.title_at_exclusion + "</div><div class='locality'>" + (d.locality||"") + " - " + (d.region||"") + "</div></div></div>" +
     "<div class='price' style='margin-top:8px'>" + fmtCHF(d.price_at_exclusion) + " <span style='font-size:11px;color:var(--muted)'>(prix a l'exclusion)</span></div>" +
-    "<div class='actions'><button class='btn restore' data-action='restore' data-id='" + d.bien_id + "'>Restaurer</button></div></div>";
+    "<div class='actions'><button class='btn restore' data-action='restore' data-id='" + d.bien_id + "'>Restaurer</button>" +
+    "<button class='btn discard' data-action='purge' data-id='" + d.bien_id + "'>Supprimer d\u00e9finitivement</button></div></div>";
 }
 function venduCard(d){
   return "<div class='card'><div class='card-top'><div><div class='title'>" + (d.title||"") + "</div><div class='locality'>" + (d.locality||"") + " - " + (d.region||"") + "</div></div></div>" +
@@ -2330,6 +2354,13 @@ function retirerCarte(id){
 async function discard(id){
   if (!retirerCarte(id)) { await api("/api/discard", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bien_id:id})}); return load(); }
   await api("/api/discard", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bien_id:id})});
+  loadStats();
+}
+async function purge(id){
+  if (!window.confirm("Supprimer d\u00e9finitivement ce bien ? Il ne reviendra plus \u00e0 la collecte.")) return;
+  const retire = retirerCarte(id);
+  await api("/api/supprimer", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({bien_id:id})});
+  if (!retire) return load();
   loadStats();
 }
 async function restore(id){
@@ -2491,6 +2522,7 @@ document.getElementById("main").addEventListener("click", function(e){
   if (action === "discard") discard(id);
   else if (action === "togglefav") toggleFav(id, el.dataset.fav === "true");
   else if (action === "restore") restore(id);
+  else if (action === "purge") purge(id);
   else if (action === "togglecachet") togglePrefCachet();
   else if (action === "toggleregion") togglePrefRegion(el.dataset.region);
   else if (action === "changer-espace") {
@@ -2854,6 +2886,26 @@ var index_default = {
         await db.prepare("DELETE FROM favoris WHERE bien_id=? AND espace_id=?").bind(body.bien_id, espace).run();
         await recomputeTargeted(db, [body.bien_id], env);
         return json({ ok: true });
+      }
+      if (url.pathname === "/api/supprimer" && request.method === "POST") {
+        const body = await request.json();
+        const id = body.bien_id;
+        if (!id) return json({ error: "bien_id manquant" }, 400);
+        const ls = await db.prepare("SELECT id, url FROM listings WHERE bien_id=?").bind(id).all();
+        const cles = new Set();
+        for (const l of ls.results) {
+          cles.add(l.id);
+          if (l.url) cles.add("url:" + String(l.url).split("?")[0]);
+        }
+        const maintenant = (/* @__PURE__ */ new Date()).toISOString();
+        const stmts = [db.prepare("CREATE TABLE IF NOT EXISTS supprimes (cle TEXT PRIMARY KEY, date TEXT)")];
+        for (const c of cles) stmts.push(db.prepare("INSERT OR IGNORE INTO supprimes (cle, date) VALUES (?,?)").bind(c, maintenant));
+        await db.batch(stmts);
+        for (const table of ["price_history", "bien_sources", "access_cache", "vus", "vendus", "discarded", "favoris", "listings"]) {
+          try { await db.prepare("DELETE FROM " + table + " WHERE bien_id=?").bind(id).run(); } catch (e) {}
+        }
+        await db.prepare("DELETE FROM biens WHERE id=?").bind(id).run();
+        return json({ ok: true, bloques: cles.size });
       }
       if (url.pathname === "/api/restore" && request.method === "POST") {
         const body = await request.json();
