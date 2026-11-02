@@ -1,8 +1,8 @@
-== Diagnostic du 2026-11-02 17:35:04 UTC ==
+== Diagnostic du 2026-11-02 17:40:32 UTC ==
 CLOUDFLARE_API_TOKEN : present (longueur 53)
 CLOUDFLARE_ACCOUNT_ID : present (longueur 32)
-version_livree=VERSION_MARKER_JMIMMO_20261102_SUPPRIMER_TERRAINS_v57
-taille=167367 octets
-sante={"status":"ok","time":"2026-11-02T17:35:35.254Z"}
-stats={"a_trier":276,"favoris":5,"ecartes":1,"vendus":358,"biens":277,"annonces":819,"sources_actives":142,"sources_productives":50,"opportunites":88,"derniere_collecte":"2026-11-02T17:06:55.876Z"}
-deploye_le=2026-11-02 17:35:35 UTC
+version_livree=VERSION_MARKER_JMIMMO_20261102_BLOCAGE_BIEN_v58
+taille=167390 octets
+sante={"status":"ok","time":"2026-11-02T17:40:59.043Z"}
+stats={"a_trier":276,"favoris":5,"ecartes":1,"vendus":358,"biens":277,"annonces":819,"sources_actives":142,"sources_productives":50,"opportunites":88,"derniere_collecte":"2026-11-02T17:36:37.137Z"}
+deploye_le=2026-11-02 17:40:59 UTC
