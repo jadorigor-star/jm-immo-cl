@@ -1,5 +1,5 @@
-// BUILD-MARKER 5339975563 padding-4700: tsa7mjv2mz6c4bpu6a6atxjv7c8b2vh5xtyb9zd7v6850dxbeptvd1vn2r3p9buhrij0q2xbwfitz9gzvq8e1tyscrt2ghbi2zqw8qd7kp99091vggadm8mk
-// VERSION_MARKER_JMIMMO_20261102_SUPPRIMER_TERRAINS_v57
+// BUILD-MARKER 9108074472 padding-4700: imhr8dvzs9me9fuae982yr39q6qgc9xbgzpz0j21n1giwmv1mdq7wi9h2r7vlj2dpjx5b3ur7mfosolddqqy5k3lux0o63usjkupyl6wyv9xyeo7gixoqakd
+// VERSION_MARKER_JMIMMO_20261102_BLOCAGE_BIEN_v58
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -1122,7 +1122,7 @@ async function storeListing(db, srcRow, rl, extra) {
   if (!region) return 0;
   const listingId = srcRow.id + ":" + rl.external_id;
   const bId = bienKey(rl.locality, rl.type, rl.rooms, rl.surface, listingId);
-  if (await estSupprime(db, [listingId, rl.url ? "url:" + String(rl.url).split("?")[0] : null])) return 0;
+  if (await estSupprime(db, [listingId, "bien:" + bId, rl.url ? "url:" + String(rl.url).split("?")[0] : null])) return 0;
   const today = todayISO();
   const existing = await db.prepare("SELECT first_seen, last_seen, price, status, title, image_url, description, address, region, confidence FROM listings WHERE id=?").bind(listingId).all();
   const anc = existing.results[0] || null;
@@ -2892,7 +2892,7 @@ var index_default = {
         const id = body.bien_id;
         if (!id) return json({ error: "bien_id manquant" }, 400);
         const ls = await db.prepare("SELECT id, url FROM listings WHERE bien_id=?").bind(id).all();
-        const cles = new Set();
+        const cles = new Set(["bien:" + id]);
         for (const l of ls.results) {
           cles.add(l.id);
           if (l.url) cles.add("url:" + String(l.url).split("?")[0]);
