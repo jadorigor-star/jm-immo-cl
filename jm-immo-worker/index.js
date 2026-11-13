@@ -1,5 +1,5 @@
-// BUILD-MARKER 6232541237 padding-4700: 0jrwo0f93cb78nto7n3vp6h6z6mrbcsv283v90gejhllskbughf9j81at410f68pn7tnml3m288y5hk9zd3cvwmpz3ewz5a4f364gz33pdezwxi0uq3dl5se
-// VERSION_MARKER_JMIMMO_20261113_ECARTES_ANCRES_v60
+// BUILD-MARKER 3359032676 padding-4700: v0s1v1n41a9tx0ukxd2kz67noht839gu0ktl459q3on8qu5rcjcz6lepbp8t507n44s6mddymxvt63dxz1pddqbxn0oni9ivqjdzqohq2fhs20qz8xfgr7hb
+// VERSION_MARKER_JMIMMO_20261113_IDENTITE_IMAGE_v61
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -1097,6 +1097,13 @@ function normalizeType(rawType) {
   }
   return rawType.charAt(0).toUpperCase() + rawType.slice(1);
 }
+function clesIdentite(l) {
+  // empreintes d'une annonce independantes de son id / de sa cle de bien : image et titre+prix
+  const out = [];
+  if (l.image_url && String(l.image_url).length > 20 && l.price) out.push("img:" + String(l.image_url).split("?")[0] + "|" + Math.round(l.price));
+  if (l.title && String(l.title).trim().length >= 12 && l.price) out.push("sig:" + String(l.title).trim().toLowerCase() + "|" + Math.round(l.price));
+  return out;
+}
 async function estSupprime(db, cles) {
   // liste noire : un bien supprime definitivement ne doit jamais revenir (meme si sa cle change ou si un autre site le republie)
   try {
@@ -1122,7 +1129,7 @@ async function rattacherEcarte(db, cles, bId) {
 }
 async function oublierEcarteAnnonces(db, bId, espace) {
   try {
-    await db.prepare("DELETE FROM ecartes_annonces WHERE espace_id=? AND (cle IN (SELECT id FROM listings WHERE bien_id=?) OR cle IN (SELECT 'url:' || url FROM listings WHERE bien_id=?))").bind(espace, bId, bId).run();
+    await db.prepare("DELETE FROM ecartes_annonces WHERE espace_id=? AND (cle IN (SELECT id FROM listings WHERE bien_id=?) OR cle IN (SELECT 'url:' || url FROM listings WHERE bien_id=?) OR cle IN (SELECT 'img:' || image_url || '|' || CAST(price AS INTEGER) FROM listings WHERE bien_id=?))").bind(espace, bId, bId, bId).run();
   } catch (err) {}
 }
 async function storeListing(db, srcRow, rl, extra) {
@@ -1142,8 +1149,9 @@ async function storeListing(db, srcRow, rl, extra) {
   const listingId = srcRow.id + ":" + rl.external_id;
   const bId = bienKey(rl.locality, rl.type, rl.rooms, rl.surface, listingId);
   const cleUrl = rl.url ? "url:" + String(rl.url).split("?")[0] : null;
-  if (await estSupprime(db, [listingId, "bien:" + bId, cleUrl])) return 0;
-  await rattacherEcarte(db, [listingId, cleUrl], bId);
+  const clesId = clesIdentite(rl);
+  if (await estSupprime(db, [listingId, "bien:" + bId, cleUrl, ...clesId])) return 0;
+  await rattacherEcarte(db, [listingId, cleUrl, ...clesId], bId);
   const today = todayISO();
   const existing = await db.prepare("SELECT first_seen, last_seen, price, status, title, image_url, description, address, region, confidence FROM listings WHERE id=?").bind(listingId).all();
   const anc = existing.results[0] || null;
@@ -2908,7 +2916,17 @@ var index_default = {
         await db.prepare("DELETE FROM favoris WHERE bien_id=? AND espace_id=?").bind(body.bien_id, espace).run();
         try {
           await db.prepare("CREATE TABLE IF NOT EXISTS ecartes_annonces (espace_id TEXT, cle TEXT, PRIMARY KEY (espace_id, cle), price_at_exclusion REAL, date_exclusion TEXT, title_at_exclusion TEXT, locality TEXT, region TEXT, type TEXT, rooms REAL, surface REAL)").run();
-          await db.prepare("INSERT OR IGNORE INTO ecartes_annonces (espace_id, cle, price_at_exclusion, date_exclusion, title_at_exclusion, locality, region, type, rooms, surface) SELECT ?, cle, ?, ?, ?, ?, ?, ?, ?, ? FROM (SELECT id AS cle FROM listings WHERE bien_id=? UNION SELECT 'url:' || url FROM listings WHERE bien_id=? AND url IS NOT NULL)").bind(espace, b.price, (/* @__PURE__ */ new Date()).toISOString(), b.title, b.locality, b.region, b.type, b.rooms, b.surface, body.bien_id, body.bien_id).run();
+          const lsE = await db.prepare("SELECT id, url, image_url, title, price FROM listings WHERE bien_id=?").bind(body.bien_id).all();
+          const clesE = new Set();
+          for (const l of lsE.results) {
+            clesE.add(l.id);
+            if (l.url) clesE.add("url:" + String(l.url).split("?")[0]);
+            for (const k of clesIdentite(l)) clesE.add(k);
+          }
+          const maintE = (/* @__PURE__ */ new Date()).toISOString();
+          const stE = [];
+          for (const c of clesE) stE.push(db.prepare("INSERT OR IGNORE INTO ecartes_annonces (espace_id, cle, price_at_exclusion, date_exclusion, title_at_exclusion, locality, region, type, rooms, surface) VALUES (?,?,?,?,?,?,?,?,?,?)").bind(espace, c, b.price, maintE, b.title, b.locality, b.region, b.type, b.rooms, b.surface));
+          if (stE.length) await db.batch(stE);
         } catch (err) {}
         await recomputeTargeted(db, [body.bien_id], env);
         return json({ ok: true });
@@ -2917,11 +2935,12 @@ var index_default = {
         const body = await request.json();
         const id = body.bien_id;
         if (!id) return json({ error: "bien_id manquant" }, 400);
-        const ls = await db.prepare("SELECT id, url FROM listings WHERE bien_id=?").bind(id).all();
+        const ls = await db.prepare("SELECT id, url, image_url, title, price FROM listings WHERE bien_id=?").bind(id).all();
         const cles = new Set(["bien:" + id]);
         for (const l of ls.results) {
           cles.add(l.id);
           if (l.url) cles.add("url:" + String(l.url).split("?")[0]);
+          for (const k of clesIdentite(l)) cles.add(k);
         }
         const maintenant = (/* @__PURE__ */ new Date()).toISOString();
         const stmts = [db.prepare("CREATE TABLE IF NOT EXISTS supprimes (cle TEXT PRIMARY KEY, date TEXT)")];
