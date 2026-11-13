@@ -1,5 +1,5 @@
-// BUILD-MARKER 9108074472 padding-4700: imhr8dvzs9me9fuae982yr39q6qgc9xbgzpz0j21n1giwmv1mdq7wi9h2r7vlj2dpjx5b3ur7mfosolddqqy5k3lux0o63usjkupyl6wyv9xyeo7gixoqakd
-// VERSION_MARKER_JMIMMO_20261102_BLOCAGE_BIEN_v58
+// BUILD-MARKER 5750343802 padding-4700: lnkem7ub6i8vgk0194tgwu9lkwzrbas5zfel966wlj6hedb7gkhsblv6kpchyetyos22fjt7ox9nrqnbepid5xn955mr2eumdr21dr2q60su6h6w9y0gy52z
+// VERSION_MARKER_JMIMMO_20261113_ECARTES_ANCRES_v59
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -1106,6 +1106,22 @@ async function estSupprime(db, cles) {
     return r.results.length > 0;
   } catch (e) { return false; }
 }
+async function rattacherEcarte(db, cles, bId) {
+  // un bien ecarte reste ecarte meme si sa cle (commune|type|pieces|surface) change : on s'ancre sur l'annonce (id / url)
+  try {
+    const c = cles.filter(Boolean);
+    if (!c.length) return;
+    const r = await db.prepare("SELECT price_at_exclusion, date_exclusion, title_at_exclusion, locality, region, type, rooms, surface FROM ecartes_annonces WHERE cle IN (" + c.map(() => "?").join(",") + ") LIMIT 1").bind(...c).all();
+    const e = r.results[0];
+    if (!e) return;
+    await db.prepare("INSERT INTO discarded (espace_id, bien_id, price_at_exclusion, date_exclusion, title_at_exclusion, locality, region, type, rooms, surface) VALUES ('principal',?,?,?,?,?,?,?,?,?) ON CONFLICT(espace_id, bien_id) DO NOTHING").bind(bId, e.price_at_exclusion, e.date_exclusion, e.title_at_exclusion, e.locality, e.region, e.type, e.rooms, e.surface).run();
+  } catch (err) {}
+}
+async function oublierEcarteAnnonces(db, bId) {
+  try {
+    await db.prepare("DELETE FROM ecartes_annonces WHERE cle IN (SELECT id FROM listings WHERE bien_id=?) OR cle IN (SELECT 'url:' || url FROM listings WHERE bien_id=?)").bind(bId, bId).run();
+  } catch (err) {}
+}
 async function storeListing(db, srcRow, rl, extra) {
   if (!rl.title || !rl.locality || !isPlausiblePrice(rl.price)) return 0;
   if (rl.is_rental) return 0;
@@ -1122,7 +1138,9 @@ async function storeListing(db, srcRow, rl, extra) {
   if (!region) return 0;
   const listingId = srcRow.id + ":" + rl.external_id;
   const bId = bienKey(rl.locality, rl.type, rl.rooms, rl.surface, listingId);
-  if (await estSupprime(db, [listingId, "bien:" + bId, rl.url ? "url:" + String(rl.url).split("?")[0] : null])) return 0;
+  const cleUrl = rl.url ? "url:" + String(rl.url).split("?")[0] : null;
+  if (await estSupprime(db, [listingId, "bien:" + bId, cleUrl])) return 0;
+  await rattacherEcarte(db, [listingId, cleUrl], bId);
   const today = todayISO();
   const existing = await db.prepare("SELECT first_seen, last_seen, price, status, title, image_url, description, address, region, confidence FROM listings WHERE id=?").bind(listingId).all();
   const anc = existing.results[0] || null;
@@ -1535,6 +1553,7 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
     if (cheapestPrice < disc.price_at_exclusion) {
       rescue = { bienId: bId, oldPrice: disc.price_at_exclusion, newPrice: cheapestPrice };
       await db.prepare("DELETE FROM discarded WHERE bien_id=? AND espace_id='principal'").bind(bId).run();
+      await oublierEcarteAnnonces(db, bId);
     } else {
       discardedNow = true;
     }
@@ -2884,6 +2903,10 @@ var index_default = {
         if (!b) return json({ error: "bien introuvable" }, 404);
         await db.prepare("INSERT INTO discarded (espace_id, bien_id, price_at_exclusion, date_exclusion, title_at_exclusion, locality, region, type, rooms, surface) VALUES (?,?,?,?,?,?,?,?,?,?) ON CONFLICT(espace_id, bien_id) DO NOTHING").bind(espace, body.bien_id, b.price, (/* @__PURE__ */ new Date()).toISOString(), b.title, b.locality, b.region, b.type, b.rooms, b.surface).run();
         await db.prepare("DELETE FROM favoris WHERE bien_id=? AND espace_id=?").bind(body.bien_id, espace).run();
+        try {
+          await db.prepare("CREATE TABLE IF NOT EXISTS ecartes_annonces (cle TEXT PRIMARY KEY, price_at_exclusion REAL, date_exclusion TEXT, title_at_exclusion TEXT, locality TEXT, region TEXT, type TEXT, rooms REAL, surface REAL)").run();
+          await db.prepare("INSERT OR IGNORE INTO ecartes_annonces (cle, price_at_exclusion, date_exclusion, title_at_exclusion, locality, region, type, rooms, surface) SELECT cle, ?, ?, ?, ?, ?, ?, ?, ? FROM (SELECT id AS cle FROM listings WHERE bien_id=? UNION SELECT 'url:' || url FROM listings WHERE bien_id=? AND url IS NOT NULL)").bind(b.price, (/* @__PURE__ */ new Date()).toISOString(), b.title, b.locality, b.region, b.type, b.rooms, b.surface, body.bien_id, body.bien_id).run();
+        } catch (err) {}
         await recomputeTargeted(db, [body.bien_id], env);
         return json({ ok: true });
       }
@@ -2910,6 +2933,7 @@ var index_default = {
       if (url.pathname === "/api/restore" && request.method === "POST") {
         const body = await request.json();
         await db.prepare("DELETE FROM discarded WHERE bien_id=? AND espace_id=?").bind(body.bien_id, espace).run();
+        await oublierEcarteAnnonces(db, body.bien_id);
         await recomputeTargeted(db, [body.bien_id], env);
         return json({ ok: true });
       }
