@@ -1,5 +1,5 @@
-// BUILD-MARKER 5750343802 padding-4700: lnkem7ub6i8vgk0194tgwu9lkwzrbas5zfel966wlj6hedb7gkhsblv6kpchyetyos22fjt7ox9nrqnbepid5xn955mr2eumdr21dr2q60su6h6w9y0gy52z
-// VERSION_MARKER_JMIMMO_20261113_ECARTES_ANCRES_v59
+// BUILD-MARKER 6232541237 padding-4700: 0jrwo0f93cb78nto7n3vp6h6z6mrbcsv283v90gejhllskbughf9j81at410f68pn7tnml3m288y5hk9zd3cvwmpz3ewz5a4f364gz33pdezwxi0uq3dl5se
+// VERSION_MARKER_JMIMMO_20261113_ECARTES_ANCRES_v60
 // index.js
 var SOURCE_TIMEOUT_MS = 8e3;
 var REGION_MAP = {
@@ -1111,15 +1111,18 @@ async function rattacherEcarte(db, cles, bId) {
   try {
     const c = cles.filter(Boolean);
     if (!c.length) return;
-    const r = await db.prepare("SELECT price_at_exclusion, date_exclusion, title_at_exclusion, locality, region, type, rooms, surface FROM ecartes_annonces WHERE cle IN (" + c.map(() => "?").join(",") + ") LIMIT 1").bind(...c).all();
-    const e = r.results[0];
-    if (!e) return;
-    await db.prepare("INSERT INTO discarded (espace_id, bien_id, price_at_exclusion, date_exclusion, title_at_exclusion, locality, region, type, rooms, surface) VALUES ('principal',?,?,?,?,?,?,?,?,?) ON CONFLICT(espace_id, bien_id) DO NOTHING").bind(bId, e.price_at_exclusion, e.date_exclusion, e.title_at_exclusion, e.locality, e.region, e.type, e.rooms, e.surface).run();
+    const r = await db.prepare("SELECT espace_id, price_at_exclusion, date_exclusion, title_at_exclusion, locality, region, type, rooms, surface FROM ecartes_annonces WHERE cle IN (" + c.map(() => "?").join(",") + ")").bind(...c).all();
+    const vus = new Set();
+    for (const e of r.results) {
+      if (vus.has(e.espace_id)) continue;
+      vus.add(e.espace_id);
+      await db.prepare("INSERT INTO discarded (espace_id, bien_id, price_at_exclusion, date_exclusion, title_at_exclusion, locality, region, type, rooms, surface) VALUES (?,?,?,?,?,?,?,?,?,?) ON CONFLICT(espace_id, bien_id) DO NOTHING").bind(e.espace_id, bId, e.price_at_exclusion, e.date_exclusion, e.title_at_exclusion, e.locality, e.region, e.type, e.rooms, e.surface).run();
+    }
   } catch (err) {}
 }
-async function oublierEcarteAnnonces(db, bId) {
+async function oublierEcarteAnnonces(db, bId, espace) {
   try {
-    await db.prepare("DELETE FROM ecartes_annonces WHERE cle IN (SELECT id FROM listings WHERE bien_id=?) OR cle IN (SELECT 'url:' || url FROM listings WHERE bien_id=?)").bind(bId, bId).run();
+    await db.prepare("DELETE FROM ecartes_annonces WHERE espace_id=? AND (cle IN (SELECT id FROM listings WHERE bien_id=?) OR cle IN (SELECT 'url:' || url FROM listings WHERE bien_id=?))").bind(espace, bId, bId).run();
   } catch (err) {}
 }
 async function storeListing(db, srcRow, rl, extra) {
@@ -1553,7 +1556,7 @@ async function computeBienRecord(db, bId, listings, weights, regionPrices, oppor
     if (cheapestPrice < disc.price_at_exclusion) {
       rescue = { bienId: bId, oldPrice: disc.price_at_exclusion, newPrice: cheapestPrice };
       await db.prepare("DELETE FROM discarded WHERE bien_id=? AND espace_id='principal'").bind(bId).run();
-      await oublierEcarteAnnonces(db, bId);
+      await oublierEcarteAnnonces(db, bId, 'principal');
     } else {
       discardedNow = true;
     }
@@ -2904,8 +2907,8 @@ var index_default = {
         await db.prepare("INSERT INTO discarded (espace_id, bien_id, price_at_exclusion, date_exclusion, title_at_exclusion, locality, region, type, rooms, surface) VALUES (?,?,?,?,?,?,?,?,?,?) ON CONFLICT(espace_id, bien_id) DO NOTHING").bind(espace, body.bien_id, b.price, (/* @__PURE__ */ new Date()).toISOString(), b.title, b.locality, b.region, b.type, b.rooms, b.surface).run();
         await db.prepare("DELETE FROM favoris WHERE bien_id=? AND espace_id=?").bind(body.bien_id, espace).run();
         try {
-          await db.prepare("CREATE TABLE IF NOT EXISTS ecartes_annonces (cle TEXT PRIMARY KEY, price_at_exclusion REAL, date_exclusion TEXT, title_at_exclusion TEXT, locality TEXT, region TEXT, type TEXT, rooms REAL, surface REAL)").run();
-          await db.prepare("INSERT OR IGNORE INTO ecartes_annonces (cle, price_at_exclusion, date_exclusion, title_at_exclusion, locality, region, type, rooms, surface) SELECT cle, ?, ?, ?, ?, ?, ?, ?, ? FROM (SELECT id AS cle FROM listings WHERE bien_id=? UNION SELECT 'url:' || url FROM listings WHERE bien_id=? AND url IS NOT NULL)").bind(b.price, (/* @__PURE__ */ new Date()).toISOString(), b.title, b.locality, b.region, b.type, b.rooms, b.surface, body.bien_id, body.bien_id).run();
+          await db.prepare("CREATE TABLE IF NOT EXISTS ecartes_annonces (espace_id TEXT, cle TEXT, PRIMARY KEY (espace_id, cle), price_at_exclusion REAL, date_exclusion TEXT, title_at_exclusion TEXT, locality TEXT, region TEXT, type TEXT, rooms REAL, surface REAL)").run();
+          await db.prepare("INSERT OR IGNORE INTO ecartes_annonces (espace_id, cle, price_at_exclusion, date_exclusion, title_at_exclusion, locality, region, type, rooms, surface) SELECT ?, cle, ?, ?, ?, ?, ?, ?, ?, ? FROM (SELECT id AS cle FROM listings WHERE bien_id=? UNION SELECT 'url:' || url FROM listings WHERE bien_id=? AND url IS NOT NULL)").bind(espace, b.price, (/* @__PURE__ */ new Date()).toISOString(), b.title, b.locality, b.region, b.type, b.rooms, b.surface, body.bien_id, body.bien_id).run();
         } catch (err) {}
         await recomputeTargeted(db, [body.bien_id], env);
         return json({ ok: true });
@@ -2933,7 +2936,7 @@ var index_default = {
       if (url.pathname === "/api/restore" && request.method === "POST") {
         const body = await request.json();
         await db.prepare("DELETE FROM discarded WHERE bien_id=? AND espace_id=?").bind(body.bien_id, espace).run();
-        await oublierEcarteAnnonces(db, body.bien_id);
+        await oublierEcarteAnnonces(db, body.bien_id, espace);
         await recomputeTargeted(db, [body.bien_id], env);
         return json({ ok: true });
       }
