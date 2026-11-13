@@ -1,18 +1,16 @@
 
- ⛅️ wrangler 4.156.2
+ ⛅️ wrangler 4.162.0
 ────────────────────
-[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mUse "Index.js" instead of "index.js" to avoid issues with case-sensitive file systems[0m [different-path-case]
-
-
-Total Upload: 166.97 KiB / gzip: 43.20 KiB
+Total Upload: 169.05 KiB / gzip: 43.55 KiB
+Worker Startup Time: 1 ms
 Your Worker has access to the following bindings:
 Binding                  Resource         
 env.DB (jm-immo-db)      D1 Database      
 
-Uploaded jm-immo-cl (2.17 sec)
-Deployed jm-immo-cl triggers (1.20 sec)
+Uploaded jm-immo-cl (2.18 sec)
+Deployed jm-immo-cl triggers (0.87 sec)
   https://jm-immo-cl.jadorigor.workers.dev
   schedule: 0 3 * * *
-Current Version ID: 36a3d397-b21d-4c93-a8a7-92027892ffc4
+Current Version ID: aaae3ff3-1952-4cd8-a836-31f072282bf8
 
 Cloudflare collects anonymous telemetry about your usage of Wrangler. Learn more at https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler/telemetry.md
